@@ -1,0 +1,19 @@
+# Dependency directories
+node_modules/
+
+# Privat configurations
+config/default.json
+config/production.json
+
+# Builds
+build/
+
+#Logs
+*.log
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variables file
+.env
+.env.test
