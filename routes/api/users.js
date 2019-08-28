@@ -41,7 +41,7 @@ router.get('/:userId', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
   try {
     // Get User from database
-    const users = await User.find({ _id: { $ne: req.userId } }).select('username emoji')
+    const users = await User.find().select('username emoji points')
 
     // Return user profile if exists
     res.json(users)

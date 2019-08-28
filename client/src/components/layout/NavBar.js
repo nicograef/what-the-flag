@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { AppBar, Toolbar, Typography, Chip, Link, IconButton } from '@material-ui/core'
 import { ArrowBackIos as BackIcon } from '@material-ui/icons'
 
-const NavBar = ({ dashboard, challenge, profile, text, questionCounter, user }) => {
+const NavBar = ({ dashboard, challenge, text, questionCounter, user }) => {
   if (challenge) {
     return (
       <AppBar position='static'>
@@ -31,22 +31,9 @@ const NavBar = ({ dashboard, challenge, profile, text, questionCounter, user }) 
               {user.username}
             </Link>
           </Typography>
-          <Chip color='secondary' size='small' label={`${user.points} Points`} />
-        </Toolbar>
-      </AppBar>
-    )
-  if (profile)
-    return (
-      <AppBar position='static'>
-        <Toolbar>
-          <IconButton edge='start' color='inherit' aria-label='back to dashboard'>
-            <Link component={RouterLink} color='inherit' to='/dashboard'>
-              <BackIcon />
-            </Link>
-          </IconButton>
-          <Typography variant='h6' style={{ flexGrow: 1 }}>
-            Profile
-          </Typography>
+          <Link component={RouterLink} color='inherit' to='/leaderboard'>
+            <Chip color='secondary' size='small' label={`${user.points} Points`} />
+          </Link>
         </Toolbar>
       </AppBar>
     )
@@ -55,6 +42,11 @@ const NavBar = ({ dashboard, challenge, profile, text, questionCounter, user }) 
     return (
       <AppBar position='static'>
         <Toolbar>
+          <IconButton edge='start' color='inherit' aria-label='back to dashboard'>
+            <Link component={RouterLink} color='inherit' to='/dashboard'>
+              <BackIcon />
+            </Link>
+          </IconButton>
           <Typography variant='h6' style={{ flexGrow: 1 }}>
             {text}
           </Typography>
@@ -76,7 +68,6 @@ const NavBar = ({ dashboard, challenge, profile, text, questionCounter, user }) 
 NavBar.propTypes = {
   dashboard: PropTypes.bool,
   challenge: PropTypes.bool,
-  profile: PropTypes.bool,
   user: PropTypes.object
 }
 

@@ -17,6 +17,7 @@ import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
 import Challenge from './pages/Challenge'
 import ChallengeResult from './pages/ChallengeResult'
+import Leaderboard from './pages/Leaderboard'
 
 // Custom CSS
 import './App.css'
@@ -30,10 +31,13 @@ function App({ loadUser }) {
   return (
     <Router>
       <Route exact path='/' component={SplashScreen} />
+
       <PrivateRoute exact path='/profile' component={Profile} />
       <PrivateRoute exact path='/dashboard' component={Dashboard} />
       <PrivateRoute exact path='/challenge' component={Challenge} />
       <PrivateRoute exact path='/challenge-result' component={ChallengeResult} />
+      <PrivateRoute exact path='/leaderboard' component={Leaderboard} />
+
       <Route exact path='/login' component={Login} />
       <Route exact path='/register' component={Register} />
     </Router>

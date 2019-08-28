@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { logout } from '../actions/auth'
 
 // Material UI
-import { Typography, TextField, Button, Chip, Box } from '@material-ui/core'
+import { Typography, Button, Chip, Box } from '@material-ui/core'
 
 // Components
 import FullHeightGrid from '../components/layout/FullHeightGrid'
@@ -24,26 +24,21 @@ const Profile = ({ user, logout }) => {
 
   return (
     <Fragment>
-      <Navbar profile />
+      <Navbar text='Profile' />
 
       <FullHeightGrid withNavbar>
         <Typography variant='h1' gutterBottom style={{ marginTop: '0.35em' }}>
           {emoji}
         </Typography>
         <Typography variant='h4' gutterBottom>
-          {username} <Chip color='secondary' size='small' label={`${user.points} Points`} />
+          <Chip color='secondary' label={`${user.points} Points`} />
         </Typography>
-        <TextField
-          fullWidth
-          disabled
-          margin='normal'
-          name='email'
-          type='email'
-          autoComplete='no'
-          // label='Email'
-          value={email}
-          onChange={onChange}
-        />
+        <Typography variant='h4' gutterBottom>
+          {username}
+        </Typography>
+        <Typography variant='body1' color='textSecondary' gutterBottom>
+          {email}
+        </Typography>
         <Box style={{ flexGrow: 1 }}></Box>
         <Button onClick={e => logout()}>Log out</Button>
       </FullHeightGrid>
