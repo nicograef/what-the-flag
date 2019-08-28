@@ -24,7 +24,6 @@ const Input = ({ email, username, value, variant, error, onChange }) => {
   return (
     <TextField
       fullWidth
-      required
       margin='normal'
       variant={variant || 'outlined'}
       name={name}

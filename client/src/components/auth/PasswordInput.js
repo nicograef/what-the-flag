@@ -17,7 +17,6 @@ const PasswordInput = ({ register, value, error, onChange }) => {
   return (
     <TextField
       fullWidth
-      required
       margin='normal'
       variant='outlined'
       name='password'
