@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import {
-  SET_LOADING,
+  SET_AUTH_LOADING,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
@@ -19,7 +19,7 @@ import {
 export const loadUser = () => async dispatch => {
   if (localStorage.token) setAuthToken(localStorage.token)
 
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_AUTH_LOADING })
   try {
     const response = await axios.get('/api/auth')
     const user = response.data
@@ -37,7 +37,7 @@ export const loadUser = () => async dispatch => {
  *
  */
 export const getUsers = () => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_AUTH_LOADING })
   try {
     const response = await axios.get('/api/users')
     const users = response.data
@@ -58,7 +58,7 @@ export const getUsers = () => async dispatch => {
  * @param {string} password Password of the user
  */
 export const login = (username, password) => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_AUTH_LOADING })
   try {
     const data = { username, password }
     const response = await axios.post('/api/auth', data)
@@ -84,7 +84,7 @@ export const login = (username, password) => async dispatch => {
  * @param {string} password Password of the user
  */
 export const register = (username, email, password) => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_AUTH_LOADING })
   try {
     const data = { username, email, password }
     const response = await axios.post('/api/users', data)

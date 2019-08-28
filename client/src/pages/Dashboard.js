@@ -23,8 +23,8 @@ const Dashboard = ({ user, loadUser, newChallenge, history }) => {
   const [showSelectUserDialog, setShowSelectUserDialog] = useState(false)
 
   useEffect(() => {
-    if (!user) loadUser()
-  }, [loadUser, user])
+    loadUser()
+  }, [loadUser])
 
   if (!user) return <Spinner />
 

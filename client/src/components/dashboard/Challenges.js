@@ -20,31 +20,32 @@ import {
 
 const Challenges = ({ loading, challenges, getChallenges, showChallenge, history }) => {
   useEffect(() => {
-    if (!challenges) getChallenges()
-  }, [getChallenges, challenges])
+    getChallenges()
+  }, [getChallenges])
 
-  if (loading) return <p>Loading challenges ...</p>
+  // if (loading) return <p>Loading challenges ...</p>
 
-  if (!challenges) return <p>No challenges yet.</p>
+  if (!challenges && !loading) return <p>No challenges yet.</p>
 
   return (
     <Paper style={{ width: '100%' }}>
       <List dense disablePadding>
-        {challenges.map(({ _id, createdAt, from, to, status }) => (
-          <ListItem button divider key={_id} onClick={e => showChallenge(_id, history)}>
-            <ListItemText
-              primary={(from && `${from} challenged you`) || (to && `you challenged ${to}`)}
-              secondary={moment(createdAt).fromNow()}
-            />
-            <ListItemSecondaryAction>
-              {status === 'new' && <NewIcon color='secondary' />}
-              {status === 'waiting' && <WaitingIcon color='secondary' />}
-              {status === 'win' && <ThumbUpIcon color='secondary' />}
-              {status === 'loss' && <ThumbDownIcon color='secondary' />}
-              {/* {status === 'completed'} */}
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
+        {challenges &&
+          challenges.map(({ _id, createdAt, from, to, status }) => (
+            <ListItem button divider key={_id} onClick={e => showChallenge(_id, history)}>
+              <ListItemText
+                primary={(from && `${from} challenged you`) || (to && `you challenged ${to}`)}
+                secondary={moment(createdAt).fromNow()}
+              />
+              <ListItemSecondaryAction>
+                {status === 'new' && <NewIcon color='secondary' />}
+                {status === 'waiting' && <WaitingIcon color='secondary' />}
+                {status === 'win' && <ThumbUpIcon color='secondary' />}
+                {status === 'loss' && <ThumbDownIcon color='secondary' />}
+                {/* {status === 'completed'} */}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
       </List>
     </Paper>
   )

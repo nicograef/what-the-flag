@@ -1,5 +1,5 @@
 import {
-  SET_LOADING,
+  SET_AUTH_LOADING,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   LOGIN_SUCCESS,
@@ -76,7 +76,7 @@ export default (state = initialState, action) => {
         ...state,
         errors: null
       }
-    case SET_LOADING:
+    case SET_AUTH_LOADING:
       return {
         ...state,
         loading: true

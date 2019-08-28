@@ -3,7 +3,7 @@ import {
   CHALLENGES_LOADED,
   CHALLENGE_OF_THE_WEEK_LOADED,
   CLEAR_CHALLENGE,
-  SET_LOADING
+  SET_CHALLENGES_LOADING
 } from '../actions/types'
 
 const initialState = {
@@ -29,6 +29,8 @@ export default (state = initialState, action) => {
         loading: false
       }
     case CHALLENGES_LOADED:
+      if (state.challenges && state.challenges[0]._id === payload.challenges[0]._id)
+        return { ...state, loading: false }
       return {
         ...state,
         challenges: payload.challenges,
@@ -40,7 +42,7 @@ export default (state = initialState, action) => {
         challengeOfTheWeek: payload.challengeOfTheWeek,
         loading: false
       }
-    case SET_LOADING:
+    case SET_CHALLENGES_LOADING:
       return {
         ...state,
         loading: true

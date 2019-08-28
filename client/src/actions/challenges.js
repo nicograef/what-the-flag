@@ -5,14 +5,14 @@ import {
   CHALLENGES_LOADED,
   // CHALLENGE_OF_THE_WEEK_LOADED,
   // CLEAR_CHALLENGE,
-  SET_LOADING
+  SET_CHALLENGES_LOADING
 } from './types'
 
 /**
  *
  */
 export const getChallenges = () => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_CHALLENGES_LOADING })
   try {
     const response = await axios.get('/api/challenges')
     const challenges = response.data
@@ -26,7 +26,7 @@ export const getChallenges = () => async dispatch => {
  *
  */
 export const getChallenge = challengeId => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_CHALLENGES_LOADING })
   try {
     const response = await axios.get(`/api/challenges/${challengeId}`)
     const challenge = response.data
@@ -40,7 +40,7 @@ export const getChallenge = challengeId => async dispatch => {
  *
  */
 export const showChallenge = (challengeId, history) => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_CHALLENGES_LOADING })
   history.push('/challenge-result')
   try {
     const response = await axios.get(`/api/challenges/${challengeId}`)
@@ -55,7 +55,7 @@ export const showChallenge = (challengeId, history) => async dispatch => {
  *
  */
 export const newChallenge = (username, history) => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_CHALLENGES_LOADING })
   try {
     const data = { username }
     const response = await axios.post('/api/challenges', data)
@@ -71,7 +71,7 @@ export const newChallenge = (username, history) => async dispatch => {
  *
  */
 export const submitAnswers = (challengeId, answers, history) => async dispatch => {
-  dispatch({ type: SET_LOADING })
+  dispatch({ type: SET_CHALLENGES_LOADING })
   try {
     const data = { answers }
     const response = await axios.post(`/api/challenges/${challengeId}`, data)
