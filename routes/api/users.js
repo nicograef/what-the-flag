@@ -88,8 +88,71 @@ router.post(
           .status(400)
           .json({ errors: [{ param: 'email', msg: 'A user with this email already exists.' }] })
 
+      // Select random emoji for user
+      const emojis = [
+        '😄',
+        '😃',
+        '😀',
+        '😊',
+        '😉',
+        '😍',
+        '😘',
+        '😚',
+        '😗',
+        '😙',
+        '😜',
+        '😝',
+        '😛',
+        '😳',
+        '😁',
+        '😔',
+        '😌',
+        '😒',
+        '😞',
+        '😣',
+        '😢',
+        '😂',
+        '😭',
+        '😪',
+        '😥',
+        '😰',
+        '😅',
+        '😓',
+        '😩',
+        '😫',
+        '😨',
+        '😱',
+        '😠',
+        '😡',
+        '😤',
+        '😖',
+        '😆',
+        '😋',
+        '😷',
+        '😎',
+        '😴',
+        '😵',
+        '😲',
+        '😟',
+        '😦',
+        '😧',
+        '😈',
+        '👿',
+        '😮',
+        '😬',
+        '😐',
+        '😕',
+        '😯',
+        '😶',
+        '😇',
+        '😏',
+        '😑'
+      ]
+      const randomIndex = Math.floor(Math.random() * emojis.length)
+      const emoji = emojis[randomIndex]
+
       // Create new user instance
-      user = new User({ username, email, password })
+      user = new User({ username, email, password, emoji })
 
       // Encrypt password
       const salt = await bcrypt.genSalt(10)
