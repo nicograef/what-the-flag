@@ -3,23 +3,41 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Material UI
+import { List, ListItem, ListItemText, ListItemAvatar, Avatar, Chip } from '@material-ui/core'
 
 // Components
-import FullHeightGrid from '../components/layout/FullHeightGrid'
 import Navbar from '../components/layout/NavBar'
 
 const Profile = ({ users }) => {
+  const sortedUsers = users.sort((a, b) => b.points - a.points)
+
   return (
     <Fragment>
       <Navbar text='Leaderboard' />
 
-      <FullHeightGrid withNavbar>Hello World</FullHeightGrid>
+      <List style={{ width: '100%', flexGrow: 1 }}>
+        {sortedUsers &&
+          sortedUsers.map(({ username, emoji, points }, index) => (
+            <ListItem key={username}>
+              <ListItemAvatar>
+                <Avatar style={{ color: 'black', background: 'none' }}>
+                  {index === 0 && '🥇'}
+                  {index === 1 && '🥈'}
+                  {index === 2 && '🥉'}
+                  {index > 2 && index}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={emoji + username} />
+              <Chip color='secondary' size='small' label={`${points} Points`} />
+            </ListItem>
+          ))}
+      </List>
     </Fragment>
   )
 }
 
 Profile.propTypes = {
-  user: PropTypes.object.isRequired
+  users: PropTypes.array.isRequired
 }
 
 const mapStateToProps = state => ({

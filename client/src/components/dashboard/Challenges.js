@@ -20,8 +20,8 @@ import {
 
 const Challenges = ({ loading, challenges, getChallenges, showChallenge, history }) => {
   useEffect(() => {
-    getChallenges()
-  }, [getChallenges])
+    if (!challenges) getChallenges()
+  }, [getChallenges, challenges])
 
   if (loading) return <p>Loading challenges ...</p>
 
