@@ -5,17 +5,18 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Actions
-import { register, clearErrors } from '../../actions/auth'
+import { register, clearErrors } from '../actions/auth'
 
 // Material UI
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Typography, Link } from '@material-ui/core'
 
 // Components
-import Spinner from '../layout/Spinner'
-import PasswordInput from './PasswordInput'
-import Input from './Input'
-import FullHeightGrid from '../layout/FullHeightGrid'
+import Spinner from '../components/layout/Spinner'
+import PasswordInput from '../components/auth/PasswordInput'
+import Input from '../components/auth/Input'
+import FullHeightGrid from '../components/layout/FullHeightGrid'
+import Copyright from '../components/layout/Copyright'
 
 const Register = ({ loading, authenticated, errors, register, clearErrors }) => {
   const classes = useStyles()
@@ -79,6 +80,7 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
           </Fragment>
         )}
       </form>
+      <Copyright />
     </FullHeightGrid>
   )
 }

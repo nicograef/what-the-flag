@@ -1,14 +1,14 @@
+// React and Redux
 import React from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-// Actions
-import { logout } from '../../actions/auth'
-
 // Material UI
-import { AppBar, Toolbar, Typography, Chip } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Chip, Link, IconButton } from '@material-ui/core'
+import { ArrowBackIos as BackIcon } from '@material-ui/icons'
 
-const NavBar = ({ dashboard, challenge, text, questionCounter, user, logout }) => {
+const NavBar = ({ dashboard, challenge, profile, text, questionCounter, user }) => {
   if (challenge) {
     return (
       <AppBar position='static'>
@@ -25,12 +25,28 @@ const NavBar = ({ dashboard, challenge, text, questionCounter, user, logout }) =
     return (
       <AppBar position='static'>
         <Toolbar>
-          <Typography variant='h6' style={{ flexGrow: 1 }} onClick={e => logout()}>
-            {user.emoji}
-            {user.username}
+          <Typography variant='h6' style={{ flexGrow: 1 }}>
+            <Link component={RouterLink} color='inherit' to='/profile'>
+              {user.emoji}
+              {user.username}
+            </Link>
           </Typography>
           <Chip color='secondary' size='small' label={`${user.points} Points`} />
-          {/* <LogoutIcon style={{ paddingLeft: 10 }} color='inherit' onClick={logout} /> */}
+        </Toolbar>
+      </AppBar>
+    )
+  if (profile)
+    return (
+      <AppBar position='static'>
+        <Toolbar>
+          <IconButton edge='start' color='inherit' aria-label='back to dashboard'>
+            <Link component={RouterLink} color='inherit' to='/dashboard'>
+              <BackIcon />
+            </Link>
+          </IconButton>
+          <Typography variant='h6' style={{ flexGrow: 1 }}>
+            Profile
+          </Typography>
         </Toolbar>
       </AppBar>
     )
@@ -60,8 +76,8 @@ const NavBar = ({ dashboard, challenge, text, questionCounter, user, logout }) =
 NavBar.propTypes = {
   dashboard: PropTypes.bool,
   challenge: PropTypes.bool,
-  user: PropTypes.object,
-  logout: PropTypes.func.isRequired
+  profile: PropTypes.bool,
+  user: PropTypes.object
 }
 
 const mapStateToProps = state => ({
@@ -69,7 +85,4 @@ const mapStateToProps = state => ({
   user: state.auth.user
 })
 
-export default connect(
-  mapStateToProps,
-  { logout }
-)(NavBar)
+export default connect(mapStateToProps)(NavBar)

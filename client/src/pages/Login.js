@@ -5,17 +5,18 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Actions
-import { login, clearErrors } from '../../actions/auth'
+import { login, clearErrors } from '../actions/auth'
 
 // Material UI
 import { Button, Link, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 // Components
-import Spinner from '../layout/Spinner'
-import Input from './Input'
-import PasswordInput from './PasswordInput'
-import FullHeightGrid from '../layout/FullHeightGrid'
+import Spinner from '../components/layout/Spinner'
+import Input from '../components/auth/Input'
+import PasswordInput from '../components/auth/PasswordInput'
+import FullHeightGrid from '../components/layout/FullHeightGrid'
+import Copyright from '../components/layout/Copyright'
 
 const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
   const classes = useStyles()
@@ -56,7 +57,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
               variant='contained'
               color='primary'
             >
-              Sign In
+              Go!
             </Button>
 
             <Link component={RouterLink} to='/register'>
@@ -70,6 +71,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
           </Fragment>
         )}
       </form>
+      <Copyright />
     </FullHeightGrid>
   )
 }

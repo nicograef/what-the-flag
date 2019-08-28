@@ -9,10 +9,11 @@ import { loadUser } from './actions/auth'
 // Components
 import PrivateRoute from './components/routing/PrivateRout'
 import SplashScreen from './components/layout/SplashScreen'
-import Login from './components/auth/Login'
-import Register from './components/auth/Register'
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 // Pages
+import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
 import Challenge from './pages/Challenge'
 import ChallengeResult from './pages/ChallengeResult'
@@ -29,6 +30,7 @@ function App({ loadUser }) {
   return (
     <Router>
       <Route exact path='/' component={SplashScreen} />
+      <PrivateRoute exact path='/profile' component={Profile} />
       <PrivateRoute exact path='/dashboard' component={Dashboard} />
       <PrivateRoute exact path='/challenge' component={Challenge} />
       <PrivateRoute exact path='/challenge-result' component={ChallengeResult} />

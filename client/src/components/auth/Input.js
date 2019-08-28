@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 // Material UI
 import { TextField } from '@material-ui/core'
 
-const Input = ({ email, username, value, error, onChange }) => {
+const Input = ({ email, username, value, variant, error, onChange }) => {
   let name, label, type, autoComplete
 
   if (email) {
@@ -26,7 +26,7 @@ const Input = ({ email, username, value, error, onChange }) => {
       fullWidth
       required
       margin='normal'
-      variant='outlined'
+      variant={variant || 'outlined'}
       name={name}
       type={type}
       autoComplete={autoComplete}
@@ -43,6 +43,7 @@ Input.propTypes = {
   username: PropTypes.bool,
   email: PropTypes.bool,
   value: PropTypes.string.isRequired,
+  variant: PropTypes.string,
   error: PropTypes.string,
   onChange: PropTypes.func.isRequired
 }
