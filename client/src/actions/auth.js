@@ -52,15 +52,15 @@ export const getUsers = () => async dispatch => {
 }
 
 /**
- * Login user with email and password.
+ * Login user with username and password.
  *
- * @param {string} email Email of the user
+ * @param {string} username Username of the user
  * @param {string} password Password of the user
  */
-export const login = (email, password) => async dispatch => {
+export const login = (username, password) => async dispatch => {
   dispatch({ type: SET_LOADING })
   try {
-    const data = { email, password }
+    const data = { username, password }
     const response = await axios.post('/api/auth', data)
     const token = response.data.token
     dispatch({ type: LOGIN_SUCCESS, payload: { token } })

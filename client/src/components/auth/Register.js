@@ -70,7 +70,10 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
             </Button>
             <Link component={RouterLink} to='/'>
               <Button size='small' fullWidth variant='text'>
-                Already have an account? Sign In
+                Already have an account?
+                <Typography color='secondary' variant='button' component='span'>
+                  &nbsp;Log In
+                </Typography>
               </Button>
             </Link>
           </Fragment>

@@ -33,7 +33,12 @@ router.get('/', auth, async (req, res) => {
 router.post(
   '/',
   [
-    check('email', 'Please include a valid email.').isEmail(),
+    check('username', 'Please enter your username.')
+      .not()
+      .isEmpty(),
+    // .not()
+    // .isEmail(),
+    // check('email', 'Please include a valid email.').isEmail() ,
     check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 })
   ],
   async (req, res) => {
@@ -44,20 +49,32 @@ router.post(
       return res.status(400).json({ errors })
     }
 
-    const { email, password } = req.body
+    const { username, password } = req.body
 
     try {
       // See if user exits
-      let user = await User.findOne({ email })
+      let user = await User.findOne({ username })
 
-      // Stop if there is no user with given email
-      if (!user) res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] })
+      // Stop if there is no user with given username
+      if (!user)
+        return res.status(400).json({
+          errors: [
+            { param: 'username', msg: 'Username or Password is not correct.' },
+            { param: 'password', msg: 'Username or Password is not correct.' }
+          ]
+        })
 
       // Check if password is correct
       const passwordIsCorrect = await bcrypt.compare(password, user.password)
 
       // Stop if password is incorrect
-      if (!passwordIsCorrect) res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] })
+      if (!passwordIsCorrect)
+        return res.status(400).json({
+          errors: [
+            { param: 'username', msg: 'Username or Password is not correct.' },
+            { param: 'password', msg: 'Username or Password is not correct.' }
+          ]
+        })
 
       // Return JsonWebToken to further authenticate user
       const payload = { userId: user.id }

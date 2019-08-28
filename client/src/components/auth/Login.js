@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { login, clearErrors } from '../../actions/auth'
 
 // Material UI
-import { Button, Link } from '@material-ui/core'
+import { Button, Link, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 // Components
@@ -20,8 +20,8 @@ import FullHeightGrid from '../layout/FullHeightGrid'
 const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
   const classes = useStyles()
 
-  const [formData, setFormData] = useState({ email: '', password: '' })
-  const { email, password } = formData
+  const [formData, setFormData] = useState({ username: '', password: '' })
+  const { username, password } = formData
 
   useEffect(() => {
     clearErrors()
@@ -31,7 +31,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
 
   const onSubmit = async e => {
     e.preventDefault()
-    login(email, password)
+    login(username, password)
   }
 
   // If user is (already) logged in (i.e. has a valid token), redirect to /dashboard
@@ -40,7 +40,10 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
   return (
     <FullHeightGrid>
       <form noValidate onSubmit={onSubmit}>
-        <Input email value={email} onChange={onChange} error={errors && errors.email} />
+        <Typography align='center' component='h1' variant='h5'>
+          Log In
+        </Typography>
+        <Input username value={username} onChange={onChange} error={errors && errors.username} />
         <PasswordInput value={password} onChange={onChange} error={errors && errors.password} />
         {loading ? (
           <Spinner />
@@ -58,7 +61,10 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
 
             <Link component={RouterLink} to='/register'>
               <Button size='small' fullWidth variant='text'>
-                Don't have an account? Sign Up
+                Don't have an account?
+                <Typography color='secondary' variant='button' component='span'>
+                  &nbsp;Sign Up
+                </Typography>
               </Button>
             </Link>
           </Fragment>
