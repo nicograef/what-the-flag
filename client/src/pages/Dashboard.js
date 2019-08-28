@@ -32,7 +32,7 @@ const Dashboard = ({ user, loadUser, newChallenge, history }) => {
     title: 'The European Flags',
     subtitle: '🏆 Challenge of the Week',
     description: 'To complete this challenge you need to guess every flag of the european union.',
-    buttonText: 'START'
+    buttonText: 'Coming soon'
   }
 
   const onSelect = username => {

@@ -19,7 +19,7 @@ const ChallengeOfTheWeek = ({ data: { title, subtitle, description, buttonText }
         </Typography>
       </CardContent>
       <CardActions>
-        <Button color='secondary' fullWidth size='small'>
+        <Button disabled color='secondary' fullWidth size='small'>
           {buttonText}
         </Button>
       </CardActions>

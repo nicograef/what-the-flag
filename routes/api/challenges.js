@@ -219,10 +219,24 @@ router.post(
         const userTo = await User.findById(challenge.to.id)
 
         // Both get +10 Points for completing the challenge
-        userFrom.points = userFrom.points + 10
-        userTo.points = userTo.points + 10
+        userFrom.points += 10
+        userTo.points += 10
 
-        // @todo give winner extra +10 Points
+        // Calculate the number of correct answers for both users
+        const resultUserFrom = challenge.answers
+          .find(answer => answer.user.toString() === userFrom.id)
+          .result.filter(r => r).length
+        const resultUserTo = challenge.answers
+          .find(answer => answer.user.toString() === userTo.id)
+          .result.filter(r => r).length
+
+        // The winner gets +5 points for every correct answer
+        if (resultUserFrom > resultUserTo) userFrom.points += resultUserFrom * 5
+        if (resultUserTo > resultUserFrom) userTo.points += resultUserTo * 5
+
+        // If one or both users answered all questions correct, they get +25 points
+        if (resultUserFrom === challenge.questions.length) userFrom.points += 25
+        if (resultUserTo === challenge.questions.length) userTo.points += 25
 
         userFrom.save()
         userTo.save()
