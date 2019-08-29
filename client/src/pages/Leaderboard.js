@@ -7,41 +7,45 @@ import { List, ListItem, ListItemText, ListItemAvatar, Avatar, Chip } from '@mat
 
 // Components
 import Navbar from '../components/layout/NavBar'
+import FullHeightGrid from '../components/layout/FullHeightGrid'
 
-const Profile = ({ users }) => {
+const Profile = ({ user, users }) => {
   const sortedUsers = users.sort((a, b) => b.points - a.points)
 
   return (
     <Fragment>
       <Navbar text='Leaderboard' />
-
-      <List style={{ width: '100%', flexGrow: 1 }}>
-        {sortedUsers &&
-          sortedUsers.map(({ username, emoji, points }, index) => (
-            <ListItem key={username}>
-              <ListItemAvatar>
-                <Avatar style={{ color: 'black', background: 'none' }}>
-                  {index === 0 && '🥇'}
-                  {index === 1 && '🥈'}
-                  {index === 2 && '🥉'}
-                  {index > 2 && index}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={emoji + username} />
-              <Chip color='secondary' size='small' label={`${points} Points`} />
-            </ListItem>
-          ))}
-      </List>
+      <FullHeightGrid withNavbar style={{ padding: 0 }}>
+        <List style={{ width: '100%', flexGrow: 1 }}>
+          {sortedUsers &&
+            sortedUsers.map(({ username, emoji, points }, index) => (
+              <ListItem key={username} selected={username === user.username}>
+                <ListItemAvatar>
+                  <Avatar style={{ color: 'black', background: 'none' }}>
+                    {index === 0 && '🥇'}
+                    {index === 1 && '🥈'}
+                    {index === 2 && '🥉'}
+                    {index > 2 && index}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={emoji + username} />
+                <Chip color='secondary' size='small' label={`${points} Points`} />
+              </ListItem>
+            ))}
+        </List>
+      </FullHeightGrid>
     </Fragment>
   )
 }
 
 Profile.propTypes = {
-  users: PropTypes.array.isRequired
+  users: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  users: state.auth.users
+  users: state.auth.users,
+  user: state.auth.user
 })
 
 export default connect(mapStateToProps)(Profile)

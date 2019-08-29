@@ -79,7 +79,7 @@ router.post(
       // Return JsonWebToken to further authenticate user
       const payload = { userId: user.id }
       const secret = config.get('jwtSecret')
-      const token = jwt.sign(payload, secret, { expiresIn: '1d' })
+      const token = jwt.sign(payload, secret, { expiresIn: '7d' })
 
       res.json({ token })
 
