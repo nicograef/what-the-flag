@@ -29,8 +29,8 @@ export default (state = initialState, action) => {
         loading: false
       }
     case CHALLENGES_LOADED:
-      if (state.challenges && state.challenges[0]._id === payload.challenges[0]._id)
-        return { ...state, loading: false }
+      // if (state.challenges && state.challenges[0]._id === payload.challenges[0]._id)
+      //   return { ...state, loading: false }
       return {
         ...state,
         challenges: payload.challenges,
