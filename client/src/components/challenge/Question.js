@@ -5,18 +5,22 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Card, Button, Typography } from '@material-ui/core'
 
 const Question = ({ question, quizMode, answer, options, onOptionSelected }) => {
-  const { button, imgQuestion } = useStyles()
+  const { button, imgQuestion, card } = useStyles()
 
   return (
     <Grid container spacing={2} direction='column' justify='center'>
       <Grid item>
-        <Card>
-          {quizMode.match(/flag-to/) ? (
+        {quizMode.match(/flag-to/) ? (
+          <Card>
             <img className={imgQuestion} src={question} alt={answer} />
-          ) : (
-            <Typography>{question}</Typography>
-          )}
-        </Card>
+          </Card>
+        ) : (
+          <Card className={card}>
+            <Typography variant='h4' align='center'>
+              {question}
+            </Typography>
+          </Card>
+        )}
       </Grid>
       <Grid item>
         <Typography align='center'>⬆️ {quizMode.toUpperCase().replace(/-/g, ' ')} ⬇️</Typography>
@@ -49,6 +53,9 @@ const useStyles = makeStyles(theme => ({
     maxHeight: 250,
     objectFit: 'cover',
     verticalAlign: 'middle'
+  },
+  card: {
+    padding: theme.spacing(2)
   }
 }))
 

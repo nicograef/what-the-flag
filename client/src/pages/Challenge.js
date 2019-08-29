@@ -6,9 +6,6 @@ import { connect } from 'react-redux'
 // Actions
 import { submitAnswers } from '../actions/challenges'
 
-// Material UI
-import { Typography, Paper } from '@material-ui/core'
-
 // Components
 import Question from '../components/challenge/Question'
 import FullHeightGrid from '../components/layout/FullHeightGrid'

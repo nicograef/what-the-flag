@@ -3,3 +3,8 @@ body,
 #root {
   min-height: 100vh;
 }
+
+/* Without this a really long word can mess up the whole screen */
+.MuiGrid-root {
+  max-width: 100%;
+}
