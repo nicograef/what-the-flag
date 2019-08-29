@@ -59,19 +59,23 @@ router.get('/', auth, async (req, res) => {
       }
     ).populate('from to', 'username emoji')
 
-    // Clean up response
+    // Create response
     challenges = challenges.map(({ id, from, to, createdAt, answers }) => {
       const challenge = { _id: id, createdAt }
+
+      const userAnswer = answers.find(answer => answer.user.toString() === req.userId)
 
       // Set if user was challenged or user challenged someone
       if (from.id === req.userId) challenge.to = `${to.emoji}${to.username}`
       else if (to.id === req.userId) challenge.from = `${from.emoji}${from.username}`
 
-      // Calculate and set status of the challenge
+      // Set status of the challenge
       if (answers.length === 2) challenge.status = 'completed'
-      else if (answers.find(answer => answer.user.toString() === req.userId))
-        challenge.status = 'waiting'
+      else if (userAnswer) challenge.status = 'waiting'
       else challenge.status = 'new'
+
+      // Return Points to show in dashboard
+      if (challenge.status === 'completed') challenge.points = userAnswer.points
 
       return challenge
     })
@@ -119,7 +123,10 @@ router.post(
           .json({ errors: [{ param: 'username', msg: 'There is no user with this username.' }] })
 
       // Create a new Quiz
-      const quiz = newQuiz('flag-to-country', 10)
+      const supportedQuizModes = ['flag-to-country', 'flag-to-capital']
+      const randomIndex = Math.floor(Math.random() * supportedQuizModes.length)
+      const quizMode = supportedQuizModes[randomIndex]
+      const quiz = newQuiz(quizMode, 10)
 
       // Create a new Challenge
       const newChallenge = new Challenge({
@@ -204,43 +211,59 @@ router.post(
           .json({ errors: [{ param: 'answers', msg: 'There are too many or too few answers.' }] })
 
       // Calculate result
-      const result = answers.map((answer, index) => answer === challenge.questions[index].answer)
+      const result = answers.map((answer, index) =>
+        answer === challenge.questions[index].answer ? 1 : 0
+      )
 
       // Add answers to challenge answers
       challenge.answers.push({ user: req.userId, answers, result })
 
-      // Save challenge to database
-      await challenge.save()
-
-      // Process User Points if both users have submitted answers = challenge completed
+      // Give Points and clear up Document if challenge is completed (= both users have submitted answers)
       if (challenge.answers.length === 2) {
         // Get Users from this challenge
         const userFrom = await User.findById(challenge.from.id)
         const userTo = await User.findById(challenge.to.id)
 
         // Both get +10 Points for completing the challenge
-        userFrom.points += 10
-        userTo.points += 10
+        let userFromPoints = 10
+        let userToPoints = 10
+
+        // Get answers for both users
+        const userFromAnswer = challenge.answers.find(
+          answer => answer.user.toString() === userFrom.id
+        )
+        const userToAnswer = challenge.answers.find(answer => answer.user.toString() === userTo.id)
 
         // Calculate the number of correct answers for both users
-        const resultUserFrom = challenge.answers
-          .find(answer => answer.user.toString() === userFrom.id)
-          .result.filter(r => r).length
-        const resultUserTo = challenge.answers
-          .find(answer => answer.user.toString() === userTo.id)
-          .result.filter(r => r).length
+        const userFromResult = userFromAnswer.result.filter(r => r).length
+        const userToResult = userToAnswer.result.filter(r => r).length
 
         // The winner gets +5 points for every correct answer
-        if (resultUserFrom > resultUserTo) userFrom.points += resultUserFrom * 5
-        if (resultUserTo > resultUserFrom) userTo.points += resultUserTo * 5
+        if (userFromResult > userToResult) userFromPoints += userFromResult * 5
+        if (userToResult > userFromResult) userToPoints += userToResult * 5
 
         // If one or both users answered all questions correct, they get +25 points
-        if (resultUserFrom === challenge.questions.length) userFrom.points += 25
-        if (resultUserTo === challenge.questions.length) userTo.points += 25
+        if (userFromResult === challenge.questions.length) userFromPoints += 25
+        if (userToResult === challenge.questions.length) userToPoints += 25
 
+        // Add points to users and save in db
+        userFrom.points += userFromPoints
+        userTo.points += userToPoints
         userFrom.save()
         userTo.save()
+
+        // Add points to challenge document
+        userFromAnswer.points = userFromPoints
+        userToAnswer.points = userToPoints
+
+        // Clean Up Challenge Document
+        challenge.questions = undefined
+        challenge.quizMode = undefined
+        challenge.answers.forEach(answer => (answer.answers = undefined))
       }
+
+      // Save challenge to database
+      await challenge.save()
 
       // Return challenge
       res.json(challenge)

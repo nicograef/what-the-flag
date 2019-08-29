@@ -20,22 +20,25 @@ const ChallengeSchema = new Schema({
         required: true
       },
       answers: {
-        type: Array,
-        required: true
+        type: Array
+        // required: true
       },
       result: {
         type: Array,
         required: true
+      },
+      points: {
+        type: Number
       }
     }
   ],
   questions: {
-    type: Array,
-    required: true
+    type: Array
+    // required: true
   },
   quizMode: {
-    type: String,
-    required: true
+    type: String
+    // required: true
   },
   createdAt: {
     type: Date,

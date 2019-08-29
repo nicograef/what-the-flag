@@ -10,7 +10,14 @@ import moment from 'moment'
 import { getChallenges, showChallenge } from '../../actions/challenges'
 
 // Material UI
-import { List, ListItem, ListItemText, Paper, ListItemSecondaryAction } from '@material-ui/core'
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Paper,
+  Chip
+} from '@material-ui/core'
 import {
   HourglassEmpty as WaitingIcon,
   NewReleases as NewIcon,
@@ -31,7 +38,7 @@ const Challenges = ({ loading, challenges, getChallenges, showChallenge, history
     <Paper style={{ width: '100%' }}>
       <List dense disablePadding>
         {challenges &&
-          challenges.map(({ _id, createdAt, from, to, status }) => (
+          challenges.map(({ _id, createdAt, from, to, status, points }) => (
             <ListItem button divider key={_id} onClick={e => showChallenge(_id, history)}>
               <ListItemText
                 primary={(from && `${from} challenged you`) || (to && `you challenged ${to}`)}
@@ -40,9 +47,11 @@ const Challenges = ({ loading, challenges, getChallenges, showChallenge, history
               <ListItemSecondaryAction>
                 {status === 'new' && <NewIcon color='secondary' />}
                 {status === 'waiting' && <WaitingIcon color='secondary' />}
-                {status === 'win' && <ThumbUpIcon color='secondary' />}
-                {status === 'loss' && <ThumbDownIcon color='secondary' />}
-                {/* {status === 'completed'} */}
+                {/* {status === 'win' && <ThumbUpIcon color='secondary' />} */}
+                {/* {status === 'loss' && <ThumbDownIcon color='secondary' />} */}
+                {status === 'completed' && points && (
+                  <Chip color='secondary' size='small' label={`+${points}`} />
+                )}
               </ListItemSecondaryAction>
             </ListItem>
           ))}
