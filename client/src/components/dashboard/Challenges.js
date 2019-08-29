@@ -18,12 +18,7 @@ import {
   Paper,
   Chip
 } from '@material-ui/core'
-import {
-  HourglassEmpty as WaitingIcon,
-  NewReleases as NewIcon,
-  ThumbUp as ThumbUpIcon,
-  ThumbDown as ThumbDownIcon
-} from '@material-ui/icons'
+import { HourglassEmpty as WaitingIcon, NewReleases as NewIcon } from '@material-ui/icons'
 
 const Challenges = ({ loading, challenges, getChallenges, showChallenge, history }) => {
   useEffect(() => {
@@ -47,8 +42,6 @@ const Challenges = ({ loading, challenges, getChallenges, showChallenge, history
               <ListItemSecondaryAction>
                 {status === 'new' && <NewIcon color='secondary' />}
                 {status === 'waiting' && <WaitingIcon color='secondary' />}
-                {/* {status === 'win' && <ThumbUpIcon color='secondary' />} */}
-                {/* {status === 'loss' && <ThumbDownIcon color='secondary' />} */}
                 {status === 'completed' && points && (
                   <Chip color='secondary' size='small' label={`+${points}`} />
                 )}

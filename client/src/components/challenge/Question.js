@@ -2,17 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Card, Button } from '@material-ui/core'
+import { Grid, Card, Button, Typography } from '@material-ui/core'
 
-const Question = ({ question, answer, options, onOptionSelected }) => {
+const Question = ({ question, quizMode, answer, options, onOptionSelected }) => {
   const { button, imgQuestion } = useStyles()
 
   return (
     <Grid container spacing={2} direction='column' justify='center'>
       <Grid item>
         <Card>
-          <img className={imgQuestion} src={question} alt={answer} />
+          {quizMode.match(/flag-to/) ? (
+            <img className={imgQuestion} src={question} alt={answer} />
+          ) : (
+            <Typography>{question}</Typography>
+          )}
         </Card>
+      </Grid>
+      <Grid item>
+        <Typography align='center'>⬆️ {quizMode.toUpperCase().replace(/-/g, ' ')} ⬇️</Typography>
       </Grid>
       <Grid item>
         {options.map(option => (
@@ -47,6 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 Question.propTypes = {
   question: PropTypes.string.isRequired,
+  quizMode: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onOptionSelected: PropTypes.func.isRequired
