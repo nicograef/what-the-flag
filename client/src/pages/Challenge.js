@@ -34,7 +34,6 @@ const Challenge = ({ challenge, user, loading, submitAnswers, history }) => {
   const onOptionSelected = selectedOption => {
     if (index === questions.length - 1) {
       submitAnswers(challenge._id, [...answers, selectedOption], history)
-      return
     } else if (index < questions.length - 1) {
       setAnswers([...answers, selectedOption])
       setIndex(index + 1)

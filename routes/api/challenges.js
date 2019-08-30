@@ -123,15 +123,15 @@ router.post(
           .json({ errors: [{ param: 'username', msg: 'There is no user with this username.' }] })
 
       // Create a new Quiz
-      const supportedQuizModes = [
-        'flag-to-country',
-        'flag-to-capital',
-        'country-to-capital',
-        'capital-to-country'
-      ]
-      const randomIndex = Math.floor(Math.random() * supportedQuizModes.length)
-      const quizMode = supportedQuizModes[randomIndex]
-      const quiz = newQuiz(quizMode, 10)
+      // const supportedQuizModes = [
+      //   'flag-to-country',
+      //   'flag-to-capital',
+      //   'country-to-capital',
+      //   'capital-to-country'
+      // ]
+      // const randomIndex = Math.floor(Math.random() * supportedQuizModes.length)
+      // const quizMode = supportedQuizModes[randomIndex]
+      const quiz = newQuiz('mixed', 10)
 
       // Create a new Challenge
       const newChallenge = new Challenge({
@@ -168,9 +168,8 @@ router.post(
     auth,
     [
       check('answers', 'Please provide answers to this challenge.')
-        .not()
-        .isEmpty(),
-      check('answers', 'Please provide the answers in an array.').isArray()
+        .exists()
+        .isArray()
     ]
   ],
   async (req, res) => {
