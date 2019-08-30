@@ -52,7 +52,7 @@ router.get('/', auth, async (req, res) => {
     // Get challenges by user id
     let challenges = await Challenge.find(
       { $or: [{ from: req.userId }, { to: req.userId }] },
-      'from to createdAt answers',
+      'from to createdAt results',
       {
         sort: { createdAt: 'desc' },
         limit: 20
@@ -60,22 +60,22 @@ router.get('/', auth, async (req, res) => {
     ).populate('from to', 'username emoji')
 
     // Create response
-    challenges = challenges.map(({ id, from, to, createdAt, answers }) => {
+    challenges = challenges.map(({ id, from, to, createdAt, results }) => {
       const challenge = { _id: id, createdAt }
 
-      const userAnswer = answers.find(answer => answer.user.toString() === req.userId)
+      const userResult = results.find(result => result.user.toString() === req.userId)
 
       // Set if user was challenged or user challenged someone
       if (from.id === req.userId) challenge.to = `${to.emoji}${to.username}`
       else if (to.id === req.userId) challenge.from = `${from.emoji}${from.username}`
 
       // Set status of the challenge
-      if (answers.length === 2) challenge.status = 'completed'
-      else if (userAnswer) challenge.status = 'waiting'
+      if (results.length === 2) challenge.status = 'completed'
+      else if (userResult) challenge.status = 'waiting'
       else challenge.status = 'new'
 
       // Return Points to show in dashboard
-      if (challenge.status === 'completed') challenge.points = userAnswer.points
+      if (challenge.status === 'completed') challenge.points = userResult.points
 
       return challenge
     })
@@ -202,7 +202,7 @@ router.post(
           .json({ errors: [{ param: 'userId', msg: 'You are not part of this challenge.' }] })
 
       // Test if user has already submitted answers to this challenge
-      const userAnswers = challenge.answers.find(answer => answer.user.toString() === req.userId)
+      const userAnswers = challenge.results.find(result => result.user.toString() === req.userId)
       if (userAnswers)
         return res.status(400).json({
           errors: [{ param: 'userId', msg: 'User already submitted answers to this challenge.' }]
@@ -220,10 +220,10 @@ router.post(
       )
 
       // Add answers to challenge answers
-      challenge.answers.push({ user: req.userId, answers, result })
+      challenge.results.push({ user: req.userId, result })
 
       // Give Points and clear up Document if challenge is completed (= both users have submitted answers)
-      if (challenge.answers.length === 2) {
+      if (challenge.results.length === 2) {
         // Get Users from this challenge
         const userFrom = await User.findById(challenge.from.id)
         const userTo = await User.findById(challenge.to.id)
@@ -232,11 +232,11 @@ router.post(
         let userFromPoints = 10
         let userToPoints = 10
 
-        // Get answers for both users
-        const userFromAnswer = challenge.answers.find(
-          answer => answer.user.toString() === userFrom.id
+        // Get results for both users
+        const userFromAnswer = challenge.results.find(
+          result => result.user.toString() === userFrom.id
         )
-        const userToAnswer = challenge.answers.find(answer => answer.user.toString() === userTo.id)
+        const userToAnswer = challenge.results.find(result => result.user.toString() === userTo.id)
 
         // Calculate the number of correct answers for both users
         const userFromResult = userFromAnswer.result.filter(r => r).length
@@ -263,7 +263,6 @@ router.post(
         // Clean Up Challenge Document
         challenge.questions = undefined
         challenge.quizMode = undefined
-        challenge.answers.forEach(answer => (answer.answers = undefined))
       }
 
       // Save challenge to database
@@ -273,7 +272,7 @@ router.post(
         _id: challenge._id,
         from: challenge.from,
         to: challenge.to,
-        answers: challenge.answers.map(({ user, result }) => ({ user, result }))
+        results: challenge.results
       }
 
       // Return challenge

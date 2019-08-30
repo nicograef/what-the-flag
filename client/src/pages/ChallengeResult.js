@@ -35,8 +35,8 @@ const ChallengeResult = ({ loading, user, challenge }) => {
     ? `${challenge.to.emoji}${challenge.to.username}`
     : `${challenge.from.emoji}${challenge.from.username}`
 
-  const userAnswer = challenge.answers.find(answer => answer.user === user._id)
-  const opponentAnswer = challenge.answers.find(answer => answer.user !== user._id)
+  const userResult = challenge.results.find(result => result.user === user._id)
+  const opponentResult = challenge.results.find(result => result.user !== user._id)
 
   return (
     <Fragment>
@@ -59,9 +59,9 @@ const ChallengeResult = ({ loading, user, challenge }) => {
             you
           </Typography>
 
-          {userAnswer ? (
+          {userResult ? (
             <Grid container direction='row' justify='space-between'>
-              {userAnswer.result.map((result, index) =>
+              {userResult.result.map((result, index) =>
                 result ? <Chip key={index} color='secondary' /> : <Chip key={index} />
               )}
             </Grid>
@@ -74,9 +74,9 @@ const ChallengeResult = ({ loading, user, challenge }) => {
           <Typography variant='h6' component='h5' gutterBottom>
             {opponent}
           </Typography>
-          {opponentAnswer ? (
+          {opponentResult ? (
             <Grid container direction='row' justify='space-between'>
-              {opponentAnswer.result.map((result, index) =>
+              {opponentResult.result.map((result, index) =>
                 result ? <Chip key={index} color='secondary' /> : <Chip key={index} />
               )}
             </Grid>
@@ -84,7 +84,7 @@ const ChallengeResult = ({ loading, user, challenge }) => {
             'Has not accepted the challenge yet.'
           )}
         </Paper>
-        {!userAnswer && (
+        {!userResult && (
           <Link style={{ width: '100%' }} component={RouterLink} to='/challenge'>
             <Button fullWidth color='primary' variant='contained'>
               ACCEPT!

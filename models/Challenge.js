@@ -12,16 +12,12 @@ const ChallengeSchema = new Schema({
     ref: 'User',
     required: true
   },
-  answers: [
+  results: [
     {
       user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
-      },
-      answers: {
-        type: Array
-        // required: true
       },
       result: {
         type: Array,
