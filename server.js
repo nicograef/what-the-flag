@@ -13,6 +13,7 @@ connectDB()
 app.use('/api/users', require('./routes/api/users'))
 app.use('/api/auth', require('./routes/api/auth'))
 app.use('/api/challenges', require('./routes/api/challenges'))
+app.use('/api/challengeoftheweek', require('./routes/api/challengeoftheweek'))
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
