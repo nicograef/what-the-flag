@@ -15,6 +15,7 @@ const initialState = {
   authenticated: false,
   token: localStorage.getItem('token'),
   user: null,
+  pointsDifference: 0,
   users: null,
   errors: null,
   loading: true
@@ -38,6 +39,7 @@ export default (state = initialState, action) => {
         ...state,
         authenticated: true,
         user: payload.user,
+        pointsDifference: state.user ? state.user.points - payload.user.points : 0,
         loading: false
       }
     case USERS_LOADED:
@@ -56,6 +58,7 @@ export default (state = initialState, action) => {
         token: null,
         user: null,
         users: null,
+        pointsDifference: 0,
         authenticated: false,
         errors: payload.errors,
         loading: false
@@ -65,9 +68,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         token: null,
-        authenticated: false,
         user: null,
         users: null,
+        pointsDifference: 0,
+        authenticated: false,
         errors: null,
         loading: false
       }

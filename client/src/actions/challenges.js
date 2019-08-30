@@ -56,12 +56,12 @@ export const showChallenge = (challengeId, history) => async dispatch => {
  */
 export const newChallenge = (username, history) => async dispatch => {
   dispatch({ type: SET_CHALLENGES_LOADING })
+  history.push('/challenge')
   try {
     const data = { username }
     const response = await axios.post('/api/challenges', data)
     const challenge = response.data
     dispatch({ type: CHALLENGE_LOADED, payload: { challenge } })
-    history.push('/challenge')
   } catch (err) {
     console.error(err)
   }
@@ -72,12 +72,12 @@ export const newChallenge = (username, history) => async dispatch => {
  */
 export const submitAnswers = (challengeId, answers, history) => async dispatch => {
   dispatch({ type: SET_CHALLENGES_LOADING })
+  history.push('/challenge-result')
   try {
     const data = { answers }
     const response = await axios.post(`/api/challenges/${challengeId}`, data)
     const challenge = response.data
     dispatch({ type: CHALLENGE_LOADED, payload: { challenge } })
-    history.push('/challenge-result')
   } catch (err) {
     console.error(err)
   }

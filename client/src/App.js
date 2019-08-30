@@ -25,7 +25,6 @@ import './App.css'
 function App({ loadUser }) {
   useEffect(() => {
     loadUser()
-    // setTimeout(loadUser, 2000)
   }, [loadUser])
 
   return (
@@ -34,7 +33,7 @@ function App({ loadUser }) {
 
       <PrivateRoute exact path='/profile' component={Profile} />
       <PrivateRoute exact path='/dashboard' component={Dashboard} />
-      <Route exact path='/challenge' component={Challenge} />
+      <PrivateRoute exact path='/challenge' component={Challenge} />
       <PrivateRoute exact path='/challenge-result' component={ChallengeResult} />
       <PrivateRoute exact path='/leaderboard' component={Leaderboard} />
 

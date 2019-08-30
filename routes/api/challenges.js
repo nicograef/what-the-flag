@@ -269,8 +269,15 @@ router.post(
       // Save challenge to database
       await challenge.save()
 
+      const response = {
+        _id: challenge._id,
+        from: challenge.from,
+        to: challenge.to,
+        answers: challenge.answers.map(({ user, result }) => ({ user, result }))
+      }
+
       // Return challenge
-      res.json(challenge)
+      res.json(response)
 
       // Return error if there is
     } catch (err) {

@@ -44,7 +44,7 @@ const Question = ({ question, quizMode, answer, options, onOptionSelected }) => 
         <Typography align='center'>⬆️ {quizMode.toUpperCase().replace(/-/g, ' ')} ⬇️</Typography>
       </Grid> */}
       <Grid item className={timer}>
-        <LinearProgress variant='determinate' value={time} color='secondary' />
+        <LinearProgress variant='determinate' value={time > 100 ? 100 : time} color='secondary' />
       </Grid>
       <Grid
         container

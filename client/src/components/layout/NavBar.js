@@ -1,61 +1,19 @@
 // React and Redux
 import React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 
 // Material UI
-import { AppBar, Toolbar, Typography, Chip, Link, IconButton } from '@material-ui/core'
-import { ArrowBackIos as BackIcon } from '@material-ui/icons'
+import { AppBar, Toolbar, Typography } from '@material-ui/core'
 
-const NavBar = ({ dashboard, challenge, text, questionCounter, user }) => {
-  if (challenge) {
-    return (
-      <AppBar position='static'>
-        <Toolbar>
-          <Typography variant='h6' style={{ flexGrow: 1, lineHeight: 1 }}>
-            Challenge{' '}
-            <Typography variant='caption' component='span' style={{ whiteSpace: 'nowrap' }}>
-              {`🆚${text}`}
-            </Typography>
-          </Typography>
-          <Chip color='secondary' size='small' label={`${questionCounter}`} />
-        </Toolbar>
-      </AppBar>
-    )
-  }
-  if (dashboard)
-    return (
-      <AppBar position='static'>
-        <Toolbar>
-          <Typography variant='h6' style={{ flexGrow: 1 }}>
-            <Link component={RouterLink} color='inherit' to='/profile'>
-              {user.emoji}
-              {user.username}
-            </Link>
-          </Typography>
-          <Link component={RouterLink} color='inherit' to='/leaderboard'>
-            <Chip color='secondary' size='small' label={`${user.points} Points`} />
-          </Link>
-        </Toolbar>
-      </AppBar>
-    )
+// Components
+import NavBarDashboard from './navbars/NavBarDashboard'
+import NavBarChallenge from './navbars/NavBarChallenge'
+import NavBarText from './navbars/NavBarText'
 
-  if (text && text.length > 0)
-    return (
-      <AppBar position='static'>
-        <Toolbar>
-          <IconButton edge='start' color='inherit' aria-label='back to dashboard'>
-            <Link component={RouterLink} color='inherit' to='/dashboard'>
-              <BackIcon />
-            </Link>
-          </IconButton>
-          <Typography variant='h6' style={{ flexGrow: 1 }}>
-            {text}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    )
+const NavBar = ({ dashboard, challenge, text, questionCounter }) => {
+  if (challenge) return <NavBarChallenge text={text} questionCounter={questionCounter} />
+  if (dashboard) return <NavBarDashboard />
+  if (text && text.length > 0) return <NavBarText text={text} />
 
   return (
     <AppBar position='static'>
@@ -71,12 +29,8 @@ const NavBar = ({ dashboard, challenge, text, questionCounter, user }) => {
 NavBar.propTypes = {
   dashboard: PropTypes.bool,
   challenge: PropTypes.bool,
-  user: PropTypes.object
+  text: PropTypes.string,
+  questionCounter: PropTypes.string
 }
 
-const mapStateToProps = state => ({
-  authenticated: state.auth.authenticated,
-  user: state.auth.user
-})
-
-export default connect(mapStateToProps)(NavBar)
+export default NavBar
