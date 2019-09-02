@@ -50,14 +50,11 @@ router.get('/:challengeId', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
   try {
     // Get challenges by user id
-    let challenges = await Challenge.find(
-      { $or: [{ from: req.userId }, { to: req.userId }] },
-      'from to createdAt results',
-      {
-        sort: { createdAt: 'desc' },
-        limit: 20
-      }
-    ).populate('from to', 'username emoji')
+    let challenges = await Challenge.find({ $or: [{ from: req.userId }, { to: req.userId }] })
+      .select('from to createdAt results')
+      .sort({ createdAt: 'desc' })
+      .limit(20)
+      .populate('from to', 'username emoji')
 
     // Create response
     challenges = challenges.map(({ id, from, to, createdAt, results }) => {

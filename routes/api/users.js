@@ -36,12 +36,14 @@ router.get('/:userId', auth, async (req, res) => {
 })
 
 // @route   Get api/users
-// @desc    Get all (other) users
+// @desc    Get all users
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
     // Get User from database
-    const users = await User.find().select('username emoji points')
+    const users = await User.find()
+      .select('username emoji points')
+      .sort({ points: 'desc' })
 
     // Return user profile if exists
     res.json(users)

@@ -5,9 +5,6 @@ const router = express.Router()
 
 const auth = require('../../middleware/auth')
 
-// Import Country Quiz
-const { newQuiz } = require('country-quiz')
-
 const ChallengeOfTheWeek = require('../../models/ChallengeOfTheWeek')
 const User = require('../../models/User')
 
@@ -42,16 +39,17 @@ router.get('/', auth, async (req, res) => {
 router.get('/leaderboard', auth, async (req, res) => {
   try {
     // Test if challenge exists
-    let challenge = await ChallengeOfTheWeek.findOne({}, 'points', {
-      sort: { createdAt: 'desc' }
-    })
+    let challenge = await ChallengeOfTheWeek.findOne()
+      .sort({ createdAt: 'desc' })
+      .select('results')
+      .populate('results.user', 'username emoji')
 
     if (!challenge)
       return res
         .status(404)
         .json({ errors: [{ param: 'challenge', msg: 'There is no challenge for this the week.' }] })
 
-    const leaderboard = challenge.points.sort((a, b) => b.points - a.points)
+    const leaderboard = challenge.results.sort((a, b) => b.points - a.points)
 
     // Return challenge
     res.json(leaderboard)
@@ -88,13 +86,9 @@ router.post(
 
     try {
       // Get latest challenge of the week
-      let challenge = await ChallengeOfTheWeek.findOne(
-        {},
-        {},
-        {
-          sort: { createdAt: 'desc' }
-        }
-      ).populate('points.user', 'username emoji')
+      let challenge = await ChallengeOfTheWeek.findOne()
+        .sort({ createdAt: 'desc' })
+        .populate('results.user', 'username emoji')
 
       // Check challenge exists
       if (!challenge)
@@ -103,7 +97,7 @@ router.post(
         })
 
       // Test if user has already submitted answers to this challenge
-      const userPoints = challenge.points.find(points => points.user._id.toString() === req.userId)
+      const userPoints = challenge.results.find(result => result.user._id.toString() === req.userId)
       if (userPoints)
         return res.status(400).json({
           errors: [{ param: 'userId', msg: 'User already submitted answers to this challenge.' }]
@@ -124,14 +118,14 @@ router.post(
       const points = result.filter(r => r).length
 
       // Add answers to challenge answers
-      challenge.points.push({ user: req.userId, points })
+      challenge.results.push({ user: req.userId, points })
 
       // Save challenge to database
       await challenge.save()
 
       const response = {
         _id: challenge._id,
-        points: challenge.points
+        results: challenge.results
       }
 
       // Return challenge

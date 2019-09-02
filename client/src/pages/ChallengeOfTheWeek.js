@@ -12,28 +12,23 @@ import FullHeightGrid from '../components/layout/FullHeightGrid'
 import NavBar from '../components/layout/NavBar'
 import Spinner from '../components/layout/Spinner'
 
-const Challenge = ({ challenge, user, loading, submitAnswers, history }) => {
+const Challenge = ({ challengeOfTheWeek, loading, submitAnswers, history }) => {
   const [answers, setAnswers] = useState([])
 
-  if (!challenge || loading)
+  if (!challengeOfTheWeek || loading)
     return (
       <FullHeightGrid>
         <Spinner />
       </FullHeightGrid>
     )
 
-  const { questions, quizMode } = challenge
-
-  const userHasChallenged = challenge.from._id === user._id
-
-  const opponent = userHasChallenged
-    ? `${challenge.to.emoji}${challenge.to.username}`
-    : `${challenge.from.emoji}${challenge.from.username}`
+  const { questions, quizMode } = challengeOfTheWeek
 
   const onOptionSelected = selectedOption => {
     setAnswers(previousAnswers => {
       const answers = [...previousAnswers, selectedOption]
-      if (answers.length === questions.length) submitAnswers(challenge._id, answers, history)
+      if (answers.length === questions.length)
+        submitAnswers(challengeOfTheWeek._id, answers, history)
       return answers
     })
   }
@@ -42,7 +37,7 @@ const Challenge = ({ challenge, user, loading, submitAnswers, history }) => {
     <Fragment>
       <NavBar
         challenge
-        text={opponent}
+        text={'of the week'}
         questionCounter={`${answers.length + 1}/${questions.length}`}
       />
       <FullHeightGrid withNavbar>
@@ -57,16 +52,14 @@ const Challenge = ({ challenge, user, loading, submitAnswers, history }) => {
 }
 
 Challenge.propTypes = {
-  challenge: PropTypes.object,
-  user: PropTypes.object,
+  challengeOfTheWeek: PropTypes.object,
   loading: PropTypes.bool.isRequired,
   submitAnswers: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  challenge: state.challenges.challenge,
-  user: state.auth.user,
+  challengeOfTheWeek: state.challenges.challengeOfTheWeek,
   loading: state.challenges.loading
 })
 
