@@ -18,6 +18,8 @@ import Dashboard from './pages/Dashboard'
 import Challenge from './pages/Challenge'
 import ChallengeResult from './pages/ChallengeResult'
 import Leaderboard from './pages/Leaderboard'
+import ChallengeOfTheWeek from './pages/ChallengeOfTheWeek'
+import ChallengeOfTheWeekLeaderboard from './pages/ChallengeOfTheWeekLeaderboard'
 
 // Custom CSS
 import './App.css'
@@ -36,6 +38,12 @@ function App({ loadUser }) {
       <PrivateRoute exact path='/challenge' component={Challenge} />
       <PrivateRoute exact path='/challenge-result' component={ChallengeResult} />
       <PrivateRoute exact path='/leaderboard' component={Leaderboard} />
+      <PrivateRoute exact path='/challengeoftheweek' component={ChallengeOfTheWeek} />
+      <PrivateRoute
+        exact
+        path='/challengeoftheweek-leaderboard'
+        component={ChallengeOfTheWeekLeaderboard}
+      />
 
       <Route exact path='/login' component={Login} />
       <Route exact path='/register' component={Register} />

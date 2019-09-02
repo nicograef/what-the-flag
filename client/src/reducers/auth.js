@@ -65,16 +65,7 @@ export default (state = initialState, action) => {
       }
     case LOGOUT:
       localStorage.removeItem('token')
-      return {
-        ...state,
-        token: null,
-        user: null,
-        users: null,
-        pointsDifference: 0,
-        authenticated: false,
-        errors: null,
-        loading: false
-      }
+      return initialState
     case CLEAR_ERRORS:
       return {
         ...state,

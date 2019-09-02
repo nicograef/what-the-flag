@@ -20,7 +20,7 @@ const Leaderboard = ({ users, user }) => {
                 {index > 2 && index + 1}
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={emoji + username} />
+            <ListItemText primary={`${emoji}${username}`} />
             <Chip color='secondary' size='small' label={`${points} Points`} />
           </ListItem>
         ))}

@@ -14,17 +14,41 @@ const User = require('../../models/User')
 router.get('/', auth, async (req, res) => {
   try {
     // Test if challenge exists
-    let challenge = await ChallengeOfTheWeek.findOne({}, 'questions', {
-      sort: { createdAt: 'desc' }
-    })
+    let challenge = await ChallengeOfTheWeek.findOne().sort({ createdAt: 'desc' })
 
     if (!challenge)
       return res
         .status(404)
         .json({ errors: [{ param: 'challenge', msg: 'There is no challenge for this the week.' }] })
 
+    // Test if user has already submitted answers to this challenge
+    const userPoints = challenge.results.find(result => result.user.toString() === req.userId)
+
+    if (userPoints) {
+      // Populate with username and emoji to create respond for frontend
+      challenge = await ChallengeOfTheWeek.populate(challenge, {
+        path: 'results.user',
+        select: 'username emoji',
+        model: 'User'
+      })
+
+      const leaderboard = challenge.results.sort((a, b) => b.points - a.points)
+
+      const response = {
+        _id: challenge._id,
+        results: leaderboard.map(({ points, user: { username, emoji } }) => ({
+          points,
+          username,
+          emoji
+        }))
+      }
+
+      // Return leaderboard
+      return res.json(response)
+    }
+
     // Return challenge
-    res.json(challenge)
+    res.json({ _id: challenge._id, questions: challenge.questions })
 
     // Return error if there is
   } catch (err) {
@@ -33,7 +57,7 @@ router.get('/', auth, async (req, res) => {
   }
 })
 
-// @route   GET api/challengeoftheweek
+// @route   GET api/challengeoftheweek/leaderboard
 // @desc    Get leaderboard if current challenge of the week
 // @access  Private
 router.get('/leaderboard', auth, async (req, res) => {
@@ -50,6 +74,18 @@ router.get('/leaderboard', auth, async (req, res) => {
         .json({ errors: [{ param: 'challenge', msg: 'There is no challenge for this the week.' }] })
 
     const leaderboard = challenge.results.sort((a, b) => b.points - a.points)
+
+    const response = {
+      _id: challenge._id,
+      results: leaderboard.map(({ points, user: { username, emoji } }) => ({
+        points,
+        username,
+        emoji
+      }))
+    }
+
+    // Return leaderboard
+    res.json(response)
 
     // Return challenge
     res.json(leaderboard)
@@ -88,7 +124,8 @@ router.post(
       // Get latest challenge of the week
       let challenge = await ChallengeOfTheWeek.findOne()
         .sort({ createdAt: 'desc' })
-        .populate('results.user', 'username emoji')
+        .populate()
+      // .populate('results.user', 'username emoji')
 
       // Check challenge exists
       if (!challenge)
@@ -97,7 +134,7 @@ router.post(
         })
 
       // Test if user has already submitted answers to this challenge
-      const userPoints = challenge.results.find(result => result.user._id.toString() === req.userId)
+      const userPoints = challenge.results.find(result => result.user.toString() === req.userId)
       if (userPoints)
         return res.status(400).json({
           errors: [{ param: 'userId', msg: 'User already submitted answers to this challenge.' }]
@@ -123,12 +160,25 @@ router.post(
       // Save challenge to database
       await challenge.save()
 
+      // Populate with username and emoji to create respond for frontend
+      challenge = await ChallengeOfTheWeek.populate(challenge, {
+        path: 'results.user',
+        select: 'username emoji',
+        model: 'User'
+      })
+
+      const leaderboard = challenge.results.sort((a, b) => b.points - a.points)
+
       const response = {
         _id: challenge._id,
-        results: challenge.results
+        results: leaderboard.map(({ points, user: { username, emoji } }) => ({
+          points,
+          username,
+          emoji
+        }))
       }
 
-      // Return challenge
+      // Return leaderboard
       res.json(response)
 
       // Return error if there is

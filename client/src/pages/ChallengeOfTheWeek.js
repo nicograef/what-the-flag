@@ -27,19 +27,16 @@ const Challenge = ({ challengeOfTheWeek, loading, submitAnswers, history }) => {
   const onOptionSelected = selectedOption => {
     setAnswers(previousAnswers => {
       const answers = [...previousAnswers, selectedOption]
+      if (answers.length < questions.length) return answers
       if (answers.length === questions.length)
-        submitAnswers(challengeOfTheWeek._id, answers, history)
-      return answers
+        submitAnswers('challenge of the week', answers, history)
+      return previousAnswers
     })
   }
 
   return (
     <Fragment>
-      <NavBar
-        challenge
-        text={'of the week'}
-        questionCounter={`${answers.length + 1}/${questions.length}`}
-      />
+      <NavBar challenge ofTheWeek questionCounter={`${answers.length + 1}/${questions.length}`} />
       <FullHeightGrid withNavbar>
         <Question
           {...questions[answers.length]}

@@ -33,8 +33,9 @@ const Challenge = ({ challenge, user, loading, submitAnswers, history }) => {
   const onOptionSelected = selectedOption => {
     setAnswers(previousAnswers => {
       const answers = [...previousAnswers, selectedOption]
+      if (answers.length < questions.length) return answers
       if (answers.length === questions.length) submitAnswers(challenge._id, answers, history)
-      return answers
+      return previousAnswers
     })
   }
 

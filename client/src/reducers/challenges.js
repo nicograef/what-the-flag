@@ -3,7 +3,8 @@ import {
   CHALLENGES_LOADED,
   CHALLENGE_OF_THE_WEEK_LOADED,
   CLEAR_CHALLENGE,
-  SET_CHALLENGES_LOADING
+  SET_CHALLENGES_LOADING,
+  LOGOUT
 } from '../actions/types'
 
 const initialState = {
@@ -29,8 +30,6 @@ export default (state = initialState, action) => {
         loading: false
       }
     case CHALLENGES_LOADED:
-      // if (state.challenges && state.challenges[0]._id === payload.challenges[0]._id)
-      //   return { ...state, loading: false }
       return {
         ...state,
         challenges: payload.challenges,
@@ -47,6 +46,8 @@ export default (state = initialState, action) => {
         ...state,
         loading: true
       }
+    case LOGOUT:
+      return initialState
     default:
       return state
   }

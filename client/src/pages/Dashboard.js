@@ -13,7 +13,7 @@ import { Box } from '@material-ui/core'
 // Components
 import NavBar from '../components/layout/NavBar'
 import Spinner from '../components/layout/Spinner'
-import ChallengeOfTheWeek from '../components/dashboard/ChallengeOfTheWeek'
+import ChallengeOfTheWeekCard from '../components/dashboard/ChallengeOfTheWeekCard'
 import Challenges from '../components/dashboard/Challenges'
 import FullHeightGrid from '../components/layout/FullHeightGrid'
 import SelectUserDialog from '../components/dashboard/SelectUserDialog'
@@ -28,13 +28,6 @@ const Dashboard = ({ user, loadUser, newChallenge, history }) => {
 
   if (!user) return <Spinner />
 
-  const challengeOfTheWeekData = {
-    title: 'The European Flags',
-    subtitle: '🏆 Challenge of the Week',
-    description: 'To complete this challenge you need to guess every flag of the european union.',
-    buttonText: 'Coming soon'
-  }
-
   const onSelect = username => {
     setShowSelectUserDialog(false)
     newChallenge(username, history)
@@ -44,16 +37,20 @@ const Dashboard = ({ user, loadUser, newChallenge, history }) => {
     <Fragment>
       <NavBar dashboard />
       <FullHeightGrid withNavbar>
-        <ChallengeOfTheWeek data={challengeOfTheWeekData} />
-        <Box my={2}>
-          <FancyButton onClick={e => setShowSelectUserDialog(true)}>Challenge a Friend</FancyButton>
-          <SelectUserDialog
-            open={showSelectUserDialog}
-            onClose={e => setShowSelectUserDialog(false)}
-            onSelect={onSelect}
-          />
+        <Box style={{ width: '100%' }}>
+          <ChallengeOfTheWeekCard />
         </Box>
-        <Challenges history={history} />
+        <Box my={4}>
+          <FancyButton onClick={e => setShowSelectUserDialog(true)}>Challenge a Friend</FancyButton>
+        </Box>
+        <SelectUserDialog
+          open={showSelectUserDialog}
+          onClose={e => setShowSelectUserDialog(false)}
+          onSelect={onSelect}
+        />
+        <Box style={{ flexGrow: 1, width: '100%' }}>
+          <Challenges history={history} />
+        </Box>
       </FullHeightGrid>
     </Fragment>
   )

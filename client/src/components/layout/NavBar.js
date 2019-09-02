@@ -10,8 +10,9 @@ import NavBarDashboard from './navbars/NavBarDashboard'
 import NavBarChallenge from './navbars/NavBarChallenge'
 import NavBarText from './navbars/NavBarText'
 
-const NavBar = ({ dashboard, challenge, text, questionCounter }) => {
-  if (challenge) return <NavBarChallenge text={text} questionCounter={questionCounter} />
+const NavBar = ({ dashboard, challenge, ofTheWeek, text, questionCounter }) => {
+  if (challenge)
+    return <NavBarChallenge ofTheWeek={ofTheWeek} text={text} questionCounter={questionCounter} />
   if (dashboard) return <NavBarDashboard />
   if (text && text.length > 0) return <NavBarText text={text} />
 
@@ -29,6 +30,7 @@ const NavBar = ({ dashboard, challenge, text, questionCounter }) => {
 NavBar.propTypes = {
   dashboard: PropTypes.bool,
   challenge: PropTypes.bool,
+  ofTheWeek: PropTypes.bool,
   text: PropTypes.string,
   questionCounter: PropTypes.string
 }

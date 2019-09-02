@@ -17,7 +17,7 @@ import {
  * Gets user data of currently logged in user (authenticated by the token) from database.
  */
 export const loadUser = () => async dispatch => {
-  if (localStorage.token) setAuthToken(localStorage.token)
+  if (localStorage.getItem('token')) setAuthToken(localStorage.getItem('token'))
 
   dispatch({ type: SET_AUTH_LOADING })
   try {
