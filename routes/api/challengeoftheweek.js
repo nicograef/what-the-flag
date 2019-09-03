@@ -160,6 +160,11 @@ router.post(
       // Save challenge to database
       await challenge.save()
 
+      // Calculate and add Points to User; 10 Points for every correct answer
+      const user = await User.findById(req.userId)
+      user.points += points * 10
+      user.save()
+
       // Populate with username and emoji to create respond for frontend
       challenge = await ChallengeOfTheWeek.populate(challenge, {
         path: 'results.user',
