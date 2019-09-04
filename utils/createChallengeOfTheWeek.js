@@ -1,5 +1,5 @@
 // Mongoose
-const connectDB = require('./config/db')
+const connectDB = require('./db')
 const ChallengeOfTheWeek = require('./models/ChallengeOfTheWeek')
 
 // Import Country Quiz

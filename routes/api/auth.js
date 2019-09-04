@@ -6,7 +6,6 @@ const { check, validationResult } = require('express-validator')
 // Security Import
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const config = require('config')
 
 // Import auth Middleware
 const auth = require('../../middleware/auth')
@@ -78,8 +77,7 @@ router.post(
 
       // Return JsonWebToken to further authenticate user
       const payload = { userId: user.id }
-      const secret = config.get('jwtSecret')
-      const token = jwt.sign(payload, secret, { expiresIn: '7d' })
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' })
 
       res.json({ token })
 
