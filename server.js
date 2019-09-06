@@ -1,10 +1,12 @@
 const express = require('express')
+const compression = require('compression')
 const connectDB = require('./utils/db')
 const path = require('path')
 
 // Init Express with JSON Middleware
 const app = express()
 app.use(express.json())
+app.use(compression())
 
 // Init MongoDB
 connectDB()
