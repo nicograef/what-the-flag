@@ -13,7 +13,7 @@ import { Card, CardActions, CardContent, Button, Typography, Link } from '@mater
 const ChallengeOfTheWeekCard = ({ loading, challengeOfTheWeek, getChallengeOfTheWeek }) => {
   useEffect(() => {
     if (!challengeOfTheWeek) getChallengeOfTheWeek()
-  }, [challengeOfTheWeek])
+  }, [challengeOfTheWeek, getChallengeOfTheWeek])
 
   if (!challengeOfTheWeek && loading)
     return (

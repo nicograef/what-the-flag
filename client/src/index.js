@@ -14,6 +14,9 @@ import theme from './theme'
 // Import App
 import App from './App'
 
+// Import Service Worker
+import * as serviceWorker from './serviceWorker'
+
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
@@ -23,3 +26,5 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById('root')
 )
+
+serviceWorker.register()

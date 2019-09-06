@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
@@ -13,14 +13,7 @@ import FullHeightGrid from '../components/layout/FullHeightGrid'
 import Navbar from '../components/layout/NavBar'
 
 const Profile = ({ user, logout }) => {
-  const [userData, setUserData] = useState({
-    username: user.username,
-    email: user.email,
-    emoji: user.emoji
-  })
-  const { username, email, emoji } = userData
-
-  const onChange = e => setUserData({ ...userData, [e.target.name]: e.target.value })
+  const { username, email, emoji } = user
 
   return (
     <Fragment>
