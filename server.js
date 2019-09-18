@@ -2,13 +2,13 @@ const express = require('express')
 const compression = require('compression')
 const connectDB = require('./utils/db')
 const path = require('path')
-const https = require('./middleware/https')
+// const https = require('./middleware/https')
 
 // Init Express with Middleware
 const app = express()
 app.use(express.json())
 app.use(compression())
-app.use(https)
+// app.use(https)
 
 // Init MongoDB
 connectDB()
@@ -30,5 +30,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Starting server
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
