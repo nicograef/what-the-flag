@@ -1,13 +1,15 @@
 const express = require('express')
+const helmet = require('helmet')
 const compression = require('compression')
 const connectDB = require('./utils/db')
 const path = require('path')
-// const https = require('./middleware/https')
+const https = require('./middleware/https')
 
 // Init Express with Middleware
 const app = express()
 app.use(express.json())
 app.use(compression())
+// app.use(helmet())
 // app.use(https)
 
 // Init MongoDB
@@ -20,7 +22,7 @@ app.use('/api/challenges', require('./routes/api/challenges'))
 app.use('/api/challengeoftheweek', require('./routes/api/challengeoftheweek'))
 
 // Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
   // Set static folder
   app.use(express.static('client/build'))
 
