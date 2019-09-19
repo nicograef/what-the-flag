@@ -4,6 +4,12 @@ services:
   app:
     build: .
     container_name: app
+    image: wtf-app
+    env_file: .env
+    environment:
+      - NODE_ENV=$NODE_ENV
+      - MONGODB_URI=$MONGODB_URI
+      - JWT_SECRET=$JWT_SECRET
     restart: always
     ports:
-      - '3000:3000'
+      - '80:3000'
