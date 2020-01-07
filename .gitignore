@@ -2,7 +2,7 @@
 node_modules
 
 # admin stuff
-cleanup.js
+# cleanup.js
 
 # Builds
 build
