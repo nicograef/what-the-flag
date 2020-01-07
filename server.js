@@ -22,7 +22,7 @@ app.use('/api/challenges', require('./routes/api/challenges'))
 app.use('/api/challengeoftheweek', require('./routes/api/challengeoftheweek'))
 
 // Serve static assets in production
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'production') {
   // Set static folder
   app.use(express.static('client/build'))
 
@@ -32,5 +32,5 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'developme
 }
 
 // Starting server
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
