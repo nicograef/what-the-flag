@@ -4,6 +4,9 @@
   "description": "A Quizduell-like game with questions about countries, capitals and flags.",
   "private": true,
   "main": "server.js",
+  "engines": {
+    "node": "16"
+  },
   "scripts": {
     "start": "node server.js",
     "server": "nodemon -r dotenv/config server",
