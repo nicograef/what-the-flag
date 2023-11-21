@@ -2,8 +2,8 @@
 import React from 'react'
 
 // Material UI
-import { Typography } from '@material-ui/core'
-import { FavoriteRounded as FavIcon } from '@material-ui/icons'
+import { Typography } from '@mui/material'
+import { FavoriteRounded as FavIcon } from '@mui/icons-material'
 
 const Copyright = () => (
   <Typography variant='body2' color='textSecondary' align='center'>

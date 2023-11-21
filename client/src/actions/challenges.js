@@ -53,9 +53,9 @@ export const getChallengeOfTheWeek = () => async dispatch => {
 /**
  *
  */
-export const showChallenge = (challengeId, history) => async dispatch => {
+export const showChallenge = (challengeId, navigate) => async dispatch => {
   dispatch({ type: SET_CHALLENGES_LOADING })
-  history.push('/challenge-result')
+  navigate('/challenge-result')
   try {
     const response = await axios.get(`/api/challenges/${challengeId}`)
     const challenge = response.data
@@ -68,9 +68,9 @@ export const showChallenge = (challengeId, history) => async dispatch => {
 /**
  *
  */
-export const newChallenge = (username, history) => async dispatch => {
+export const newChallenge = (username, navigate) => async dispatch => {
   dispatch({ type: SET_CHALLENGES_LOADING })
-  history.push('/challenge')
+  navigate('/challenge')
   try {
     const data = { username }
     const response = await axios.post('/api/challenges', data)
@@ -84,11 +84,11 @@ export const newChallenge = (username, history) => async dispatch => {
 /**
  *
  */
-export const submitAnswers = (challengeId, answers, history) => async dispatch => {
+export const submitAnswers = (challengeId, answers, navigate) => async dispatch => {
   dispatch({ type: SET_CHALLENGES_LOADING })
 
   if (challengeId === 'challenge of the week') {
-    history.push('/challengeoftheweek-leaderboard')
+    navigate('/challengeoftheweek-leaderboard')
     try {
       const data = { answers }
       const response = await axios.post('/api/challengeoftheweek', data)
@@ -98,7 +98,7 @@ export const submitAnswers = (challengeId, answers, history) => async dispatch =
       console.error(err)
     }
   } else {
-    history.push('/challenge-result')
+    navigate('/challenge-result')
     try {
       const data = { answers }
       const response = await axios.post(`/api/challenges/${challengeId}`, data)

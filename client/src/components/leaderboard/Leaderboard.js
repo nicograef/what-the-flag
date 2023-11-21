@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Material UI
-import { List, ListItem, ListItemText, ListItemAvatar, Avatar, Chip } from '@material-ui/core'
+import { List, ListItem, ListItemText, ListItemAvatar, Avatar, Chip } from '@mui/material'
 
 const Leaderboard = ({ users, user }) => {
   return (

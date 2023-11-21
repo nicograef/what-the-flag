@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Material UI
-import { AppBar, Toolbar, Typography, Chip, Link } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Chip, Link } from '@mui/material'
 
 const NavBarDashboard = ({ user, pointsDifference }) => {
   const [points, setPoints] = useState(user.points - pointsDifference)

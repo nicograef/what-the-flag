@@ -1,6 +1,6 @@
 // React and Redux
 import React, { Fragment, useState, useEffect } from 'react'
-import { Redirect, Link as RouterLink } from 'react-router-dom'
+import { Navigate, Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import { login, clearErrors } from '../actions/auth'
 
 // Material UI
-import { Button, Link, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Button, Link, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 
 // Components
 import Spinner from '../components/layout/Spinner'
@@ -36,7 +36,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
   }
 
   // If user is (already) logged in (i.e. has a valid token), redirect to /dashboard
-  if (authenticated) return <Redirect to='/dashboard' />
+  if (authenticated) return <Navigate to='/dashboard' replace="true" />
 
   return (
     <FullHeightGrid>

@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { getChallengeOfTheWeek } from '../../actions/challenges'
 
 // Material UI
-import { Card, CardActions, CardContent, Button, Typography, Link } from '@material-ui/core'
+import { Card, CardActions, CardContent, Button, Typography, Link } from '@mui/material'
 
 const ChallengeOfTheWeekCard = ({ loading, challengeOfTheWeek, getChallengeOfTheWeek }) => {
   useEffect(() => {

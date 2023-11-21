@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI
-import { AppBar, Toolbar, Typography, Chip } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Chip } from '@mui/material'
 
 const NavBarChallenge = ({ ofTheWeek, text, questionCounter }) => (
   <AppBar position='static'>

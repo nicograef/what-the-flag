@@ -4,8 +4,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 // Material UI
-import { AppBar, Toolbar, Typography, Link, IconButton } from '@material-ui/core'
-import { ArrowBackIos as BackIcon } from '@material-ui/icons'
+import { AppBar, Toolbar, Typography, Link, IconButton } from '@mui/material'
+import { ArrowBackIos as BackIcon } from '@mui/icons-material'
 
 const NavBarText = ({ text }) => (
   <AppBar position='static'>

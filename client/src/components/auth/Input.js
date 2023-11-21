@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/material'
 
 const Input = ({ email, username, value, variant, error, onChange }) => {
   let name, label, type, autoComplete

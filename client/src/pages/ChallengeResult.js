@@ -8,8 +8,8 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 
 // Material UI
-import { makeStyles } from '@material-ui/core/styles'
-import { Typography, Paper, Link, Button, Grid, Chip, Box } from '@material-ui/core'
+import { makeStyles } from '@mui/styles'
+import { Typography, Paper, Link, Button, Grid, Chip, Box } from '@mui/material'
 
 // Components
 import FullHeightGrid from '../components/layout/FullHeightGrid'

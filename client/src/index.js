@@ -1,30 +1,39 @@
 // React
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom/client";
 
 // Redux
-import { Provider } from 'react-redux'
-import store from './store'
+import { Provider } from "react-redux";
+import store from "./store";
 
 // Material UI
-import CssBaseline from '@material-ui/core/CssBaseline'
-import ThemeProvider from '@material-ui/styles/ThemeProvider'
-import theme from './theme'
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 
 // Import App
-import App from './App'
+import App from "./App";
 
-// Import Service Worker
-import * as serviceWorker from './serviceWorker'
+const rootElement = document.getElementById("root");
+const root = ReactDOM.createRoot(rootElement);
 
-ReactDOM.render(
+root.render(
+  <ThemeProvider theme={theme}>
+    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+    <CssBaseline />
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ThemeProvider>
+);
+
+/* ReactDOM.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Provider store={store}>
       <App />
     </Provider>
   </ThemeProvider>,
-  document.getElementById('root')
-)
-
-serviceWorker.register()
+  document.getElementById("root")
+);
+ */

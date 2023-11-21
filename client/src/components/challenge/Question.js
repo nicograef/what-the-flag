@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import { makeStyles } from '@material-ui/core/styles'
-import { Grid, Card, Button, Typography, LinearProgress } from '@material-ui/core'
+import { makeStyles } from '@mui/styles'
+import { Grid, Card, Button, Typography, LinearProgress } from '@mui/material'
 
 const Question = ({ question, quizMode, answer, options, onOptionSelected }) => {
   const { container, button, imgQuestion, timer } = useStyles()

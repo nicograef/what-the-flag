@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI
-import { AppBar, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Toolbar, Typography } from '@mui/material'
 
 // Components
 import NavBarDashboard from './navbars/NavBarDashboard'

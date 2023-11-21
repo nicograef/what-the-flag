@@ -1,6 +1,6 @@
 // React and Redux
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
@@ -19,8 +19,8 @@ const SplashScreen = ({ loading, authenticated }) => {
         <Copyright />
       </FullHeightGrid>
     )
-  if (authenticated) return <Redirect to='/dashboard' />
-  return <Redirect to='/login' />
+  if (authenticated) return <Navigate to='/dashboard' replace="true" />
+  return <Navigate to='/login' />
 }
 
 SplashScreen.propTypes = {

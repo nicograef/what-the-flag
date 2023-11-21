@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { getUsers } from '../../actions/auth'
 
 // Material UI
-import { Dialog, List, ListItem, ListItemText, TextField } from '@material-ui/core'
+import { Dialog, List, ListItem, ListItemText, TextField } from '@mui/material'
 import Spinner from '../layout/Spinner'
 
 function SelectUserDialog({ open, onClose, onSelect, user, users, getUsers }) {

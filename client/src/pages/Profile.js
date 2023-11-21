@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { logout } from '../actions/auth'
 
 // Material UI
-import { Typography, Button, Chip, Box } from '@material-ui/core'
+import { Typography, Button, Chip, Box } from '@mui/material'
 
 // Components
 import FullHeightGrid from '../components/layout/FullHeightGrid'

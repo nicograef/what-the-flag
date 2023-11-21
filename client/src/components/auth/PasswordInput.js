@@ -3,11 +3,11 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 // Material UI
-import { TextField, InputAdornment, IconButton } from '@material-ui/core'
+import { TextField, InputAdornment, IconButton } from '@mui/material'
 import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 
 const PasswordInput = ({ register, value, error, onChange }) => {
   const [showPassword, setShowPassword] = useState(false)

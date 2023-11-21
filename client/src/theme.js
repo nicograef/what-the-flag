@@ -1,8 +1,8 @@
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import { deepPurple, amber } from '@material-ui/core/colors'
+import { createTheme } from '@mui/material/styles'
+import { deepPurple, amber } from '@mui/material/colors'
 
 // Custom theme for this app
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: deepPurple,
     secondary: amber
