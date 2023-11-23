@@ -1,15 +1,32 @@
-version: '3'
+version: "3"
 
 services:
   app:
-    build: .
-    container_name: app
     image: wtf-app
+    restart: always
+    container_name: app
     env_file: .env
     environment:
       - NODE_ENV=$NODE_ENV
       - MONGODB_URI=$MONGODB_URI
       - JWT_SECRET=$JWT_SECRET
-    restart: always
     ports:
-      - '80:3000'
+      - "80:5000"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:7
+    restart: always
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGODB_USER
+      MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
+      MONGO_INITDB_DATABASE: wtf
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  mongodb-data:

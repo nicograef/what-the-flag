@@ -8,6 +8,3 @@
 
 A Quizduell-like game with questions about countries, capitals and flags.
 
----
-
-Play the original/old version at https://nicograef.de/wtf
