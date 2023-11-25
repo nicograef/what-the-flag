@@ -6,9 +6,6 @@
   "author": "Nico Gräf",
   "license": "MIT",
   "main": "server.js",
-  "engines": {
-    "node": "20"
-  },
   "scripts": {
     "start": "node -r dotenv/config server",
     "format": "prettier --write .",
