@@ -1,0 +1,11 @@
+{
+  "name": "what-the-flag",
+  "version": "0.0.0",
+  "author": "Nico Gräf",
+  "license": "MIT",
+  "scripts": {
+    "build-client": "npm i -f --prefix client && npm run build --prefix client",
+    "build-server": "npm i --prefix server",
+    "heroku-postbuild": "npm run build-client && npm run build-servre"
+  }
+}

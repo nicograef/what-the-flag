@@ -15,7 +15,6 @@
     "dev": "node -r dotenv/config server",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings=0",
-    "heroku-postbuild": "npm i -f --prefix client && npm run build --prefix client",
     "create-challenge-of-the-week": "node -r dotenv/config ./utils/createChallengeOfTheWeek.js"
   },
   "dependencies": {
