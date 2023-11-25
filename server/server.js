@@ -24,8 +24,8 @@ app.use('/api/challengeoftheweek', require('./routes/api/challengeoftheweek'))
 // Set static folder
 app.use(express.static('client-app'))
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+app.get('*', (_, res) => {
+  res.sendFile(path.resolve(__dirname, 'client-app', 'index.html'))
 })
 
 // Starting server
