@@ -1,28 +1,23 @@
 {
   "name": "what-the-flag",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "A Quizduell-like game with questions about countries, capitals and flags.",
   "private": true,
+  "author": "Nico Gräf",
+  "license": "MIT",
   "main": "server.js",
   "type": "module",
   "engines": {
     "node": "20"
   },
   "scripts": {
-    "start": "node server.js",
-    "server": "nodemon -r dotenv/config server",
-    "client": "npm start --prefix client",
-    "build": "npm run build --prefix client",
+    "start": "node server",
+    "dev": "node -r dotenv/config server",
+    "format": "prettier --write .",
+    "lint": "eslint . --max-warnings=0",
     "heroku-postbuild": "npm i -f --prefix client && npm run build --prefix client",
     "create-challenge-of-the-week": "node -r dotenv/config ./utils/createChallengeOfTheWeek.js"
   },
-  "keywords": [
-    "quiz",
-    "game",
-    "countries"
-  ],
-  "author": "Nico Gräf",
-  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "compression": "^1.7.4",
@@ -35,7 +30,10 @@
   },
   "devDependencies": {
     "dotenv": "^16.3.1",
-    "nodemon": "^3.0.1",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "prettier": "^3.1.0"
   }
 }

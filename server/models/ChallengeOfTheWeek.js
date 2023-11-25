@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const ChallengeOfTheWeekSchema = new Schema({
   results: [
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
         required: true,
       },
       points: {
@@ -24,6 +24,6 @@ const ChallengeOfTheWeekSchema = new Schema({
     default: Date.now,
     immutable: true,
   },
-});
+})
 
-module.exports = mongoose.model("ChallengeOfTheWeek", ChallengeOfTheWeekSchema);
+module.exports = mongoose.model('ChallengeOfTheWeek', ChallengeOfTheWeekSchema)

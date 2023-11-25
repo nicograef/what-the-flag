@@ -1,22 +1,22 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const ChallengeSchema = new Schema({
   from: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true,
   },
   to: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true,
   },
   results: [
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
         required: true,
       },
       result: {
@@ -41,6 +41,6 @@ const ChallengeSchema = new Schema({
     default: Date.now,
     immutable: true,
   },
-});
+})
 
-module.exports = mongoose.model("Challenge", ChallengeSchema);
+module.exports = mongoose.model('Challenge', ChallengeSchema)

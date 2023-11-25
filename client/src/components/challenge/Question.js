@@ -1,37 +1,31 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-import { makeStyles } from "@mui/styles";
-import { Grid, Card, Button, Typography, LinearProgress } from "@mui/material";
+import { makeStyles } from '@mui/styles'
+import { Grid, Card, Button, Typography, LinearProgress } from '@mui/material'
 
-const Question = ({
-  question,
-  quizMode,
-  answer,
-  options,
-  onOptionSelected,
-}) => {
-  const { container, button, imgQuestion, timer } = useStyles();
+const Question = ({ question, quizMode, answer, options, onOptionSelected }) => {
+  const { container, button, imgQuestion, timer } = useStyles()
 
-  const [time, setTime] = useState(110); // 110 is a workaround here
+  const [time, setTime] = useState(110) // 110 is a workaround here
 
   useEffect(() => {
-    setTime(110); // 110 is a workaround here
+    setTime(110) // 110 is a workaround here
 
     function updateTime() {
-      setTime((time) => time - 1);
+      setTime((time) => time - 1)
     }
 
-    const interval = setInterval(updateTime, 200);
+    const interval = setInterval(updateTime, 200)
     return () => {
-      clearInterval(interval);
-    };
-  }, [question]);
+      clearInterval(interval)
+    }
+  }, [question])
 
-  const toFlag = /to-flag/.test(quizMode);
-  const fromFlag = /flag-to/.test(quizMode);
+  const toFlag = /to-flag/.test(quizMode)
+  const fromFlag = /flag-to/.test(quizMode)
 
-  if (time < 0) onOptionSelected(null);
+  if (time < 0) onOptionSelected(null)
 
   return (
     <Grid
@@ -44,10 +38,18 @@ const Question = ({
       <Grid item>
         {fromFlag ? (
           <Card>
-            <img className={imgQuestion} src={question} alt={answer} />
+            <img
+              className={imgQuestion}
+              src={question}
+              alt={answer}
+            />
           </Card>
         ) : (
-          <Typography variant="h4" component="h2" align="center">
+          <Typography
+            variant="h4"
+            component="h2"
+            align="center"
+          >
             {question}
           </Typography>
         )}
@@ -55,7 +57,10 @@ const Question = ({
       {/* <Grid item>
         <Typography align='center'>⬆️ {quizMode.toUpperCase().replace(/-/g, ' ')} ⬇️</Typography>
       </Grid> */}
-      <Grid item className={timer}>
+      <Grid
+        item
+        className={timer}
+      >
         <LinearProgress
           variant="determinate"
           value={time > 100 ? 100 : time}
@@ -69,12 +74,12 @@ const Question = ({
         justify="center"
         className={container}
       >
-        {options.map((option, index) =>
+        {options.map((option) =>
           toFlag ? (
             <Card
               key={option}
               className={button}
-              onClick={(e) => onOptionSelected(option)}
+              onClick={() => onOptionSelected(option)}
               style={{ backgroundImage: `url(${option})` }}
             >
               &nbsp;
@@ -83,7 +88,7 @@ const Question = ({
             <Button
               key={option}
               className={button}
-              onClick={(e) => onOptionSelected(option)}
+              onClick={() => onOptionSelected(option)}
               fullWidth
               size="large"
               variant="outlined"
@@ -94,8 +99,8 @@ const Question = ({
         )}
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -105,23 +110,23 @@ const useStyles = makeStyles((theme) => ({
   button: {
     flexGrow: 1,
     marginBottom: theme.spacing(1),
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
-    "&:last-child": {
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    '&:last-child': {
       marginBottom: 0,
     },
   },
   imgQuestion: {
-    width: "100%",
+    width: '100%',
     maxHeight: 250,
-    objectFit: "cover",
-    verticalAlign: "middle",
+    objectFit: 'cover',
+    verticalAlign: 'middle',
   },
   timer: {
     padding: theme.spacing(2),
   },
-}));
+}))
 
 Question.propTypes = {
   question: PropTypes.string.isRequired,
@@ -129,6 +134,6 @@ Question.propTypes = {
   answer: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onOptionSelected: PropTypes.func.isRequired,
-};
+}
 
-export default Question;
+export default Question
