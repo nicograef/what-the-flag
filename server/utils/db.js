@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-export class Database {
-  async connect() {
+class Database {
+  static async connect() {
     try {
       await mongoose.connect(process.env.MONGODB_URI)
       console.log('MongoDB connected!')
@@ -11,3 +11,5 @@ export class Database {
     }
   }
 }
+
+module.exports = { Database }

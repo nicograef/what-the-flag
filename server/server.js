@@ -1,9 +1,9 @@
-import express from 'express'
-// import helmet from 'helmet'
-import compression from 'compression'
-import database from './utils/db'
-import path from 'path'
-// import https from './middleware/https'
+const express = require('express')
+// const helmet = require('helmet')
+const compression = require('compression')
+const { Database } = require('./utils/db')
+const path = require('path')
+// const https = require('./middleware/https')
 
 // Init Express with Middleware
 const app = express()
@@ -13,7 +13,7 @@ app.use(compression())
 // app.use(https)
 
 // Init MongoDB
-database.connect()
+Database.connect()
 
 // Define Routes
 app.use('/api/users', require('./routes/api/users'))
@@ -22,7 +22,7 @@ app.use('/api/challenges', require('./routes/api/challenges'))
 app.use('/api/challengeoftheweek', require('./routes/api/challengeoftheweek'))
 
 // Set static folder
-app.use(express.static('client/build'))
+app.use(express.static('../client/build'))
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))

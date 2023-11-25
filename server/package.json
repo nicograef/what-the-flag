@@ -6,13 +6,11 @@
   "author": "Nico Gräf",
   "license": "MIT",
   "main": "server.js",
-  "type": "module",
   "engines": {
     "node": "20"
   },
   "scripts": {
-    "start": "node server",
-    "dev": "node -r dotenv/config server",
+    "start": "node -r dotenv/config server",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings=0",
     "create-challenge-of-the-week": "node -r dotenv/config ./utils/createChallengeOfTheWeek.js"
