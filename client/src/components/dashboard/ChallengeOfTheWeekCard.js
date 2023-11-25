@@ -1,84 +1,114 @@
 // React and Redux
-import React, { useEffect, Fragment } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { useEffect, Fragment } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 // Actions
-import { getChallengeOfTheWeek } from '../../actions/challenges'
+import { getChallengeOfTheWeek } from "../../actions/challenges";
 
 // Material UI
-import { Card, CardActions, CardContent, Button, Typography, Link } from '@mui/material'
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+  Link,
+} from "@mui/material";
 
-const ChallengeOfTheWeekCard = ({ loading, challengeOfTheWeek, getChallengeOfTheWeek }) => {
+const ChallengeOfTheWeekCard = ({
+  loading,
+  challengeOfTheWeek,
+  getChallengeOfTheWeek,
+}) => {
   useEffect(() => {
-    if (!challengeOfTheWeek) getChallengeOfTheWeek()
-  }, [challengeOfTheWeek, getChallengeOfTheWeek])
+    if (!challengeOfTheWeek) getChallengeOfTheWeek();
+  }, [challengeOfTheWeek, getChallengeOfTheWeek]);
 
   if (!challengeOfTheWeek && loading)
     return (
       <Card>
         <CardContent>
-          <Typography variant='overline' color='textSecondary'>
-            <span role='img' aria-label='trophy'>
+          <Typography variant="overline" color="textSecondary">
+            <span role="img" aria-label="trophy">
               🏆
-            </span>{' '}
+            </span>{" "}
             Challenge of the Week
           </Typography>
-          <Typography variant='body2' component='p' align='center' style={{ width: '100%' }}>
+          <Typography
+            variant="body2"
+            component="p"
+            align="center"
+            style={{ width: "100%" }}
+          >
             loading...
           </Typography>
         </CardContent>
       </Card>
-    )
+    );
 
-  if (!challengeOfTheWeek && !loading) return <Fragment />
+  if (!challengeOfTheWeek && !loading) return <Fragment />;
 
   return (
     <Card>
       {challengeOfTheWeek.results ? (
         <CardContent>
-          <Typography variant='overline' color='textSecondary' component='h3' align='center'>
-            Challenge of the Week{' '}
-            <span role='img' aria-label='check'>
+          <Typography
+            variant="overline"
+            color="textSecondary"
+            component="h3"
+            align="center"
+          >
+            Challenge of the Week{" "}
+            <span role="img" aria-label="check">
               ✅
             </span>
           </Typography>
         </CardContent>
       ) : (
         <CardContent>
-          <Typography variant='overline' color='textSecondary' component='h5' align='center'>
-            <span role='img' aria-label='trophy'>
+          <Typography
+            variant="overline"
+            color="textSecondary"
+            component="h5"
+            align="center"
+          >
+            <span role="img" aria-label="trophy">
               🏆
-            </span>{' '}
-            Challenge of the Week{' '}
-            <span role='img' aria-label='trophy'>
+            </span>{" "}
+            Challenge of the Week{" "}
+            <span role="img" aria-label="trophy">
               🏆
             </span>
           </Typography>
-          <Typography variant='h5' component='h3' gutterBottom>
+          <Typography variant="h5" component="h3" gutterBottom>
             20 Mixed Questions
           </Typography>
-          <Typography variant='body2' component='p'>
-            Start this challenge of the week with 20 questions of all quiz modes and compare your
-            score with the what-the-flag-community.
+          <Typography variant="body2" component="p">
+            Start this challenge of the week with 20 questions of all quiz modes
+            and compare your score with the what-the-flag-community.
           </Typography>
         </CardContent>
       )}
       <CardActions>
         {challengeOfTheWeek.results ? (
           <Link
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             component={RouterLink}
-            to='/challengeoftheweek-leaderboard'
+            to="/challengeoftheweek-leaderboard"
           >
             <Button fullWidth>See Leaderboard</Button>
           </Link>
         ) : (
-          <Link style={{ width: '100%' }} component={RouterLink} to='/challengeoftheweek'>
-            <Button color='secondary' fullWidth>
+          <Link
+            style={{ width: "100%" }}
+            component={RouterLink}
+            to="/challengeoftheweek"
+          >
+            <Button color="secondary" fullWidth>
               START&nbsp;
-              <span role='img' aria-label='start'>
+              <span role="img" aria-label="start">
                 🚀
               </span>
             </Button>
@@ -86,21 +116,20 @@ const ChallengeOfTheWeekCard = ({ loading, challengeOfTheWeek, getChallengeOfThe
         )}
       </CardActions>
     </Card>
-  )
-}
+  );
+};
 
 ChallengeOfTheWeekCard.propTypes = {
   loading: PropTypes.bool.isRequired,
   challengeOfTheWeek: PropTypes.object,
-  getChallengeOfTheWeek: PropTypes.func.isRequired
-}
+  getChallengeOfTheWeek: PropTypes.func.isRequired,
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   loading: state.challenges.loading,
-  challengeOfTheWeek: state.challenges.challengeOfTheWeek
-})
+  challengeOfTheWeek: state.challenges.challengeOfTheWeek,
+});
 
-export default connect(
-  mapStateToProps,
-  { getChallengeOfTheWeek }
-)(ChallengeOfTheWeekCard)
+export default connect(mapStateToProps, { getChallengeOfTheWeek })(
+  ChallengeOfTheWeekCard,
+);

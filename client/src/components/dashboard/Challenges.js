@@ -80,5 +80,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { getChallenges, showChallenge })(
-  Challenges
+  Challenges,
 );

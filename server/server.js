@@ -1,9 +1,9 @@
-const express = require("express");
-const helmet = require("helmet");
-const compression = require("compression");
-const connectDB = require("./utils/db");
-const path = require("path");
-const https = require("./middleware/https");
+import express from "express";
+import helmet from "helmet";
+import compression from "compression";
+import database from "./utils/db";
+import path from "path";
+import https from "./middleware/https";
 
 // Init Express with Middleware
 const app = express();
@@ -13,7 +13,7 @@ app.use(compression());
 // app.use(https)
 
 // Init MongoDB
-connectDB();
+database.connect();
 
 // Define Routes
 app.use("/api/users", require("./routes/api/users"));

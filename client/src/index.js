@@ -24,7 +24,7 @@ root.render(
     <Provider store={store}>
       <App />
     </Provider>
-  </ThemeProvider>
+  </ThemeProvider>,
 );
 
 /* ReactDOM.render(

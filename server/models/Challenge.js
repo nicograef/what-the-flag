@@ -1,46 +1,46 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const ChallengeSchema = new Schema({
   from: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   to: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   results: [
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: "User",
+        required: true,
       },
       result: {
         type: Array,
-        required: true
+        required: true,
       },
       points: {
-        type: Number
-      }
-    }
+        type: Number,
+      },
+    },
   ],
   questions: {
-    type: Array
+    type: Array,
     // required: true
   },
   quizMode: {
-    type: String
+    type: String,
     // required: true
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    immutable: true
-  }
-})
+    immutable: true,
+  },
+});
 
-module.exports = mongoose.model('Challenge', ChallengeSchema)
+module.exports = mongoose.model("Challenge", ChallengeSchema);

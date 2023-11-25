@@ -1,18 +1,18 @@
-import React, { Fragment } from 'react'
-import PropTypes from 'prop-types'
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 
-import { Button } from '@mui/material'
+import { Button } from "@mui/material";
 
 const Options = ({ options }) => {
   return (
     <Fragment>
-      {options.map(option => (
+      {options.map((option) => (
         <img src={option} />
       ))}
     </Fragment>
-  )
-}
+  );
+};
 
-Options.propTypes = {}
+Options.propTypes = {};
 
-export default Options
+export default Options;

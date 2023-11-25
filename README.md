@@ -7,4 +7,3 @@
 </div>
 
 A Quizduell-like game with questions about countries, capitals and flags.
-
