@@ -5,20 +5,17 @@
   "private": true,
   "author": "Nico Gräf",
   "license": "MIT",
-  "main": "server.js",
   "scripts": {
-    "start": "node -r dotenv/config server",
-    "format": "prettier --write .",
-    "lint": "eslint . --max-warnings=0",
+    "start": "node -r dotenv/config src/index.js",
+    "format": "prettier src --write",
+    "lint": "eslint src --max-warnings=0",
     "create-challenge-of-the-week": "node -r dotenv/config ./utils/createChallengeOfTheWeek.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "compression": "^1.7.4",
     "country-quiz": "^0.5.2",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1"
   },

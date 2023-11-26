@@ -1,9 +1,13 @@
 const mongoose = require('mongoose')
 
 class Database {
-  static async connect() {
+  constructor(mongoDbUri) {
+    this.mongoDbUri = mongoDbUri
+  }
+
+  async connect() {
     try {
-      await mongoose.connect(process.env.MONGODB_URI)
+      await mongoose.connect(this.mongoDbUri)
       console.log('MongoDB connected!')
     } catch (err) {
       console.error('MongoDB Error:', err.message)
