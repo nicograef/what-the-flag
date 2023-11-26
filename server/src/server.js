@@ -23,6 +23,9 @@ class Server {
     this.app.use('/api/challengeoftheweek', challengeOfTheWeekRouter(validateJwt))
 
     this.app.use(express.static(path.join(__dirname, '..', 'client-app')))
+    this.app.get('*', (_, res) => {
+      res.sendFile(path.join(__dirname, '..', 'client-app', 'index.html'))
+    })
   }
 
   start(port) {
