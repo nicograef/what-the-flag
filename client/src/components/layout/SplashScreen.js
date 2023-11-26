@@ -1,13 +1,9 @@
-// React and Redux
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-// Components
 import Copyright from './Copyright'
-
-// Import Logo / Image
 import Logo from './questionmark.gif'
 import FullHeightGrid from './FullHeightGrid'
 
@@ -39,6 +35,7 @@ SplashScreen.propTypes = {
 
 const mapStateToProps = (state) => ({
   loading: state.auth.loading,
+  authenticated: state.auth.authenticated,
 })
 
 export default connect(mapStateToProps)(SplashScreen)

@@ -19,7 +19,7 @@ const FancyButton = ({ children, ...rest }) => {
 }
 
 FancyButton.propTypes = {
-  children: PropTypes.array,
+  children: PropTypes.any,
 }
 
 const useStyles = makeStyles((theme) => ({
