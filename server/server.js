@@ -1,8 +1,8 @@
+const path = require('path')
 const express = require('express')
-// const helmet = require('helmet')
 const compression = require('compression')
 const { Database } = require('./utils/db')
-const path = require('path')
+// const helmet = require('helmet')
 // const https = require('./middleware/https')
 
 // Init Express with Middleware
@@ -22,11 +22,7 @@ app.use('/api/challenges', require('./routes/api/challenges'))
 app.use('/api/challengeoftheweek', require('./routes/api/challengeoftheweek'))
 
 // Set static folder
-app.use(express.static('client-app'))
-
-app.get('*', (_, res) => {
-  res.sendFile(path.resolve(__dirname, 'client-app', 'index.html'))
-})
+app.use(express.static(path.join(__dirname, 'client-app')))
 
 // Starting server
 const PORT = process.env.PORT || 5000

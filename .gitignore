@@ -5,7 +5,8 @@ node_modules
 # cleanup.js
 
 # Builds
-build
+build/
+client-app/
 
 #Logs
 *.log
