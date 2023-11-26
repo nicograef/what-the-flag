@@ -7,7 +7,7 @@ function usersRouter(validateJwt) {
   const router = express.Router()
   const controller = new UsersController()
 
-  router.get('/', validateJwt, controller.getAllUsers)
+  router.get('/', validateJwt, controller.getAllUsers.bind(controller))
 
   router.post(
     '/',
@@ -16,7 +16,7 @@ function usersRouter(validateJwt) {
       check('email', 'Please enter a valid email.').isEmail(),
       check('password', 'Please enter a password with 6 or more characters.').isLength({ min: 6 }),
     ],
-    controller.createUser,
+    controller.createUser.bind(controller),
   )
 
   return router
