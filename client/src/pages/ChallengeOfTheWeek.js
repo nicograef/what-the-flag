@@ -1,17 +1,14 @@
-// React and Redux
 import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-// Actions
-import { submitAnswers } from '../store/actions/challenges'
-
-// Components
 import Question from '../components/challenge/Question'
 import FullHeightGrid from '../components/layout/FullHeightGrid'
 import NavBar from '../components/layout/NavBar'
 import Spinner from '../components/layout/Spinner'
+
+import { submitAnswers } from '../store/actions/challenges'
 
 const Challenge = ({ challengeOfTheWeek, loading, submitAnswers }) => {
   const [answers, setAnswers] = useState([])
@@ -30,7 +27,7 @@ const Challenge = ({ challengeOfTheWeek, loading, submitAnswers }) => {
     setAnswers((previousAnswers) => {
       const answers = [...previousAnswers, selectedOption]
       if (answers.length < questions.length) return answers
-      if (answers.length === questions.length) submitAnswers('challenge of the week', answers, navigate)
+      if (answers.length === questions.length) submitAnswers('challenge-of-the-week', answers, navigate)
       return previousAnswers
     })
   }
