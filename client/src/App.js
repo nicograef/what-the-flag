@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import { loadUser } from './actions/auth'
 
 // Components
-import PrivateRoute from './components/routing/PrivateRout'
+import PrivateRoute from './components/routing/PrivateRoute'
 import SplashScreen from './components/layout/SplashScreen'
 import Login from './pages/Login'
 import Register from './pages/Register'

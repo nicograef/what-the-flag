@@ -16,7 +16,7 @@ const PrivateRoute = ({ children, authenticated }) => {
 
 PrivateRoute.propTypes = {
   authenticated: PropTypes.bool.isRequired,
-  children: PropTypes.array,
+  children: PropTypes.any,
 }
 
 const mapStateToProps = (state) => ({
