@@ -7,9 +7,11 @@
     "node": "20"
   },
   "scripts": {
+    "start": "npm run start --prefix server",
     "build-client": "npm i -f --prefix client && npm run build --prefix client",
     "build-server": "npm i --prefix server",
-    "heroku-postbuild": "npm run build-client && cp -r client/build server/client-app && npm run build-server",
-    "format-and-lint": "npm run format --prefix client && npm run lint --prefix client && npm run format --prefix server && npm run lint --prefix server"
+    "build": "npm run build-client && cp -r client/build server/client-app && npm run build-server",
+    "format-and-lint": "npm run format --prefix client && npm run lint --prefix client && npm run format --prefix server && npm run lint --prefix server",
+    "heroku-postbuild": "npm run build"
   }
 }
