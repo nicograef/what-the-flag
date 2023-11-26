@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material/styles'
 
 import App from './App'
 import theme from './theme'
-import store from './store'
+import store from './store/store'
 
 const rootElement = document.getElementById('root')
 const root = ReactDOM.createRoot(rootElement)

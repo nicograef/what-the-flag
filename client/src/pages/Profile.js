@@ -6,7 +6,7 @@ import { Typography, Button, Chip, Box } from '@mui/material'
 import FullHeightGrid from '../components/layout/FullHeightGrid'
 import Navbar from '../components/layout/NavBar'
 
-import { logout } from '../actions/auth'
+import { logout } from '../store/actions/auth'
 
 const Profile = ({ user, logout }) => {
   const { username, email, emoji } = user

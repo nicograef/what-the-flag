@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 // Actions
-import { loadUser } from '../actions/auth'
-import { newChallenge } from '../actions/challenges'
+import { loadUser } from '../store/actions/auth'
+import { newChallenge } from '../store/actions/challenges'
 
 // Material UI
 import { Box } from '@mui/material'

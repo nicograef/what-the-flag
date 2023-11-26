@@ -6,7 +6,7 @@ import { Button, Link, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 // Actions
-import { login, clearErrors } from '../actions/auth'
+import { login, clearErrors } from '../store/actions/auth'
 
 // Components
 import Spinner from '../components/layout/Spinner'

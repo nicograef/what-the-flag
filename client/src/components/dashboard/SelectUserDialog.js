@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Actions
-import { getUsers } from '../../actions/auth'
+import { getUsers } from '../../store/actions/auth'
 
 // Material UI
 import { Dialog, List, ListItem, ListItemText, TextField } from '@mui/material'

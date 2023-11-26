@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Paper, Chip } from '@mui/material'
 import { HourglassEmpty as WaitingIcon, NewReleases as NewIcon } from '@mui/icons-material'
 
-import { getChallenges, showChallenge } from '../../actions/challenges'
+import { getChallenges, showChallenge } from '../../store/actions/challenges'
 
 const Challenges = ({ loading, challenges, getChallenges, showChallenge }) => {
   const navigate = useNavigate()

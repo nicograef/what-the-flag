@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 // Actions
-import { submitAnswers } from '../actions/challenges'
+import { submitAnswers } from '../store/actions/challenges'
 
 // Components
 import Question from '../components/challenge/Question'

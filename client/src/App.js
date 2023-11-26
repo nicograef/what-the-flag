@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 // Actions
-import { loadUser } from './actions/auth'
+import { loadUser } from './store/actions/auth'
 
 // Components
 import PrivateRoute from './components/routing/PrivateRoute'

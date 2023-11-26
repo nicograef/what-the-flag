@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 // Actions
-import { getChallengeOfTheWeek } from '../../actions/challenges'
+import { getChallengeOfTheWeek } from '../../store/actions/challenges'
 
 // Material UI
 import { Card, CardActions, CardContent, Button, Typography, Link } from '@mui/material'

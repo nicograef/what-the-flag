@@ -11,7 +11,7 @@ import Input from '../components/auth/Input'
 import FullHeightGrid from '../components/layout/FullHeightGrid'
 import Copyright from '../components/layout/Copyright'
 
-import { register, clearErrors } from '../actions/auth'
+import { register, clearErrors } from '../store/actions/auth'
 
 const Register = ({ loading, authenticated, errors, register, clearErrors }) => {
   const classes = useStyles()
