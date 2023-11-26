@@ -1,16 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
-// Actions
-import { logout } from '../actions/auth'
-
-// Material UI
 import { Typography, Button, Chip, Box } from '@mui/material'
 
-// Components
 import FullHeightGrid from '../components/layout/FullHeightGrid'
 import Navbar from '../components/layout/NavBar'
+
+import { logout } from '../actions/auth'
 
 const Profile = ({ user, logout }) => {
   const { username, email, emoji } = user

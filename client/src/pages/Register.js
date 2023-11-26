@@ -1,22 +1,17 @@
-// React and Redux
 import React, { Fragment, useState, useEffect } from 'react'
 import { Navigate, Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
-// Actions
-import { register, clearErrors } from '../actions/auth'
-
-// Material UI
 import { makeStyles } from '@mui/styles'
 import { Button, Typography, Link } from '@mui/material'
 
-// Components
 import Spinner from '../components/layout/Spinner'
 import PasswordInput from '../components/auth/PasswordInput'
 import Input from '../components/auth/Input'
 import FullHeightGrid from '../components/layout/FullHeightGrid'
 import Copyright from '../components/layout/Copyright'
+
+import { register, clearErrors } from '../actions/auth'
 
 const Register = ({ loading, authenticated, errors, register, clearErrors }) => {
   const classes = useStyles()
@@ -39,7 +34,7 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
     register(username, email, password)
   }
 
-  // If user is (already) registered or logged in (i.e. has a valid token), redirect to /dashboard
+  // redirect authenticated users
   if (authenticated)
     return (
       <Navigate
@@ -59,7 +54,7 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
           component="h1"
           variant="h5"
         >
-          Sign Up
+          Sign up to play against friends!
         </Typography>
         <Input
           username
@@ -90,14 +85,14 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
               variant="contained"
               color="primary"
             >
-              Sign Up
+              Sign up
             </Button>
+            <p></p>
             <Link
               component={RouterLink}
               to="/"
             >
               <Button
-                size="small"
                 fullWidth
                 variant="text"
               >
@@ -114,6 +109,7 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
           </Fragment>
         )}
       </form>
+      <p></p>
       <Copyright />
     </FullHeightGrid>
   )

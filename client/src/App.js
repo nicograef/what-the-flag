@@ -9,7 +9,6 @@ import { loadUser } from './actions/auth'
 
 // Components
 import PrivateRoute from './components/routing/PrivateRoute'
-import SplashScreen from './components/layout/SplashScreen'
 import Login from './pages/Login'
 import Register from './pages/Register'
 
@@ -39,12 +38,6 @@ function App({ loadUser }) {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          exact
-          path="/"
-          element={<SplashScreen />}
-        />
-
         <Route
           exact
           path="/profile"
@@ -110,8 +103,7 @@ function App({ loadUser }) {
         />
 
         <Route
-          exact
-          path="/login"
+          path="*"
           element={<Login />}
         />
         <Route

@@ -20,6 +20,7 @@ export const loadUser = () => async (dispatch) => {
   if (localStorage.getItem('token')) setAuthToken(localStorage.getItem('token'))
 
   dispatch({ type: SET_AUTH_LOADING })
+
   try {
     const response = await axios.get('/api/auth')
     const user = response.data
@@ -38,6 +39,7 @@ export const loadUser = () => async (dispatch) => {
  */
 export const getUsers = () => async (dispatch) => {
   dispatch({ type: SET_AUTH_LOADING })
+
   try {
     const response = await axios.get('/api/users')
     const users = response.data
@@ -59,6 +61,7 @@ export const getUsers = () => async (dispatch) => {
  */
 export const login = (username, password) => async (dispatch) => {
   dispatch({ type: SET_AUTH_LOADING })
+
   try {
     const data = { username, password }
     const response = await axios.post('/api/auth', data)

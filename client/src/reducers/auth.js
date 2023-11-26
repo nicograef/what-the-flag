@@ -18,7 +18,7 @@ const initialState = {
   pointsDifference: 0,
   users: null,
   errors: null,
-  loading: true,
+  loading: false,
 }
 
 const authReducer = (state = initialState, action) => {

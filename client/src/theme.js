@@ -1,7 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 import { deepPurple, amber } from '@mui/material/colors'
 
-// Custom theme for this app
 const theme = createTheme({
   palette: {
     primary: deepPurple,

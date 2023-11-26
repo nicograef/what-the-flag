@@ -1,18 +1,13 @@
-// React and Redux
+import moment from 'moment'
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-// Moment Js
-import moment from 'moment'
-
-// Actions
-import { getChallenges, showChallenge } from '../../actions/challenges'
-
-// Material UI
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Paper, Chip } from '@mui/material'
 import { HourglassEmpty as WaitingIcon, NewReleases as NewIcon } from '@mui/icons-material'
+
+import { getChallenges, showChallenge } from '../../actions/challenges'
 
 const Challenges = ({ loading, challenges, getChallenges, showChallenge }) => {
   const navigate = useNavigate()
