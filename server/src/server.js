@@ -7,7 +7,8 @@ const { challengesRouter } = require('./api/challenges')
 const { challengeOfTheWeekRouter } = require('./api/challengeoftheweek')
 
 class Server {
-  constructor(jwtMiddleware) {
+  constructor(environment, jwtMiddleware) {
+    this.environment = environment
     this.jwtMiddleware = jwtMiddleware
     this.app = express()
   }
@@ -22,10 +23,12 @@ class Server {
     this.app.use('/api/challenges', challengesRouter(validateJwt))
     this.app.use('/api/challengeoftheweek', challengeOfTheWeekRouter(validateJwt))
 
-    this.app.use(express.static(path.join(__dirname, '..', 'client-app')))
-    this.app.get('*', (_, res) => {
-      res.sendFile(path.join(__dirname, '..', 'client-app', 'index.html'))
-    })
+    if (this.environment === 'production') {
+      this.app.use(express.static(path.join(__dirname, '..', 'client-app')))
+      this.app.get('*', (_, res) => {
+        res.sendFile(path.join(__dirname, '..', 'client-app', 'index.html'))
+      })
+    }
   }
 
   start(port) {
