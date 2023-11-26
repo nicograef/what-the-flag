@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 
-const { usersRouter } = require('./api/users')
+const { usersRouter } = require('./api/users/users-router')
 const { authRouter } = require('./api/auth')
 const { challengesRouter } = require('./api/challenges')
 const { challengeOfTheWeekRouter } = require('./api/challengeoftheweek')

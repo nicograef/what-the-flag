@@ -85,6 +85,7 @@ export const login = (username, password) => async (dispatch) => {
  */
 export const register = (username, email, password) => async (dispatch) => {
   dispatch({ type: SET_AUTH_LOADING })
+
   try {
     const data = { username, email, password }
     const response = await axios.post('/api/users', data)
