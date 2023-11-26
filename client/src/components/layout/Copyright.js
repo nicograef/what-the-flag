@@ -1,9 +1,5 @@
-// React
 import React from 'react'
-
-// Material UI
 import { Typography } from '@mui/material'
-import { FavoriteRounded as FavIcon } from '@mui/icons-material'
 
 const Copyright = () => (
   <Typography
@@ -11,12 +7,15 @@ const Copyright = () => (
     color="textSecondary"
     align="center"
   >
-    Built with{' '}
-    <FavIcon
-      fontSize="small"
-      style={{ marginBottom: '-0.25rem' }}
-    />{' '}
-    by Nico Gräf
+    Built by{' '}
+    <a
+      href="https://nicograef.com"
+      target="_blank"
+      rel="noreferrer"
+      style={{ color: 'inherit' }}
+    >
+      Nico Gräf
+    </a>
   </Typography>
 )
 export default Copyright

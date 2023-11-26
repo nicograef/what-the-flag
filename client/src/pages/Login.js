@@ -1,15 +1,12 @@
-// React and Redux
 import React, { Fragment, useState, useEffect } from 'react'
 import { Navigate, Link as RouterLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Button, Link, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 
 // Actions
 import { login, clearErrors } from '../actions/auth'
-
-// Material UI
-import { Button, Link, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 
 // Components
 import Spinner from '../components/layout/Spinner'
@@ -35,14 +32,15 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
     login(username, password)
   }
 
-  // If user is (already) logged in (i.e. has a valid token), redirect to /dashboard
-  if (authenticated)
+  // redirect authenticated users
+  if (authenticated) {
     return (
       <Navigate
         to="/dashboard"
         replace="true"
       />
     )
+  }
 
   return (
     <FullHeightGrid>
@@ -55,7 +53,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
           component="h1"
           variant="h5"
         >
-          Log In
+          Login to play!
         </Typography>
         <Input
           username
@@ -79,15 +77,16 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
               variant="contained"
               color="primary"
             >
-              Go!
+              Login
             </Button>
+
+            <p></p>
 
             <Link
               component={RouterLink}
               to="/register"
             >
               <Button
-                size="small"
                 fullWidth
                 variant="text"
               >
@@ -104,6 +103,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
           </Fragment>
         )}
       </form>
+      <p></p>
       <Copyright />
     </FullHeightGrid>
   )
