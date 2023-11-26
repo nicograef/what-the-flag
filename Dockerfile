@@ -2,21 +2,8 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install Server Dependencies
-COPY package*.json /app/
-RUN npm ci
+COPY . app/
 
-# Install Client Dependencies
-COPY client/package*.json /app/client/
-RUN cd client && npm ci -f
+RUN npm run build
 
-# Build Client App
-COPY client/ /app/client/
-RUN npm run build && cd ..
-
-# Copy Server Source Code
-COPY . /app/
-
-# Start server
-EXPOSE 3000
 CMD ["npm", "start"]
