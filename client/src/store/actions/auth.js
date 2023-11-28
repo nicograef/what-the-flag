@@ -69,11 +69,8 @@ export const login = (username, password) => async (dispatch) => {
     dispatch({ type: LOGIN_SUCCESS, payload: { token } })
   } catch (err) {
     if (err.response) {
-      const errorsFromBackend = err.response.data.errors
-      const errors = errorsFromBackend.reduce((errors, { param, msg }) => {
-        errors[param] = msg
-        return errors
-      }, {})
+      const errorFromBackend = err.response.data.error
+      const errors = { [errorFromBackend.param]: errorFromBackend.msg }
       dispatch({ type: LOGIN_FAIL, payload: { errors } })
     } else console.error(err)
   }
@@ -96,11 +93,8 @@ export const register = (username, email, password) => async (dispatch) => {
     dispatch({ type: REGISTER_SUCCESS, payload: { token } })
   } catch (err) {
     if (err.response) {
-      const errorsFromBackend = err.response.data.errors
-      const errors = errorsFromBackend.reduce((errors, { param, msg }) => {
-        errors[param] = msg
-        return errors
-      }, {})
+      const errorFromBackend = err.response.data.error
+      const errors = { [errorFromBackend.param]: errorFromBackend.msg }
       dispatch({ type: REGISTER_FAIL, payload: { errors } })
     } else console.error(err)
   }

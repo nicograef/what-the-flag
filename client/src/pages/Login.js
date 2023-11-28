@@ -5,10 +5,8 @@ import { connect } from 'react-redux'
 import { Button, Link, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
-// Actions
 import { login, clearErrors } from '../store/actions/auth'
 
-// Components
 import Spinner from '../components/layout/Spinner'
 import Input from '../components/auth/Input'
 import PasswordInput from '../components/auth/PasswordInput'
@@ -73,6 +71,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
             <Button
               type="submit"
               className={classes.submit}
+              disabled={!username || !password}
               fullWidth
               variant="contained"
               color="primary"

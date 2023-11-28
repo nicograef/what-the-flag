@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 FullHeightGrid.propTypes = {
   withNavbar: PropTypes.bool,
-  children: PropTypes.array,
+  children: PropTypes.any,
 }
 
 export default FullHeightGrid

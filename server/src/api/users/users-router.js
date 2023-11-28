@@ -1,23 +1,18 @@
-const express = require('express')
-const { check } = require('express-validator')
+const { Router } = require('express')
 
 const { UsersController } = require('./users-controller')
+const { UsersService } = require('./users-service')
+const { UsersPersistence } = require('./users-persistence')
 
-function usersRouter(validateJwt) {
-  const router = express.Router()
-  const controller = new UsersController()
+function usersRouter(jwtService) {
+  const router = Router()
+  const persistence = new UsersPersistence()
+  const service = new UsersService(persistence, jwtService)
+  const controller = new UsersController(service)
 
-  router.get('/', validateJwt, controller.getAllUsers.bind(controller))
+  router.get('/', jwtService.validateJwt.bind(jwtService), controller.getUsers.bind(controller))
 
-  router.post(
-    '/',
-    [
-      check('username', 'Please enter a username with 4 or more characters.').isLength({ min: 4 }),
-      check('email', 'Please enter a valid email.').isEmail(),
-      check('password', 'Please enter a password with 6 or more characters.').isLength({ min: 6 }),
-    ],
-    controller.createUser.bind(controller),
-  )
+  router.post('/', controller.postUser.bind(controller))
 
   return router
 }

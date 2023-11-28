@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-class JwtMiddleware {
+class JwtService {
   constructor(secret) {
     this.secret = secret
   }
@@ -22,8 +22,12 @@ class JwtMiddleware {
       res.status(401).json({ msg: 'Token is not valid.' })
     }
   }
+
+  createNewToken(payload) {
+    return jwt.sign(payload, this.secret, { expiresIn: '1d' })
+  }
 }
 
 module.exports = {
-  JwtMiddleware,
+  JwtService,
 }

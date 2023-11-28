@@ -81,9 +81,10 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
             <Button
               type="submit"
               className={classes.submit}
-              fullWidth
+              disabled={!username || !email || !password}
               variant="contained"
               color="primary"
+              fullWidth
             >
               Sign up
             </Button>
