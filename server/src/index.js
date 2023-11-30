@@ -1,5 +1,6 @@
 const { Database } = require('./database/database')
 const { JwtService } = require('./jwt-service')
+const { PasswordService } = require('./password-service')
 const { Server } = require('./server')
 
 const SERVER_PORT = process.env.PORT || 5000
@@ -13,7 +14,7 @@ async function main() {
 
   const jwtMiddleware = new JwtService(JWT_SECRET)
 
-  const server = new Server(jwtMiddleware)
+  const server = new Server(jwtMiddleware, PasswordService)
   server.init()
   server.start(SERVER_PORT)
 }

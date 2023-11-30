@@ -71,7 +71,7 @@ const Login = ({ authenticated, loading, errors, login, clearErrors }) => {
             <Button
               type="submit"
               className={classes.submit}
-              disabled={!username || !password}
+              disabled={username.length === 0 || password.length === 0}
               fullWidth
               variant="contained"
               color="primary"

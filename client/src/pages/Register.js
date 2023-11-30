@@ -81,7 +81,7 @@ const Register = ({ loading, authenticated, errors, register, clearErrors }) => 
             <Button
               type="submit"
               className={classes.submit}
-              disabled={!username || !email || !password}
+              disabled={username.length === 0 || email.length === 0 || password.length === 0}
               variant="contained"
               color="primary"
               fullWidth
