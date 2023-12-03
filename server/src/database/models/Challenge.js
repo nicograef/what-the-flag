@@ -30,9 +30,11 @@ const ChallengeSchema = new Schema({
   ],
   questions: {
     type: Array,
+    required: true,
   },
   quizMode: {
     type: String,
+    required: true,
   },
   createdAt: {
     type: Date,

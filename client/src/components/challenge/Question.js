@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { makeStyles } from '@mui/styles'
 import { Grid, Card, Button, Typography, LinearProgress } from '@mui/material'
 
-const Question = ({ question, quizMode, answer, options, onOptionSelected }) => {
+const Question = ({ question, quizMode, options, onOptionSelected }) => {
   const { container, button, imgQuestion, timer } = useStyles()
 
   const [time, setTime] = useState(110) // 110 is a workaround here
@@ -41,7 +41,7 @@ const Question = ({ question, quizMode, answer, options, onOptionSelected }) => 
             <img
               className={imgQuestion}
               src={question}
-              alt={answer}
+              alt={'Flag'}
             />
           </Card>
         ) : (
@@ -54,9 +54,7 @@ const Question = ({ question, quizMode, answer, options, onOptionSelected }) => 
           </Typography>
         )}
       </Grid>
-      {/* <Grid item>
-        <Typography align='center'>⬆️ {quizMode.toUpperCase().replace(/-/g, ' ')} ⬇️</Typography>
-      </Grid> */}
+
       <Grid
         item
         className={timer}
@@ -131,7 +129,6 @@ const useStyles = makeStyles((theme) => ({
 Question.propTypes = {
   question: PropTypes.string.isRequired,
   quizMode: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onOptionSelected: PropTypes.func.isRequired,
 }

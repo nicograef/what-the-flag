@@ -1,24 +1,21 @@
-// Mongoose
-const connectDB = require('./db')
-const ChallengeOfTheWeek = require('../models/ChallengeOfTheWeek')
-
-// Import Country Quiz
 const { newQuiz } = require('country-quiz')
 
+const { Database } = require('../database/database')
+const ChallengeOfTheWeek = require('../database/models/ChallengeOfTheWeek')
+
 async function createChallengeOfTheWeek() {
-  await connectDB()
+  const MONGODB_URI = process.env.MONGODB_URI
+
+  const database = new Database(MONGODB_URI)
+  await database.connect()
+
   const quiz = newQuiz('mixed', 20)
 
-  // Create a new Challenge of the Week
   const newChallenge = new ChallengeOfTheWeek({
     ...quiz,
   })
 
-  // Save challenge to database
   await newChallenge.save()
-  console.log(newChallenge)
-
-  process.exit()
 }
 
 createChallengeOfTheWeek()

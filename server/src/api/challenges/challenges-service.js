@@ -18,6 +18,13 @@ class ChallengesService {
     const userWasChallenged = userId === challenge.to.id.toString()
     if (!userChallenged && !userWasChallenged) throw new ChallengeNotBelongsToUserError()
 
+    // Remove answers from questions because otherwise the user could cheat (see answers in frontend)
+    challenge.questions = challenge.questions.map(({ question, options, quizMode }) => ({
+      question,
+      options,
+      quizMode,
+    }))
+
     return challenge
   }
 
@@ -57,6 +64,13 @@ class ChallengesService {
 
     const challengeWithUsers = await this.persistence.getChallenge(newChallenge.id)
 
+    // Remove answers from questions because otherwise the user could cheat (see answers in frontend)
+    challengeWithUsers.questions = challengeWithUsers.questions.map(({ question, options, quizMode }) => ({
+      question,
+      options,
+      quizMode,
+    }))
+
     return challengeWithUsers
   }
 
@@ -81,10 +95,6 @@ class ChallengesService {
     // calculate points for each users and save in db
     if (challenge.results.length === 2) {
       await this.calculatePointsUpdateUsersAndUpdateChallenge(challenge)
-
-      // remove data that is not needed anymore to save space in database
-      challenge.questions = undefined
-      challenge.quizMode = undefined
     }
 
     await this.persistence.updateChallenge(challenge)

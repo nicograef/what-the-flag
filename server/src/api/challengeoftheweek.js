@@ -49,8 +49,15 @@ function challengeOfTheWeekRouter(jwtService) {
         return res.json(response)
       }
 
+      // Remove answers from questions because otherwise the user could cheat (see answers in frontend)
+      const questions = challenge.questions.map(({ question, options, quizMode }) => ({
+        question,
+        options,
+        quizMode,
+      }))
+
       // Return challenge
-      res.json({ _id: challenge._id, questions: challenge.questions })
+      res.json({ _id: challenge._id, questions })
 
       // Return error if there is
     } catch (err) {
@@ -59,7 +66,7 @@ function challengeOfTheWeekRouter(jwtService) {
     }
   })
 
-  // Get leaderboard if current challenge of the week
+  // Get leaderboard of current challenge of the week
   router.get('/leaderboard', jwtService.validateJwt.bind(jwtService), async (req, res) => {
     try {
       // Test if challenge exists
@@ -98,7 +105,7 @@ function challengeOfTheWeekRouter(jwtService) {
 
   // Submit answers to current challenge of the week
   router.post('/', [jwtService.validateJwt.bind(jwtService)], async (req, res) => {
-    if (!req.body.answers || !Array.isArray(req.body.ansers)) {
+    if (!req.body.answers || !Array.isArray(req.body.answers)) {
       res.status(400).json({ errors: [{ param: 'answers', msg: 'Please provide answers to this challenge.' }] })
       return
     }
