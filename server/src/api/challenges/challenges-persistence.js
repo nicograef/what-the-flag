@@ -32,7 +32,7 @@ class ChallengesPersistence {
   async updateUserPoints(userId, newPoints) {
     const user = await User.findById(userId)
     user.points += newPoints
-    user.save()
+    await user.save()
   }
 }
 

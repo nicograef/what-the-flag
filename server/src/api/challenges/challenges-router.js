@@ -11,17 +11,20 @@ function challengesRouter(jwtService) {
   const service = new ChallengesService(persistence)
   const controller = new ChallengesController(service)
 
+  // all routes need authentication
+  router.use(jwtService.validateJwt.bind(jwtService))
+
   // Get challenges of logged in user
-  router.get('/', jwtService.validateJwt.bind(jwtService), controller.getChallenges.bind(controller))
+  router.get('/', controller.getChallenges.bind(controller))
 
   // Create a new challenge
-  router.post('/', jwtService.validateJwt.bind(jwtService), controller.postChallenges.bind(controller))
+  router.post('/', controller.postChallenges.bind(controller))
 
   // Get challenge by id
-  router.get('/:challengeId', jwtService.validateJwt.bind(jwtService), controller.getChallenge.bind(controller))
+  router.get('/:challengeId', controller.getChallenge.bind(controller))
 
   // Submit answers to a challenge
-  router.post('/:challengeId', jwtService.validateJwt.bind(jwtService), controller.postChallenge.bind(controller))
+  router.post('/:challengeId', controller.postChallenge.bind(controller))
 
   return router
 }

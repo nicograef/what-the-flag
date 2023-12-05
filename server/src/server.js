@@ -4,7 +4,7 @@ const express = require('express')
 const { usersRouter } = require('./api/users/users-router')
 const { authRouter } = require('./api/auth/auth-router')
 const { challengesRouter } = require('./api/challenges/challenges-router')
-const { challengeOfTheWeekRouter } = require('./api/challengeoftheweek')
+const { challengeOfTheWeekRouter } = require('./api/challenge-of-the-week/challenge-of-the-week-router')
 
 class Server {
   constructor(jwtService, passwordService) {
