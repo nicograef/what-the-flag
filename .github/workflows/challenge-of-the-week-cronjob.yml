@@ -1,0 +1,30 @@
+name: Create challenge of the week
+
+on:
+  schedule:
+    # https://crontab.guru/#0_2_*_*_*
+    - cron: "0 2 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  create_challenge_of_the_week:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+
+      - name: Install server dependencies
+        run: npm ci
+        working-directory: server
+
+      - name: Create challenge of the week
+        run: node server/src/utils/create-challenge-of-the-week.js
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}

@@ -11,11 +11,14 @@ async function createChallengeOfTheWeek() {
 
   const quiz = newQuiz('mixed', 20)
 
-  const newChallenge = new ChallengeOfTheWeek({
+  const newChallenge = await ChallengeOfTheWeek.create({
     ...quiz,
   })
 
-  await newChallenge.save()
+  console.log('New Challenge of the week created successfully!')
+  console.log('Challenge ID:', newChallenge._id)
+
+  process.exit(0)
 }
 
 createChallengeOfTheWeek()
