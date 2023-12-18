@@ -13,7 +13,7 @@ class ChallengesController {
   // Get challenge by id
   async getChallenge(req, res) {
     try {
-      const challenge = await this.service.getChallengeByIdAndUser(req.params.challengeId, req.userId)
+      const challenge = await this.service.getChallengeByIdAndUserWithoutAnswers(req.params.challengeId, req.userId)
 
       res.json(challenge)
     } catch (err) {

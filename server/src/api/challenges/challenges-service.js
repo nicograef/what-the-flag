@@ -18,6 +18,12 @@ class ChallengesService {
     const userWasChallenged = userId === challenge.to.id.toString()
     if (!userChallenged && !userWasChallenged) throw new ChallengeNotBelongsToUserError()
 
+    return challenge
+  }
+
+  async getChallengeByIdAndUserWithoutAnswers(challengeId, userId) {
+    const challenge = await this.getChallengeByIdAndUser(challengeId, userId)
+
     // Remove answers from questions because otherwise the user could cheat (see answers in frontend)
     challenge.questions = challenge.questions.map(({ question, options, quizMode }) => ({
       question,
