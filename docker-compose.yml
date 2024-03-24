@@ -1,0 +1,44 @@
+version: "3"
+
+name: wtf
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wtf-app
+    container_name: wtf-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGODB_URI=$MONGODB_URI
+      - JWT_SECRET=$JWT_SECRET
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:7
+    container_name: wtf-mongodb
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+      - MONGO_INITDB_DATABASE=wtf
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb-data:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+# volumes:
+#   mongodb-data:
