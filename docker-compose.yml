@@ -3,6 +3,22 @@ version: "3"
 name: wtf
 
 services:
+  mongodb:
+    image: mongo:7
+    container_name: wtf-mongodb
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+      - MONGO_INITDB_DATABASE=wtf
+    # ports:
+    #   - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - app-network
+
   app:
     build:
       context: .
@@ -21,35 +37,19 @@ services:
     depends_on:
       - mongodb
 
-  mongodb:
-    image: mongo:7
-    container_name: wtf-mongodb
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
-      - MONGO_INITDB_DATABASE=wtf
-    # ports:
-    #   - "27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-    networks:
-      - app-network
-
   webserver:
     image: nginx:mainline-alpine
-    container_name: webserver
+    container_name: wtf-webserver
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - web-root:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
+      - ./nginx-dhparam:/etc/ssl/certs
+      - web-root:/var/www/html
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
-      - ./nginx-dhparam:/etc/ssl/certs
     networks:
       - app-network
     depends_on:
@@ -57,14 +57,14 @@ services:
 
   certbot:
     image: certbot/certbot
-    container_name: certbot
+    container_name: wtf-certbot
     volumes:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
       - web-root:/var/www/html
+    command: certonly --webroot --webroot-path=/var/www/html --email graef.nico@gmail.com --agree-tos --no-eff-email --force-renewal -d what-the-flag.de -d www.what-the-flag.de
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email graef.nico@gmail.com --agree-tos --no-eff-email --force-renewal -d what-the-flag.de  -d www.what-the-flag.de
 
 networks:
   app-network:
