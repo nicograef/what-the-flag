@@ -64,7 +64,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email graef.nico@gmail.com --agree-tos --no-eff-email -d what-the-flag.de  -d www.what-the-flag.de
+    command: certonly --webroot --webroot-path=/var/www/html --email graef.nico@gmail.com --agree-tos --no-eff-email --force-renewal -d what-the-flag.de  -d www.what-the-flag.de
 
 networks:
   app-network:
