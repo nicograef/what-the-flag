@@ -30,8 +30,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
       - MONGO_INITDB_DATABASE=wtf
-    ports:
-      - "27017:27017"
+    # ports:
+    #   - "27017:27017"
     volumes:
       - mongodb-data:/data/db
     networks:
@@ -43,11 +43,13 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - web-root:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
+      - ./nginx-dhparam:/etc/ssl/certs
     networks:
       - app-network
     depends_on:
@@ -62,7 +64,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email graef.nico@gmail.com --agree-tos --no-eff-email --staging -d what-the-flag.de  -d www.what-the-flag.de
+    command: certonly --webroot --webroot-path=/var/www/html --email graef.nico@gmail.com --agree-tos --no-eff-email -d what-the-flag.de  -d www.what-the-flag.de
 
 networks:
   app-network:
