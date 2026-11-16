@@ -1,0 +1,246 @@
+# PRD: What The Flag rebuild
+
+## Problem Statement
+
+What The Flag is a Quizduell-like game about flags, countries and capitals, live at `what-the-flag.de`.
+The code is a 2024 Node, MongoDB and Material UI app that no handbook standard covers.
+Its quiz logic lives in an external npm package, and its flags are hot-linked from a CDN.
+
+Players meet these defects today:
+
+- The timer runs in the browser only, so any script can ignore it.
+- The flag URL carries the ISO code, so every flag question shows its own answer.
+- Four entries have no capital, and two capitals share one name.
+- A user can challenge themselves, and that duel never completes.
+- A result never shows the correct answers.
+- The game needs a second registered player before anything can be played.
+- All text is English, on a `.de` domain.
+
+## Solution
+
+A new app replaces the old one in the same repository and on the same domain.
+It follows the handbook's Go + React row: Go backend, Postgres, React with shadcn/ui, Caddy edge.
+Country data and flags are vendored into the repository from open sources; nothing is fetched at runtime.
+
+A visitor plays a practice round without an account. A registered player challenges another player to a duel.
+Every registered player plays one weekly challenge and climbs a weekly and an all-time leaderboard.
+The server serves one question at a time, starts the clock and checks every answer.
+The interface speaks German and English.
+
+Nothing is migrated. Old users, challenges and points are dropped.
+
+## User Stories
+
+Visitor:
+
+- As a visitor, I want to play a practice round without signing up, so that I can try the game.
+- As a visitor, I want the interface in German or English, so that I read country names in my language.
+- As a visitor, I want to register with a username and a password only, so that I give away no personal data.
+
+Player:
+
+- As a player, I want to log in and stay logged in on my device, so that I do not retype my password.
+- As a player, I want an emoji avatar that I can change, so that others recognise me.
+- As a player, I want to delete my account, so that my data is gone.
+- As a player, I want to search other players by name and challenge one, so that we play the same ten questions.
+- As a player, I want to play my side of a duel whenever I like, so that the duel needs no shared time slot.
+- As a player, I want each question to run against a fair clock, so that nobody gains time by cheating.
+- As a player, I want to see the correct answer after each question, so that I learn from mistakes.
+- As a player, I want to resume a round after a reload, so that a lost connection does not cost the round.
+- As a player, I want a dashboard of my duels with their status, so that I see where it is my turn.
+- As a player, I want a duel result that compares both players per question, so that I see who won and why.
+- As a player, I want one weekly challenge of twenty questions, so that I compete with everyone on equal terms.
+- As a player, I want a weekly and an all-time leaderboard with my own rank, so that I see where I stand.
+
+Owner:
+
+- As the owner, I want all country data checked into the repo with sources and licences, so that the app has no runtime data dependency.
+- As the owner, I want one command that rebuilds the dataset from the vendored sources, so that a data fix is reproducible.
+- As the owner, I want `make check` and CI to gate every change, so that the project matches my other handbook projects.
+- As the owner, I want a tagged release to produce deployable images, so that deployment follows the handbook runbook.
+
+## Implementation Decisions
+
+### Stack
+
+| Area | Decision |
+| --- | --- |
+| Layout | Handbook Go + React row: `backend/`, `frontend/`, `database/`, `reverse-proxy/` |
+| Backend | Go, standard `net/http` mux, `log/slog`, pgx v5, sqlc, golang-migrate |
+| Database | PostgreSQL 18. The handbook runs every backend on Postgres, so SQLite is out |
+| Frontend | Vite, React, TypeScript 7, Tailwind, shadcn/ui, TanStack Query, React Router, Zod |
+| Edge | Caddy image with the SPA baked in; `/api/*` proxied to the backend on port 8080 |
+| Languages | German and English UI. Repository files are English |
+| Toolchain | Latest stable Go and the Active LTS Node at scaffold time, pinned as the handbook says |
+
+### Data
+
+| Need | Source | Licence |
+| --- | --- | --- |
+| Codes, English names, regions, borders, area, coordinates, sovereignty | mledoze/countries, pinned commit | ODbL-1.0 |
+| German country names | Unicode CLDR `de` territories, pinned release | Unicode-3.0 |
+| Capital names in German and English, population | Wikidata SPARQL export, checked in | CC0 |
+| Flags as 4:3 SVG | lipis/flag-icons v7.6.0 | MIT |
+
+- The raw sources are committed unchanged. An importer command builds the generated dataset from them.
+- A gate step fails when the generated dataset differs from the importer's output.
+- A curated override file fixes what the sources get wrong: primary capitals, spellings, missing labels.
+- The quiz pool holds 197 states: the 193 UN members, Vatican City, Palestine, Kosovo and Taiwan.
+- Every pool entry has a code, both names, one primary capital in both languages, a region and a flag. The importer fails otherwise.
+- A country with several capitals has one primary capital. The others are stored and never serve as distractors for it.
+- The derived dataset is licensed ODbL-1.0; the code stays MIT. A notice file credits every source.
+- The backend loads the dataset into memory at start. The database stores country codes only.
+- Flag files carry an opaque key instead of the ISO code. The key to country mapping stays on the server.
+- 4:3 flags give every flag card the same shape, so the aspect ratio gives no hint.
+
+### Domain modules
+
+| Module | Owns |
+| --- | --- |
+| country | The in-memory catalogue: lookup by code, the quiz pool, localised names |
+| quiz | Question generation, quiz sets, rounds, the clock, answer checking |
+| account | Registration, login, sessions, profile, avatar, deletion, rate limiting |
+| duel | Challenges between two players, their states and scoring |
+| weekly | The weekly challenge and its leaderboard |
+| leaderboard | The points ledger and the all-time leaderboard |
+
+`duel` and `weekly` use `quiz` and `leaderboard`. No module reaches into another module's tables.
+
+### Quiz rules
+
+- Six modes: flag to country, flag to capital, country to flag, country to capital, capital to flag, capital to country.
+- A quiz set mixes the modes at random. Practice and duel sets hold 10 questions, the weekly set holds 20.
+- A question has four options, exactly one correct. No country repeats within a set as the target.
+- Distractors come from the target's region where the region has enough countries, else from the whole pool.
+- No two options of one question display the same text.
+- A curated list names flags a player cannot tell apart, such as Indonesia and Monaco. Such a pair never shares a flag question.
+- A question stores country codes and the correct option. Text is rendered in the reader's language.
+- Both players of a duel, and all players of a week, answer the same set in the same order.
+
+### Round rules
+
+- A round is one player's pass through one quiz set. The server reveals one question at a time.
+- The clock starts when the server first serves a question. A question allows 20 seconds plus 2 seconds of grace.
+- An answer names the question index and an option index. A late or missing answer counts as wrong.
+- The response to an answer reveals the correct option. A served question stays served across reloads; its clock keeps running.
+- A round is finished when its last question is answered or timed out. A finished round is immutable.
+- A practice round belongs to nobody. Its unguessable id is the only credential. Practice data older than seven days is deleted.
+
+### Accounts
+
+- A user has a username, a password hash, an emoji and a creation time. There is no email address.
+- Usernames are 3 to 20 characters of letters, digits and underscore, unique regardless of case.
+- Passwords are 8 to 128 characters with no composition rules, hashed with argon2id.
+- Login creates a server-side session of 30 days, sliding. The cookie is `HttpOnly`, `Secure`, `SameSite=Lax` and host-bound.
+- The database stores only a hash of the session token. Logout deletes the session.
+- State-changing requests must carry JSON and a matching `Origin`.
+- Registration and login are rate limited per client address.
+- Registration assigns a random emoji from a fixed list. The player may pick another from that list.
+- Deleting an account removes the user, their sessions, rounds, duels and ledger entries.
+
+### Duels
+
+- A player challenges another player by username. Challenging oneself is rejected.
+- Two players share at most one open duel.
+- Each player plays one round, in any order. The challenger is offered theirs at once.
+- A viewer sees a duel as `your_turn`, `waiting`, `completed` or `expired`.
+- A duel that is not completed seven days after creation is expired and awards nothing.
+- Scoring happens once, in the transaction that finishes the second round:
+
+| Rule | Points |
+| --- | --- |
+| Completing the duel | 10 each |
+| Strictly more correct answers | 5 per correct answer, winner only |
+| All ten correct | 25 |
+
+- The result shows both rounds per question, the correct answers, and the points each player earned.
+
+### Weekly challenge
+
+- A week is an ISO week in `Europe/Berlin`. Its challenge is created on first access, once per week.
+- Each player plays it once. A round must start and finish before the week ends, else it counts for nothing.
+- Finishing awards 10 points per correct answer.
+- The weekly leaderboard ranks by correct answers, then by lower total answer time. Equal values share a rank.
+- A player sees the leaderboard of the current week before and after playing, and past weeks read-only.
+
+### Leaderboard and points
+
+- Points live in an append-only ledger: user, source kind, source id, points, time.
+- One entry per user and source makes an award idempotent. A user's total is the ledger sum.
+- The all-time leaderboard ranks by total. Equal totals share a rank. It is paginated and shows the viewer's row.
+
+### HTTP contract
+
+All routes sit under `/api` and speak JSON. An error is `{"error": {"code", "message", "field"?}}` with a fitting status.
+
+| Route | Auth | Purpose |
+| --- | --- | --- |
+| `GET /health` | none | Liveness, used by the image healthcheck |
+| `POST /practice` | none | Create a practice quiz set and round |
+| `GET /rounds/{id}` | owner or practice id | Round state: current question without its answer, or the finished summary |
+| `POST /rounds/{id}/answers` | owner or practice id | Answer the current question; returns correctness and the correct option |
+| `POST /accounts` | none | Register and log in |
+| `POST /session`, `DELETE /session` | none, session | Log in, log out |
+| `GET /me`, `PATCH /me`, `DELETE /me` | session | Profile with total points, change emoji, delete account |
+| `GET /users?query=` | session | Search opponents by name prefix, paginated |
+| `POST /duels`, `GET /duels`, `GET /duels/{id}` | session | Create, list own, read one with result |
+| `POST /duels/{id}/round` | session | Start or resume the caller's round |
+| `GET /weekly`, `POST /weekly/round` | session | Current week and the caller's state, start or resume the round |
+| `GET /weekly/leaderboard?week=` | session | Weekly ranking |
+| `GET /leaderboard` | session | All-time ranking |
+
+### Frontend
+
+| Route | Access | Content |
+| --- | --- | --- |
+| `/` | public | Landing: start a practice round, log in, register |
+| `/practice/:roundId` | public | Play and result of a practice round |
+| `/login`, `/register` | public | Account forms |
+| `/dashboard` | player | Weekly card, challenge button with opponent search, duel list |
+| `/duels/:id` | player | Play, or the result once the caller has played |
+| `/weekly` | player | Play, or the weekly leaderboard |
+| `/leaderboard` | player | All-time ranking |
+| `/profile` | player | Username, emoji picker, points, log out, delete account |
+
+- One play component serves practice, duel and weekly rounds.
+- The language follows the browser, with a switch that is remembered on the device.
+- Code is organised by feature, and components reach the server only through their feature's API functions.
+- The layout is mobile first.
+
+### Operations
+
+- The repository is scaffolded with the handbook's new-project guide; its `make check` and CI are the gate.
+- The health endpoint, port, environment variable names and image names follow the handbook templates.
+- Migrations are forward-only. A deploy applies them through a one-shot migrate service before the backend starts.
+- The migrate image ships with each release, beside the backend and edge images.
+- The domain stays `what-the-flag.de`. A `vX.Y.Z` tag builds the release images.
+
+## Testing Decisions
+
+- Tests follow the handbook's global test rule: the cheapest level that can fail for the defect.
+- Question generation is a pure function with an injected random source. Its tests pin the quiz rules over many seeds.
+- The importer's test is the gate step that compares its output with the committed dataset, plus the pool invariants.
+- Round, duel, weekly and ledger rules are tested at service level against an in-memory store with an injected clock.
+- SQL and migrations are tested against a real Postgres under the `integration` build tag.
+- Frontend tests render features with a real query client and a faked API client.
+- One browser test covers the cross-stack flow: register two players, play a duel, read the result.
+- Prior art: none in this repository; the handbook's stack conventions describe the patterns.
+
+## Out of Scope
+
+- Migrating old users, challenges or points.
+- Email addresses, password reset, social login.
+- Real-time play, push notifications, websockets.
+- Declining a duel, rematch buttons, chat, friends lists.
+- Further quiz modes such as country shapes, population or neighbours. The dataset keeps the fields for them.
+- Imprint and privacy pages. The owner supplies their text before the public launch.
+- Provisioning the server and deploying. The handbook runbooks cover both.
+- An admin interface.
+
+## Further Notes
+
+- The old `country-quiz` npm package is not used. Its six modes and four options are kept as rules above.
+- The old scoring is kept, so the game feels the same.
+- The old cron workflow is gone; the weekly challenge needs no scheduler.
+- Terms are defined in [UBIQUITOUS_LANGUAGE.md](../UBIQUITOUS_LANGUAGE.md).
+- Implementation is sliced into the plans listed in [programme.md](../plans/programme.md).
