@@ -57,7 +57,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **Makefile**: `-include .env` plus `export`, so `make check` runs without `.env`. `MIGRATE_VERSION` is read from `.github/workflows/ci.yml` (one pin).
 - `db-migrate` runs `migrate/migrate:$(MIGRATE_VERSION)` on network `what-the-flag-dev_default` against host `postgres`, per `reference/postgresql.md`. `be-integration` runs `go test -tags=integration -race ./...` in `backend/`.
 - **Dev Compose**: `postgres` (template block, plus the prod `pg_isready` healthcheck) and `backend` (build `./backend`, `POSTGRES_*` from `.env`, `DB_HOST: postgres`, `127.0.0.1:8080:8080`, `depends_on: postgres: condition: service_healthy`). The template `app` service goes.
-- **Production migrations (R9)** belong to release-readiness. Foundation copies the prod templates without a migrate step.
+- **Production migrations (R9)** belong to first-release. Foundation copies the prod templates without a migrate step.
 - **golangci**: drop the forbidigo `forbid` placeholder entry; forbidigo then applies its default (`fmt.Print*`, `print`, `println`). Domain plans add real guards.
 - **API client** (`frontend/src/lib/api.ts`):
   - `interface ApiClient { get<T>(path: string, schema: z.ZodType<T>): Promise<T>; post, patch, delete: <T>(path: string, schema: z.ZodType<T>, body?: unknown) => Promise<T> }`.
@@ -82,7 +82,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **`docs/decisions.md` (R22)**: foundation seeds it; later plans append only decisions the PRD does not hold.
 - `docs/decisions.md` D01–D15 (one line each): D01 handbook Go + React row; D02 Postgres 18, no SQLite; D03 vendored country data, dataset ODbL-1.0, code MIT; D04 catalogue in memory, DB stores codes only;
   D05 opaque flag keys, 4:3 flags; D06 server clock, 20 s + 2 s grace; D07 server-side 30-day sliding sessions, argon2id, no email; D08 JSON + matching `Origin` on unsafe requests; D09 append-only ledger, idempotent per source;
-  D10 weekly = ISO week `Europe/Berlin`, created on first access; D11 German + English UI, no i18n library; D12 no data migration; D13 one API client, Zod at the boundary; D14 health pings the database; D15 localised query keys end with the locale.
+  D10 weekly = ISO week `Europe/Berlin`, created on first access; D11 German + English UI, no i18n library; D12 API contract pinned by an OpenAPI 3.1 document and black-box tests in `contract/`; D13 one API client, Zod at the boundary; D14 health pings the database; D15 localised query keys end with the locale.
 
 ## Inventory
 
@@ -100,7 +100,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **TypeScript 7** may reject create-vite or shadcn tsconfig options (`baseUrl`, deprecated flags). Fix the tsconfig, never pin TS lower.
 - **oxlint `--deny-warnings`** may flag shadcn files (`react-refresh/only-export-components`). Recommended: an `.oxlintrc.json` override scoped to `src/components/ui/**`; alternative: edit the generated file.
 - `govulncheck` and `pnpm audit` need network; a proxy refusal is an environment block, not a pass.
-- Merging deploys nothing: the live site keeps running until the owner tags `v0.1.0` and follows the deploy runbook.
+- Merging deploys nothing. The first deploy follows the owner's `v0.1.0` tag once plan-first-release has landed.
 
 ## Phase 1: Clean slate and handbook scaffold
 

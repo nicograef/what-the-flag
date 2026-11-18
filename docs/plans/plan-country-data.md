@@ -129,7 +129,7 @@ ORDER BY ?iso2 ?capital ?populationDate ?population
   - Each `data/sources/<source>/LICENSE` keeps governing its vendored files.
   - Root `NOTICE`, one block per source: name, URL, pin, licence, the copyright line quoted from its vendored `LICENSE`, path of the full text. Sources: mledoze (ODbL-1.0), Unicode CLDR (Unicode-3.0), Wikidata (CC0-1.0), flag-icons (MIT).
   - `NOTICE` also names which paths are ODbL-1.0: `data/overrides.json`, `backend/internal/country/dataset/`.
-  - ODbL 4.3 (R28): foundation's `frontend/src/app/footer.tsx` shows the notice on every page; release-readiness puts `NOTICE` and the licence into both images.
+  - ODbL 4.3 (R28): foundation's `frontend/src/app/footer.tsx` shows the notice on every page; first-release puts `NOTICE` and the licence into both images.
 
 ## Inventory
 

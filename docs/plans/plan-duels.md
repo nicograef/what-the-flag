@@ -10,8 +10,8 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 
 ## Architectural decisions
 
-- **Ownership.** This plan never touches `backend/internal/weekly/`, `frontend/src/features/weekly/`, `database/migrations/000006_*`, `Makefile` or `.github/workflows/*` (R21).
-- **Schema** `database/migrations/000005_duels.up.sql`, table `duels`:
+- **Ownership.** This plan never touches `backend/internal/weekly/`, `frontend/src/features/weekly/`, `database/migrations/000007_*`, `Makefile` or `.github/workflows/*` (R21).
+- **Schema** `database/migrations/000006_duels.up.sql`, table `duels`:
   - `id uuid PK DEFAULT uuidv7()`, `quiz_set_id uuid NOT NULL UNIQUE REFERENCES quiz_sets(id)`.
   - `challenger_id`, `opponent_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE`; `CHECK (challenger_id <> opponent_id)`.
   - `challenger_round_id`, `opponent_round_id uuid NULL REFERENCES rounds(id)`: set by that side's first `POST /round`.
@@ -107,6 +107,7 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 - `frontend/src/app/router.tsx` — route table (choke file); `frontend/src/app/navbar.tsx — Navbar` — gets the Dashboard link.
 - `frontend/src/lib/api.ts — ApiClient, ApiError, useApiClient()`; `frontend/src/lib/i18n/ — useMessages()`, `useLocale()`.
 - `frontend/src/features/play/play.tsx — Play({ roundId, onFinished })`; `frontend/src/features/auth/require-user.tsx`, `use-session.ts`.
+- `contract/openapi.yaml` (choke file), `contract/src/ — newClient(), registerUser(), correctOption()` (plan-contract).
 
 ## Open questions / Risks
 
@@ -119,13 +120,13 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 
 ### Context
 
-- `database/migrations/000004_quiz.up.sql` — `quiz_sets`, `rounds` referenced by FKs.
+- `database/migrations/000002_quiz.up.sql` — `quiz_sets`, `rounds` referenced by FKs.
 - `backend/internal/quiz/service.go`, `backend/internal/account/service.go`, `backend/internal/leaderboard/service.go` — consumer targets.
 - `backend/cmd/what-the-flag/main.go — main()` — wiring.
 
 ### What to build
 
-- `database/migrations/000005_duels.up.sql` exactly as in Architectural decisions.
+- `database/migrations/000006_duels.up.sql` exactly as in Architectural decisions.
 - `backend/sqlc/queries/duel.sql`: `LapseExpiredPair`, `InsertDuel`, `GetDuelForUser` (id and participant), `GetDuelByQuizSetForUpdate`, `ListDuelsForUser` (both roles, `created_at DESC LIMIT 20`), `SetRoundID`, `SetCorrect`, `CompleteDuel`.
   Regenerate `backend/internal/db/` with `cd backend && go tool sqlc generate`.
 - `backend/internal/duel/score.go — Score()`; `backend/internal/duel/status.go — deriveStatus()`.
@@ -136,7 +137,10 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 - `backend/cmd/what-the-flag/main.go` — construct store, service, handler; `quizService.OnFinished(quiz.KindDuel, duelService)`.
 - Tests: `backend/internal/duel/score_test.go`, `backend/internal/duel/status_test.go`, `backend/internal/duel/fake_store_test.go`, `backend/internal/duel/service_test.go`, `backend/internal/duel/store_test.go` (`//go:build integration`).
 - The integration tests insert `users` and `quiz_sets` fixture rows with plain SQL and use a call-counting `Ledger` fake.
-- Demo: two curl sessions create a duel, play both rounds via `/api/rounds/*`, read the result and `GET /api/me` points.
+- `contract/openapi.yaml`: the four duel routes, every status included. `contract/tests/duels.test.ts` (A and B from `registerUser()`):
+  - self-challenge in another letter case is 400 `self_challenge`, an unknown user 404 `user_not_found`, B challenging A back 409 `duel_exists`;
+  - A answers every question with `correctOption()`, B every one wrongly, both through `/api/rounds/*`; B reading A's round is 404 `round_not_found`;
+  - both details read `completed` with points 85 and 10, as do `GET /api/me` totals; a third user reading the duel gets 404 `duel_not_found`.
 
 ### Acceptance criteria
 
@@ -149,6 +153,7 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 - [ ] Integration: the pair index rejects a second open duel in reverse order and accepts one after `LapseExpiredPair` or `CompleteDuel`; `CHECK` rejects self; deleting a user cascades: `cd backend && go test -tags=integration -race ./internal/duel -run TestStoreConstraints`.
 - [ ] Integration: two concurrent lapse-and-insert transactions for one pair commit exactly one duel; the other gets `ErrDuelExists`: `cd backend && go test -tags=integration -race ./internal/duel -run TestStoreConcurrentCreate`.
 - [ ] Integration: two concurrent `RoundFinished` transactions on one duel complete it once and call `Award` exactly twice: `cd backend && go test -tags=integration -race ./internal/duel -run TestStoreConcurrentFinish`.
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31).
 - [ ] `make check` passes.
 
 ## Phase 2: Duel page

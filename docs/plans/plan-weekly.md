@@ -55,7 +55,7 @@ The loser's rollback removes its quiz set, so no orphan exists. A winner that ro
 
 R4's "hook locks its own aggregate row" is the entry row here. A challenge-row lock would serialise every finish of the week.
 
-### Schema `database/migrations/000006_weekly.up.sql`
+### Schema `database/migrations/000007_weekly.up.sql`
 
 - `weekly_challenges`: `id uuid PK default uuidv7()`, `iso_year int not null`, `iso_week int not null check (iso_week between 1 and 53)`, `quiz_set_id uuid not null unique references quiz_sets on delete restrict`, `starts_at timestamptz not null`, `ends_at timestamptz not null`, `created_at timestamptz not null default now()`, `unique (iso_year, iso_week)`.
 - `weekly_entries`: `challenge_id uuid not null references weekly_challenges`, `user_id uuid not null references users on delete cascade`, `round_id uuid not null unique references rounds on delete cascade`, `started_at timestamptz not null`, `correct int null`, `total_ms int null`, `finished_at timestamptz null`, `primary key (challenge_id, user_id)`, `check (num_nulls(correct, total_ms, finished_at) in (0, 3))`.
@@ -81,6 +81,7 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 - `frontend/src/features/play/play.tsx — Play({ roundId, onFinished })` — the shared play component.
 - `frontend/src/features/auth/require-user.tsx` — protected-route wrapper.
 - `frontend/src/app/router.tsx` — route table (choke file).
+- `contract/openapi.yaml` (choke file), `contract/src/ — newClient(), registerUser(), correctOption()` (plan-contract). Every route phase documents its operations, every status included, and adds cases to `contract/tests/weekly.test.ts`.
 - `frontend/src/features/dashboard/dashboard-page.tsx` — renders `<section data-slot="weekly" />` as the first grid child (R7).
 
 ## Open questions / Risks
@@ -100,7 +101,7 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 
 ### What to build
 
-- `database/migrations/000006_weekly.up.sql` — both tables and the index above.
+- `database/migrations/000007_weekly.up.sql` — both tables and the index above.
 - `backend/internal/weekly/week.go` — `WeekOf(t time.Time) (year, week int, start, end time.Time)`, `ParseWeek(s string) (year, week int, err error)`, `FormatWeek(year, week int) string`, the tzdata import.
 - `backend/internal/weekly/week_test.go` — table tests with the literal rows below.
 - `backend/sqlc/queries/weekly.sql` — challenge by week, insert challenge `ON CONFLICT DO NOTHING`, entry by (challenge, user), past weeks.
@@ -110,6 +111,7 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 - `backend/internal/weekly/handler.go` — `NewHandler(svc, requireUser func(http.Handler) http.Handler)`, `Handler.Register()` with `GET /api/weekly`.
 - `backend/internal/weekly/store_integration_test.go` — `//go:build integration`. `TestStore_EnsureChallengeConcurrent`: 8 goroutines on one run-unique week (random `iso_year` ≥ 3000) return one id. Their `createSet` inserts a test-marked `quiz_sets` row; exactly one such row survives.
 - `backend/cmd/what-the-flag/main.go` — construct store, service, handler; call `Register`.
+- `contract/openapi.yaml`: `GET /api/weekly`. `contract/tests/weekly.test.ts`: a fresh user reads `not_started` with a `YYYY-Www` week; without a session 401 `unauthenticated`.
 
 | Input (UTC) | Berlin | Week | start (UTC) | end (UTC) |
 | --- | --- | --- | --- | --- |
@@ -125,8 +127,9 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 ### Acceptance criteria
 
 - [ ] `WeekOf` and `ParseWeek` match the tables (unit): `cd backend && go test ./internal/weekly -run 'TestWeekOf|TestParseWeek'`
-- [ ] Migration applies: `make db-migrate` exits 0 and prints a `6/u weekly` line
+- [ ] Migration applies: `make db-migrate` exits 0 and prints a `7/u weekly` line
 - [ ] Concurrent creation yields one challenge and one set (integration): `cd backend && go test -tags=integration -race ./internal/weekly -run TestStore_EnsureChallengeConcurrent`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 2: Play the round and award points
@@ -149,11 +152,13 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 - `backend/internal/weekly/store_integration_test.go` — `TestStore_FinishEntryOnce`: a second `FinishEntry` on one round reports no change.
 - `backend/internal/weekly/handler.go` — `POST /api/weekly/round`; `GET /api/weekly` reports `in_progress` and `finished`.
 - `backend/cmd/what-the-flag/main.go` — `quizService.OnFinished(quiz.KindWeekly, weeklyService)`.
+- `contract/openapi.yaml`: `POST /api/weekly/round`. `contract/tests/weekly.test.ts`: two starts return one round; 20 `correctOption()` answers make `GET /api/weekly` read `finished` with 20 correct and `/api/me` 200 points; a third start is 409 `already_played`; `2000-W01` is 409 `week_ended`; `2026-47` is 400 `invalid_week`.
 
 ### Acceptance criteria
 
 - [ ] Start, week-end and award rules hold (service): `cd backend && go test ./internal/weekly -run TestService_Round`
 - [ ] Finish updates an entry once (integration): `cd backend && go test -tags=integration -race ./internal/weekly -run TestStore_FinishEntryOnce`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 3: Weekly leaderboard
@@ -174,11 +179,13 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 - `backend/internal/weekly/service_test.go` — `TestService_Leaderboard`: malformed week 400; future and missing past week 404; viewer row marked `isViewer`.
 - `backend/internal/weekly/store_integration_test.go` — `TestStore_Ranking` with limit 2: ranks 1, 1, 3 for a tie; lower time first at equal correct; unfinished entries absent; viewer outside the limit still returned.
 - `backend/internal/weekly/handler.go` — `GET /api/weekly/leaderboard`.
+- `contract/openapi.yaml`: `GET /api/weekly/leaderboard`. `contract/tests/weekly.test.ts`: after a finished round the viewer row is present with `isViewer`; `week=bad` is 400 `invalid_week`; a future week is 404 `week_not_found`.
 
 ### Acceptance criteria
 
 - [ ] Week validation and viewer marking hold (service): `cd backend && go test ./internal/weekly -run TestService_Leaderboard`
 - [ ] Ranking query ranks, orders and filters (integration): `cd backend && go test -tags=integration -race ./internal/weekly -run TestStore_Ranking`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 4: Weekly page and card

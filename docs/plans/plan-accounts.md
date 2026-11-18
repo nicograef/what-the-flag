@@ -67,8 +67,8 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 
 ### Schema (compact)
 
-- `000002_accounts.up.sql`: `users(id uuid PK DEFAULT uuidv7(), username text NOT NULL CHECK (username ~ '^[A-Za-z0-9_]{3,20}$'), password_hash text NOT NULL, emoji text NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`; unique index above. `sessions(id uuid PK DEFAULT uuidv7(), user_id uuid NOT NULL REFERENCES users ON DELETE CASCADE, token_hash bytea NOT NULL UNIQUE, created_at, last_seen_at, expires_at timestamptz NOT NULL)`; indexes on `sessions(user_id)` and `sessions(expires_at)`. Session timestamps come from the injected clock, not `now()`.
-- `000003_ledger.up.sql`: `ledger_entries(id uuid PK DEFAULT uuidv7(), user_id uuid NOT NULL REFERENCES users ON DELETE CASCADE, source_kind text NOT NULL CHECK (source_kind IN ('duel','weekly')), source_id uuid NOT NULL, points integer NOT NULL CHECK (points > 0), created_at timestamptz NOT NULL DEFAULT now(), UNIQUE (user_id, source_kind, source_id))`.
+- `000003_accounts.up.sql`: `users(id uuid PK DEFAULT uuidv7(), username text NOT NULL CHECK (username ~ '^[A-Za-z0-9_]{3,20}$'), password_hash text NOT NULL, emoji text NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`; unique index above. `sessions(id uuid PK DEFAULT uuidv7(), user_id uuid NOT NULL REFERENCES users ON DELETE CASCADE, token_hash bytea NOT NULL UNIQUE, created_at, last_seen_at, expires_at timestamptz NOT NULL)`; indexes on `sessions(user_id)` and `sessions(expires_at)`. Session timestamps come from the injected clock, not `now()`.
+- `000004_ledger.up.sql`: `ledger_entries(id uuid PK DEFAULT uuidv7(), user_id uuid NOT NULL REFERENCES users ON DELETE CASCADE, source_kind text NOT NULL CHECK (source_kind IN ('duel','weekly')), source_id uuid NOT NULL, points integer NOT NULL CHECK (points > 0), created_at timestamptz NOT NULL DEFAULT now(), UNIQUE (user_id, source_kind, source_id))`.
 
 ## Inventory
 
@@ -82,6 +82,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `frontend/src/test/render.tsx — renderRoute()` — frontend test seam (foundation).
 - Library versions resolve at execution: `go get <module>@latest` in `backend/`, `pnpm add <pkg>` in `frontend/`, shadcn components via `pnpm dlx shadcn@latest add <component>`.
 - This plan edits no `Makefile` and no `.github/workflows/*` (R21). Integration tests need `make db` and `make db-migrate` first.
+- `contract/openapi.yaml` (choke file), `contract/src/ — newClient(), registerUser()` (plan-contract). Every route phase documents its operations, every status included. The contract client gives each simulated user its own `X-Forwarded-For`, so `clientAddr()` must keep trusting a loopback peer.
 
 ## Open questions / Risks
 
@@ -94,7 +95,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 
 ### Context
 
-- `database/migrations/000002_accounts.up.sql` — new, the `users` and `sessions` schema above.
+- `database/migrations/000003_accounts.up.sql` — new, the `users` and `sessions` schema above.
 - `backend/sqlc/queries/account.sql` — new: `CreateUser`, `GetUserByID`, `CreateSession`, `GetSessionByTokenHash`, `TouchSession`, `DeleteSession`, `DeleteExpiredSessions`; `backend/internal/db/` regenerated.
 - `backend/go.mod`, `backend/go.sum` — add `golang.org/x/crypto`, `github.com/google/uuid`.
 
@@ -113,6 +114,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `frontend/src/components/ui/` — `field.tsx`, `input.tsx`, `button.tsx`, `label.tsx`, `card.tsx` via the shadcn CLI, plus `frontend/package.json` and `frontend/pnpm-lock.yaml`.
 - `frontend/src/app/router.tsx` — `/register`; `frontend/src/app/navbar.tsx` — mount `UserMenu`.
 - Only if the R16 check fails: `frontend/vite.config.ts` (basic-ssl plugin) and one appended line in `docs/decisions.md`.
+- `contract/openapi.yaml`: `POST /api/accounts`, `GET /api/me`. `contract/tests/accounts.test.ts`: register is 201 with `__Host-session`; `GET /api/me` with that cookie returns the me body, without it 401 `unauthenticated`; `Alice`/`alice` is 409 `username_taken`; a bad username is 400 `invalid_username`.
 
 ### Acceptance criteria
 
@@ -121,6 +123,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - [ ] `Alice` and `alice` cannot both register; deleting a user deletes its sessions (integration): `cd backend && go test -tags=integration -race ./internal/account -run TestStore`
 - [ ] Invalid input shows field messages without a request; a valid submit calls `register`; `username_taken` shows under the field (frontend): `cd frontend && pnpm vitest run src/features/auth/register-page.test.tsx`
 - [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running, registering on the dev URL in Chromium and in Firefox shows the username in the navbar, and it survives a reload (manual, R16)
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 2: Log in, log out, rate limits and protected routes
@@ -143,12 +146,14 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `backend/cmd/what-the-flag/main.go` — construct both limiters.
 - `frontend/src/features/auth/` — `api.ts` (`login()`, `logout()`), `login-page.tsx`, `require-user.tsx`, `redirects.ts` (`safeNext()`, `AFTER_LOGIN = '/dashboard'`), `login-page.test.tsx`; `register-page.tsx` gains the `next` redirect and the logged-in redirect.
 - `frontend/src/app/router.tsx` — `/login`; the `RequireUser` layout route.
+- `contract/openapi.yaml`: `POST /api/session`, `DELETE /api/session`, 429 on both POSTs. `contract/tests/accounts.test.ts`: login in another letter case succeeds; a wrong password is 401 `invalid_credentials`; logout is 204 and `GET /api/me` is then 401; the 11th registration from one address is 429 `rate_limited` with `Retry-After`.
 
 ### Acceptance criteria
 
 - [ ] Rate limit and client-address rules hold (unit): `cd backend && go test -race ./internal/account -run 'TestLimiter|TestClientAddr'`
 - [ ] Login accepts any letter case, rejects wrong credentials alike and replaces a presented session (service): `cd backend && go test -race ./internal/account -run TestServiceLogin`
 - [ ] Invalid input blocks the request; `invalid_credentials` and `rate_limited` show their messages; success goes to a safe `next`, `//evil` goes to `/dashboard` (frontend): `cd frontend && pnpm vitest run src/features/auth/login-page.test.tsx`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 3: Profile, emoji and account deletion
@@ -168,11 +173,13 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `frontend/src/features/profile/` — `api.ts` (`updateEmoji()`, `deleteAccount()`), `messages.ts`, `profile-page.tsx` (username, emoji grid picker, log-out button, delete with confirmation dialog), `profile-page.test.tsx`.
 - `frontend/src/components/ui/alert-dialog.tsx` via the shadcn CLI, plus `frontend/package.json` and `frontend/pnpm-lock.yaml`.
 - `frontend/src/app/router.tsx` — `/profile` under `RequireUser`.
+- `contract/openapi.yaml`: `PATCH /api/me`, `DELETE /api/me`. `contract/tests/accounts.test.ts`: a listed emoji is stored, another is 400 `invalid_emoji`; after `DELETE /api/me` (204) the login is 401.
 
 ### Acceptance criteria
 
 - [ ] Emoji outside the list is rejected, a listed one is stored (service): `cd backend && go test -race ./internal/account -run TestServiceSetEmoji`
 - [ ] Picking an emoji calls `updateEmoji` and updates the navbar; deletion calls `deleteAccount` only after confirmation (frontend): `cd frontend && pnpm vitest run src/features/profile/profile-page.test.tsx`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 4: User search and public lookups
@@ -190,10 +197,12 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `backend/internal/account/handler.go` — `GET /api/users?query=&offset=&limit=` → `{users: [{username, emoji}], nextOffset}`.
 - `backend/internal/account/store_test.go` — prefix match in any case, `_` matches only itself, caller excluded, page boundaries, `GetUsersByIDs` skips unknown ids.
 - The duels plan builds the frontend consumer.
+- `contract/openapi.yaml`: `GET /api/users`. `contract/tests/accounts.test.ts`: of two users sharing a fresh prefix, the caller finds the other, never itself; `query=a-b` is 400 `invalid_query`; `limit=51` is 400 `invalid_pagination`.
 
 ### Acceptance criteria
 
 - [ ] Prefix search, escaping, exclusion, paging and the id lookup hold (integration): `cd backend && go test -tags=integration -race ./internal/account -run TestStoreSearch`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
 
 ## Phase 5: Ledger and all-time leaderboard
@@ -202,7 +211,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 
 ### Context
 
-- `database/migrations/000003_ledger.up.sql` — new, the ledger schema above.
+- `database/migrations/000004_ledger.up.sql` — new, the ledger schema above.
 - `backend/sqlc/queries/leaderboard.sql` — new: `InsertLedgerEntry` (`ON CONFLICT DO NOTHING`), `UserTotal`, `RankedPage`, `RankOfUser`; `backend/internal/db/` regenerated.
 - `backend/internal/account/service.go — PublicByIDs()` — names and emoji for a page.
 
@@ -218,10 +227,12 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `frontend/src/features/leaderboard/` — `api.ts`, `messages.ts`, `leaderboard-page.tsx` (ranks, emoji, names, points, previous/next, the viewer's row pinned when off-page), `leaderboard-page.test.tsx`.
 - `frontend/src/features/auth/api.ts` — `points` in the me schema; `frontend/src/features/profile/profile-page.tsx` — shows total points.
 - `frontend/src/app/router.tsx` — `/leaderboard` under `RequireUser`.
+- `contract/openapi.yaml`: `GET /api/leaderboard`, `points` in the me body. `contract/tests/leaderboard.test.ts`: a fresh user reads `viewer.rank` null and `points` 0; without a session 401. Awards reach the API only through duels and weekly, whose contract tests check them.
 
 ### Acceptance criteria
 
 - [ ] Award validation, the unranked viewer and missing users hold (service): `cd backend && go test -race ./internal/leaderboard -run TestService`
 - [ ] Idempotency, `RANK()` ties and paging, cascade and tx rollback hold (integration): `cd backend && go test -tags=integration -race ./internal/leaderboard -run TestStore`
 - [ ] An off-page viewer row is pinned below the page; an on-page viewer is marked, not repeated (frontend): `cd frontend && pnpm vitest run src/features/leaderboard/leaderboard-page.test.tsx`
+- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes; CI job `contract` green on the lane's pushed head (lead checks, R31)
 - [ ] `make check` passes
