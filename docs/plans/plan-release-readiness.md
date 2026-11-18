@@ -35,7 +35,10 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 | Memory (R17) | `account.MaxConcurrentHashes` (4) × `account.ArgonMemoryKiB` (19456 KiB) = 76 MiB of hash memory. Backend keeps `memory: 512M` and gains `GOMEMLIMIT: 400MiB`. 76 MiB plus an idle Go process stays far under 400 MiB |
 | `.env.example` gate (R21) | `scripts/check-env-example.sh` compares the names in `.env.example` (active and `# NAME=` lines) with the readers, both directions. Readers: `[Gg]etenv("NAME")` and `LookupEnv("NAME")` in `backend/`, `${NAME}` in `docker-compose*.yml`, plus `COMPOSE_FILE` and `BACKUP_PING_URL` named in the script. `make env-check` runs it inside `make check`; CI job `env-check` on every push |
 | CI e2e | Job `e2e` in `.github/workflows/ci.yml`, `timeout-minutes: 20`, runs `make e2e`. It runs when filter output `e2e` is true or on `refs/heads/main` |
-| Verifying stack criteria | Stack criteria read the `e2e` job of the CI run for `HEAD`. A local `make e2e` is the dev command, not the criterion |
+| Docker in the cloud session (R29) | Start `dockerd &` and wait for `docker info`. Builds use `--network host` and get `/root/.ccr/ca-bundle.crt` per `/root/.ccr/README.md` through the gitignored `docker-compose.local.yml` (build network, proxy args, CA) or build args. Nothing of it enters `backend/Dockerfile`, `reverse-proxy/Dockerfile` or `database/Dockerfile` |
+| Verifying stack criteria | Each stack criterion runs locally (`make e2e`) and in CI. The `e2e` job of the CI run for `HEAD` is the gate of record |
+| Licences in images (R28) | `backend/Dockerfile` copies `internal/country/dataset/LICENSE` and, through the named build context `root` (repo root), `NOTICE` to `/usr/share/doc/what-the-flag/`. `reverse-proxy/Dockerfile` copies `NOTICE` and `data/LICENSE` there |
+| Named context `root` | `docker-compose.yml` and `docker-compose.e2e.yml` set backend `build.additional_contexts: {root: .}`; the release matrix passes `build-contexts: root=.` for backend. A bare `docker build backend` needs `--build-context root=.` |
 
 ## Inventory
 
@@ -49,11 +52,12 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 - `backend/internal/account/password.go — ArgonMemoryKiB, MaxConcurrentHashes` — inputs to the memory budget (R17).
 - `frontend/src/features/{auth,dashboard,duels,leaderboard}/` — screens and `messages.ts` labels the test selects by role.
 - `Makefile`, `.env.example`, `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md`, `.gitignore`.
+- `NOTICE`, `data/LICENSE`, `backend/internal/country/dataset/LICENSE` (country-data) — licence files the images carry (R28). `docker-compose.yml` (foundation) — gains the backend `root` build context.
 
 ## Open questions / Risks
 
 - Feature plans land before phase 1. Re-check every file and symbol named here against the landed tree first.
-- Cloud session (R26): the container's Docker daemon is not running. Image builds behind the session proxy cannot fetch packages without its CA. Stack criteria therefore read the CI `e2e` job; nothing in the repo works around the sandbox.
+- `gh` in the cloud session has no working token (checked 2026-11-18). The CI criteria then read the run through the GitHub MCP actions tools, same job, same verdict.
 - The CI criteria need the run branch pushed. Push it before each stack criterion.
 - Chromium may refuse `Secure` cookies under `ignoreHTTPSErrors`. Fallback: export `/data/caddy/pki/authorities/local/root.crt` from the edge and trust it in the runner's NSS database.
 - A global options block added to `reverse-proxy/Caddyfile` breaks the `import` in `e2e.Caddyfile`. Move such options into both files.
@@ -71,6 +75,7 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 - `docker-compose.prod.yml`, `scripts/prod-init.sh` — `up -d --wait` is where migrations run.
 - `.github/workflows/release.yml` — image matrix. `.github/workflows/ci.yml` — `changes` filters, pinned action SHAs.
 - `Makefile` — `CLASS_developer`, `CLASS_production`, `MIGRATE_VERSION`.
+- `/root/.ccr/README.md` — "docker build / docker run" section (R29).
 
 ### What to build
 
@@ -83,17 +88,20 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 - `reverse-proxy/e2e.Caddyfile`: `local_certs`, `skip_install_trust`, `import /etc/caddy/Caddyfile`.
 - `scripts/e2e.sh` (`set -euo pipefail`):
   - export the e2e credentials; `up -d --build --wait`;
+  - adds `-f docker-compose.local.yml` when that file exists (R29, local only);
   - an EXIT trap prints `logs` on failure and runs `down --volumes` unless `KEEP=1`;
   - `curl -fsk --resolve what-the-flag.de:8443:127.0.0.1 https://what-the-flag.de:8443/api/health`;
   - `SELECT version FROM schema_migrations` via `exec -T postgres psql` equals the highest `database/migrations/NNNNNN` number, else exit 1.
 - `Makefile`: `e2e` (`scripts/e2e.sh`) in `CLASS_developer`; `prod-migrate` in `CLASS_production`.
 - `.github/workflows/ci.yml`: filter `e2e` (`backend/**`, `frontend/**`, `database/**`, `reverse-proxy/**`, `docker-compose*.yml`, `scripts/e2e.sh`, the workflow) and its `changes` output.
   Job `e2e`: `needs: changes`, `if: needs.changes.outputs.e2e == 'true' || github.ref == 'refs/heads/main'`, `timeout-minutes: 20`, SHA-pinned checkout, `make e2e`.
+- In the cloud session, write `docker-compose.local.yml` locally per the R29 decision; foundation's `.gitignore` keeps it out of commits.
 - `docs/decisions.md`: one D line for the e2e stack with local TLS.
 
 ### Acceptance criteria
 
-- [ ] Stack, migrate image and `up --wait` with an exited one-shot (CI): `id=$(gh run list --workflow ci.yml --commit "$(git rev-parse HEAD)" --limit 1 --json databaseId --jq '.[0].databaseId') && gh run watch "$id" >/dev/null; gh run view "$id" --json jobs --jq '.jobs[] | select(.name=="e2e") | .conclusion'` prints `success`.
+- [ ] Stack, migrate image and `up --wait` with an exited one-shot (local, R29): `make e2e` exits 0.
+- [ ] Same (CI, gate of record): `id=$(gh run list --workflow ci.yml --commit "$(git rev-parse HEAD)" --limit 1 --json databaseId --jq '.[0].databaseId') && gh run watch "$id" >/dev/null; gh run view "$id" --json jobs --jq '.jobs[] | select(.name=="e2e") | .conclusion'` prints `success`.
 - [ ] Manual migrate keeps the DSN: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -r '.services.migrate.entrypoint[1:3] | join(" ")'` prints `-path /migrations`.
 - [ ] `make help | grep -c UNCLASSIFIED` prints 0.
 - [ ] `make check` passes.
@@ -127,7 +135,8 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 
 ### Acceptance criteria
 
-- [ ] End to end (CI): `id=$(gh run list --workflow ci.yml --commit "$(git rev-parse HEAD)" --limit 1 --json databaseId --jq '.[0].databaseId') && gh run watch "$id" >/dev/null; gh run view "$id" --log --job "$(gh run view "$id" --json jobs --jq '.jobs[] | select(.name=="e2e") | .databaseId')" | grep -c '1 passed'` prints ≥ 1.
+- [ ] End to end (local, R29): `make e2e 2>&1 | grep -c '1 passed'` prints ≥ 1.
+- [ ] End to end (CI, gate of record): `id=$(gh run list --workflow ci.yml --commit "$(git rev-parse HEAD)" --limit 1 --json databaseId --jq '.[0].databaseId') && gh run watch "$id" >/dev/null; gh run view "$id" --log --job "$(gh run view "$id" --json jobs --jq '.jobs[] | select(.name=="e2e") | .databaseId')" | grep -c '1 passed'` prints ≥ 1.
 - [ ] `make check` passes.
 
 ## Phase 3: Production configuration review
@@ -138,6 +147,7 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 
 - `reverse-proxy/Caddyfile` — primary site's `header` block.
 - `docker-compose.prod.yml — backend` — limits and environment.
+- `backend/Dockerfile`, `reverse-proxy/Dockerfile`, `reverse-proxy/Dockerfile.dockerignore`, `NOTICE`, `data/LICENSE` — licence copies (R28).
 - `backend/internal/account/password.go — ArgonMemoryKiB, MaxConcurrentHashes`.
 - `backend/internal/config/config.go — Load()`, `.env.example`, `scripts/backup-postgres.sh` — the env readers.
 - `Makefile`, `.github/workflows/ci.yml` — `check` prerequisites, jobs.
@@ -148,6 +158,8 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 - `frontend/e2e/duel.e2e.ts`: the response to `/` carries `Content-Security-Policy` containing `frame-ancestors 'none'`.
 - `docker-compose.prod.yml`: backend `environment` gains `GOMEMLIMIT: 400MiB`.
 - `.env.example`: a comment that `POSTGRES_PASSWORD` must be URL-safe.
+- Licences in images per the decisions table: `backend/Dockerfile`, `reverse-proxy/Dockerfile`, `reverse-proxy/Dockerfile.dockerignore` (`!NOTICE`, `!data/LICENSE`).
+  `docker-compose.yml`, `docker-compose.e2e.yml`, `.github/workflows/release.yml`: the `root` build context for backend.
 - `scripts/check-env-example.sh` per the decisions table; prints each missing or extra name, exits 1 on any.
 - `Makefile`: `env-check` in `CLASS_developer`, a prerequisite of `check`.
 - `.github/workflows/ci.yml`: job `env-check`, no filter, `timeout-minutes: 5`, SHA-pinned checkout, `scripts/check-env-example.sh`.
@@ -155,7 +167,9 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 
 ### Acceptance criteria
 
-- [ ] CSP holds and breaks nothing (CI): the phase 2 command prints ≥ 1 for `HEAD`.
+- [ ] CSP holds and breaks nothing: both phase 2 end-to-end commands print ≥ 1 for `HEAD`.
+- [ ] Backend image licences (after `make e2e`): `docker run --rm --entrypoint ls what-the-flag-backend:e2e /usr/share/doc/what-the-flag | paste -sd' '` prints `LICENSE NOTICE`.
+- [ ] Edge image licences (after `make e2e`): `docker run --rm --entrypoint ls what-the-flag-edge:e2e /usr/share/doc/what-the-flag | paste -sd' '` prints `LICENSE NOTICE`.
 - [ ] Env gate passes on the tree: `make env-check` exits 0.
 - [ ] Env gate catches a stale name: `printf 'STALE_NAME=x\n' >> .env.example; scripts/check-env-example.sh | grep -c STALE_NAME; git checkout -- .env.example` prints 1.
 - [ ] Config: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -r '.services.backend.environment.GOMEMLIMIT'` prints `400MiB`.
@@ -207,6 +221,6 @@ Production configuration matches the PRD, migrations apply on deploy, and the do
 - [ ] Domain: `grep -c 'what-the-flag.de' reverse-proxy/Caddyfile` prints ≥ 3.
 - [ ] Env: `scripts/check-env-example.sh` exits 0.
 - [ ] Integration: `make be-integration` passes.
-- [ ] End to end (CI): the phase 2 command prints ≥ 1 for `HEAD`.
+- [ ] End to end: both phase 2 commands print ≥ 1 for `HEAD`; CI is the gate of record.
 - [ ] Plans: `ls docs/plans/plan-*.md` prints only `docs/plans/plan-release-readiness.md`.
 - [ ] `make check` passes.

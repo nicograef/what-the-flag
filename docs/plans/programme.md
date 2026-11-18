@@ -23,6 +23,7 @@ Seven plans carry the PRD. This file is the only run status. The orchestrator pl
 - Foundation phase 1 installs the toolchains: Go through `GOTOOLCHAIN=auto`, Node from a nodejs.org tarball into `~/.local`.
 - A plan is the authority for the names it creates. A consumer re-reads the provider's landed code before its first phase.
 - Data is ODbL-1.0, code MIT. Accounts have no email. The UI speaks German and English.
+- R29: Docker runs here after `dockerd &` and a wait for `docker info`. Builds use `--network host` and the session CA from a local-only override or build args, never the committed Dockerfiles. Stack checks run locally and in CI; CI is the gate of record.
 
 ## Waves and lanes
 
@@ -52,7 +53,7 @@ Seven plans carry the PRD. This file is the only run status. The orchestrator pl
 | `README.md`, `NOTICE`, `data/` | `data` | none | |
 | `docs/decisions.md` | `data` lands first | `duel` lands first | Append-only; the rebasing lane re-appends its lines |
 | `frontend/src/features/dashboard/` | — | `duel` | `week` touches it only in wave 5 |
-| `pnpm-lock.yaml`, `go.mod`, `go.sum` | `acct` | `duel` | The rebasing lane re-runs `pnpm install` or `go mod tidy` |
+| `frontend/package.json`, `frontend/pnpm-lock.yaml`, `frontend/src/components/ui/`, `backend/go.mod`, `backend/go.sum` | `acct` | `duel` | The rebasing lane re-runs `pnpm install` or `go mod tidy` |
 
 ## Landing order
 

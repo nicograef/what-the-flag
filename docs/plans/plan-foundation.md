@@ -23,7 +23,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **Toolchain (R26)**: the container ships Go 1.24 and Node 22. Go: `GOTOOLCHAIN=auto` (the container default) fetches `go<project-go-version>` through the module proxy once `go.mod` names it.
 - Node: `curl -fsSLO https://nodejs.org/dist/<version>/node-<version>-linux-x64.tar.xz`, checked against that directory's `SHASUMS256.txt`, extracted to `~/.local/node`, `~/.local/node/bin` first on `PATH`.
 - **Docker (R29)**: the container's `dockerd` is stopped. Start it with `dockerd &` and wait until `docker info` exits 0, before `make db` or any build.
-  Local image builds use `--network host` and get `/root/.ccr/ca-bundle.crt` per `/root/.ccr/README.md` from a local-only override or build args; the committed Dockerfiles stay template-clean.
+  Local image builds use `--network host` and get `/root/.ccr/ca-bundle.crt` per `/root/.ccr/README.md` from build args or the gitignored `docker-compose.local.yml`; the committed Dockerfiles stay template-clean.
 - No step relies on `nico` plugin scripts, `agent-bus.sh`, `plan-run-guard.sh` or `~/.claude/*` scripts.
 - **CI `pull_request` trigger** stays commented, as in the template: the owner pushes directly.
 
@@ -115,7 +115,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 
 ### What to build
 
-- Base: `.editorconfig`, `.gitignore`, `Makefile`, `.vscode/settings.json`, `scripts/make-help.awk`, `.claude/settings.json` copied unchanged.
+- Base: `.editorconfig`, `.gitignore`, `Makefile`, `.vscode/settings.json`, `scripts/make-help.awk`, `.claude/settings.json` copied unchanged; `.gitignore` then gains `docker-compose.local.yml` (R29).
 - `docker-compose.yml`: uncomment `postgres` and `volumes`, add its healthcheck, replace `app` with `backend` (decisions).
 - `.devcontainer/devcontainer.json`: uncomment the Go, Node and Docker-in-Docker features, the Go extension and the oxc and Prettier extensions.
 - `.github/workflows/ci.yml`, `.github/dependabot.yml`, `scripts/setup-dev-tools.sh`: python blocks deleted, placeholders filled by the guide's sed.

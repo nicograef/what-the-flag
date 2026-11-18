@@ -2,11 +2,11 @@
 
 ## Problem Statement
 
-What The Flag is a Quizduell-like game about flags, countries and capitals, live at `what-the-flag.de`.
-The code is a 2024 Node, MongoDB and Material UI app that no handbook standard covers.
+What The Flag is a Quizduell-like game about flags, countries and capitals for `what-the-flag.de`.
+The repository holds a Node, MongoDB and Material UI app that no handbook standard covers. Nothing of it runs anywhere.
 Its quiz logic lives in an external npm package, and its flags are hot-linked from a CDN.
 
-Players meet these defects today:
+The app has these defects:
 
 - The timer runs in the browser only, so any script can ignore it.
 - The flag URL carries the ISO code, so every flag question shows its own answer.
@@ -18,7 +18,7 @@ Players meet these defects today:
 
 ## Solution
 
-A new app replaces the old one in the same repository and on the same domain.
+A new app is set up from scratch in the same repository, for the same domain.
 It follows the handbook's Go + React row: Go backend, Postgres, React with shadcn/ui, Caddy edge.
 Country data and flags are vendored into the repository from open sources; nothing is fetched at runtime.
 
@@ -27,7 +27,7 @@ Every registered player plays one weekly challenge and climbs a weekly and an al
 The server serves one question at a time, starts the clock and checks every answer.
 The interface speaks German and English.
 
-Nothing is migrated. Old users, challenges and points are dropped.
+There is no production instance and no user data. The existing code is deleted.
 
 ## User Stories
 
@@ -232,7 +232,7 @@ All routes sit under `/api` and speak JSON. An error is `{"error": {"code", "mes
 
 ## Out of Scope
 
-- Migrating old users, challenges or points.
+- Any data migration: no production data exists.
 - Email addresses, password reset, social login.
 - Real-time play, push notifications, websockets.
 - Declining a duel, rematch buttons, chat, friends lists.
