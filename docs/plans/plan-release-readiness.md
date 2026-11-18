@@ -1,49 +1,52 @@
 # Plan: Release readiness
 
-> Source PRD: docs/prds/prd-rebuild.md
+> Source PRD: docs/prds/prd-rebuild.md (Testing Decisions: one browser test; Operations)
 
 ## Goal
 
-Make the full release `v1.0.0` taggable: practice, accounts, duels and weekly.
-One browser test plays a duel through the real images behind the real edge. Production configuration matches the PRD, and the docs describe the final tree.
-The prod stack under test, the migrate service and the image licences come from [plan-first-release.md](plan-first-release.md).
+Make `v1.0.0` taggable: practice, accounts, duels and the all-time leaderboard.
+One browser test registers two players, plays a duel and reads the result, through the real edge over local TLS.
+The CSP is reviewed, the docs describe the final tree, and the durable game rules live in `docs/game-rules.md`.
 
 ## Architectural decisions
 
 | Topic | Decision |
 | --- | --- |
-| Stack under test | first-release's `make e2e` (`scripts/e2e.sh`, `docker-compose.e2e.yml`, `reverse-proxy/e2e.Caddyfile`). This plan adds the browser test to it |
-| E2E location | `frontend/e2e/duel.e2e.ts`, config `frontend/playwright.config.ts`, script `pnpm run e2e`. Vitest's default include skips `.e2e.ts`; `fe-check` lints and typechecks it |
-| Browser routing | Chromium runs with `--host-resolver-rules=MAP what-the-flag.de 127.0.0.1` and `ignoreHTTPSErrors`. `baseURL` is `https://what-the-flag.de:8443` |
-| Origin (R6) | The browser sends `Origin: https://what-the-flag.de:8443`. Caddy passes `Host: what-the-flag.de:8443` unchanged. foundation's `httpx.CheckOrigin` compares host:port, so both match |
-| Session cookie | The page is HTTPS, so the `__Host-` cookie with `Secure` is stored and sent as in production |
-| Clock | The test clicks an option as soon as a question renders. No test-only server switch exists |
+| Stack under test | first-release's `scripts/e2e-stack.sh <command>` and its e2e Compose project. It sets `E2E_BASE_URL` and uses `docker-compose.local.yml` when present |
+| Browser package | Root `e2e/`, laid out like jotti's `e2e/`: own `package.json` with `packageManager`, own `pnpm-lock.yaml`, `playwright.config.ts`, `tsconfig.json`, `tests/` |
+| Package scripts | The handbook's Package scripts, except `test` is `playwright test`. Lint is oxlint with jotti's Playwright rules in `e2e/.oxlintrc.json` |
+| Node pin | The root `.node-version`, as for `frontend/` |
+| Config | jotti settings: `forbidOnly` on CI, `retries: 0`, `trace: 'retain-on-failure'`, `screenshot: 'only-on-failure'`, reporter `github` + `html` on CI |
+| Device | One project on `devices['Pixel 7']`, since the layout is mobile first. `locale: 'en-US'`, `timeout: 120_000` |
+| Browser routing | `baseURL` is `E2E_BASE_URL`. Chromium runs with `--host-resolver-rules=MAP what-the-flag.de 127.0.0.1` and `ignoreHTTPSErrors` |
+| Origin and cookie | The page origin is `https://what-the-flag.de:<port>`, the `Host` Caddy passes. The `__Host-session` cookie is `Secure` over real HTTPS |
+| Rate limit | Only two registrations pass the edge, well inside the per-address burst |
+| Clock | The test clicks the first option as soon as a question renders. No test-only server switch exists |
+| Console gate | Any `pageerror` fails the test, as does any console error except `Failed to load resource`. That exception covers the expected 401 from `/api/me` |
 | CSP | In `reverse-proxy/Caddyfile`: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'` |
-| Why `'unsafe-inline'` styles | Radix dialogs in shadcn inject a runtime `<style>` through `react-remove-scroll`. A static SPA has no per-request nonce. Scripts stay `'self'`: Vite emits no inline script |
+| Why `'unsafe-inline'` styles | Radix dialogs inject a runtime `<style>` through `react-remove-scroll`. A static SPA has no per-request nonce. Vite emits no inline script |
 | Why `data:` | Vite inlines assets under 4 KiB as `data:` URLs, images and fonts alike |
-| Console gate | The e2e test fails on any `pageerror` and on any console error except `Failed to load resource`. CSP violations log `Refused to …` and fail it. Expected 401s from `/api/me` log `Failed to load resource` |
-| Memory (R17) | `account.MaxConcurrentHashes` (4) × `account.ArgonMemoryKiB` (19456 KiB) = 76 MiB of hash memory. Backend keeps `memory: 512M` and gains `GOMEMLIMIT: 400MiB`. 76 MiB plus an idle Go process stays far under 400 MiB |
-| `.env.example` gate (R21) | `scripts/check-env-example.sh` compares the names in `.env.example` (active and `# NAME=` lines) with the readers, both directions. Readers: `[Gg]etenv("NAME")` and `LookupEnv("NAME")` in `backend/`, `process.env.NAME` in `contract/src/`, `${NAME}` in `docker-compose*.yml`, plus `COMPOSE_FILE` and `BACKUP_PING_URL` named in the script |
-| Env gate wiring | `make env-check` runs it as a prerequisite of `make check`; CI job `env-check` on every push |
-| Release tag | All three images move to `v1.0.0` in `docker-compose.prod.yml` in the last phase. The owner tags after this plan lands |
-| CI criteria (R31) | Lanes never call `gh`. A CI criterion reads "CI job `<name>` green on the lane's pushed head (lead checks)"; the lead reads the run through the GitHub MCP actions tools |
-| Docker in the cloud session (R29) | As in first-release: `dockerd &`, `--network host`, the session CA through the gitignored `docker-compose.local.yml`. Stack criteria run locally and in CI; CI is the gate of record |
+| CSP violations | A blocked resource logs `Refused to …` as a console error, so the console gate fails the browser test |
+| CI job `e2e` | Runs `scripts/e2e-stack.sh pnpm --dir e2e test` and uploads `e2e/playwright-report/` and `e2e/test-results/` on failure, as jotti's job does |
+| Smoke script | The browser test covers health, migrations, API and SPA. `scripts/smoke.sh` and its references go |
+| Release tag | `backend`, `edge` and `migrate` move to `v1.0.0` in `docker-compose.prod.yml`. The owner tags after this plan lands |
+| Docker here | Stack criteria run after `dockerd &` with the session CA from `docker-compose.local.yml` (programme § Rulings) |
 
 ## Inventory
 
-- `scripts/e2e.sh`, `docker-compose.e2e.yml`, `docker-compose.prod.yml`, `database/Dockerfile` (first-release) — the stack under test.
-- `reverse-proxy/Caddyfile` — edge; gains the CSP header.
-- `.github/workflows/ci.yml — e2e` (first-release) — gains the browser steps and the `env-check` job.
-- `backend/internal/httpx — CheckOrigin()` — must pass the e2e host and port (R6).
-- `backend/internal/account/password.go — ArgonMemoryKiB, MaxConcurrentHashes` — inputs to the memory budget (R17).
-- `frontend/src/features/{auth,dashboard,duels,leaderboard}/` — screens and `messages.ts` labels the test selects by role.
-- `Makefile`, `.env.example`, `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md`, `.gitignore`.
+- `scripts/e2e-stack.sh`, `docker-compose.e2e.yml`, `reverse-proxy/e2e.Caddyfile`, `scripts/smoke.sh` (first-release) — the stack under test.
+- `reverse-proxy/Caddyfile` — the primary site's `header` block gains the CSP.
+- `.github/workflows/ci.yml — changes, e2e`, `.github/dependabot.yml`, `Makefile — check, e2e` — gates and their wiring.
+- `frontend/src/features/{auth,dashboard,duels,leaderboard}/` — routes and English labels the test selects by role.
+- `docker-compose.prod.yml`, `database/Dockerfile`, `.github/workflows/release.yml` — release pins.
+- `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md`, `docs/prds/prd-rebuild.md`, `.gitignore`.
+- jotti `e2e/package.json`, `e2e/playwright.config.ts`, `e2e/tsconfig.json`, `Makefile — check-e2e`, `.github/workflows/ci.yml — e2e` — the patterns.
 
 ## Open questions / Risks
 
-- Feature plans land before phase 1. Re-check every file and symbol named here against the landed tree first.
-- The CI criteria need the run branch pushed. Push it before each stack criterion.
-- Chromium may refuse `Secure` cookies under `ignoreHTTPSErrors`. Fallback: export `/data/caddy/pki/authorities/local/root.crt` from the edge and trust it in the runner's NSS database.
+- Phase agents re-read every file and symbol named here against the landed tree first.
+- `pnpm exec playwright install chromium` downloads a browser. If the session's network blocks it, the stack criteria wait for CI.
+- Chromium may refuse `Secure` cookies under `ignoreHTTPSErrors`. Fallback: trust the edge's local root CA in the runner's NSS database.
 
 ## Phase 1: Browser test of the duel flow
 
@@ -51,32 +54,35 @@ The prod stack under test, the migrate service and the image licences come from 
 
 ### Context
 
-- `frontend/src/features/auth/`, `dashboard/`, `duels/`, `leaderboard/` — routes `/register`, `/dashboard`, `/duels/:id`, `/leaderboard` and their English labels.
-- `frontend/package.json`, `frontend/tsconfig.node.json` — scripts, typecheck scope.
-- `scripts/e2e.sh`, `.github/workflows/ci.yml` — the stack run and its CI job.
+- `scripts/e2e-stack.sh`, `Makefile`, `.github/workflows/ci.yml` — the stack runner, its target and its CI job.
+- `frontend/src/features/{auth,dashboard,duels,leaderboard}/` — pages and labels the test drives.
 
 ### What to build
 
-- `frontend/package.json`: dev dependency `@playwright/test` (version from `pnpm view @playwright/test version`), script `e2e: playwright test`; `frontend/pnpm-lock.yaml`.
-- `frontend/playwright.config.ts`: `testDir: 'e2e'`, `testMatch: /.*\.e2e\.ts$/`, Chromium only, `locale: 'en-US'`, `baseURL`, `ignoreHTTPSErrors`, the resolver flag, `retries: 0`, `timeout: 120_000`, `trace: 'retain-on-failure'`.
-- `frontend/tsconfig.node.json`: include `playwright.config.ts` and `e2e`.
-- `frontend/e2e/duel.e2e.ts` (end to end, one test): usernames `a_`/`b_` plus 8 base36 chars.
-  - Two browser contexts register A and B via `/register`.
-  - A searches B on `/dashboard`, challenges, and plays ten questions on `/duels/:id`, clicking the first option at once.
+- `e2e/package.json`, `e2e/pnpm-lock.yaml`: `@playwright/test`, `typescript@~7.0`, `oxlint`, `oxlint-tsgolint`, `prettier`, `@types/node`, `eslint-plugin-playwright`.
+  Versions resolve at execution with `pnpm add -D`.
+- `e2e/playwright.config.ts`, `e2e/tsconfig.json`, `e2e/.oxlintrc.json`, `e2e/.prettierignore` per the decisions.
+- `e2e/tests/duel.spec.ts`, one test. Usernames are `a_`/`b_` plus 8 base36 characters.
+  - Two browser contexts register A and B through `/register`.
+  - A opens the challenge dialog on `/dashboard`, picks B, and plays ten questions on `/duels/:id`.
   - B sees the duel as `your_turn` on `/dashboard` and plays the same way.
   - Both result pages list both players and ten question rows.
-  - `/leaderboard` shows each player with the points their result page awarded.
-  - The console gate from the decisions table applies to every page.
-- `scripts/e2e.sh`: after the smoke checks, `pnpm install --frozen-lockfile`, `pnpm exec playwright install chromium` and `pnpm run e2e` in `frontend/`.
-- `.gitignore`: `frontend/playwright-report/`, `frontend/test-results/`.
-- `.github/workflows/ci.yml`: job `e2e` gains the template's pinned pnpm and setup-node steps and `pnpm exec playwright install --with-deps chromium` in `frontend/`, before `make e2e`.
-- `docs/decisions.md`: D line for the e2e location and the absent test clock.
+  - Each player opens `/leaderboard` through the navbar link and finds their own points from the result page.
+  - The console gate applies to every page.
+- `Makefile`: `e2e-check` (frozen install, `format:check`, `typecheck`, `lint` in `e2e/`) as a prerequisite of `check`.
+  `e2e` runs the Playwright install, then `scripts/e2e-stack.sh pnpm --dir e2e test`.
+- `scripts/smoke.sh` deleted; `grep -rn 'smoke.sh' .` then fixes every reference.
+- `.github/workflows/ci.yml`: filter `e2e` gains `e2e/**`. Job `e2e` gains SHA-pinned `pnpm/action-setup` (`package_json_file: e2e/package.json`).
+  It also gains `setup-node` with `.node-version`, `make e2e-check`, `playwright install --with-deps chromium`, the stack run and the upload.
+- `.github/dependabot.yml`: an npm entry for `/e2e`. `.gitignore`: `e2e/playwright-report/`, `e2e/test-results/`.
+- `docs/decisions.md`: one D line for the browser package outside `frontend/`, one for the absent test clock.
 
 ### Acceptance criteria
 
-- [ ] End to end (local, R29): `make e2e 2>&1 | grep -c '1 passed'` prints ≥ 1.
-- [ ] CI job `e2e` green on the lane's pushed head (lead checks, R31).
-- [ ] `make check` passes.
+- [ ] The duel flow passes through the edge (local): `make e2e`
+- [ ] CI uploads the report on failure: `grep -q 'e2e/playwright-report/' .github/workflows/ci.yml`
+- [ ] No reference to the deleted smoke script remains: `! grep -rq 'smoke.sh' Makefile .github scripts README.md AGENTS.md`
+- [ ] `make check` passes
 
 ## Phase 2: Production configuration review
 
@@ -84,78 +90,60 @@ The prod stack under test, the migrate service and the image licences come from 
 
 ### Context
 
-- `reverse-proxy/Caddyfile` — primary site's `header` block.
-- `docker-compose.prod.yml — backend` — limits and environment.
-- `backend/internal/account/password.go — ArgonMemoryKiB, MaxConcurrentHashes`.
-- `backend/internal/config/config.go — Load()`, `contract/src/env.ts`, `contract/src/db.ts`, `.env.example`, `scripts/backup-postgres.sh` — the env readers.
-- `Makefile`, `.github/workflows/ci.yml` — `check` prerequisites, jobs.
+- `reverse-proxy/Caddyfile` — the primary site's `header` block.
+- `.github/dependabot.yml` — one entry per package and Dockerfile directory.
 
 ### What to build
 
-- `reverse-proxy/Caddyfile`: the CSP header from the decisions table in the primary site's `header` block.
-- `frontend/e2e/duel.e2e.ts`: the response to `/` carries `Content-Security-Policy` containing `frame-ancestors 'none'`.
-- `docker-compose.prod.yml`: backend `environment` gains `GOMEMLIMIT: 400MiB`.
-- `scripts/check-env-example.sh` per the decisions table; prints each missing or extra name, exits 1 on any.
-- `Makefile`: `env-check` in `CLASS_developer`, a prerequisite of `check`.
-- `.github/workflows/ci.yml`: job `env-check`, no filter, `timeout-minutes: 5`, SHA-pinned checkout, `scripts/check-env-example.sh`.
-- `docs/decisions.md`: D lines for the CSP with its two exceptions, and for the memory budget with `N`, `m` and the 400 MiB limit.
+- `reverse-proxy/Caddyfile`: the CSP header from the decisions, beside the handbook's security headers.
+- `e2e/tests/duel.spec.ts`: the response to `/` carries `Content-Security-Policy` containing `frame-ancestors 'none'`.
+- `.github/dependabot.yml`: an entry for every directory with a manifest or Dockerfile, `/database` included.
+- `docs/decisions.md`: one D line for the CSP with its two exceptions and their reasons.
 
 ### Acceptance criteria
 
-- [ ] CSP holds and breaks nothing (local): `make e2e 2>&1 | grep -c '1 passed'` prints ≥ 1.
-- [ ] CI job `e2e` green on the lane's pushed head (lead checks, R31).
-- [ ] Env gate passes on the tree: `make env-check` exits 0.
-- [ ] Env gate catches a stale name: `printf 'STALE_NAME=x\n' >> .env.example; scripts/check-env-example.sh | grep -c STALE_NAME; git checkout -- .env.example` prints 1.
-- [ ] Config: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -r '.services.backend.environment.GOMEMLIMIT'` prints `400MiB`.
-- [ ] `make check` passes.
+- [ ] The CSP holds and breaks no page (local): `make e2e`
+- [ ] The styles exception is the only `unsafe-inline`: `test "$(grep -o "'unsafe-inline'" reverse-proxy/Caddyfile | wc -l)" -eq 1`
+- [ ] Every package and image directory has a Dependabot entry: `for d in backend frontend e2e reverse-proxy database; do grep -qE "directory: \"?/$d\"?\s*$" .github/dependabot.yml || exit 1; done`
+- [ ] `make check` passes
 
-## Phase 3: Documentation
+## Phase 3: Documentation and the `v1.0.0` checklist
 
 **Depends on**: 2
 
 ### Context
 
+- `docs/prds/prd-rebuild.md` — sections Quiz rules, Round rules, Accounts, Duels, Leaderboard and points.
 - `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md` — current state after phases 1–2.
+- `docker-compose.prod.yml`, `database/Dockerfile`, `Makefile`, `.github/workflows/ci.yml` — release pins.
 
 ### What to build
 
-- `README.md` quick start: `make db`, `make db-migrate`, `make be`, `make fe`, `make check`, `make be-integration`, `make contract`, `make e2e`, `make data`. The licence section stays as country-data wrote it (R1).
-- `README.md` deploy section: links to the handbook's `guides/deploy.md` and `guides/backup-restore.md`; `DOMAIN=what-the-flag.de make prod-deploy`.
+- `docs/game-rules.md`, a current-state doc with sections Quiz, Rounds, Accounts, Duels and Points.
+  It states the durable rules, the duel status names and the points table, without links into `docs/prds/` or `docs/plans/`.
+- `README.md` quick start: `make db`, `make db-migrate`, `make be`, `make fe`, `make check`, `make be-integration`, `make e2e`.
+  A link to `docs/game-rules.md`. The licence section stays as country-data wrote it.
+- `README.md` deploy section: links to the handbook's `guides/deploy.md` and `guides/backup-restore.md`, and `DOMAIN=what-the-flag.de make prod-deploy`.
   It states three images per release, `migrate` running inside the deploy after the backup, and `make prod-migrate ARGS=version`.
 - `docs/README.md`: one row per file in `docs/` with the question it answers.
 - `docs/decisions.md`: every D line true to the tree; a replaced line says `replaced by DNN`.
-- `AGENTS.md`: layout, `make` targets and rules true to the final tree, `contract/`, `frontend/e2e/`, `database/Dockerfile` and `scripts/` included. Rule: a route lands with its `contract/openapi.yaml` entry and contract tests.
-
-### Acceptance criteria
-
-- [ ] Index complete: `for f in docs/*.md; do grep -q "$(basename "$f")" docs/README.md || echo "$f"; done | grep -v '^docs/README.md$'` prints nothing.
-- [ ] Paths true: `grep -ohE '\`[A-Za-z0-9_./-]+/\`' AGENTS.md README.md | tr -d '\`' | sort -u | while read -r p; do test -e "$p" || echo "$p"; done` prints nothing.
-- [ ] Targets true: `grep -ohE 'make [a-z-]+' README.md AGENTS.md | awk '{print $2}' | sort -u | while read -r t; do make -n "$t" >/dev/null 2>&1 || echo "$t"; done` prints nothing.
-- [ ] `make check` passes.
-
-## Phase 4: Release checklist
-
-**Depends on**: 3
-
-### Context
-
-- `docker-compose.prod.yml`, `database/Dockerfile`, `.github/workflows/release.yml`, `.github/workflows/ci.yml`, `reverse-proxy/Caddyfile`, `.env.example`, `docs/plans/`.
-
-### What to build
-
+- `AGENTS.md`: layout, `make` targets and rules true to the final tree, with `e2e/`, `database/Dockerfile` and `scripts/`.
+  It links `docs/game-rules.md` and states that a route lands with its `backend/internal/contract/<domain>_integration_test.go` cases.
 - `docker-compose.prod.yml`: `backend`, `edge` and `migrate` images move to `v1.0.0`.
-- Run every check below on the run branch and fix any failure in its own commit. No feature lands here.
-- The run deletes this plan once every criterion is ticked (R26: no plugin scripts).
+- Run every check below and fix any failure in its own commit. No feature lands here.
 
 ### Acceptance criteria
 
-- [ ] Pins: `grep -cE 'what-the-flag-(backend|edge|migrate):v1\.0\.0' docker-compose.prod.yml` prints 3.
-- [ ] Migrate pin: `grep -hoE 'v4\.[0-9]+\.[0-9]+' database/Dockerfile .github/workflows/ci.yml | sort -u | wc -l` prints 1.
-- [ ] Release matrix: `grep -cE 'service: (backend|edge|migrate)$' .github/workflows/release.yml` prints 3.
-- [ ] Placeholders: `grep -rnE '<(owner|project|name|domain|database-name)>' docker-compose.prod.yml .github reverse-proxy scripts Makefile` prints nothing.
-- [ ] Env: `scripts/check-env-example.sh` exits 0.
-- [ ] Integration: `make be-integration` passes.
-- [ ] Contract: with `make db`, `make db-migrate` and `make be` running, `make contract` passes.
-- [ ] CI job `e2e` green on the lane's pushed head (lead checks, R31).
-- [ ] Plans: `ls docs/plans/plan-*.md` prints only `docs/plans/plan-release-readiness.md`.
-- [ ] `make check` passes.
+- [ ] Game rules complete: `for h in Quiz Rounds Accounts Duels Points; do grep -q "^## $h" docs/game-rules.md || exit 1; done`
+- [ ] Game rules stand alone: `! grep -qE 'prds/|plans/' docs/game-rules.md`
+- [ ] README and AGENTS link the rules: `grep -q 'docs/game-rules.md' README.md && grep -q 'docs/game-rules.md' AGENTS.md`
+- [ ] Docs index complete: `for f in docs/*.md; do [ "$f" = docs/README.md ] || grep -q "$(basename "$f")" docs/README.md || exit 1; done`
+- [ ] Paths true: ``grep -ohE '`[A-Za-z0-9_./-]+/`' AGENTS.md README.md | tr -d '`' | sort -u | while read -r p; do test -e "$p" || exit 1; done``
+- [ ] Targets true: `grep -ohE 'make [a-z-]+' README.md AGENTS.md | awk '{print $2}' | sort -u | while read -r t; do grep -qE "^$t:" Makefile || exit 1; done`
+- [ ] Pins: `test "$(grep -cE 'what-the-flag-(backend|edge|migrate):v1\.0\.0' docker-compose.prod.yml)" -eq 3`
+- [ ] One migrate version: `test "$(grep -hoE 'v4\.[0-9]+\.[0-9]+' database/Dockerfile Makefile .github/workflows/ci.yml | sort -u | wc -l)" -eq 1`
+- [ ] No template placeholders: `! grep -rqE '<(owner|project|name|domain|database-name)>' docker-compose.prod.yml .github reverse-proxy scripts Makefile`
+- [ ] Owner items name the tag: `grep -q 'prod-release VERSION=1.0.0' docs/plans/programme.md`
+- [ ] Integration suite passes (with `make db` and `make db-migrate` done): `make be-integration`
+- [ ] The full stack passes (local): `make e2e`
+- [ ] `make check` passes
