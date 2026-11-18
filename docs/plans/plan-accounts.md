@@ -44,10 +44,10 @@ Duels and weekly award points through one ledger call; the all-time leaderboard 
 - **All-time ranking**: only users with ledger entries are ranked. A subquery computes `sum(points)` and `RANK() OVER (ORDER BY sum(points) DESC)` over all users; the outer query orders by total desc, user id, then applies `OFFSET`/`LIMIT`. The viewer's rank is `1 + count(users with a higher total)`. A viewer without points gets `viewer.rank = null`, `points = 0`. A ranked user missing from `PublicByIDs` (deleted meanwhile) is left out of the page.
 - **Account deletion**: one `DELETE FROM users`. FK cascades remove sessions, ledger entries, rounds, duels and weekly entries (PRD). The other player's ledger rows for a cascaded duel stay; they reference the duel by value, not FK.
 - **Redirects (R8)**: a logged-out visitor on a player route goes to `/login?next=<path>`. After login or registration the app goes to `next` if it starts with `/` but not `//`, else `/dashboard`. `/dashboard` 404s until the duels plan lands; accepted. A logged-in user on `/login` or `/register` goes to `/dashboard`. Logout and deletion clear the query cache and go to `/`.
-- **Protected routes**: `frontend/src/features/auth/RequireUser.tsx — RequireUser` is a layout route element rendering `<Outlet />`. Every player route in `router.tsx` is its child.
-- **Session query**: `frontend/src/features/auth/useSession.ts — useSession()`, query key `['session']`, calls `GET /api/me`; a 401 resolves to `null`. `/api/me` and `/api/leaderboard` are not localised, so their keys carry no locale (R20).
+- **Protected routes**: `frontend/src/features/auth/require-user.tsx — RequireUser` is a layout route element rendering `<Outlet />`. Every player route in `router.tsx` is its child.
+- **Session query**: `frontend/src/features/auth/use-session.ts — useSession()`, query key `['session']`, calls `GET /api/me`; a 401 resolves to `null`. `/api/me` and `/api/leaderboard` are not localised, so their keys carry no locale (R20).
 - **Forms**: shadcn form components with `react-hook-form` and `@hookform/resolvers/zod`, per https://ui.shadcn.com/docs/forms/react-hook-form at execution time. Server error codes map to messages in the feature's `messages.ts`; a `field` puts the message under that input.
-- **Frontend tests (R18)**: `frontend/src/test/render.tsx — renderRoute()` with a fake `ApiClient`; nothing else fakes the server.
+- **Frontend tests (R18)**: `frontend/src/test/render.tsx — renderRoute(path, { api })` with `api` from `createApiClient({ fetch: fakeFetch, getLocale })`; nothing else fakes the server.
 
 ### Error codes
 
@@ -85,7 +85,6 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 
 ## Open questions / Risks
 
-- **Cross-plan order**: phase 1 runs after the foundation plan. Duels and weekly call `Award()` with their `pgx.Tx` and the duel or weekly challenge id as `sourceID`; their consumer interfaces must match the exact signature above.
 - **Dev HTTPS fallback (R16)**: if phase 1 adopts `@vitejs/plugin-basic-ssl`, the dev URL becomes `https://localhost:5173`. Foundation's cross-stack tracer `curl localhost:5173/api/health` then needs `-k https://`.
 - **Login throttling is per address only** (PRD). Guessing one account from many addresses is bounded only by the hash gate. Accepted for a game without personal data.
 
@@ -110,7 +109,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `backend/internal/account/handler_test.go` — `TestSessionCookie`: register's `Set-Cookie` carries every attribute; a 401 for an expired token clears the cookie.
 - `backend/internal/account/store_test.go` (`//go:build integration`) — case-insensitive uniqueness, session cascade on user delete.
 - `backend/cmd/what-the-flag/main.go` — wire account store, service, handler.
-- `frontend/src/features/auth/` — `api.ts` (`register()`, `getMe()` with Zod schemas), `schemas.ts` (Zod username and password rules), `messages.ts`, `useSession.ts`, `RegisterPage.tsx`, `UserMenu.tsx` (emoji + username linking to `/profile`, or log-in and register links), `RegisterPage.test.tsx`.
+- `frontend/src/features/auth/` — `api.ts` (`register()`, `getMe()` with Zod schemas), `schemas.ts` (Zod username and password rules), `messages.ts`, `use-session.ts`, `register-page.tsx`, `user-menu.tsx` (emoji + username linking to `/profile`, or log-in and register links), `register-page.test.tsx`.
 - `frontend/src/components/ui/` — `field.tsx`, `input.tsx`, `button.tsx`, `label.tsx`, `card.tsx` via the shadcn CLI, plus `frontend/package.json` and `frontend/pnpm-lock.yaml`.
 - `frontend/src/app/router.tsx` — `/register`; `frontend/src/app/navbar.tsx` — mount `UserMenu`.
 - Only if the R16 check fails: `frontend/vite.config.ts` (basic-ssl plugin) and one appended line in `docs/decisions.md`.
@@ -120,7 +119,7 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - [ ] Username, password, fixation and session-sliding rules hold (service): `cd backend && go test -race ./internal/account -run TestService`
 - [ ] Register sets the `__Host-session` cookie with all attributes; a stale token gets it cleared (handler): `cd backend && go test -race ./internal/account -run TestSessionCookie`
 - [ ] `Alice` and `alice` cannot both register; deleting a user deletes its sessions (integration): `cd backend && go test -tags=integration -race ./internal/account -run TestStore`
-- [ ] Invalid input shows field messages without a request; a valid submit calls `register`; `username_taken` shows under the field (frontend): `cd frontend && pnpm vitest run src/features/auth/RegisterPage.test.tsx`
+- [ ] Invalid input shows field messages without a request; a valid submit calls `register`; `username_taken` shows under the field (frontend): `cd frontend && pnpm vitest run src/features/auth/register-page.test.tsx`
 - [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running, registering on the dev URL in Chromium and in Firefox shows the username in the navbar, and it survives a reload (manual, R16)
 - [ ] `make check` passes
 
@@ -142,14 +141,14 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `backend/internal/account/handler.go` — `POST /api/session`, `DELETE /api/session` (no auth; deletes the presented session if any; always 204 with the cookie cleared), limiter on register and login.
 - `backend/internal/account/service_test.go` — login with wrong password, unknown user, overlong password, mixed-case username; a presented session is deleted.
 - `backend/cmd/what-the-flag/main.go` — construct both limiters.
-- `frontend/src/features/auth/` — `api.ts` (`login()`, `logout()`), `LoginPage.tsx`, `RequireUser.tsx`, `redirects.ts` (`safeNext()`, `AFTER_LOGIN = '/dashboard'`), `LoginPage.test.tsx`; `RegisterPage.tsx` gains the `next` redirect and the logged-in redirect.
+- `frontend/src/features/auth/` — `api.ts` (`login()`, `logout()`), `login-page.tsx`, `require-user.tsx`, `redirects.ts` (`safeNext()`, `AFTER_LOGIN = '/dashboard'`), `login-page.test.tsx`; `register-page.tsx` gains the `next` redirect and the logged-in redirect.
 - `frontend/src/app/router.tsx` — `/login`; the `RequireUser` layout route.
 
 ### Acceptance criteria
 
 - [ ] Rate limit and client-address rules hold (unit): `cd backend && go test -race ./internal/account -run 'TestLimiter|TestClientAddr'`
 - [ ] Login accepts any letter case, rejects wrong credentials alike and replaces a presented session (service): `cd backend && go test -race ./internal/account -run TestServiceLogin`
-- [ ] Invalid input blocks the request; `invalid_credentials` and `rate_limited` show their messages; success goes to a safe `next`, `//evil` goes to `/dashboard` (frontend): `cd frontend && pnpm vitest run src/features/auth/LoginPage.test.tsx`
+- [ ] Invalid input blocks the request; `invalid_credentials` and `rate_limited` show their messages; success goes to a safe `next`, `//evil` goes to `/dashboard` (frontend): `cd frontend && pnpm vitest run src/features/auth/login-page.test.tsx`
 - [ ] `make check` passes
 
 ## Phase 3: Profile, emoji and account deletion
@@ -166,14 +165,14 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `backend/internal/account/service.go` — `SetEmoji()` validating against `Emojis`, `Delete()`.
 - `backend/internal/account/handler.go` — `PATCH /api/me` (`{emoji}` → me body), `DELETE /api/me` (204, cookie cleared).
 - `backend/internal/account/service_test.go` — unknown emoji rejected, listed emoji stored.
-- `frontend/src/features/profile/` — `api.ts` (`updateEmoji()`, `deleteAccount()`), `messages.ts`, `ProfilePage.tsx` (username, emoji grid picker, log-out button, delete with confirmation dialog), `ProfilePage.test.tsx`.
+- `frontend/src/features/profile/` — `api.ts` (`updateEmoji()`, `deleteAccount()`), `messages.ts`, `profile-page.tsx` (username, emoji grid picker, log-out button, delete with confirmation dialog), `profile-page.test.tsx`.
 - `frontend/src/components/ui/alert-dialog.tsx` via the shadcn CLI, plus `frontend/package.json` and `frontend/pnpm-lock.yaml`.
 - `frontend/src/app/router.tsx` — `/profile` under `RequireUser`.
 
 ### Acceptance criteria
 
 - [ ] Emoji outside the list is rejected, a listed one is stored (service): `cd backend && go test -race ./internal/account -run TestServiceSetEmoji`
-- [ ] Picking an emoji calls `updateEmoji` and updates the navbar; deletion calls `deleteAccount` only after confirmation (frontend): `cd frontend && pnpm vitest run src/features/profile/ProfilePage.test.tsx`
+- [ ] Picking an emoji calls `updateEmoji` and updates the navbar; deletion calls `deleteAccount` only after confirmation (frontend): `cd frontend && pnpm vitest run src/features/profile/profile-page.test.tsx`
 - [ ] `make check` passes
 
 ## Phase 4: User search and public lookups
@@ -216,13 +215,13 @@ Generic codes come from `backend/internal/httpx` (`httpx.Error`, `httpx.WriteErr
 - `backend/internal/leaderboard/store_test.go` (`//go:build integration`) — second identical award inserts nothing; equal totals share a rank and the next rank skips; ties keep user-id order across a page boundary; `RankOfUser` equals the viewer's rank in `RankedPage`; ledger rows vanish with their user; an award in a rolled-back tx leaves no row.
 - `backend/internal/account/handler.go` — `GET /api/me` adds `points` from a `PointsTotaler` interface declared in `backend/internal/account/service.go`.
 - `backend/cmd/what-the-flag/main.go` — wire leaderboard store, service, handler; pass it to the account handler.
-- `frontend/src/features/leaderboard/` — `api.ts`, `messages.ts`, `LeaderboardPage.tsx` (ranks, emoji, names, points, previous/next, the viewer's row pinned when off-page), `LeaderboardPage.test.tsx`.
-- `frontend/src/features/auth/api.ts` — `points` in the me schema; `frontend/src/features/profile/ProfilePage.tsx` — shows total points.
+- `frontend/src/features/leaderboard/` — `api.ts`, `messages.ts`, `leaderboard-page.tsx` (ranks, emoji, names, points, previous/next, the viewer's row pinned when off-page), `leaderboard-page.test.tsx`.
+- `frontend/src/features/auth/api.ts` — `points` in the me schema; `frontend/src/features/profile/profile-page.tsx` — shows total points.
 - `frontend/src/app/router.tsx` — `/leaderboard` under `RequireUser`.
 
 ### Acceptance criteria
 
 - [ ] Award validation, the unranked viewer and missing users hold (service): `cd backend && go test -race ./internal/leaderboard -run TestService`
 - [ ] Idempotency, `RANK()` ties and paging, cascade and tx rollback hold (integration): `cd backend && go test -tags=integration -race ./internal/leaderboard -run TestStore`
-- [ ] An off-page viewer row is pinned below the page; an on-page viewer is marked, not repeated (frontend): `cd frontend && pnpm vitest run src/features/leaderboard/LeaderboardPage.test.tsx`
+- [ ] An off-page viewer row is pinned below the page; an on-page viewer is marked, not repeated (frontend): `cd frontend && pnpm vitest run src/features/leaderboard/leaderboard-page.test.tsx`
 - [ ] `make check` passes

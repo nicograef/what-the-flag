@@ -29,6 +29,7 @@ The `/weekly` page and a dashboard card expose it.
 | Unknown week | `?week=` naming a past week without a challenge, or a future week: 404 `week_not_found`. Malformed: 400 `invalid_week`, `field: "week"`. |
 | Leaderboard size | `LeaderboardLimit = 100` rows, plus the viewer's row in `viewer` when the viewer finished. No pagination. |
 | Account deletion (R14) | Entries cascade with the user and the round. The shared weekly quiz set stays. |
+| Consumer interfaces | In `service.go`. `Quiz`: `CreateSet(ctx context.Context, tx pgx.Tx, kind quiz.Kind, size int) (uuid.UUID, error)`, `StartRound(ctx context.Context, tx pgx.Tx, setID, userID uuid.UUID) (uuid.UUID, error)`. `Users`: `PublicByIDs(ctx context.Context, ids []uuid.UUID) (map[uuid.UUID]account.PublicUser, error)`. `Ledger`: `Award(ctx context.Context, tx pgx.Tx, userID uuid.UUID, kind leaderboard.Kind, sourceID uuid.UUID, points int32) (bool, error)`. |
 | JSON | camelCase fields, as quiz and leaderboard use. Responses hold no localised text, so query keys carry no locale (R20). |
 
 ### Lazy creation (race-safe)
@@ -36,7 +37,7 @@ The `/weekly` page and a dashboard card expose it.
 `Store.EnsureChallenge(ctx, year, week int, start, end time.Time, createSet func(context.Context, pgx.Tx) (uuid.UUID, error)) (Challenge, error)`:
 
 1. `SELECT` the row for (iso_year, iso_week). Found: return it.
-2. Else begin a transaction. Call `createSet(ctx, tx)` for the quiz set id.
+2. Else begin a transaction. Call `createSet(ctx, tx)`, i.e. `quiz.Service — CreateSet(ctx, tx, quiz.KindWeekly, quiz.WeeklySize)`, for the quiz set id.
 3. `INSERT ... (iso_year, iso_week, quiz_set_id, starts_at, ends_at) ON CONFLICT (iso_year, iso_week) DO NOTHING RETURNING *`.
 4. Row returned: commit and return it. No row: a concurrent winner committed first. Roll back, then `SELECT` again and return that row.
 
@@ -77,14 +78,13 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 - `backend/internal/postgres — TestPool()` — integration-test pool.
 - `backend/cmd/what-the-flag/main.go` — wiring (choke file).
 - `frontend/src/lib/api.ts — useApiClient()`, `frontend/src/test/render.tsx — renderRoute()` — client and the only test seam (R18).
-- `frontend/src/features/play/Play.tsx — Play({ roundId, onFinished })` — the shared play component.
-- `frontend/src/features/auth/RequireUser.tsx` — protected-route wrapper.
+- `frontend/src/features/play/play.tsx — Play({ roundId, onFinished })` — the shared play component.
+- `frontend/src/features/auth/require-user.tsx` — protected-route wrapper.
 - `frontend/src/app/router.tsx` — route table (choke file).
-- `frontend/src/features/dashboard/DashboardPage.tsx` — renders `<section data-slot="weekly" />` as the first grid child (R7).
+- `frontend/src/features/dashboard/dashboard-page.tsx` — renders `<section data-slot="weekly" />` as the first grid child (R7).
 
 ## Open questions / Risks
 
-- R4 additions are not yet in the quiz plan text; its critic adds them. Weekly needs `CreateSet(ctx, tx pgx.Tx, kind, size)`, `StartRound(ctx, tx pgx.Tx, setID, userID)` and `FinishedRound.FinishedAt`. Re-check the landed names before phase 1.
 - Phase 5 needs the duels plan's dashboard phase ("Dashboard and challenge") landed. The programme orders it after that phase.
 - `backend/internal/db/`, `main.go` and `router.tsx` are shared with the duels lane. Regenerate with `cd backend && go tool sqlc generate` after every rebase.
 
@@ -144,7 +144,7 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 - `backend/sqlc/queries/weekly.sql` — insert entry `ON CONFLICT (challenge_id, user_id) DO NOTHING`, entry by round `FOR UPDATE OF e`, finish entry `WHERE round_id = $1 AND finished_at IS NULL`.
 - `backend/internal/db/` — regenerated.
 - `backend/internal/weekly/store.go` — `Store.InTx()`, `Store.AddEntry()`, `Store.LockEntryByRound()`, `Store.FinishEntry()` returning whether a row changed.
-- `backend/internal/weekly/service.go` — `Service.StartRound(ctx, userID, week string) (uuid.UUID, error)`: start errors from the decisions table. Else one transaction: quiz start-or-resume, entry insert, commit. `Service.RoundFinished()` per "Finish hook". `Ledger` interface.
+- `backend/internal/weekly/service.go` — `Service.StartRound(ctx, userID, week string) (uuid.UUID, error)`: start errors from the decisions table. Else one transaction: `Quiz.StartRound(ctx, tx, setID, userID)` (start or resume), entry insert, commit. `Service.RoundFinished()` per "Finish hook". `Ledger` interface.
 - `backend/internal/weekly/service_test.go` — in-memory fakes for store, quiz and ledger, injected clock. `TestService_Round` cases: same round twice while in progress; `already_played` after finish; `week_ended` for last week; `invalid_week`; finish at `ends_at` records nothing; hook run twice awards once; zero correct awards nothing.
 - `backend/internal/weekly/store_integration_test.go` — `TestStore_FinishEntryOnce`: a second `FinishEntry` on one round reports no change.
 - `backend/internal/weekly/handler.go` — `POST /api/weekly/round`; `GET /api/weekly` reports `in_progress` and `finished`.
@@ -188,20 +188,20 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 ### Context
 
 - `frontend/src/lib/api.ts — useApiClient()` and `frontend/src/test/render.tsx — renderRoute()` — client and test seam.
-- `frontend/src/features/play/Play.tsx — Play()` — plays the round.
-- `frontend/src/features/auth/RequireUser.tsx` — protects `/weekly`.
+- `frontend/src/features/play/play.tsx — Play()` — plays the round.
+- `frontend/src/features/auth/require-user.tsx` — protects `/weekly`.
 - `frontend/src/app/router.tsx` — route table.
 
 ### What to build
 
 - `frontend/src/features/weekly/api.ts` — Zod schemas; `getWeekly()`, `startWeeklyRound(week)`, `getWeeklyLeaderboard(week?)`.
 - `frontend/src/features/weekly/messages.ts` — `{ de, en }` strings.
-- `frontend/src/features/weekly/WeekCountdown.tsx` — time left to `endsAt`; refetches `getWeekly` at zero.
-- `frontend/src/features/weekly/WeeklyLeaderboard.tsx` — rank table, viewer row highlighted, viewer row appended when outside the top rows.
-- `frontend/src/features/weekly/WeekSelector.tsx` — current week plus `pastWeeks`, kept in the `?week=` search param.
-- `frontend/src/features/weekly/WeeklyPage.tsx` — `not_started`: START button, countdown, leaderboard. `in_progress`: `Play`; `onFinished` refetches. `finished`: result and leaderboard. A past week shows its leaderboard only.
-- `frontend/src/features/weekly/WeeklyCard.tsx` — root `<section data-slot="weekly">`, rendered in every query state, so the duels slot test stays green. Content: START, continue, or the result; link to `/weekly`.
-- `frontend/src/features/weekly/WeeklyPage.test.tsx` — `renderRoute('/weekly', { api })` with a faked client: one case per state and one for a past week.
+- `frontend/src/features/weekly/week-countdown.tsx` — time left to `endsAt`; refetches `getWeekly` at zero.
+- `frontend/src/features/weekly/weekly-leaderboard.tsx` — rank table, viewer row highlighted, viewer row appended when outside the top rows.
+- `frontend/src/features/weekly/week-selector.tsx` — current week plus `pastWeeks`, kept in the `?week=` search param.
+- `frontend/src/features/weekly/weekly-page.tsx` — `not_started`: START button, countdown, leaderboard. `in_progress`: `Play`; `onFinished` refetches. `finished`: result and leaderboard. A past week shows its leaderboard only.
+- `frontend/src/features/weekly/weekly-card.tsx` — root `<section data-slot="weekly">`, rendered in every query state, so the duels slot test stays green. Content: START, continue, or the result; link to `/weekly`.
+- `frontend/src/features/weekly/weekly-page.test.tsx` — `renderRoute('/weekly', { api })` with `api` from `createApiClient({ fetch: fakeFetch, getLocale })`: one case per state and one for a past week.
 - `frontend/src/app/router.tsx` — `/weekly` inside the protected routes.
 
 ### Acceptance criteria
@@ -215,15 +215,15 @@ R4's "hook locks its own aggregate row" is the entry row here. A challenge-row l
 
 ### Context
 
-- `frontend/src/features/dashboard/DashboardPage.tsx` — the empty weekly slot (R7).
-- `frontend/src/features/weekly/WeeklyCard.tsx` — the card from phase 4.
+- `frontend/src/features/dashboard/dashboard-page.tsx` — the empty weekly slot (R7).
+- `frontend/src/features/weekly/weekly-card.tsx` — the card from phase 4.
 
 ### What to build
 
-- `frontend/src/features/dashboard/DashboardPage.tsx` — replace the `<section data-slot="weekly" />` element with `<WeeklyCard />`. Nothing else changes.
+- `frontend/src/features/dashboard/dashboard-page.tsx` — replace the `<section data-slot="weekly" />` element with `<WeeklyCard />`. Nothing else changes.
 
 ### Acceptance criteria
 
-- [ ] The card replaces the slot: `grep -c '<WeeklyCard />' frontend/src/features/dashboard/DashboardPage.tsx` prints `1`
+- [ ] The card replaces the slot: `grep -c '<WeeklyCard />' frontend/src/features/dashboard/dashboard-page.tsx` prints `1`
 - [ ] The duels dashboard tests, the weekly-slot case included, still pass (component): `cd frontend && pnpm exec vitest run src/features/dashboard`
 - [ ] `make check` passes

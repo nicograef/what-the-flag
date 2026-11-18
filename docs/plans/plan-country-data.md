@@ -129,6 +129,7 @@ ORDER BY ?iso2 ?capital ?populationDate ?population
   - Each `data/sources/<source>/LICENSE` keeps governing its vendored files.
   - Root `NOTICE`, one block per source: name, URL, pin, licence, the copyright line quoted from its vendored `LICENSE`, path of the full text. Sources: mledoze (ODbL-1.0), Unicode CLDR (Unicode-3.0), Wikidata (CC0-1.0), flag-icons (MIT).
   - `NOTICE` also names which paths are ODbL-1.0: `data/overrides.json`, `backend/internal/country/dataset/`.
+  - ODbL 4.3 (R28): foundation's `frontend/src/app/footer.tsx` shows the notice on every page; release-readiness puts `NOTICE` and the licence into both images.
 
 ## Inventory
 
@@ -140,10 +141,7 @@ ORDER BY ?iso2 ?capital ?populationDate ?population
 
 ## Open questions / Risks
 
-- **ODbL notice on the website.** ODbL 4.3 asks for a notice on a Produced Work, here the game UI. Recommended: a landing footer line "Data: ODbL-1.0, see NOTICE" with a repo link, built by the foundation's `landing` feature. Alternative: the repo `NOTICE` only. Owner decides.
-- **Licences in published images.** The backend image embeds the dataset; the edge image serves flags with their `LICENSE`. Recommended: release-readiness copies `NOTICE` and `data/LICENSE` into the backend image.
 - **Wikidata drift.** A re-fetch changes `capitals.csv`. The stale-override check and the invariants surface every effect in `make data`.
-- **Cross-plan.** quiz-practice consumes `Country.Lookalikes` (R13) and `country.Lang` (R2). This plan names no other plan in a `Depends on` line.
 
 ## Phase 1: Vendored sources and licences
 

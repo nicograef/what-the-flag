@@ -22,7 +22,7 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 - **One open duel per pair.** A partial unique index on the unordered pair:
   `CREATE UNIQUE INDEX duels_open_pair_uniq ON duels (LEAST(challenger_id, opponent_id), GREATEST(challenger_id, opponent_id)) WHERE completed_at IS NULL AND NOT lapsed;`
 - **Lazy expiry vs. the index.** `now()` is not immutable, so the index cannot test `expires_at`. The create transaction runs, in order:
-  1. `quiz.Service — CreateSetTx(ctx, tx, quiz.KindDuel, quiz.DuelSize)`.
+  1. `quiz.Service — CreateSet(ctx, tx, quiz.KindDuel, quiz.DuelSize)`.
   2. `LapseExpiredPair(a, b, now)`: `UPDATE duels SET lapsed = true WHERE LEAST(…) = LEAST($a,$b) AND GREATEST(…) = GREATEST($a,$b) AND completed_at IS NULL AND NOT lapsed AND expires_at <= $now`.
   3. `InsertDuel`. A `23505` whose constraint is `duels_open_pair_uniq` maps to `ErrDuelExists` and rolls back the set too.
 - **Concurrent creates.** Two creates for one pair, in either order: the second insert waits on the first's uncommitted index entry, then gets `23505`. A lapse that loses a row lock re-checks its `WHERE` under READ COMMITTED.
@@ -56,7 +56,7 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
   The duel reads `expired`; `POST /round` returns `duel_expired`. A round already started may still be finished through `/api/rounds/*`.
   A finish before `expires_at` completes the duel even when a lapse already ran; the pair then holds that completed duel plus the new one.
 - **Starting a round** (`StartRound`): load the duel without a lock and check participant and expiry.
-  Then call `quiz.Service — StartRound(ctx, setID, userID)` (idempotent, own transaction).
+  Then call `quiz.Service — StartRound(ctx, nil, setID, userID)` (idempotent; a nil `tx` makes quiz open its own transaction).
   Then `SetRoundID … WHERE <side>_round_id IS NULL`. No transaction holds the duel row while waiting on a round row, so no deadlock.
   The challenger's round starts when `/duels/<id>` opens after create, so the PRD's "offered at once" holds.
 - **Transactions.** `service.go` declares `Store` with `InTx(ctx, fn func(tx pgx.Tx, s Store) error) error` and `WithTx(tx pgx.Tx) Store`.
@@ -65,9 +65,9 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 
   | Interface | Methods | Provider |
   | --- | --- | --- |
-  | `Users` | `ByUsername(ctx, username string) (account.PublicUser, error)`, any letter case, `account.ErrUserNotFound`; `PublicByIDs(ctx, ids []uuid.UUID) (map[uuid.UUID]account.PublicUser, error)` | `account.Service` (R5) |
-  | `Quiz` | `CreateSetTx(ctx, tx pgx.Tx, kind quiz.Kind, size int) (uuid.UUID, error)`; `StartRound(ctx, setID, userID uuid.UUID) (uuid.UUID, error)`; `Summary(ctx, roundID uuid.UUID) (quiz.Summary, error)` | `quiz.Service` (R4) |
-  | `Ledger` | `Award(ctx, tx pgx.Tx, userID uuid.UUID, kind leaderboard.Kind, sourceID uuid.UUID, points int32) (bool, error)` | `leaderboard.Service` |
+  | `Users` | `IDByUsername(ctx context.Context, username string) (uuid.UUID, error)`, any letter case, `account.ErrUserNotFound`; `PublicByIDs(ctx context.Context, ids []uuid.UUID) (map[uuid.UUID]account.PublicUser, error)` | `account.Service` (R5) |
+  | `Quiz` | `CreateSet(ctx context.Context, tx pgx.Tx, kind quiz.Kind, size int) (uuid.UUID, error)`; `StartRound(ctx context.Context, tx pgx.Tx, setID, userID uuid.UUID) (uuid.UUID, error)`; `Summary(ctx context.Context, tx pgx.Tx, roundID uuid.UUID) (quiz.Summary, error)` | `quiz.Service` (R4) |
+  | `Ledger` | `Award(ctx context.Context, tx pgx.Tx, userID uuid.UUID, kind leaderboard.Kind, sourceID uuid.UUID, points int32) (bool, error)` | `leaderboard.Service` |
 
 - **HTTP.** `duel.NewHandler(svc *Service, requireUser func(http.Handler) http.Handler) *Handler` (R5); `Register(mux)` wraps all four routes.
   The viewer is `account.UserID(ctx)`. Errors use `httpx.WriteError`. An unparsable `{id}` is `duel_not_found`.
@@ -81,36 +81,35 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 
   - `DuelItem`: `id, status, opponent {username, emoji}, createdAt, expiresAt, points` (viewer's points, `null` unless `completed`).
   - `DuelDetail`: `DuelItem` fields plus `viewerRound`, `opponentRound`, `result`.
-  - `viewerRound`: `null` until the viewer's count is recorded; then `quiz.Presenter.Summary()` in `httpx.LocaleFrom(ctx)`.
+  - `viewerRound`: `null` until the viewer's count is recorded; then `Summary(ctx, nil, roundID)` through `quiz.Presenter.Summary()` in `httpx.LocaleFrom(ctx)`.
   - `opponentRound` and `result` are `null` unless `completed`. `result` = `{viewer: {correct, points}, opponent: {correct, points}}`.
   - No response carries a round id of the other player, the opponent's count before completion, or any question before the viewer played.
 - **Frontend.**
-  - `frontend/src/features/dashboard/`: `DashboardPage.tsx`, `ChallengeDialog.tsx`, `DuelList.tsx`, `DashboardNavLink.tsx`, `useDebouncedValue.ts`, `api.ts`, `messages.ts`, `DashboardPage.test.tsx`.
-  - `frontend/src/features/duels/`: `DuelPage.tsx`, `DuelResult.tsx`, `api.ts`, `messages.ts`, `DuelPage.test.tsx`.
+  - `frontend/src/features/dashboard/`: `dashboard-page.tsx`, `challenge-dialog.tsx`, `duel-list.tsx`, `dashboard-nav-link.tsx`, `use-debounced-value.ts`, `api.ts`, `messages.ts`, `dashboard-page.test.tsx`.
+  - `frontend/src/features/duels/`: `duel-page.tsx`, `duel-result.tsx`, `api.ts`, `messages.ts`, `duel-page.test.tsx`.
   - Weekly slot (R7): `DashboardPage` renders `<div className="grid gap-4">`; its first child is exactly `<section data-slot="weekly" />`. The weekly plan replaces that element.
   - Opponent search: 250 ms debounce; a request only when the query matches `^[A-Za-z0-9_]{1,20}$` (accounts' `invalid_query` rule). shadcn `Dialog` + `Command`.
   - Query keys (R20): list `['duels']`; detail `['duel', id, locale]`. Relative time uses `Intl.RelativeTimeFormat` in the active locale.
   - After `POST /api/duels` the dialog invalidates `['duels']` and navigates to `/duels/<id>`.
   - `DuelPage`: `your_turn` → `startDuelRound(id)`, then `Play({ roundId, onFinished })`; `onFinished` invalidates `['duel', id]`. Other statuses → `DuelResult`.
   - Messages are `{ de, en }` (R25).
-  - Cross-feature imports: only `features/play/Play.tsx`, `features/auth/RequireUser.tsx` and `features/auth/useSession.ts`.
-  - Tests use `frontend/src/test/render.tsx — renderRoute()` with a faked `ApiClient` (R18).
+  - Cross-feature imports: only `features/play/play.tsx`, `features/auth/require-user.tsx` and `features/auth/use-session.ts`.
+  - Tests use `frontend/src/test/render.tsx — renderRoute(path, { api })` with `api` from `createApiClient({ fetch: fakeFetch, getLocale })` (R18).
 - **Settled by rulings.** Quiz sets orphaned by account deletion stay (R14). The cross-stack browser test lives in release-readiness (R15).
 
 ## Inventory
 
 - `backend/cmd/what-the-flag/main.go — main()` — wiring choke file; adds the duel store, service, handler and hook.
-- `backend/internal/account/ — Handler.RequireUser()`, `UserID()`, `PublicByIDs()`, `ByUsername()`, `PublicUser`, `ErrUserNotFound` — auth and lookups.
+- `backend/internal/account/ — Handler.RequireUser()`, `UserID()`, `Service.PublicByIDs()`, `Service.IDByUsername()`, `PublicUser`, `ErrUserNotFound` — auth and lookups.
 - `backend/internal/leaderboard/ — Service.Award()`, `KindDuel` — ledger write inside the hook's transaction.
-- `backend/internal/quiz/ — CreateSetTx()`, `StartRound()`, `Summary()`, `OnFinished()`, `FinishedRound`, `Presenter.Summary()`, `KindDuel`, `DuelSize`.
+- `backend/internal/quiz/ — Service.CreateSet()`, `Service.StartRound()`, `Service.Summary()`, `Service.OnFinished()`, `FinishHook`, `FinishedRound`, `Presenter.Summary()`, `KindDuel`, `DuelSize`.
 - `backend/internal/httpx/ — WriteError()`, `LocaleFrom()`; `backend/internal/postgres/` — pool and integration-test helper.
 - `frontend/src/app/router.tsx` — route table (choke file); `frontend/src/app/navbar.tsx — Navbar` — gets the Dashboard link.
 - `frontend/src/lib/api.ts — ApiClient, ApiError, useApiClient()`; `frontend/src/lib/i18n/ — useMessages()`, `useLocale()`.
-- `frontend/src/features/play/Play.tsx — Play({ roundId, onFinished })`; `frontend/src/features/auth/RequireUser.tsx`, `useSession.ts`.
+- `frontend/src/features/play/play.tsx — Play({ roundId, onFinished })`; `frontend/src/features/auth/require-user.tsx`, `use-session.ts`.
 
 ## Open questions / Risks
 
-- **Needed from quiz-practice (R4):** `quiz.Service — CreateSetTx(ctx, tx pgx.Tx, kind Kind, size int) (uuid.UUID, error)` and `FinishedRound.FinishedAt time.Time`. Not yet in that plan; re-check the names before phase 1.
 - **Generated code.** `backend/internal/db/`, `main.go` and `router.tsx` are shared with the weekly lane. Regenerate sqlc and re-merge after every rebase.
 - **List size.** Newest 20 only. An open duel drops off only after 20 newer duels within its seven days. Accepted.
 
@@ -158,19 +157,19 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 
 ### Context
 
-- `frontend/src/features/play/Play.tsx — Play()` — the play component.
+- `frontend/src/features/play/play.tsx — Play()` — the play component.
 - `frontend/src/lib/api.ts`, `frontend/src/lib/i18n/`, `frontend/src/test/render.tsx — renderRoute()` — client, messages, test seam.
-- `frontend/src/app/router.tsx` — route table; `frontend/src/features/auth/RequireUser.tsx` — protected-route wrapper.
+- `frontend/src/app/router.tsx` — route table; `frontend/src/features/auth/require-user.tsx` — protected-route wrapper.
 
 ### What to build
 
 - `frontend/src/features/duels/api.ts` — `getDuel(id)`, `startDuelRound(id)` with Zod schemas for `DuelDetail`.
 - `frontend/src/features/duels/messages.ts` — `{ de, en }` strings for statuses, waiting text, expired text, result labels.
-- `frontend/src/features/duels/DuelPage.tsx` — loads the duel; `your_turn` starts or resumes and renders `Play`; else `DuelResult`.
-- `frontend/src/features/duels/DuelResult.tsx` — header with both players and points; per-question rows with both chosen options and the correct option.
+- `frontend/src/features/duels/duel-page.tsx` — loads the duel; `your_turn` starts or resumes and renders `Play`; else `DuelResult`.
+- `frontend/src/features/duels/duel-result.tsx` — header with both players and points; per-question rows with both chosen options and the correct option.
   Waiting shows own answers only; expired says no points were awarded and shows own answers if finished.
 - `frontend/src/app/router.tsx` — `/duels/:id` inside `RequireUser`.
-- Tests: `frontend/src/features/duels/DuelPage.test.tsx`.
+- Tests: `frontend/src/features/duels/duel-page.test.tsx`.
 - Demo: open `/duels/<id>` from a curl-created duel, play, see the waiting view, then the result after the opponent plays.
 
 ### Acceptance criteria
@@ -188,20 +187,20 @@ The dashboard lists the viewer's duels with viewer-relative status; `/duels/:id`
 
 - `frontend/src/app/router.tsx` — route table; `frontend/src/app/navbar.tsx — Navbar` — player links.
 - `frontend/src/components/ui/` — shadcn components present after earlier plans.
-- `frontend/src/features/auth/useSession.ts — useSession()` — shows the nav link only when logged in.
+- `frontend/src/features/auth/use-session.ts — useSession()` — shows the nav link only when logged in.
 
 ### What to build
 
 - shadcn `dialog`, `command`, `badge` via `cd frontend && pnpm dlx shadcn@latest add <name>`, each only when missing from `frontend/src/components/ui/`; `frontend/package.json` and `frontend/pnpm-lock.yaml` updated.
 - `frontend/src/features/dashboard/api.ts` — `listDuels()`, `createDuel(username)`, `searchUsers(query)` (`GET /api/users?query=`).
-- `frontend/src/features/dashboard/messages.ts`, `frontend/src/features/dashboard/useDebouncedValue.ts`.
-- `frontend/src/features/dashboard/ChallengeDialog.tsx` — debounced search list; selecting a user creates the duel and navigates to `/duels/<id>`.
+- `frontend/src/features/dashboard/messages.ts`, `frontend/src/features/dashboard/use-debounced-value.ts`.
+- `frontend/src/features/dashboard/challenge-dialog.tsx` — debounced search list; selecting a user creates the duel and navigates to `/duels/<id>`.
   It shows the `duel_exists`, `self_challenge` and `user_not_found` messages.
-- `frontend/src/features/dashboard/DuelList.tsx` — opponent emoji and name, status badge, relative time, points chip when completed; each row links to `/duels/<id>`.
-- `frontend/src/features/dashboard/DashboardPage.tsx` — grid: weekly slot first, challenge button, duel list.
-- `frontend/src/features/dashboard/DashboardNavLink.tsx`; `frontend/src/app/navbar.tsx` renders it.
+- `frontend/src/features/dashboard/duel-list.tsx` — opponent emoji and name, status badge, relative time, points chip when completed; each row links to `/duels/<id>`.
+- `frontend/src/features/dashboard/dashboard-page.tsx` — grid: weekly slot first, challenge button, duel list.
+- `frontend/src/features/dashboard/dashboard-nav-link.tsx`; `frontend/src/app/navbar.tsx` renders it.
 - `frontend/src/app/router.tsx` — `/dashboard` inside `RequireUser`.
-- Tests: `frontend/src/features/dashboard/DashboardPage.test.tsx`.
+- Tests: `frontend/src/features/dashboard/dashboard-page.test.tsx`.
 - Demo: log in, challenge a user from the dialog, land in the round, return to `/dashboard` and see `waiting`.
 
 ### Acceptance criteria

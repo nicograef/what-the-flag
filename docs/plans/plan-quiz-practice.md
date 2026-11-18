@@ -136,7 +136,7 @@ A `tx pgx.Tx` parameter is the caller's transaction; `nil` means quiz runs its o
 - The reveal shows for 1500 ms; the refetch after it serves the next question. At zero remaining the client posts `option: null`.
 - Round query key `['round', roundId, locale]` (R20); `staleTime: Infinity`, `refetchOnWindowFocus: false`, `retry: false`.
   The query is disabled during the reveal, so no refetch serves the next question early.
-- Flag `alt` is a neutral message ("Flag", "Option B"). Tests use `frontend/src/test/render.tsx — renderRoute()` with a fake `ApiClient` (R18). The fake parses responses through the passed Zod schema.
+- Flag `alt` is a neutral message ("Flag", "Option B"). Tests use `frontend/src/test/render.tsx — renderRoute(path, { api })` with `api` from `createApiClient({ fetch: fakeFetch, getLocale })` (R18); `fake-round-server.ts` supplies `fakeFetch`.
 
 ## Inventory
 
@@ -149,8 +149,6 @@ A `tx pgx.Tx` parameter is the caller's transaction; `nil` means quiz runs its o
 ## Open questions / Risks
 
 - Cross-plan order: migration `000004` references `users` (accounts `000002`), and the viewer is `account.Handler — OptionalUser()`. Accounts lands first.
-- R13: `country.Country` must carry `Lookalikes []string` (JSON `lookalikes`). `FromCatalogue` maps it; the country-data plan provides it.
-- Duels and weekly adapt to the exact names above: `CreateSet`, `StartRound` and `Summary`, each with `tx pgx.Tx`.
 
 ## Phase 1: Practice set and first question
 

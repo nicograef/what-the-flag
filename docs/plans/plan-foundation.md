@@ -22,6 +22,8 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 
 - **Toolchain (R26)**: the container ships Go 1.24 and Node 22. Go: `GOTOOLCHAIN=auto` (the container default) fetches `go<project-go-version>` through the module proxy once `go.mod` names it.
 - Node: `curl -fsSLO https://nodejs.org/dist/<version>/node-<version>-linux-x64.tar.xz`, checked against that directory's `SHASUMS256.txt`, extracted to `~/.local/node`, `~/.local/node/bin` first on `PATH`.
+- **Docker (R29)**: the container's `dockerd` is stopped. Start it with `dockerd &` and wait until `docker info` exits 0, before `make db` or any build.
+  Local image builds use `--network host` and get `/root/.ccr/ca-bundle.crt` per `/root/.ccr/README.md` from a local-only override or build args; the committed Dockerfiles stay template-clean.
 - No step relies on `nico` plugin scripts, `agent-bus.sh`, `plan-run-guard.sh` or `~/.claude/*` scripts.
 - **CI `pull_request` trigger** stays commented, as in the template: the owner pushes directly.
 
@@ -69,7 +71,10 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
   - Storage access is guarded by try/catch. `LocaleProvider` keeps `<html lang>` in sync. `src/test/setup.ts` resets the store and storage after each test.
 - **Query keys** of responses with localised text end with the locale, so a switch refetches.
 - **Router**: `react-router` data router; `src/app/router.tsx` exports `routes` (tests use `createMemoryRouter(routes)`) and `router`.
-- The shell holds no translatable text: brand name, and switch buttons "Deutsch"/"English" with `lang`. The 404 page lives in `landing`.
+- The shell's text: brand name, switch buttons "Deutsch"/"English" with `lang`, and the footer. The 404 page lives in `landing`.
+- **Footer (R28)**: `frontend/src/app/footer.tsx — Footer`, mounted in `Layout` on every page, text from `frontend/src/app/messages.ts`.
+  de "Länderdaten: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flaggen: flag-icons (MIT)"; en "Country data: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flags: flag-icons (MIT)".
+  It links to `https://github.com/nicograef/what-the-flag/blob/main/NOTICE`, which resolves once country-data adds `NOTICE`.
 - **Navbar slot**: `frontend/src/app/navbar.tsx — Navbar` renders the brand left and a right-hand `<div data-slot="nav-right">` holding the language switch. Later plans add links and menus inside that element.
 - `cn()` is the helper shadcn init writes to `frontend/src/lib/utils.ts`, not the `cn` package of stack-conventions; AGENTS.md records the override. Paths alias `@/*` → `src/*`, without `baseUrl` (TypeScript 7).
 - `.env.example` lists `COMPOSE_FILE` (commented), `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB=whattheflag`, `DB_HOST=localhost`, `# APP_PORT=8080`, `# BACKUP_PING_URL`. `APP_ENV`, `JWT_SECRET` and the "add a test" sentence go.
@@ -95,7 +100,6 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **TypeScript 7** may reject create-vite or shadcn tsconfig options (`baseUrl`, deprecated flags). Fix the tsconfig, never pin TS lower.
 - **oxlint `--deny-warnings`** may flag shadcn files (`react-refresh/only-export-components`). Recommended: an `.oxlintrc.json` override scoped to `src/components/ui/**`; alternative: edit the generated file.
 - `govulncheck` and `pnpm audit` need network; a proxy refusal is an environment block, not a pass.
-- **Naming**: foundation's frontend files are kebab-case (`navbar.tsx`, `landing-page.tsx`). accounts names `Navbar.tsx`; quiz-practice names `LandingPage.tsx`. Under the naming rule they adapt.
 - Merging deploys nothing: the live site keeps running until the owner tags `v0.1.0` and follows the deploy runbook.
 
 ## Phase 1: Clean slate and handbook scaffold
@@ -106,7 +110,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 
 - Deleted: every path in the Inventory's "Repository files deleted" line.
 - Kept: `.git/`, `docs/prds/prd-rebuild.md`, `docs/UBIQUITOUS_LANGUAGE.md`, `docs/plans/`.
-- Toolchain first (decisions): Node tarball into `~/.local/node`, pnpm via npm. Go arrives through `GOTOOLCHAIN=auto` after `go mod edit -go=<project-go-version>`.
+- Toolchain first (decisions): Node tarball into `~/.local/node`, pnpm via npm. Go arrives through `GOTOOLCHAIN=auto` after `go mod edit -go=<project-go-version>`. `dockerd &`, then wait for `docker info` (R29).
 - Guide sections run in order: "Copy the base files", "Scaffold the stack" (Go and React lines), "Set up the toolchain" step 1, "Fill the templates" (the files present now).
 
 ### What to build
@@ -124,6 +128,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 ### Acceptance criteria
 
 - [ ] `cd backend && go version` prints `go<project-go-version>`, and `node --version` starts with `v<node-major>.`.
+- [ ] `docker info --format '{{.ServerVersion}}'` prints a version (R29: `dockerd` running).
 - [ ] `git ls-files client server nginx-conf package.json Dockerfile Procfile .dockerignore README.md .github/workflows/challenge-of-the-week-cronjob.yml` prints nothing.
 - [ ] `make help` lists `db-migrate` and `be-integration` under DEVELOPER and prints no UNCLASSIFIED section.
 - [ ] `! grep -l 'stack: python' Makefile .github/workflows/ci.yml .github/dependabot.yml scripts/setup-dev-tools.sh` exits 0.
@@ -187,10 +192,10 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `frontend/vite.config.ts`: tailwind plugin, `@` alias, `server.proxy` `/api` → `http://localhost:8080`, `test` block (`jsdom`, `setupFiles: ./src/test/setup.ts`).
 - `frontend/src/lib/api.ts — ApiClient, ApiError, createApiClient(), ApiClientProvider, useApiClient()`; test `frontend/src/lib/api.test.ts` (unit, fake `fetch`: headers and JSON body sent, envelope → `ApiError` with `field`, schema mismatch → `invalid_response`, 204 → `undefined`).
 - `frontend/src/lib/i18n/locale.tsx — Locale, getLocale(), useLocale(), detectLocale(), LocaleProvider`; `frontend/src/lib/i18n/messages.ts — useMessages()`; test `frontend/src/lib/i18n/locale.test.ts — detectLocale` (unit table, stored value wins).
-- `frontend/src/app/providers.tsx — Providers` (QueryClient, LocaleProvider, ApiClientProvider), `frontend/src/app/layout.tsx — Layout`, `frontend/src/app/navbar.tsx — Navbar` (brand, `nav-right` slot with the language switch), `frontend/src/app/router.tsx — routes, router`.
+- `frontend/src/app/providers.tsx — Providers` (QueryClient, LocaleProvider, ApiClientProvider), `frontend/src/app/layout.tsx — Layout`, `frontend/src/app/navbar.tsx — Navbar` (brand, `nav-right` slot with the language switch), `frontend/src/app/footer.tsx — Footer` and `frontend/src/app/messages.ts` (R28 notice), `frontend/src/app/router.tsx — routes, router`.
 - `frontend/src/features/landing/landing-page.tsx — LandingPage` (title, tagline, server status), `frontend/src/features/landing/not-found-page.tsx — NotFoundPage`, `frontend/src/features/landing/api.ts — healthSchema, useHealth()`, `frontend/src/features/landing/messages.ts — messages`.
 - `frontend/src/test/setup.ts` (jest-dom, cleanup, locale store and storage reset), `frontend/src/test/render.tsx — renderRoute()` (decisions).
-- `frontend/src/features/landing/landing-page.test.tsx` (component, `renderRoute` with a fake `fetch`): online text in German; offline text on a 503 envelope; clicking "English" switches text, stores `wtf.locale` and refetches with `Accept-Language: en`.
+- `frontend/src/features/landing/landing-page.test.tsx` (component, `renderRoute` with a fake `fetch`): online text in German; offline text on a 503 envelope; clicking "English" switches text, stores `wtf.locale` and refetches with `Accept-Language: en`; footer shows the notice.
 - `frontend/index.html`: `lang="de"`, title "What The Flag", `frontend/public/favicon.svg`.
 
 ### Acceptance criteria
@@ -198,6 +203,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - [ ] `pnpm --dir frontend exec vitest run src/lib/api.test.ts` passes (unit).
 - [ ] `pnpm --dir frontend exec vitest run src/lib/i18n/locale.test.ts` passes (unit).
 - [ ] `pnpm --dir frontend exec vitest run src/features/landing/landing-page.test.tsx` passes (component).
+- [ ] Footer notice in German with a link ending in `/NOTICE` (component): `pnpm --dir frontend exec vitest run src/features/landing/landing-page.test.tsx -t footer` passes.
 - [ ] `grep -rln 'fetch(' frontend/src | grep -v -e 'src/lib/api' -e '\.test\.'` prints nothing.
 - [ ] `make check` passes.
 
@@ -215,14 +221,14 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `docker-compose.prod.yml`, `.env.example` (edits in decisions), `scripts/prod-init.sh`, `scripts/backup-postgres.sh`, `.github/workflows/release.yml` from the templates, placeholders filled.
 - `reverse-proxy/Caddyfile` (`example.com` → `what-the-flag.de`), `reverse-proxy/Dockerfile` (`<node-major>` filled), `reverse-proxy/Dockerfile.dockerignore`.
 - `CLAUDE.md` (`@AGENTS.md`). `AGENTS.md`: project in two lines; links to PRD, glossary, decisions; `make` targets table; rules below.
-- AGENTS.md rules: UI German + English, files English; UI strings only in a feature's `messages.ts`; backend domain packages with `handler.go`/`service.go`/`store.go`; frontend `features/<name>/`; API only via `lib/api.ts`; `cn()` from `src/lib/utils.ts`; feature tests fake the server only via `renderRoute()`; sqlc output regenerated, never edited; migrations forward-only `.up.sql`; error envelope; locale query keys.
+- AGENTS.md rules: UI German + English, files English; UI strings only in a `messages.ts` (a feature's, or `src/app/messages.ts` for the shell); frontend file names kebab-case (R27); backend domain packages with `handler.go`/`service.go`/`store.go`; frontend `features/<name>/`; API only via `lib/api.ts`; `cn()` from `src/lib/utils.ts`; feature tests fake the server only via `renderRoute()`; sqlc output regenerated, never edited; migrations forward-only `.up.sql`; error envelope; locale query keys.
 - `docs/README.md` (rows: PRD, glossary, decisions, each with its question), `docs/decisions.md` (D01–D15), `README.md` (name, one-line pitch, `make help`, setup link to the guide), `LICENSE` (MIT). country-data adds the README licence section.
 
 ### Acceptance criteria
 
 - [ ] `grep -c example.com reverse-proxy/Caddyfile` prints `0`.
-- [ ] `docker build -t what-the-flag-backend:dev backend` exits 0.
-- [ ] `docker build -f reverse-proxy/Dockerfile -t what-the-flag-edge:dev .` exits 0.
+- [ ] `docker build -t what-the-flag-backend:dev backend` exits 0 (in the cloud session through the R29 build route).
+- [ ] `docker build -f reverse-proxy/Dockerfile -t what-the-flag-edge:dev .` exits 0 (same route).
 - [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running, `curl -fsS localhost:5173/api/health` prints `{"status":"ok"}` (cross-stack tracer).
 - [ ] `head -1 CLAUDE.md` prints `@AGENTS.md`, and `head -1 LICENSE` prints `MIT License`.
 - [ ] `docker compose -f docker-compose.prod.yml --env-file .env.example config --quiet && echo ok` prints `ok`.

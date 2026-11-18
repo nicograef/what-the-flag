@@ -214,6 +214,7 @@ All routes sit under `/api` and speak JSON. An error is `{"error": {"code", "mes
 - Migrations are forward-only. A deploy applies them through a one-shot migrate service before the backend starts.
 - The migrate image ships with each release, beside the backend and edge images.
 - The domain stays `what-the-flag.de`. A `vX.Y.Z` tag builds the release images.
+- A first release ships practice rounds only, once the quiz slice lands. Accounts, duels and weekly follow in later releases.
 
 ## Testing Decisions
 
@@ -224,6 +225,9 @@ All routes sit under `/api` and speak JSON. An error is `{"error": {"code", "mes
 - SQL and migrations are tested against a real Postgres under the `integration` build tag.
 - Frontend tests render features with a real query client and a faked API client.
 - One browser test covers the cross-stack flow: register two players, play a duel, read the result.
+- A contract suite pins the HTTP API: an OpenAPI document and black-box tests against a running backend and Postgres.
+- Every route lands with its contract tests. A response that breaks the document fails the gate.
+- Contract tests may read the database to learn a question's correct option. Timeouts stay at service level.
 - Prior art: none in this repository; the handbook's stack conventions describe the patterns.
 
 ## Out of Scope
