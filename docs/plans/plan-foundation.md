@@ -25,9 +25,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **Toolchain**: the container ships Go 1.24 and Node 22. `GOTOOLCHAIN=auto` fetches `go<project-go-version>` through the module proxy once `go.mod` names it.
   Node: fetch `https://nodejs.org/dist/<version>/node-<version>-linux-x64.tar.xz`, check it against that directory's `SHASUMS256.txt` and extract it to `~/.local/node`, first on `PATH`.
 - **Node pin**: one root `.node-version`. `ci.yml` jobs `frontend-ci` and `security-node` read it via `node-version-file: .node-version`.
-- **Docker**: the container's `dockerd` is stopped. Run `dockerd &` and wait until `docker info` exits 0, before `make db` or a build.
-- **Image builds** in the cloud session use `--network host` and the CA `/root/.ccr/ca-bundle.crt` per `/root/.ccr/README.md`. The CA comes from build args or the gitignored `docker-compose.local.yml`; committed Dockerfiles stay template-clean.
-- No step relies on `nico` plugin scripts or `~/.claude/*` scripts. CI's `pull_request` trigger stays commented, as in the template.
+- **Docker**: the container's `dockerd` is stopped. Run `dockerd &` and wait until `docker info` exits 0, before `make db` or a build. **Image builds** in the cloud session use `--network host` and the CA `/root/.ccr/ca-bundle.crt` per `/root/.ccr/README.md`. The CA comes from build args or the gitignored `docker-compose.local.yml`; committed Dockerfiles stay template-clean. No step relies on `nico` plugin scripts or `~/.claude/*` scripts. CI's `pull_request` trigger stays commented, as in the template.
 
 ### Backend
 
@@ -40,8 +38,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
   Nothing reads `Accept-Language`: localised texts travel as `{"de": "…", "en": "…"}`.
 - **Server**: `log/slog` JSON to stdout on `:$APP_PORT` (default 8080). `ReadHeaderTimeout` 5 s, `ReadTimeout` 10 s, `WriteTimeout` 15 s, `IdleTimeout` 120 s.
   SIGINT or SIGTERM → `Shutdown` with 10 s, then the pool closes. `server stopped` is the last log line. `config.Load(getenv)` requires `DB_HOST`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`. `DatabaseURL()` uses port 5432, `sslmode=disable`, escaped credentials.
-- **Wiring**: `main.go` loads config, opens the pool and serves `app.New(deps)`. `app.New` builds the mux, registers each domain and wraps the middleware.
-  Later plans add a `Deps` field and one `Register(mux)` call in `backend/internal/app/app.go`.
+- **Wiring**: `main.go` loads config, opens the pool and serves `app.New(deps)`. `app.New` builds the mux, registers each domain and wraps the middleware. Later plans add a `Deps` field and one `Register(mux)` call in `backend/internal/app/app.go`; quiz-practice adds `country.Load()` there.
 
 | Package | Signatures |
 | --- | --- |
@@ -55,18 +52,17 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 
 - **Integration tests** start with `//go:build integration` and end in `_integration_test.go`. Packages run in parallel on one database.
   Tests never truncate; each creates its own rows. Tests of global aggregates use `TestTx`. `backend/internal/postgres/testpool.go` carries the tag but is no test file, so other packages import it. `TestPool` builds the pool via `config.Load(os.Getenv)`; missing env fails, never skips.
+- **Stores** declare `DB`: sqlc's `DBTX` plus `Begin(ctx) (pgx.Tx, error)`. A pool and `postgres.TestTx(t)` both meet it.
 - **Contract harness** (`backend/internal/contract/harness_integration_test.go`), on the real handler chain. Every route-adding phase adds `backend/internal/contract/<domain>_integration_test.go`.
-  - `newServer(t)` starts `httptest.NewServer(app.New(...))` on `postgres.TestPool(t)`. `newClient(t, srv)` gives each simulated user its own `cookiejar` and a random `X-Forwarded-For` in `2001:db8::/32`, one /64 per client. Unsafe methods send `Origin: <srv.URL>`, `Content-Type: application/json` and a JSON body (`{}` when none).
+  - `newServer(t)` starts `httptest.NewTLSServer(app.New(...))` on `postgres.TestPool(t)`. TLS is needed because Go's `cookiejar` sends a `Secure` cookie only over https.
+  - `newClient(t, srv)` copies `srv.Client()` with its own `cookiejar` and a random `X-Forwarded-For` in `2001:db8::/32`, one /64 per client. Unsafe methods send `Origin: <srv.URL>` (the https URL), `Content-Type: application/json` and a JSON body (`{}` when none).
   - `decode[T](t, resp, status)` checks the status and decodes strictly (`DisallowUnknownFields`, no trailing data), which pins the wire shape. `expectError(t, resp, status, code)` does the same for the envelope and wants a non-empty `message`.
-  - Such a file holds one happy path per route plus each route-specific error code. Middleware rules stay in `httpx` unit tests.
+    A domain file holds one happy path per route plus each route-specific error code. Middleware rules stay in `httpx` unit tests.
 - **sqlc**: `backend/sqlc.yaml` holds one `sql:` block per domain, all reading `../database/migrations`. No shared `backend/internal/db/`.
-  - sqlc v1.31.1 rejects a config without a block and a block without a query. So the guide's `GetMeta` stays, as block `postgres`.
-    Block `postgres`: `queries: sqlc/queries/postgres.sql`, `out: internal/postgres/internal/db`, caller `TestTxRollsBack`. It defines YAML anchors `&block` and `&go`. A domain block is `- <<: *block`, its own `queries`, and `gen: {go: {<<: *go, out: internal/<domain>/internal/db}}`. sqlc v1.31.1 accepts these merge keys.
-  - Options: `sql_package: pgx/v5`, `emit_pointers_for_null_types: true`, `emit_empty_slices: true`. Overrides: `uuid` → `github.com/google/uuid.UUID`, `timestamptz` → `time.Time`.
-    Their nullable forms map to pointers via `go_type: {import, type, pointer: true}`. Re-check names against https://docs.sqlc.dev/en/latest/reference/config.html at execution.
+  - sqlc v1.31.1 rejects a config without a block and a block without a query. So the guide's `GetMeta` stays, as block `postgres`. Block `postgres`: `queries: sqlc/queries/postgres.sql`, `out: internal/postgres/internal/db`, caller `TestTxRollsBack`. It defines YAML anchors `&block` and `&go`. A domain block is `- <<: *block`, its own `queries`, and `gen: {go: {<<: *go, out: internal/<domain>/internal/db}}`. sqlc v1.31.1 accepts these merge keys.
+  - Options: `sql_package: pgx/v5`, `emit_pointers_for_null_types: true`, `emit_empty_slices: true`. Overrides: `uuid` → `github.com/google/uuid.UUID`, `timestamptz` → `time.Time`. Their nullable forms map to pointers via `go_type: {import, type, pointer: true}`. Re-check names against https://docs.sqlc.dev/en/latest/reference/config.html at execution.
 - **Migrations**: `000001_init.up.sql` creates `app_meta`, wrapped in `BEGIN; … COMMIT;`. Production migrations belong to plan-first-release. **golangci**: drop the forbidigo `forbid` placeholder, so forbidigo applies its default. Add `exhaustive` with `default-signifies-exhaustive: false`.
-- **Makefile**: `-include .env` plus `export`, so `make check` runs without `.env`. `MIGRATE_VERSION` is read from `.github/workflows/ci.yml` (one pin).
-  `db-migrate` runs `migrate/migrate:$(MIGRATE_VERSION)` on network `what-the-flag-dev_default` against host `postgres` (`reference/postgresql.md`). `be-integration` runs `go test -tags=integration -race ./...` in `backend/`.
+- **Makefile**: `-include .env` plus `export`, so `make check` runs without `.env`. `MIGRATE_VERSION` is read from `.github/workflows/ci.yml` (one pin). `db-migrate` runs `migrate/migrate:$(MIGRATE_VERSION)` on network `what-the-flag-dev_default` against host `postgres` (`reference/postgresql.md`). `be-integration` runs `go test -tags=integration -race ./...` in `backend/`.
 - **Dev Compose**: `postgres` (template block plus the prod `pg_isready` healthcheck) and `backend` (build `./backend`, `POSTGRES_*` from `.env`). `backend` sets `DB_HOST: postgres`, publishes `127.0.0.1:8080:8080` and waits for a healthy `postgres`. The template `app` service goes.
 
 ### Frontend
@@ -79,16 +75,13 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - **Error messages**: `frontend/src/lib/i18n/error-messages.ts — errorMessage(err, locale)` maps the foundation codes, `network` and `invalid_response`, with a fallback. A feature maps only its own codes.
 - **i18n** (`frontend/src/lib/i18n/`): `type Locale = "de" | "en"`; `locale.tsx — getLocale(), useLocale(): { locale, setLocale }, detectLocale(), LocaleProvider`.
   - `messages.ts — defineMessages<T>(m: { de: T; en: NoInfer<T> }), useMessages(m)`. `NoInfer` checks `en` against the shape of `de`.
-  - A module store read with `useSyncExternalStore` holds the locale. `setLocale` writes it and `wtf.locale` (storage in try/catch). `LocaleProvider` syncs `<html lang>`.
-    A switch re-renders and refetches nothing; query keys carry no locale.
-- **Test seam**: `frontend/src/test/fake-api.ts — FakeApi` with `respond(route, body | fn, status?)`, `fail(route, status, code, field?)`, `calls` and `fetch`.
-  - A route reads `"GET /api/health"`. An unknown route rejects loudly. `GET /api/me` answers 401 `unauthenticated` by default.
+  - A module store read with `useSyncExternalStore` holds the locale. `setLocale` writes it and `wtf.locale` (storage in try/catch). `LocaleProvider` syncs `<html lang>`. A switch re-renders and refetches nothing; query keys carry no locale.
+- **Test seam**: `frontend/src/test/fake-api.ts — FakeApi` with `respond(route, body | fn, status?)`, `fail(route, status, code, field?)`, `calls` and `fetch`. A route reads `"GET /api/health"`. An unknown route rejects loudly. `GET /api/me` answers 401 `unauthenticated` by default.
   - `frontend/src/test/render.tsx — renderRoute(path, { api: FakeApi; locale?: Locale })` renders `routes` in a memory router inside `Providers`. It builds the real `createApiClient({ fetch: api.fetch })`.
   - `frontend/src/test/setup.ts`: jest-dom, cleanup, locale store and storage reset, jsdom polyfills for Radix (`matchMedia`, `ResizeObserver`, pointer capture, `scrollIntoView`).
 - **cn**: `frontend/src/lib/utils.ts` re-exports `cn` from the `cn` package (handbook default), so shadcn components keep importing `@/lib/utils`. **Router**: `react-router` data router; `src/app/router.tsx` exports `routes` and `router`. File names under `frontend/src/` are kebab-case. Alias `@/*` → `src/*`, without `baseUrl`.
 - **Navbar**: `frontend/src/app/navbar.tsx — Navbar` renders the brand left and `<div data-slot="nav-right">` with the switch "Deutsch"/"English" (with `lang`). Later plans add links there.
-- **Footer**: `frontend/src/app/footer.tsx — Footer` in `Layout` on every page, text from `frontend/src/app/messages.ts`. It links to `https://github.com/nicograef/what-the-flag/blob/main/NOTICE` (added by country-data).
-  - de: "Länderdaten: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flaggen: flag-icons (MIT)". En: "Country data: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flags: flag-icons (MIT)".
+- **Footer**: `frontend/src/app/footer.tsx — Footer` in `Layout` on every page, text from `frontend/src/app/messages.ts`. It links to `https://github.com/nicograef/what-the-flag/blob/main/NOTICE` (added by country-data). de: "Länderdaten: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flaggen: flag-icons (MIT)". En: "Country data: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flags: flag-icons (MIT)".
 
 ### Repository files
 
@@ -103,7 +96,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 | D04 | The API sends `{de, en}` texts and never negotiates language | A switch re-renders without a request, and query keys carry no locale |
 | D05 | Contract tests are Go HTTP tests on the real handler chain; no OpenAPI document | The only client ships in the same release, so a document has no reader |
 | D06 | Each domain has its own sqlc package inside its internal tree | Go's internal rule stops one module from calling another module's queries |
-| D07 | Stores take sqlc's DBTX; integration tests never truncate | Aggregate tests run in a rolled-back transaction, so parallel packages share one database |
+| D07 | Stores take sqlc's DBTX plus Begin, not a pool; integration tests never truncate | Aggregate tests run in a rolled-back transaction, so parallel packages share one database |
 | D08 | A method that takes a transaction rejects a nil one | A silent second transaction would break the caller's atomicity |
 
 ## Inventory
@@ -124,13 +117,11 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 **Depends on**: none
 
 ### Context
-
 - Deleted: every path in the Inventory's "Repository files deleted" line. Kept: `.git/`, `docs/prds/`, `docs/UBIQUITOUS_LANGUAGE.md`, `docs/plans/`.
 - Toolchain first: Node tarball, pnpm via npm, Go via `GOTOOLCHAIN=auto` after `go mod edit -go=<project-go-version>`. Then `dockerd &`.
   Guide sections in order: `Copy the base files`, `Scaffold the stack` (Go and React lines), `Set up the toolchain` step 1, `Fill the templates`. A local `.env` (gitignored) holds `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB=whattheflag`, `DB_HOST=localhost`.
 
 ### What to build
-
 - Base: `.editorconfig`, `.gitignore` (plus `docker-compose.local.yml`), `.vscode/settings.json`, `scripts/make-help.awk`, `.claude/settings.json` from the templates.
 - `Makefile`: Go blocks uncommented, python blocks deleted, `-include .env` + `export`, `MIGRATE_VERSION`, targets `db-migrate` and `be-integration`.
 - `.node-version` at the root (`<node-major>`), read by `.github/workflows/ci.yml`. `docker-compose.yml`: `postgres`, `volumes`, healthcheck and `backend` (decisions).
@@ -140,7 +131,6 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `frontend/` from `pnpm create vite frontend --template react-ts --no-interactive`, then `packageManager`, the Package scripts block, `frontend/.prettierignore`, `pnpm run format`.
 
 ### Acceptance criteria
-
 - [ ] `[ "$(cd backend && go env GOVERSION)" = "go$(cd backend && go mod edit -json | jq -r .Go)" ] && [ "$(node --version | cut -d. -f1)" = "v$(cat .node-version)" ]` exits 0.
 - [ ] `test -z "$(git ls-files client server nginx-conf package.json Dockerfile Procfile .dockerignore .github/workflows/challenge-of-the-week-cronjob.yml)"` exits 0.
 - [ ] `! grep -nE 'stack: python|^[^#]*<[a-z][a-z-]+>' Makefile docker-compose.yml .devcontainer/* scripts/setup-dev-tools.sh .github/*.yml .github/workflows/*.yml backend/Dockerfile` exits 0.
@@ -154,12 +144,10 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 **Depends on**: 1
 
 ### Context
-
 - `backend/cmd/what-the-flag/main.go — main()` — replaced by the wiring below. `backend/internal/postgres/internal/db — Queries.GetMeta()` — read by `TestTxRollsBack`. Choke file for later plans: `backend/internal/app/app.go`. Every domain adds a `Deps` field and one `Register(mux)` call there.
 - Integration tests need `dockerd`, `make db` and `make db-migrate`.
 
 ### What to build
-
 - `backend/internal/config/config.go — Config, Load(), Config.DatabaseURL()`; `backend/internal/config/config_test.go — TestLoad` (unit: default port, missing vars named, escaped password).
 - `backend/internal/httpx/errors.go — Error, WriteError(), ErrorCode, MapError()`; `backend/internal/httpx/json.go — ReadJSON(), WriteJSON()`;
   `backend/internal/httpx/middleware.go — Chain(), RequestID(), Logger(), RequestLog(), Recover(), CheckOrigin(), RequireJSON(), NotFound()`.
@@ -173,7 +161,6 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `backend/internal/contract/harness_integration_test.go — newServer(), newClient(), decode(), expectError()` (decisions); `backend/internal/contract/health_integration_test.go — TestHealth` (200 `{"status":"ok"}`), `TestUnknownRoute` (`GET /api/nope` → 404 `not_found`). `go mod tidy`.
 
 ### Acceptance criteria
-
 - [ ] `cd backend && go test -v -run '^(TestReadJSON|TestWriteError|TestMapError|TestRecover|TestRequireJSON|TestCheckOrigin)$' ./internal/httpx | grep -c '^--- PASS'` prints `6`.
 - [ ] With `make db` and `make db-migrate` done, `set -a && . ./.env && set +a && cd backend && go test -tags=integration -v -run '^(TestHealth|TestUnknownRoute|TestTxRollsBack)$' ./internal/contract ./internal/postgres | grep -c '^--- PASS'` prints `3`.
 - [ ] With `make db` and `make be` running, `curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Origin: http://evil.example' localhost:8080/api/health` prints `403`.
@@ -185,12 +172,10 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 **Depends on**: 2
 
 ### Context
-
 - Edited: `frontend/src/main.tsx`, `frontend/index.html`, `frontend/vite.config.ts`, `frontend/tsconfig.json`, `frontend/tsconfig.app.json`, `frontend/package.json`, `frontend/pnpm-lock.yaml`.
 - Deleted template files: `frontend/src/App.tsx`, `frontend/src/App.css`, `frontend/src/assets/`, `frontend/public/vite.svg`. Choke file for later plans: `frontend/src/app/router.tsx`.
 
 ### What to build
-
 - Tailwind + shadcn/ui per the current Vite install docs: `frontend/src/index.css`, `frontend/components.json`, `frontend/src/components/ui/button.tsx` (`shadcn add button`).
   `frontend/src/lib/utils.ts`: `export { cn } from 'cn'`; `clsx` and `tailwind-merge` removed when nothing else imports them.
 - Dependencies (latest, `pnpm add`): `@tanstack/react-query`, `react-router`, `zod`, `cn`; dev: `jsdom`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/user-event`, `@testing-library/jest-dom`.
@@ -209,7 +194,6 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `frontend/index.html`: `lang="de"`, title "What The Flag", `frontend/public/favicon.svg`.
 
 ### Acceptance criteria
-
 - [ ] `cd frontend && ls src/lib/api.test.ts src/lib/query-client.test.ts src/lib/i18n/locale.test.ts src/features/landing/landing-page.test.tsx && pnpm exec vitest run src/lib src/features/landing` exits 0.
 - [ ] `! grep -rl 'fetch(' frontend/src --exclude-dir=test --exclude='*.test.*' | grep -v '^frontend/src/lib/api.ts$'` exits 0.
 - [ ] `! grep -rniE 'accept-language' backend frontend/src` exits 0.
@@ -221,23 +205,20 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 **Depends on**: 3
 
 ### Context
-
 - Guide sections: `Copy the production files`, `Fill the templates` for the new files, `Set up the agent files`, `Verify`. Image builds run through the cloud-session build route (decisions). `docs/prds/prd-rebuild.md` — what `docs/decisions.md` must not repeat.
 
 ### What to build
-
-- From the templates, placeholders filled: `docker-compose.prod.yml`, `.env.example` (decisions), `scripts/prod-init.sh`, `scripts/backup-postgres.sh`, `.github/workflows/release.yml`. No migrate step: plan-first-release adds it.
+- From the templates, placeholders filled: `docker-compose.prod.yml`, `.env.example` (decisions), `scripts/prod-init.sh`, `scripts/backup-postgres.sh`, `.github/workflows/release.yml`. No migrate step, no `make e2e`, `scripts/e2e-stack.sh` or `docker-compose.e2e.yml`: plan-first-release adds them.
 - `reverse-proxy/Caddyfile` (`example.com` → `what-the-flag.de`), `reverse-proxy/Dockerfile` (`<node-major>` filled), `reverse-proxy/Dockerfile.dockerignore`.
 - `CLAUDE.md` (`@AGENTS.md`). `AGENTS.md`: the project in two lines; links to PRD, glossary and decisions; a `make` targets table; these rules:
   - UI German and English; repository files English. UI strings live only in a `messages.ts` built with `defineMessages` (a feature's, or `src/app/messages.ts`). A feature maps its own error codes there; generic codes map in `src/lib/i18n/error-messages.ts`.
   - Frontend: `features/<name>/`, kebab-case file names, server access only through feature API functions over `ApiClient`. Feature tests fake the server only via `FakeApi` and `renderRoute()`.
   - Backend: `internal/<domain>/{handler,service,store}.go`, wiring in `internal/app/app.go`. One sqlc block and `sqlc/queries/<domain>.sql` per domain; generated code is regenerated, never edited.
-  - Stores take `DBTX`; a method taking a `pgx.Tx` rejects nil. Integration tests carry the `integration` tag, are named `*_integration_test.go` and never truncate. A route lands with `internal/contract/<domain>_integration_test.go`.
+  - Stores take `DB` (`DBTX` plus `Begin`); a method taking a `pgx.Tx` rejects nil. Integration tests carry the `integration` tag, are named `*_integration_test.go` and never truncate. A route lands with `internal/contract/<domain>_integration_test.go`.
   - Migrations are forward-only `.up.sql`, each wrapped in `BEGIN; … COMMIT;`. Enumerations are `text` + `CHECK`, never `ENUM`. The error envelope's `message` is English developer text.
 - `docs/README.md` (rows: PRD, glossary, decisions, each with its question), `docs/decisions.md` (D01–D08), `README.md` (name, pitch, `make help`, setup link to the guide), `LICENSE`. country-data adds the README licence section.
 
 ### Acceptance criteria
-
 - [ ] `grep -c example.com reverse-proxy/Caddyfile` prints `0`.
 - [ ] `docker build -t what-the-flag-backend:dev backend` exits 0 (cloud session: through the build route).
 - [ ] `docker build -f reverse-proxy/Dockerfile -t what-the-flag-edge:dev .` exits 0 (same route).
