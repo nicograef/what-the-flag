@@ -222,11 +222,12 @@ No route negotiates language. Lists have fixed limits and no pagination.
 - Tests follow the handbook's global test rule: the cheapest level that can fail for the defect.
 - Question generation is a pure function with an injected random source. Its tests pin the quiz rules over many seeds.
 - The importer's test is the gate step that compares its output with the committed dataset, plus the pool invariants.
-- Round, duel and ledger rules are tested at service level against an in-memory store with an injected clock.
+- Quiz and account service rules are tested against in-memory fakes with an injected clock.
+- Duel scoring and the ledger run against real Postgres, because they rely on row locks and unique keys.
 - SQL and migrations are tested against a real Postgres under the `integration` build tag.
 - A contract suite pins the HTTP API with Go black-box HTTP tests under the same tag.
 - It drives the real handler chain against a real Postgres.
-- Strict decoding of every response into an expected struct pins the wire shape. There is no OpenAPI document.
+- Strict decoding of every response into an expected struct pins the wire shape.
 - Every route lands with its contract tests: one happy path plus each route-specific error code.
 - Contract tests may read the database to learn a question's correct option. Timeouts stay at service level.
 - Middleware rules are tested once, in unit tests: `Origin`, content type, body limit, error envelope.
@@ -234,7 +235,7 @@ No route negotiates language. Lists have fixed limits and no pagination.
 - Frontend tests render features with a real query client and a faked API client.
 - A smoke check sends HTTP requests to the production stack. It lands with the first release.
 - One browser test in `e2e/` (Playwright) covers the cross-stack flow through the edge.
-- It registers two players, plays a duel and reads the result. It lands with release readiness.
+- It registers two players, plays a duel and reads the result. It lands with release readiness and replaces the smoke check.
 - Prior art: none in this repository; the handbook's stack conventions describe the patterns.
 
 ## Out of Scope

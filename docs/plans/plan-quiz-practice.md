@@ -46,7 +46,7 @@ The `quiz` package exposes sets, rounds, summaries and a finish hook for duels. 
 
 Each read (`State`) or answer (`Answer`) runs in one transaction that first locks the `rounds` row `FOR UPDATE`. Then, in order:
 
-1. Authorise: unknown round, or a round whose user is not `viewer`, returns `ErrRoundNotFound`. An `option` outside 0..3 returns `ErrInvalidOption`. Either writes nothing.
+1. Authorise: an unknown round, or a user round whose user is not `viewer`, returns `ErrRoundNotFound`. A practice round (NULL user) needs only its id. An `option` outside 0..3 returns `ErrInvalidOption`. Either writes nothing.
 2. Materialise: an open, late question `p` is resolved as a timeout. If `p = N-1`, the round finishes with `finished_at = served_at + 22 s`.
 3. Apply the event:
 
@@ -158,7 +158,7 @@ Every method that takes a `pgx.Tx` returns `ErrNilTx` for a nil one. Methods wit
 - `backend/internal/quiz/generate_test.go — TestGenerate`: real pool, `n = 197`, seeds 0–999, so every country is a target in every mode. A literal tiny pool pins the fallback, duplicate text, other capitals, look-alikes and `ErrPoolTooSmall`.
 - `backend/internal/quiz/present_test.go — TestPresent`: prompt and option type and text per mode.
 - `backend/internal/quiz/fake_store_test.go`; `backend/internal/quiz/service_test.go — TestRoundServe`: deadline `now + 20 s`, reload keeps it, nil tx, another user's round.
-- `backend/internal/quiz/store_integration_test.go`: `TestStoreSet` (both kinds, rolled-back tx, 10 concurrent reads serve once), `TestStoreStartRound` (concurrent starts, `uuid.Nil`), `TestStorePracticeCleanup`.
+- `backend/internal/quiz/store_integration_test.go`: `TestStoreSet` (both kinds, rolled-back tx, 10 concurrent reads serve once), `TestStoreStartRound` (`uuid.Nil` stores a NULL user; two starts make two rounds), `TestStorePracticeCleanup`.
 - `backend/internal/contract/quiz_integration_test.go — TestQuizPractice`: create returns a round id; the first read serves position 0 with four options.
   A second read keeps the deadline. Unknown and unparsable ids are 404 `round_not_found`. No JSON string equals a pool code.
 

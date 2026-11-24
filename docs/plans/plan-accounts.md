@@ -79,8 +79,8 @@ Package `account` exports the auth and lookup functions the duels plan builds on
 - `backend/internal/app/app.go — New()` — handler chain and domain wiring; each phase adds its routes here.
 - `backend/internal/httpx/ — ReadJSON(), WriteJSON(), WriteError(), MapError(), Logger()` — envelope, Origin check, 415 and body limit.
 - `backend/internal/postgres/testpool.go — TestPool(), TestTx()` — integration-test pool and rolled-back tx.
-- `backend/sqlc.yaml` — gains an `account` block: `sqlc/queries/account.sql`, `out: internal/account/internal/db`. Regenerate with `cd backend && go tool sqlc generate`. Stores take the generated `DBTX`.
-- `backend/internal/contract/harness_integration_test.go` — `httptest` server over `app.New`, one cookie jar and `X-Forwarded-For` per simulated user, strict decoding.
+- `backend/sqlc.yaml` — gains an `account` block: `sqlc/queries/account.sql`, `out: internal/account/internal/db`. Regenerate with `cd backend && go tool sqlc generate`. Stores take `DB`: sqlc's `DBTX` plus `Begin` (foundation).
+- `backend/internal/contract/harness_integration_test.go — newServer(), newClient(), decode(), expectError()` — TLS server over `app.New`, one cookie jar and `X-Forwarded-For` per client.
 - `database/migrations/000002_quiz.up.sql — rounds` — target of the `user_id` foreign key.
 - `frontend/src/lib/api.ts — ApiClient, ApiError, useApiClient()`; `frontend/src/lib/query-client.ts — createQueryClient()`.
 - `frontend/src/lib/i18n/ — defineMessages()`; `frontend/src/lib/i18n/error-messages.ts — errorMessage()`.
@@ -93,7 +93,6 @@ Package `account` exports the auth and lookup functions the duels plan builds on
 
 - **Login throttling is per address only** (PRD). Guessing one account from many addresses is bounded only by the hash gate. Accepted for a game without personal data.
 - **Forwarded header trust**: the backend trusts the rightmost `X-Forwarded-For` entry. Production publishes no backend port, so every request passes Caddy, which sets it.
-- **Secure cookies in the harness**: Go's `net/http/cookiejar` sends a `Secure` cookie only over `https`. The harness therefore needs `httptest.NewTLSServer` and its client transport; phase 1 switches it if needed.
 - **Hash cost in tests**: argon2id at OWASP cost is slow under `-race`. Contract rate-limit cases send input rejected before any hash.
 
 ## Phase 1: Register and stay logged in
@@ -111,13 +110,13 @@ Package `account` exports the auth and lookup functions the duels plan builds on
 - `backend/internal/account/password.go` — the jotti port with OWASP parameters, the hash gate, `hashPassword()`, `verifyPassword()`.
 - `backend/internal/account/emoji.go` — `Emojis`.
 - `backend/internal/account/service.go` — `Service`, `Store` interface, `NewService(store, now func() time.Time, intn func(int) int)`, `Register()`, `Authenticate(tokenHash)` with sliding and expiry, username and password rules.
-- `backend/internal/account/store.go` — `NewStore(db db.DBTX)`; maps the unique violation on `users_username_lower_key` to `ErrUsernameTaken`.
+- `backend/internal/account/store.go` — `DB`, `NewStore(d DB)`; maps the unique violation on `users_username_lower_key` to `ErrUsernameTaken`.
 - `backend/internal/account/handler.go` — `NewHandler`, `Register(mux)`, `POST /api/accounts` (201, cookie, me body), `GET /api/me`, `RequireUser()`, `UserID()`, `OptionalUser()`, cookie helpers, the `MapError` table.
 - `backend/internal/account/password_test.go` — hash round trip; malformed PHC strings rejected; wrong password fails.
 - `backend/internal/account/service_test.go` — in-memory fake store and fixed clock: username and password rule tables, expiry after 30 idle days, sliding after one hour, a presented session deleted on register.
 - `backend/internal/account/store_integration_test.go` — `TestStoreSessions`: lookup by hash, touch, and `DeleteExpiredSessions` removes only expired rows of this test's users.
 - `backend/internal/app/app.go` — wire account store, service and handler.
-- `backend/internal/contract/harness_integration_test.go` — `registerUser(t, srv)`: a fresh simulated user registered under a unique username, logged in; returns the user and the username.
+- `backend/internal/contract/harness_integration_test.go` — `registerUser(t, srv)`: a fresh `newClient` registered under a unique username, so logged in; returns the client and the username.
 - `backend/internal/contract/accounts_integration_test.go` — `TestAccountsRegister`:
   - register is 201; the raw `Set-Cookie` header holds `__Host-session`, `Path=/`, `Max-Age=2592000`, `HttpOnly`, `Secure`, `SameSite=Lax` and no `Domain`;
   - `GET /api/me` with the cookie returns the me body; without it 401 `unauthenticated`; an unknown token gets 401 and `Max-Age=0`;
@@ -129,7 +128,7 @@ Package `account` exports the auth and lookup functions the duels plan builds on
 
 ### Acceptance criteria
 
-- [ ] With `make db` running, `make db-migrate` prints `3/u accounts`.
+- [ ] With `make db` running: `make db-migrate && test "$(docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT version, dirty FROM schema_migrations"')" = '3|f'`
 - [ ] `cd backend && go tool sqlc diff` exits 0.
 - [ ] `cd backend && go test -race ./internal/account -run 'TestPassword|TestService'` exits 0.
 - [ ] With `make db` and `make db-migrate` done, `make be-integration` exits 0; it runs `TestStoreSessions` and `TestAccountsRegister`.

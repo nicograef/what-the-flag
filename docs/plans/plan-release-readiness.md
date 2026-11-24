@@ -69,7 +69,7 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
   - Both result pages list both players and ten question rows.
   - Each player opens `/leaderboard` through the navbar link and finds their own points from the result page.
   - The console gate applies to every page.
-- `Makefile`: `e2e-check` (frozen install, `format:check`, `typecheck`, `lint` in `e2e/`) as a prerequisite of `check`.
+- `Makefile`: `e2e-check` (frozen install, `format:check`, `typecheck`, `lint` in `e2e/`) in `CLASS_developer`, a prerequisite of `check`.
   `e2e` runs the Playwright install, then `scripts/e2e-stack.sh pnpm --dir e2e test`.
 - `scripts/smoke.sh` deleted; `grep -rn 'smoke.sh' .` then fixes every reference.
 - `.github/workflows/ci.yml`: filter `e2e` gains `e2e/**`. Job `e2e` gains SHA-pinned `pnpm/action-setup` (`package_json_file: e2e/package.json`).

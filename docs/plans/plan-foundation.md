@@ -135,8 +135,8 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - [ ] `test -z "$(git ls-files client server nginx-conf package.json Dockerfile Procfile .dockerignore .github/workflows/challenge-of-the-week-cronjob.yml)"` exits 0.
 - [ ] `! grep -nE 'stack: python|^[^#]*<[a-z][a-z-]+>' Makefile docker-compose.yml .devcontainer/* scripts/setup-dev-tools.sh .github/*.yml .github/workflows/*.yml backend/Dockerfile` exits 0.
 - [ ] `make help | grep -q be-integration && ! make help | grep -q UNCLASSIFIED` exits 0.
-- [ ] `docker compose config --services | sort | paste -sd' '` prints `backend postgres`.
-- [ ] With `make db` running, `make db-migrate` prints `1/u init`.
+- [ ] `test "$(docker compose config --services | sort | paste -sd' ')" = 'backend postgres'` exits 0.
+- [ ] With `make db` running: `make db-migrate && test "$(docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT version, dirty FROM schema_migrations"')" = '1|f'` exits 0.
 - [ ] `make check` passes.
 
 ## Phase 2: Backend skeleton, database health and contract harness
@@ -161,9 +161,9 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `backend/internal/contract/harness_integration_test.go — newServer(), newClient(), decode(), expectError()` (decisions); `backend/internal/contract/health_integration_test.go — TestHealth` (200 `{"status":"ok"}`), `TestUnknownRoute` (`GET /api/nope` → 404 `not_found`). `go mod tidy`.
 
 ### Acceptance criteria
-- [ ] `cd backend && go test -v -run '^(TestReadJSON|TestWriteError|TestMapError|TestRecover|TestRequireJSON|TestCheckOrigin)$' ./internal/httpx | grep -c '^--- PASS'` prints `6`.
-- [ ] With `make db` and `make db-migrate` done, `set -a && . ./.env && set +a && cd backend && go test -tags=integration -v -run '^(TestHealth|TestUnknownRoute|TestTxRollsBack)$' ./internal/contract ./internal/postgres | grep -c '^--- PASS'` prints `3`.
-- [ ] With `make db` and `make be` running, `curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Origin: http://evil.example' localhost:8080/api/health` prints `403`.
+- [ ] `test "$(cd backend && go test -v -run '^(TestReadJSON|TestWriteError|TestMapError|TestRecover|TestRequireJSON|TestCheckOrigin)$' ./internal/httpx | grep -c '^--- PASS')" -eq 6` exits 0.
+- [ ] With `make db` and `make db-migrate` done: `set -a && . ./.env && set +a && test "$(cd backend && go test -tags=integration -v -run '^(TestHealth|TestUnknownRoute|TestTxRollsBack)$' ./internal/contract ./internal/postgres | grep -c '^--- PASS')" -eq 3` exits 0.
+- [ ] With `make db` and `make be` running: `test "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Origin: http://evil.example' localhost:8080/api/health)" = 403` exits 0.
 - [ ] With `make db` running: `set -a && . ./.env && set +a && cd backend && go build -o /tmp/wtf ./cmd/what-the-flag && (APP_PORT=18080 /tmp/wtf >/tmp/wtf.log 2>&1 & p=$!; curl -fsS --retry 15 --retry-connrefused --retry-delay 1 -o /dev/null localhost:18080/api/health; c=$?; kill -TERM $p; wait $p && [ $c = 0 ]) && tail -1 /tmp/wtf.log | grep -q 'server stopped'` exits 0.
 - [ ] `make check` passes.
 
@@ -197,7 +197,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - [ ] `cd frontend && ls src/lib/api.test.ts src/lib/query-client.test.ts src/lib/i18n/locale.test.ts src/features/landing/landing-page.test.tsx && pnpm exec vitest run src/lib src/features/landing` exits 0.
 - [ ] `! grep -rl 'fetch(' frontend/src --exclude-dir=test --exclude='*.test.*' | grep -v '^frontend/src/lib/api.ts$'` exits 0.
 - [ ] `! grep -rniE 'accept-language' backend frontend/src` exits 0.
-- [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running, `curl -fsS localhost:5173/api/health` prints `{"status":"ok"}`.
+- [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running: `test "$(curl -fsS localhost:5173/api/health)" = '{"status":"ok"}'` exits 0.
 - [ ] `make check` passes.
 
 ## Phase 4: Production files, agent files and decisions
@@ -219,10 +219,10 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `docs/README.md` (rows: PRD, glossary, decisions, each with its question), `docs/decisions.md` (D01–D08), `README.md` (name, pitch, `make help`, setup link to the guide), `LICENSE`. country-data adds the README licence section.
 
 ### Acceptance criteria
-- [ ] `grep -c example.com reverse-proxy/Caddyfile` prints `0`.
+- [ ] `! grep -q example.com reverse-proxy/Caddyfile` exits 0.
 - [ ] `docker build -t what-the-flag-backend:dev backend` exits 0 (cloud session: through the build route).
 - [ ] `docker build -f reverse-proxy/Dockerfile -t what-the-flag-edge:dev .` exits 0 (same route).
-- [ ] `docker compose -f docker-compose.prod.yml --env-file .env.example config --quiet && echo ok` prints `ok`.
+- [ ] `docker compose -f docker-compose.prod.yml --env-file .env.example config --quiet` exits 0.
 - [ ] `[ "$(head -1 CLAUDE.md)" = "@AGENTS.md" ] && [ "$(head -1 LICENSE)" = "MIT License" ]` exits 0.
-- [ ] `grep -c '^- D[0-9][0-9]: ' docs/decisions.md` prints `8`.
+- [ ] `test "$(grep -c '^- D[0-9][0-9]: ' docs/decisions.md)" -eq 8` exits 0.
 - [ ] `make check` passes.

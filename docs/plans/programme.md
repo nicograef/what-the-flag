@@ -18,7 +18,6 @@ This file is the only run status. The orchestrator plans, dispatches, reviews an
 | 7 | [plan-release-readiness.md](plan-release-readiness.md) | Browser test, CSP review, game rules doc, `v1.0.0` checklist | 3 | `v1.0.0` |
 
 - No release ships between `v0.1.0` (practice only) and `v1.0.0` (accounts and duels).
-- The weekly challenge is out of scope; it gets its own PRD after `v1.0.0`.
 
 ## Rulings
 
@@ -51,6 +50,7 @@ This file is the only run status. The orchestrator plans, dispatches, reviews an
 ## Stores and migrations
 
 - One Postgres 18 container from `make db`, database `whattheflag`, backend on port 8080. Every phase migrates it with `make db-migrate`.
+- A criterion that calls `go test -tags=integration` directly needs `.env` exported first: `set -a && . ./.env && set +a`.
 - Migrations in landing order, each wrapped in `BEGIN; … COMMIT;`:
 
 | Migration | Plan and phase |

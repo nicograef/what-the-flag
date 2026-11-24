@@ -12,9 +12,9 @@ The transaction that finishes the second round scores the duel once and writes b
 
 ### User rounds (package `quiz`, phase 1)
 
-- `quiz.Service — StartRound(ctx, tx, setID, userID) (uuid.UUID, error)`: `INSERT … ON CONFLICT (set_id, user_id) DO NOTHING`, then select. Idempotent, locks no row.
+- `quiz.Service — StartRound(ctx, tx, setID, userID) (uuid.UUID, error)` (quiz-practice 1): `ON CONFLICT (set_id, user_id) DO NOTHING`, then select. Idempotent, locks no row.
 - `quiz.Service — RoundOf(ctx, tx, setID, userID) (uuid.UUID, error)`: the user's round of that set, else `quiz.ErrRoundNotFound`.
-- `app.New()` passes `account — OptionalUser()` as the quiz handler's viewer, so a player reads only their own round. `000003_accounts` holds the `rounds.user_id` FK.
+- `app.New()` passes the quiz handler a viewer that wraps `account — OptionalUser()` and returns `uuid.Nil` without a session. A player reads only their own round. `000003_accounts` holds the `rounds.user_id` FK.
 
 ### Ledger and leaderboard (package `leaderboard`)
 
@@ -28,7 +28,7 @@ The transaction that finishes the second round scores the duel once and writes b
 - Phase 4: `GET /api/leaderboard` behind `requireUser` → `{entries: [{rank, username, emoji, points, isViewer}], viewer: {rank, points}}`.
 - Entries: top 100 by total, then user id; `RANK()` gives equal totals one rank. A viewer without entries gets `rank: null`, `points: 0`.
 - Viewer rank: `1 + count(users with a higher total)`. SQL reads only `ledger_entries`; names come from `PublicByIDs()` behind `leaderboard.Users`.
-- `GET /api/me` gains `points` through `account.PointsTotaler`, declared in account and met by `leaderboard.Service — Total()`.
+- `GET /api/me` gains `points` through `account.PointsTotaler`, a new `account.NewHandler` parameter met by `leaderboard.Service — Total()`.
 
 ### Duel schema (`database/migrations/000005_duels.up.sql`, wrapped in `BEGIN; … COMMIT;`)
 
@@ -69,13 +69,13 @@ The transaction that finishes the second round scores the duel once and writes b
 - Exactly once: quiz locks the round row, the hook then the duel row. Two last finishes serialise on the duel row.
   Under READ COMMITTED the second sees the first's count, so only it completes and awards. The ledger key absorbs any repeat.
 - A timed-out finish uses `served_at + 22 s` as `FinishedAt`. After expiry a finish records its count but never completes or awards.
-- A method taking a `pgx.Tx` rejects a nil one. Others open a tx via `pgx.BeginFunc` on a `Begin`-capable sqlc `DBTX` (pool, or `TestTx`).
+- A method taking a `pgx.Tx` rejects a nil one. Others open a tx with `pgx.BeginFunc` on the store's `DB` (foundation: `DBTX` plus `Begin`).
 - `Create`: `IDByUsername` (any letter case), self check, then one tx: `quiz.CreateSet(ctx, tx, quiz.KindDuel, quiz.DuelSize)` and `InsertDuel`.
 - `StartRound`: one tx: load the duel unlocked, check participant and expiry, `quiz.StartRound`. No duel lock is held while quiz writes.
 
 ### Duel HTTP (`backend/internal/duel/handler.go`)
 
-- `NewHandler(svc *Service, requireUser func(http.Handler) http.Handler) *Handler`; `Register(mux)` wraps all four routes in `requireUser`.
+- `NewHandler(svc *Service, p *quiz.Presenter, requireUser func(http.Handler) http.Handler) *Handler`; `Register(mux)` wraps all four routes in `requireUser`.
   The viewer is `account.UserID(ctx)`. Errors go through `httpx.MapError`; an unparsable `{id}` is `duel_not_found`.
 
 | Route | Body → result | Errors |
@@ -102,7 +102,7 @@ The transaction that finishes the second round scores the duel once and writes b
 
 - `backend/internal/app/app.go — New(deps Deps)` — wiring of stores, services, handlers and the duel hook.
 - `backend/internal/account/ — RequireUser`, `UserID()`, `OptionalUser()`, `Service.IDByUsername()`, `Service.PublicByIDs()`, `PublicUser`, `ErrUserNotFound`.
-- `backend/internal/quiz/ — Service.CreateSet()`, `Service.Summary()`, `Service.OnFinished()`, `FinishedRound`, `KindDuel`, `DuelSize`, summary JSON.
+- `backend/internal/quiz/ — Service.StartRound()`, `Service.CreateSet()`, `Service.Summary()`, `Service.OnFinished()`, `FinishedRound`, `KindDuel`, `DuelSize`, `ErrNilTx`, `Presenter.Summary()`.
 - `backend/internal/httpx/ — MapError()`; `backend/internal/postgres/testpool.go — TestPool()`, `TestTx()`; `backend/internal/contract/` — harness, `registerUser`, `correctOption()`.
 - `frontend/src/app/router.tsx`, `frontend/src/app/navbar.tsx — Navbar`, `frontend/src/lib/api.ts — useApiClient()`, `frontend/src/features/play/play.tsx — Play({ roundId, onFinished })`; `frontend/src/features/auth/ — RequireUser`, `useSession()`, `AFTER_LOGIN`, me schema.
 
@@ -122,7 +122,7 @@ The transaction that finishes the second round scores the duel once and writes b
 
 ### What to build
 
-- `backend/sqlc/queries/quiz.sql`: `InsertUserRound`, `GetRoundBySetUser`. `backend/internal/quiz/service.go — StartRound()`, `RoundOf()`; `backend/internal/quiz/store.go`.
+- `backend/sqlc/queries/quiz.sql`: `GetRoundBySetUser`. `backend/internal/quiz/service.go — RoundOf()`; `backend/internal/quiz/store.go`.
 - `database/migrations/000004_ledger.up.sql`; `backend/sqlc/queries/leaderboard.sql — InsertLedgerEntry`; `backend/internal/leaderboard/service.go — NewService()`, `Kind`, `Award()`.
 - `database/migrations/000005_duels.up.sql`; `backend/sqlc/queries/duel.sql`: `InsertDuel`, `GetDuelForUser`, `GetDuelBySetForUpdate`, `ListDuelsForUser` (both roles, newest 50), `SetCorrect`, `CompleteDuel`.
 - `backend/sqlc.yaml`: the `leaderboard` and `duel` blocks; regenerate with `cd backend && go tool sqlc generate`.
@@ -130,7 +130,7 @@ The transaction that finishes the second round scores the duel once and writes b
   Errors `ErrSelfChallenge`, `ErrDuelNotFound`, `ErrDuelExpired`; `account.ErrUserNotFound` passes through.
 - `backend/internal/duel/handler.go`: the four routes, the error table, `DuelItem` and `DuelDetail` JSON.
 - `backend/internal/app/app.go`: the account viewer for quiz, leaderboard and duel construction, `OnFinished(quiz.KindDuel, duelService)`.
-- Tests: `backend/internal/quiz/store_integration_test.go`, `backend/internal/leaderboard/service_integration_test.go`, `backend/internal/duel/{score,status,service_integration}_test.go`.
+- Tests: `backend/internal/quiz/store_integration_test.go` (`TestRoundOwner`; `TestStoreStartRound` gains concurrent starts of one fixture user), `backend/internal/leaderboard/service_integration_test.go`, `backend/internal/duel/{score,status,service_integration}_test.go`.
 - `backend/internal/contract/duels_integration_test.go`, users A, B and C from `registerUser`:
   - A challenges B by B's name in upper case; both lists show `your_turn`. A answers all ten with `correctOption`, then reads `waiting`;
   - B reading A's round gets 404 `round_not_found`. B answers all ten wrongly; both details read `completed` with 85 and 10 points;
@@ -212,8 +212,8 @@ The transaction that finishes the second round scores the duel once and writes b
 
 - `backend/sqlc/queries/leaderboard.sql`: `UserTotal`, `TopTotals` (`RANK()`, top 100), `CountHigherTotals`; regenerate sqlc.
 - `backend/internal/leaderboard/service.go`: `Users` interface, `Total()`, `Board(ctx, viewer)`. `backend/internal/leaderboard/handler.go`: `GET /api/leaderboard`.
-- `backend/internal/account/service.go — PointsTotaler`; `backend/internal/account/handler.go`: `points` in the `GET /api/me` body.
-- `backend/internal/app/app.go`: the leaderboard handler and its users; the totaler for account. Test: `backend/internal/leaderboard/service_integration_test.go`.
+- `backend/internal/account/handler.go`: `PointsTotaler`, the `NewHandler` parameter, `points` in every me body.
+- `backend/internal/app/app.go`: account service, then leaderboard service with it as `Users`, then account handler with the totaler. Test: `backend/internal/leaderboard/service_integration_test.go`.
 - `backend/internal/contract/leaderboard_integration_test.go`: a fresh user reads `viewer` rank `null`, points 0, and me points 0.
   After a duel won 10:0, the winner's `viewer.points` and me `points` are 85.
 - `backend/internal/contract/accounts_integration_test.go`: the expected me struct gains `points`, since decoding rejects unknown fields.
