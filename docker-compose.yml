@@ -1,0 +1,42 @@
+# Project name, so every `docker compose` call reaches this stack without -p.
+# The -dev suffix keeps it apart from the prod stack on a shared host.
+name: what-the-flag-dev
+
+services:
+  # Service name matches docker-compose.prod.yml, so the Makefile's `db` and
+  # `db-shell` targets address the same service in both stacks.
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    # Loopback only: Docker-published ports bypass the host firewall.
+    ports:
+      - "127.0.0.1:5432:5432"
+    # TCP, not the socket: the image's init server listens on the socket only and
+    # restarts, so a socket probe reports ready before the real server is up.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
