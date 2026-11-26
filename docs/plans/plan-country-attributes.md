@@ -33,7 +33,7 @@ Every attribute value has a German and an English label, read from vendored CLDR
 - Fame tier 1–3 from the pool's area rank: ranks 1–50 are tier 1, 51–120 tier 2, the rest tier 3.
   `data/overrides.json` section `fameTiers` (code → `tier`, `reason`) adjusts known small countries.
   Seed entries: SG, CH, NL, BE, PT, GR, IL, LU, MC, VA, JM, QA as tier 1, each with its reason.
-- `data/overrides.json` section `languages` (code → `add`/`remove` lists, `reason`) fixes language lists. It starts empty; override hygiene applies as for every section.
+- `data/overrides.json` section `languages` (code → `add`/`remove` lists, `reason`) fixes language lists. A `currencies` section of the same shape fixes currency lists. Override hygiene applies to both.
 
 ### Dataset (`backend/internal/country/dataset/countries.json`)
 
@@ -106,7 +106,7 @@ Every attribute value has a German and an English label, read from vendored CLDR
 
 ### Acceptance criteria
 
-- [ ] The committed dataset is current: `make data && test -z "$(git status --porcelain -- backend/internal/country/dataset frontend/public/flags)"`
-- [ ] Invariants (unit): `cd backend && go test ./internal/country -run TestPoolInvariants`
-- [ ] A stale override fails: `tmp=$(mktemp) && cp data/overrides.json "$tmp" && jq '.fameTiers.US = {"tier": 1, "reason": "x"}' "$tmp" > data/overrides.json; ! make data-check; rc=$?; cp "$tmp" data/overrides.json; exit $rc`
-- [ ] `make check` passes.
+- [x] The committed dataset is current: `make data && test -z "$(git status --porcelain -- backend/internal/country/dataset frontend/public/flags)"`
+- [x] Invariants (unit): `cd backend && go test ./internal/country -run TestPoolInvariants`
+- [x] A stale override fails: `tmp=$(mktemp) && cp data/overrides.json "$tmp" && jq '.fameTiers.US = {"tier": 1, "reason": "x"}' "$tmp" > data/overrides.json; ! make data-check; rc=$?; cp "$tmp" data/overrides.json; exit $rc`
+- [x] `make check` passes.
