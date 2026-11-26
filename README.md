@@ -11,3 +11,7 @@ Copy `.env.example` to `.env`, set a password and uncomment `DB_HOST`. Then run 
 ## Commands
 
 `make help` lists every target. `make check` runs the gate that CI runs.
+
+## Licence
+
+Code: MIT (`LICENSE`). Data: ODbL-1.0 (`data/LICENSE`). Credits: `NOTICE`.
