@@ -1,0 +1,46 @@
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE / Editor ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# ── Environment ──────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+
+# ── Go ───────────────────────────────────────────────────────────────────────
+/vendor/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# ── Build artifacts ──────────────────────────────────────────────────────────
+dist/
+build/
+*.exe
+
+# ── Docker ───────────────────────────────────────────────────────────────────
+# Machine-local Compose overrides, e.g. a build CA for a TLS-intercepting proxy.
+docker-compose.local.yml
+
+# ── Deploy ───────────────────────────────────────────────────────────────────
+# Server-local release state, written by scripts/prod-init.sh.
+.deploy-state
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+
+# ── Claude Code ──────────────────────────────────────────────────────────────
+.claude/settings.local.json

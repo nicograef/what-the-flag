@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# setup-dev-tools.sh – install project-specific dev tools (idempotent)
+#
+# Called by devcontainer.json postCreateCommand, or run manually.
+#
+# Each `# >>> stack: NAME` section hard-requires its runtime, so a leftover Go section fails the
+# postCreateCommand of a frontend-only repo.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+info()  { printf "${GREEN}[INFO]${NC}  %s\n" "$1"; }
+warn()  { printf "${YELLOW}[WARN]${NC}  %s\n" "$1"; }
+error() { printf "${RED}[ERROR]${NC} %s\n" "$1" >&2; }
+fatal() { error "$1"; exit 1; }
+
+ensure_cmd() {
+  local cmd="$1"
+  local hint="$2"
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    fatal "Missing required command '$cmd'. $hint"
+  fi
+}
+
+info "Project root: $PROJECT_ROOT"
+cd "$PROJECT_ROOT"
+
+# >>> stack: go
+# ── Go tools ─────────────────────────────────────────────────────────────────
+
+ensure_cmd go "Install Go (see .devcontainer/devcontainer.json features)."
+
+GO_BIN_PATH="$(go env GOPATH)/bin"
+export PATH="$GO_BIN_PATH:$PATH"
+
+# CI's golangci-lint step reads GOLANGCI_LINT_VERSION from this file. Built from source: a prebuilt
+# binary lags the Go version it can analyze, and some proxies block GitHub release downloads.
+GOLANGCI_LINT_VERSION="v2.13.2"
+GO_TOOLCHAIN="go1.27.4" # the `go` directive from backend/go.mod, e.g. 1.27.1
+
+info "Ensuring golangci-lint ($GOLANGCI_LINT_VERSION)..."
+if [ "v$(golangci-lint version --short 2>/dev/null | sed 's/^v//')" = "$GOLANGCI_LINT_VERSION" ]; then
+  info "golangci-lint already installed: $GOLANGCI_LINT_VERSION"
+else
+  GOTOOLCHAIN="$GO_TOOLCHAIN" GOBIN="$GO_BIN_PATH" \
+    go install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${GOLANGCI_LINT_VERSION}"
+  hash -r
+fi
+
+# goimports, sqlc and govulncheck are go.mod tools, pinned in go.mod and run through `go tool`.
+
+echo "  go:             $(go version)"
+echo "  golangci-lint:  $(golangci-lint --version | head -n 1)"
+# <<< stack: go
+
+# >>> stack: frontend
+# ── Node / pnpm ─────────────────────────────────────────────────────────────
+
+ensure_cmd node "Install Node (see .devcontainer/devcontainer.json features)."
+
+# npm installs the packageManager pin CI runs; Node 25 and later ship without Corepack.
+PNPM_SPEC="$(cd "$PROJECT_ROOT/frontend" && node -p "require('./package.json').packageManager.split('+')[0]")"
+info "Ensuring $PNPM_SPEC..."
+if [ "pnpm@$(pnpm --version 2>/dev/null)" = "$PNPM_SPEC" ]; then
+  info "pnpm already installed: $PNPM_SPEC"
+else
+  npm install -g "$PNPM_SPEC"
+  hash -r
+fi
+
+# --frozen-lockfile: the lockfile is the contract; a setup never rewrites it.
+info "Installing frontend dependencies..."
+(cd "$PROJECT_ROOT/frontend" && pnpm install --frozen-lockfile)
+
+echo "  node:           $(node --version)"
+echo "  pnpm:           $(pnpm --version)"
+# <<< stack: frontend
+
+
+info "Setup complete. Next step: make check"

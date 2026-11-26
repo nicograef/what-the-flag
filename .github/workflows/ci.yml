@@ -1,0 +1,457 @@
+# Each stack's env, jobs and steps sit between a `# >>> stack: NAME` and a `# <<< stack: NAME` line
+# (go, python, frontend, database).
+#
+# Toolchain versions come from the project's own pins, so CI and a dev machine agree:
+# Go from go.mod, Node from .node-version, pnpm from packageManager in package.json,
+# uv from the [tool.uv] required-version floor in pyproject.toml.
+#
+# Every `uses:` is pinned to a full commit SHA, with the release it stood for in the
+# trailing comment. A tag is mutable: whoever controls the upstream repository can
+# repoint it and every run picks that up silently. Dependabot's github-actions group
+# rewrites SHA and comment together, so the pins still get bumped.
+#
+# `timeout-minutes` on every job: GitHub's default is six hours. The values here are
+# placeholders; read the real figure off `gh run view RUN_ID --json jobs` and set each
+# well above it.
+name: CI
+
+# Every push on any branch, so a feature branch is measured while it is still a branch.
+on:
+  push:
+    branches: ['**']
+  # Public repos only: a fork's push runs in the fork, so its PR needs this trigger.
+  # In a private repo it would run a second time on the same commit.
+  # pull_request:
+  #   branches: [main]
+  # Advisories change without a code change; the schedule runs only the security jobs.
+  schedule:
+    - cron: "0 4 * * 1"  # Mondays 04:00 UTC
+
+# Least-privilege token; a job that needs more (e.g. OIDC deploy) requests
+# its scopes at job level (id-token: write, contents: read).
+permissions:
+  contents: read
+
+# The event name keeps a scheduled run and a push to main from cancelling each other.
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# >>> stack: database
+env:
+  # The digest is the release's sha256sum.txt entry; update it together with the version.
+  MIGRATE_VERSION: v4.20.1
+  MIGRATE_SHA256: b1e13121d4178b7804a9fb29dca62d57b732390f7e5ae33f2cd65e9b192e1bd4
+# <<< stack: database
+
+jobs:
+  # ── Change Detection ───────────────────────────────────────────────────────
+  # Skipped on schedule, and so is every job that needs it without `!cancelled()`.
+  changes:
+    if: ${{ github.event_name != 'schedule' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+      frontend: ${{ steps.changes.outputs.frontend }}
+      database: ${{ steps.changes.outputs.database }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # Full history puts the push's base commit and origin/main on disk, so paths-filter
+          # never runs its own `git fetch`, which has no credentials in a private repo.
+          fetch-depth: 0
+      - name: Check for changes
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: changes
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'scripts/setup-dev-tools.sh'  # pins the lint and tool versions
+              - '.github/workflows/ci.yml'
+            frontend:
+              - 'frontend/**'
+              - '.github/workflows/ci.yml'
+            database:
+              - 'database/**'
+              - 'docker-compose.prod.yml'  # the postgres image the restore drill runs
+              - '.github/workflows/ci.yml'
+
+  # >>> stack: go
+  # ── Go Backend ─────────────────────────────────────────────────────────────
+  backend-ci:
+    needs: changes
+    # database: the generated code reads the schema.
+    if: ${{ (needs.changes.outputs.backend == 'true') || (needs.changes.outputs.database == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # Only for a diff-scoped lint (one that reads `git diff BASE..HEAD`): a shallow
+          # clone carries no merge base, the diff reads as empty, and the gate is green for
+          # the one reason a gate may never be green.
+          # fetch-depth: 0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod  # relative to the repo root
+          cache-dependency-path: backend/go.sum
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Verify go.mod/go.sum are tidy
+        run: go mod tidy -diff
+
+      # Generated code must match its source. sqlc is a go.mod tool like goimports and
+      # reads database/migrations. Swap in your generator; the status check stays.
+      - name: Check generated code is current
+        run: |
+          go tool sqlc generate
+          DRIFT="$(git status --porcelain)"
+          if [ -n "$DRIFT" ]; then
+            echo "Generated code is stale; regenerate and commit:"
+            echo "$DRIFT"
+            exit 1
+          fi
+
+      - name: Check format
+        run: |
+          UNFORMATTED="$(go tool goimports -l .)"
+          if [ -n "$UNFORMATTED" ]; then
+            echo "Code is not properly formatted:"
+            echo "$UNFORMATTED"
+            exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        # -race slows a run 2–20×: narrow ./... to the packages that start goroutines.
+        run: go test -v -shuffle=on -race ./...
+
+  # ── golangci-lint (separate job for caching) ───────────────────────────────
+  backend-golangci:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      # scripts/setup-dev-tools.sh holds the pin, so CI and a dev machine run one golangci-lint.
+      - name: Read the golangci-lint version
+        id: lint-version
+        working-directory: .
+        run: |
+          VERSION="$(sed -n 's/^GOLANGCI_LINT_VERSION="\(.*\)"$/\1/p' scripts/setup-dev-tools.sh)"
+          [ -n "$VERSION" ] || { echo "No GOLANGCI_LINT_VERSION in scripts/setup-dev-tools.sh."; exit 1; }
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: ${{ steps.lint-version.outputs.version }}
+          working-directory: ./backend
+  # <<< stack: go
+
+  # >>> stack: frontend
+  # ── Node / pnpm Frontend ──────────────────────────────────────────────────
+  frontend-ci:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: frontend/package.json  # relative to the repo root
+          run_install: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm run format:check
+
+      - name: Run lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Build
+        run: pnpm run build
+  # <<< stack: frontend
+
+
+  # ── Security ───────────────────────────────────────────────────────────────
+  # Every push and every scheduled run: a secret can land in any file, and the
+  # weekly run applies new gitleaks rules to the old commits.
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0  # the scan covers every commit, not only the tip
+
+      # The digest is the release's checksums.txt entry; update it together with the version.
+      - name: Install gitleaks
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -fsSLo gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz"
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum -c -
+          sudo tar -xzf gitleaks.tar.gz -C /usr/local/bin gitleaks
+
+      # --redact keeps a found secret out of the public run log.
+      - name: gitleaks
+        run: gitleaks git --redact --no-banner .
+
+  # The stack scans run on the weekly schedule too, when `changes` is skipped;
+  # !cancelled() lets them run past that skip. A push runs one only when its code changed.
+  # >>> stack: go
+  security-go:
+    needs: changes
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || needs.changes.outputs.backend == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [backend]  # one entry per go.mod
+    defaults:
+      run:
+        working-directory: ./${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ${{ matrix.module }}/go.mod
+          cache-dependency-path: ${{ matrix.module }}/go.sum
+
+      # It fails only on vulnerabilities the module's code can reach.
+      - name: govulncheck
+        run: go tool govulncheck ./...
+  # <<< stack: go
+
+  # >>> stack: frontend
+  security-node:
+    needs: changes
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || needs.changes.outputs.frontend == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: frontend/package.json
+          run_install: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      # Reads pnpm-lock.yaml, so no install. Blocking from "high" upward.
+      - name: pnpm audit
+        run: pnpm audit --audit-level high
+  # <<< stack: frontend
+
+  # >>> stack: database
+  # ── Integration Tests (PostgreSQL) ─────────────────────────────────────────
+  # Go and Python steps share the database and its migrations.
+  backend-integration-tests:
+    needs: changes
+    if: ${{ (needs.changes.outputs.backend == 'true') || (needs.changes.outputs.database == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: whattheflag
+        ports:
+          - 5432:5432
+        # TCP, not the socket: the image's init server listens on the socket only and
+        # restarts, so a socket probe reports ready before the real server is up.
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U admin -d whattheflag"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    # Read by the tests of either stack. The names match the backend's environment in
+    # docker-compose.prod.yml, so code that passes here reads the same variables in prod.
+    env:
+      DB_HOST: localhost
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: whattheflag  # match the service's POSTGRES_DB above
+      # JWT_SECRET: test-secret  # uncomment and add secrets your app needs
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # >>> stack: go
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Download dependencies
+        run: go mod download
+      # <<< stack: go
+
+
+      - name: Install golang-migrate
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -fsSLo migrate.tar.gz "https://github.com/golang-migrate/migrate/releases/download/${MIGRATE_VERSION}/migrate.linux-amd64.tar.gz"
+          echo "${MIGRATE_SHA256}  migrate.tar.gz" | sha256sum -c -
+          sudo tar -xzf migrate.tar.gz -C /usr/local/bin migrate
+
+      - name: Run database migrations up
+        working-directory: ./database
+        run: migrate -path ./migrations -database "postgres://admin:admin@localhost:5432/whattheflag?sslmode=disable" up
+
+      # >>> stack: go
+      - name: Run Go integration tests
+        run: go test -tags=integration -v -race ./...
+      # <<< stack: go
+
+
+  # ── Upgrade Path and Restore Drill (PostgreSQL) ────────────────────────────
+  # Migrations are forward-only: a database on the previous release must reach the
+  # current schema through `up` alone. The rollback is a backup restore, drilled below.
+  upgrade-path:
+    needs: changes
+    if: ${{ needs.changes.outputs.database == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DB_NAME: whattheflag
+      MIGRATIONS: database/migrations  # relative to the repo root
+      DB_URL: postgres://admin:admin@localhost:5432/whattheflag?sslmode=disable
+    services:
+      postgres:
+        image: postgres:18  # same image as docker-compose.prod.yml
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: whattheflag
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U admin -d whattheflag"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0  # the tags mark the releases
+
+      - name: Install golang-migrate
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -fsSLo migrate.tar.gz "https://github.com/golang-migrate/migrate/releases/download/${MIGRATE_VERSION}/migrate.linux-amd64.tar.gz"
+          echo "${MIGRATE_SHA256}  migrate.tar.gz" | sha256sum -c -
+          sudo tar -xzf migrate.tar.gz -C /usr/local/bin migrate
+
+      # HEAD^ skips the tag on a release commit itself. No tag yet: nothing to upgrade from.
+      - name: Apply the previous release's migrations
+        run: |
+          PREVIOUS="$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)"
+          if [ -z "$PREVIOUS" ]; then
+            echo "No release tag yet; the current migrations run on an empty database."
+            exit 0
+          fi
+          echo "Previous release: $PREVIOUS"
+          mkdir -p "$RUNNER_TEMP/previous"
+          git archive "$PREVIOUS" "$MIGRATIONS" | tar -x -C "$RUNNER_TEMP/previous"
+          migrate -path "$RUNNER_TEMP/previous/$MIGRATIONS" -database "$DB_URL" up
+          # Enable once the project has seed data: some migrations fail only on populated tables.
+          # git show "$PREVIOUS:database/seed.sql" | psql "$DB_URL" -v ON_ERROR_STOP=1
+
+      - name: Apply the current migrations
+        run: migrate -path "$MIGRATIONS" -database "$DB_URL" up
+
+      # Dumps the migrated database and restores it into a throwaway container on the
+      # stack's own image. Passes when the migration version and table count survive.
+      - name: Restore drill
+        env:
+          SOURCE: ${{ job.services.postgres.id }}
+        run: |
+          PG_IMAGE="$(grep -oE 'postgres:[0-9][0-9.]*' docker-compose.prod.yml | head -n1)"
+          [ -n "$PG_IMAGE" ] || { echo "No postgres image in docker-compose.prod.yml."; exit 1; }
+          docker exec "$SOURCE" pg_dump -U admin -d "$DB_NAME" -Fc > "$RUNNER_TEMP/drill.dump"
+          docker run -d --name restore-drill -e POSTGRES_USER=admin \
+            -e POSTGRES_PASSWORD=drill -e POSTGRES_DB="$DB_NAME" "$PG_IMAGE"
+          READY=""
+          for _ in $(seq 1 30); do
+            if docker exec restore-drill pg_isready -q -h 127.0.0.1 -U admin; then READY=1; break; fi
+            sleep 1
+          done
+          [ -n "$READY" ] || { echo "Throwaway $PG_IMAGE did not start."; exit 1; }
+          docker exec -i restore-drill pg_restore -U admin -d "$DB_NAME" \
+            --exit-on-error --single-transaction < "$RUNNER_TEMP/drill.dump"
+          QUERY="SELECT (SELECT version FROM schema_migrations) || '/' ||
+            (SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public')"
+          WANT="$(docker exec "$SOURCE" psql -U admin -d "$DB_NAME" -tAc "$QUERY")"
+          GOT="$(docker exec restore-drill psql -U admin -d "$DB_NAME" -tAc "$QUERY")"
+          echo "version/tables: source $WANT, restored $GOT"
+          [ "$GOT" = "$WANT" ]
+  # <<< stack: database

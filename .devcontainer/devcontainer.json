@@ -1,0 +1,43 @@
+// Docs: https://containers.dev/implementors/json_reference/
+{
+  "name": "what-the-flag-dev",
+
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
+
+  // ── Dev Container Features ────────────────────────────────────────────────
+  // Full list: https://containers.dev/features
+  "features": {
+    // -- Go --
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.27.4"
+    },
+    // -- Node --
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "26"
+    },
+    // -- Docker-in-Docker (for docker compose in dev) --
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  // ── Post-create setup ─────────────────────────────────────────────────────
+  "postCreateCommand": "bash scripts/setup-dev-tools.sh",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        // -- Go --
+        "golang.Go",
+
+        // -- Node / TypeScript / React --
+        "oxc.oxc-vscode",
+        "esbenp.prettier-vscode",
+
+        // -- General --
+        "editorconfig.editorconfig"
+      ]
+    }
+  }
+}

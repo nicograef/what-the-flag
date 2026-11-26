@@ -1,0 +1,83 @@
+# Monthly + grouped: one batched PR per ecosystem instead of per-dependency noise.
+version: 2
+updates:
+  # ── GitHub Actions ──
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # >>> stack: go
+  # ── Go modules ──
+  - package-ecosystem: "gomod"
+    directory: "/backend"
+    schedule:
+      interval: "monthly"
+    groups:
+      gomod:
+        patterns:
+          - "*"
+
+  # ── Docker base images (backend/Dockerfile) ──
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "monthly"
+    groups:
+      docker-backend:
+        patterns:
+          - "*"
+    # The golang minor follows the `go` directive in go.mod, as CI's setup-go does.
+    ignore:
+      - dependency-name: "golang"
+        update-types: ["version-update:semver-minor"]
+  # <<< stack: go
+
+  # >>> stack: frontend
+  # ── npm / pnpm ──
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "monthly"
+    groups:
+      npm:
+        patterns:
+          - "*"
+  # <<< stack: frontend
+
+
+  # ── Docker base images (reverse-proxy/Dockerfile: caddy, and node for the SPA build) ──
+  - package-ecosystem: "docker"
+    directory: "/reverse-proxy"
+    schedule:
+      interval: "monthly"
+    groups:
+      docker-edge:
+        patterns:
+          - "*"
+    # The Node major follows .node-version, the version CI and dev run.
+    ignore:
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
+
+  # ── Docker Compose service images ──
+  # The docker ecosystem parses Dockerfiles only, so compose image tags need this entry.
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      docker-compose:
+        patterns:
+          - "*"
+    ignore:
+      # A new major cannot read the old data directory: guides/postgres-upgrade.md is the only path.
+      - dependency-name: "postgres"
+        update-types: ["version-update:semver-major"]
+      # The dev image's Node major follows .node-version.
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
