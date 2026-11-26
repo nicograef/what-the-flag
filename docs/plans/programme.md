@@ -35,7 +35,7 @@ Every session that runs this programme checks these before wave 1 and after a co
 - The programme runs in a Claude Code cloud session without the `nico` plugin. The texts of `implement-plan`, its `programme.md` and `lead.md` are followed by hand.
 - No `agent-bus.sh`, `plan-run-guard.sh` or `check-agents.sh`. This file and the git log carry the state.
 - Sequential run: one plan at a time, its phases in order. No parallel lanes, no worktrees, no file-ownership table, no `flock`.
-- A phase agent works in `/home/user/what-the-flag` on the base branch `<session branch>` and commits its phase. It does not push.
+- A phase agent works in `/home/user/what-the-flag` on the base branch `ccr-75a2d59d-v315yq` and commits its phase. It does not push.
 - The lead reviews each phase against its criteria, flips its Status row in a follow-up commit, then pushes. A replaced container then loses at most one phase.
 - Lane results arrive as agent completion notices. One hourly scheduled check-in re-reads this file and `git log`; no 15-minute check-in.
 - Phase agents never call `gh`. After the push of a plan's last phase, the lead reads CI through the GitHub MCP tools (`actions_list`, `get_job_logs`). A red job reopens that plan.
