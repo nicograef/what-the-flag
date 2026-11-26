@@ -22,6 +22,13 @@ linters:
     - nolintlint
     - forbidigo
     - exhaustive
+  exclusions:
+    rules:
+      # Contract tests hand each response to decode or expectError, which close it;
+      # bodyclose does not follow a response into the function it is passed to.
+      - path: internal/contract/
+        linters:
+          - bodyclose
   settings:
     gosec:
       excludes:
