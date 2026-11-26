@@ -156,11 +156,11 @@ ORDER BY ?iso2 ?capital
 
 ### Acceptance criteria
 
-- [ ] The script is valid bash: `bash -n scripts/fetch-data-sources.sh`
-- [ ] 271 flag sources are vendored: `test "$(ls data/sources/flag-icons/4x3/*.svg | wc -l)" -eq 271`
-- [ ] The Wikidata CSV holds the capitals-only header: `head -n 1 data/sources/wikidata/capitals.csv | grep -qx $'iso2,capital,capitalEn,capitalDe\r'`
-- [ ] `NOTICE` credits all four licences and the ODbL paths: `grep -q 'ODbL-1.0' NOTICE && grep -q 'Unicode-3.0' NOTICE && grep -q 'CC0-1.0' NOTICE && grep -q 'MIT' NOTICE && grep -q 'backend/internal/country/dataset/' NOTICE`
-- [ ] `make check` passes
+- [x] The script is valid bash: `bash -n scripts/fetch-data-sources.sh`
+- [x] 271 flag sources are vendored: `test "$(ls data/sources/flag-icons/4x3/*.svg | wc -l)" -eq 271`
+- [x] The Wikidata CSV holds the capitals-only header: `head -n 1 data/sources/wikidata/capitals.csv | grep -qx $'iso2,capital,capitalEn,capitalDe\r'`
+- [x] `NOTICE` credits all four licences and the ODbL paths: `grep -q 'ODbL-1.0' NOTICE && grep -q 'Unicode-3.0' NOTICE && grep -q 'CC0-1.0' NOTICE && grep -q 'MIT' NOTICE && grep -q 'backend/internal/country/dataset/' NOTICE`
+- [x] `make check` passes
 
 ## Phase 2: Overrides, importer and gate
 
