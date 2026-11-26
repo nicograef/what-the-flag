@@ -88,7 +88,7 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 | country-data 1 | data | landed | 408f493 | |
 | country-data 2 | data | landed | 727bbba | |
 | country-data 3 | data | landed | ebe71b1 | |
-| country-attributes 1 | attr | waiting | | |
+| country-attributes 1 | attr | landed | e435440 | |
 | country-attributes 2 | attr | waiting | | |
 | quiz 1 | quiz | waiting | | |
 | quiz 2 | quiz | waiting | | |

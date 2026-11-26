@@ -78,10 +78,10 @@ Every attribute value has a German and an English label, read from vendored CLDR
 
 ### Acceptance criteria
 
-- [ ] `bash -n scripts/fetch-data-sources.sh && shellcheck scripts/fetch-data-sources.sh`
-- [ ] The cldr-only run left other sources untouched: `test -z "$(git diff --name-only origin/main -- data/sources | grep -v '^data/sources/cldr/')"`
-- [ ] Labels present: `jq -e '.main.de.localeDisplayNames.languages.rm' data/sources/cldr/de/languages.json && jq -e '.main.de.numbers.currencies.CHF.displayName' data/sources/cldr/de/currencies.json`
-- [ ] `make check` passes.
+- [x] `bash -n scripts/fetch-data-sources.sh && shellcheck scripts/fetch-data-sources.sh`
+- [x] The cldr-only run left other sources untouched: `test -z "$(git diff --name-only origin/main -- data/sources | grep -v '^data/sources/cldr/')"`
+- [x] Labels present: `jq -e '.main.de.localeDisplayNames.languages.rm' data/sources/cldr/de/languages.json && jq -e '.main.de.numbers.currencies.CHF.displayName' data/sources/cldr/de/currencies.json`
+- [x] `make check` passes.
 
 ## Phase 2: Attributes in the dataset and the catalogue
 
