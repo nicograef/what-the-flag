@@ -197,7 +197,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "ce1cbf6d87",
       "lookalikes": []
     },
@@ -1002,7 +1002,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "b7720d2173",
       "lookalikes": []
     },
@@ -1047,7 +1047,7 @@
       "currencies": [
         "DKK"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "2b0f2d6b31",
       "lookalikes": []
     },
@@ -1225,7 +1225,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "cd188a6f0f",
       "lookalikes": []
     },
@@ -1382,7 +1382,7 @@
       "currencies": [
         "GBP"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "33ee37a7cb",
       "lookalikes": []
     },
@@ -1738,7 +1738,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "2401dbfeeb",
       "lookalikes": []
     },
@@ -1875,7 +1875,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "b92086d16b",
       "lookalikes": []
     },
@@ -1942,7 +1942,7 @@
       "currencies": [
         "JPY"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "5fc96eed81",
       "lookalikes": []
     },
@@ -2124,7 +2124,7 @@
       "currencies": [
         "KRW"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "940b54c4fc",
       "lookalikes": []
     },
@@ -2970,7 +2970,7 @@
       "currencies": [
         "NOK"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "e11df79fc4",
       "lookalikes": []
     },
@@ -3038,7 +3038,7 @@
       "currencies": [
         "NZD"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "d734828731",
       "lookalikes": []
     },
@@ -3521,7 +3521,7 @@
       "currencies": [
         "SEK"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "10a710762c",
       "lookalikes": []
     },
