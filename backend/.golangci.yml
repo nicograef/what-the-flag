@@ -1,0 +1,48 @@
+version: "2"
+
+# ── Run ──────────────────────────────────────────────────────────────────────
+# Integration test files carry `//go:build integration`; without the tag they go unlinted.
+run:
+  build-tags:
+    - integration
+
+# ── Linters ──────────────────────────────────────────────────────────────────
+linters:
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - gosec
+    - bodyclose
+    - errorlint
+    - gocritic
+    - nilerr
+    - nolintlint
+    - forbidigo
+    - exhaustive
+  settings:
+    gosec:
+      excludes:
+        - G115 # integer-conversion overflow: false positives on bounded casts
+    exhaustive:
+      # A default branch does not excuse a missing case.
+      default-signifies-exhaustive: false
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+      disabled-checks:
+        - hugeParam # passing structs by value is a readability choice, not a bug
+        - rangeValCopy
+
+# ── Formatters ───────────────────────────────────────────────────────────────
+# goimports, not gofumpt: gopls formats with goimports rules on save, so editor and CI agree.
+formatters:
+  enable:
+    - goimports
+
+output:
+  sort-order:
+    - file
