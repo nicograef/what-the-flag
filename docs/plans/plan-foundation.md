@@ -219,10 +219,10 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `docs/README.md` (rows: PRD, glossary, decisions, each with its question), `docs/decisions.md` (D01–D08), `README.md` (name, pitch, `make help`, setup link to the guide), `LICENSE`. country-data adds the README licence section.
 
 ### Acceptance criteria
-- [ ] `! grep -q example.com reverse-proxy/Caddyfile` exits 0.
-- [ ] `docker build -t what-the-flag-backend:dev backend` exits 0 (cloud session: through the build route).
-- [ ] `docker build -f reverse-proxy/Dockerfile -t what-the-flag-edge:dev .` exits 0 (same route).
-- [ ] `docker compose -f docker-compose.prod.yml --env-file .env.example config --quiet` exits 0.
-- [ ] `[ "$(head -1 CLAUDE.md)" = "@AGENTS.md" ] && [ "$(head -1 LICENSE)" = "MIT License" ]` exits 0.
-- [ ] `test "$(grep -c '^- D[0-9][0-9]: ' docs/decisions.md)" -eq 8` exits 0.
-- [ ] `make check` passes.
+- [x] `! grep -q example.com reverse-proxy/Caddyfile` exits 0.
+- [x] `docker build -t what-the-flag-backend:dev backend` exits 0 (cloud session: through the build route).
+- [x] `docker build -f reverse-proxy/Dockerfile -t what-the-flag-edge:dev .` exits 0 (same route).
+- [x] `docker compose -f docker-compose.prod.yml --env-file .env.example config --quiet` exits 0.
+- [x] `[ "$(head -1 CLAUDE.md)" = "@AGENTS.md" ] && [ "$(head -1 LICENSE)" = "MIT License" ]` exits 0.
+- [x] `test "$(grep -c '^- D[0-9][0-9]: ' docs/decisions.md)" -eq 8` exits 0.
+- [x] `make check` passes.

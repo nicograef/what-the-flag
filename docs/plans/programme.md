@@ -91,7 +91,7 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 | foundation 1 | found | landed | eb85d78 | migration 000001_init |
 | foundation 2 | found | landed | 5e1db90 | |
 | foundation 3 | found | landed | ab651d5 | |
-| foundation 4 | found | waiting | | |
+| foundation 4 | found | landed | e255b9f | |
 | country-data 1 | data | waiting | | |
 | country-data 2 | data | waiting | | |
 | country-data 3 | data | waiting | | |
