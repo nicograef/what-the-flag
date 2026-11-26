@@ -56,6 +56,47 @@ func TestPoolInvariants(t *testing.T) {
 				}
 			}
 		}},
+		{"every entry has languages, currencies and a fame tier", func(t *testing.T) {
+			for _, c := range pool {
+				if len(c.Languages) == 0 || len(c.Currencies) == 0 || c.Fame < 1 || c.Fame > 3 {
+					t.Errorf("%s: languages %v, currencies %v, fame %d", c.Code, c.Languages, c.Currencies, c.Fame)
+				}
+			}
+		}},
+		{"every attribute code has both labels", func(t *testing.T) {
+			for _, c := range pool {
+				codes := map[LabelKind][]string{LabelLanguage: c.Languages, LabelCurrency: c.Currencies, LabelRegion: {c.Region}}
+				for kind, list := range codes {
+					for _, code := range list {
+						if n, ok := cat.Label(kind, code); !ok || n.De == "" || n.En == "" {
+							t.Errorf("%s: %s %s has label %+v, %t", c.Code, kind, code, n, ok)
+						}
+					}
+				}
+			}
+		}},
+		{"CH has its four official languages and CHF", func(t *testing.T) {
+			ch := byCode["CH"]
+			if !slices.Equal(ch.Languages, []string{"de", "fr", "it", "rm"}) || !slices.Equal(ch.Currencies, []string{"CHF"}) {
+				t.Errorf("CH languages %v, currencies %v; want [de fr it rm], [CHF]", ch.Languages, ch.Currencies)
+			}
+		}},
+		{"no other capital is a primary capital", func(t *testing.T) {
+			primary := map[string]string{}
+			for _, c := range pool {
+				primary["de:"+c.Capital.De] = c.Code
+				primary["en:"+c.Capital.En] = c.Code
+			}
+			for _, c := range pool {
+				for _, other := range c.OtherCapitals {
+					for _, key := range []string{"de:" + other.De, "en:" + other.En} {
+						if owner, ok := primary[key]; ok {
+							t.Errorf("%s: other capital %q is the primary capital of %s", c.Code, key, owner)
+						}
+					}
+				}
+			}
+		}},
 		{"every entry has a flag file", func(t *testing.T) {
 			for _, c := range pool {
 				if _, err := os.Stat(filepath.Join("..", "..", "..", "frontend", "public", "flags", c.FlagKey+".svg")); err != nil {
