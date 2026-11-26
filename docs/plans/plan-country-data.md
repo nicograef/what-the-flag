@@ -187,13 +187,13 @@ ORDER BY ?iso2 ?capital
 
 ### Acceptance criteria
 
-- [ ] The importer is deterministic and the committed output is current: `make data && test -z "$(git status --porcelain -- backend/internal/country/dataset frontend/public/flags)"`
-- [ ] 197 keyed flags plus the licence exist: `test "$(ls frontend/public/flags | wc -l)" -eq 198`
-- [ ] No flag file leaks its code: `! grep -rlE 'flag-icons|(id="|#|\.|class="| )[a-z]{2}-' --include='*.svg' frontend/public/flags`
-- [ ] The ODbL text travels with the dataset: `cmp data/LICENSE backend/internal/country/dataset/LICENSE`
-- [ ] The gate catches drift: `( echo >> backend/internal/country/dataset/countries.json; ! make data-check ); rc=$?; git checkout -- backend/internal/country/dataset/countries.json; exit $rc`
-- [ ] Both targets are classified for `make help`: `! make help | grep -q UNCLASSIFIED`
-- [ ] `make check` passes
+- [x] The importer is deterministic and the committed output is current: `make data && test -z "$(git status --porcelain -- backend/internal/country/dataset frontend/public/flags)"`
+- [x] 197 keyed flags plus the licence exist: `test "$(ls frontend/public/flags | wc -l)" -eq 198`
+- [x] No flag file leaks its code: `! grep -rlE 'flag-icons|(id="|#|\.|class="| )[a-z]{2}-' --include='*.svg' frontend/public/flags`
+- [x] The ODbL text travels with the dataset: `cmp data/LICENSE backend/internal/country/dataset/LICENSE`
+- [x] The gate catches drift: `( echo >> backend/internal/country/dataset/countries.json; ! make data-check ); rc=$?; git checkout -- backend/internal/country/dataset/countries.json; exit $rc`
+- [x] Both targets are classified for `make help`: `! make help | grep -q UNCLASSIFIED`
+- [x] `make check` passes
 
 ## Phase 3: Embedded catalogue
 
