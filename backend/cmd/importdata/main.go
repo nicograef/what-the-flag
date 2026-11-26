@@ -34,11 +34,11 @@ func run(rootDir string, check bool, stderr io.Writer) int {
 	if err != nil {
 		return fail(err.Error())
 	}
-	countries, problems := build(src)
+	ds, problems := build(src)
 	if len(problems) > 0 {
 		return fail(problems...)
 	}
-	files, err := render(countries, src)
+	files, err := render(ds, src)
 	if err != nil {
 		return fail(err.Error())
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
 	"maps"
 	"regexp"
@@ -13,10 +14,20 @@ import (
 const (
 	wantUNMembers = 193
 	wantPool      = 197
+	// Fame tiers by area rank in the pool, largest first: ranks up to tier1MaxRank are tier 1.
+	tier1MaxRank = 50
+	tier2MaxRank = 120
 )
 
 var (
-	regions   = []string{"Africa", "Americas", "Asia", "Europe", "Oceania"}
+	// regionLabels holds mledoze's regions, which the PRD calls continents.
+	regionLabels = map[string]country.Names{
+		"Africa":   {De: "Afrika", En: "Africa"},
+		"Americas": {De: "Amerika", En: "Americas"},
+		"Asia":     {De: "Asien", En: "Asia"},
+		"Europe":   {De: "Europa", En: "Europe"},
+		"Oceania":  {De: "Ozeanien", En: "Oceania"},
+	}
 	codeRe    = regexp.MustCompile(`^[A-Z]{2}$`)
 	flagKeyRe = regexp.MustCompile(`^[0-9a-f]{10}$`)
 )
@@ -41,8 +52,8 @@ func (b *builder) inPool(code string) bool {
 	return ok
 }
 
-// build merges the sources into the pool entries, sorted by code.
-func build(src sources) ([]country.Country, []string) {
+// build merges the sources into the pool entries, sorted by code, and the labels of their attribute codes.
+func build(src sources) (country.Dataset, []string) {
 	b := &builder{src: src, byCode: make(map[string]mledozeCountry, len(src.mledoze))}
 	for _, c := range src.mledoze {
 		if _, dup := b.byCode[c.Code]; dup {
@@ -54,6 +65,20 @@ func build(src sources) ([]country.Country, []string) {
 	names := b.countryNames()
 	capitals := b.capitals()
 	lookalikes := b.lookalikes()
+	languages := b.codeLists("languages", b.src.overrides.Languages, src.languageNames, func(c mledozeCountry) []string {
+		var codes []string
+		for _, code := range c.Languages {
+			if alias, ok := src.languageAliases[code]; ok {
+				code = alias
+			}
+			codes = append(codes, code)
+		}
+		return codes
+	})
+	currencies := b.codeLists("currencies", b.src.overrides.Currencies, src.currencyNames, func(c mledozeCountry) []string {
+		return slices.Clone(c.Currencies)
+	})
+	fame := b.fameTiers()
 
 	countries := make([]country.Country, 0, len(b.pool))
 	for _, code := range b.pool {
@@ -67,12 +92,28 @@ func build(src sources) ([]country.Country, []string) {
 			Capital:       c.primary,
 			OtherCapitals: c.others,
 			Region:        b.byCode[code].Region,
+			Languages:     languages[code],
+			Currencies:    currencies[code],
+			Fame:          fame[code],
 			FlagKey:       country.FlagKey(code),
 			Lookalikes:    append([]string{}, lookalikes[code]...),
 		})
 	}
-	validate(countries, &b.p)
-	return countries, b.p
+	labels := country.Labels{Languages: map[string]country.Names{}, Currencies: map[string]country.Names{}, Regions: map[string]country.Names{}}
+	for _, c := range countries {
+		for _, code := range c.Languages {
+			labels.Languages[code] = src.languageNames[code]
+		}
+		for _, code := range c.Currencies {
+			labels.Currencies[code] = src.currencyNames[code]
+		}
+		if n, ok := regionLabels[c.Region]; ok {
+			labels.Regions[c.Region] = n
+		}
+	}
+	ds := country.Dataset{Countries: countries, Labels: labels}
+	validate(ds, &b.p)
+	return ds, b.p
 }
 
 // buildPool returns the sorted pool: UN members after the unMember overrides, plus poolAdditions.
@@ -255,6 +296,99 @@ func (b *builder) lookalikes() map[string][]string {
 	return partners
 }
 
+// codeLists returns each pool entry's sorted attribute codes: the source's, edited by the section's overrides.
+func (b *builder) codeLists(section string, ov map[string]listOverride, names map[string]country.Names, source func(mledozeCountry) []string) map[string][]string {
+	lists := make(map[string][]string, len(b.pool))
+	for _, code := range b.pool {
+		lists[code] = source(b.byCode[code])
+	}
+	for _, code := range slices.Sorted(maps.Keys(ov)) {
+		o, name := ov[code], section+" "+code
+		requireReason(&b.p, name, o.Reason)
+		if !b.inPool(code) {
+			b.p.add("%s: not a pool code", name)
+			continue
+		}
+		if len(o.Add) == 0 && len(o.Remove) == 0 {
+			b.p.add("%s: adds and removes nothing", name)
+		}
+		list := lists[code]
+		for _, r := range o.Remove {
+			i := slices.Index(list, r)
+			if i < 0 {
+				b.p.add("%s: removes %s, which %v does not hold", name, r, list)
+				continue
+			}
+			list = slices.Delete(list, i, i+1)
+		}
+		for _, a := range o.Add {
+			if slices.Contains(list, a) {
+				b.p.add("%s: adds %s, which %v already holds", name, a, list)
+				continue
+			}
+			list = append(list, a)
+		}
+		lists[code] = list
+	}
+	for _, code := range b.pool {
+		list := lists[code]
+		slices.Sort(list)
+		list = slices.Compact(list)
+		if len(list) == 0 {
+			b.p.add("%s: no %s", code, section)
+		}
+		for _, v := range list {
+			if n := names[v]; n.De == "" || n.En == "" {
+				b.p.add("%s: %s code %s lacks a German or English CLDR name %+v", code, section, v, n)
+			}
+		}
+		if list == nil {
+			list = []string{}
+		}
+		lists[code] = list
+	}
+	return lists
+}
+
+// fameTiers ranks the pool by area, largest first, and applies the fameTiers overrides.
+func (b *builder) fameTiers() map[string]int {
+	ranked := slices.Clone(b.pool)
+	// Stable on the code-sorted pool, so equal areas rank by code.
+	slices.SortStableFunc(ranked, func(x, y string) int { return cmp.Compare(b.byCode[y].Area, b.byCode[x].Area) })
+	tiers := make(map[string]int, len(ranked))
+	rank := make(map[string]int, len(ranked))
+	for i, code := range ranked {
+		if b.byCode[code].Area <= 0 {
+			b.p.add("%s: area %v is not positive", code, b.byCode[code].Area)
+		}
+		rank[code] = i + 1
+		switch {
+		case i+1 <= tier1MaxRank:
+			tiers[code] = 1
+		case i+1 <= tier2MaxRank:
+			tiers[code] = 2
+		default:
+			tiers[code] = 3
+		}
+	}
+	ov := b.src.overrides.FameTiers
+	for _, code := range slices.Sorted(maps.Keys(ov)) {
+		o, name := ov[code], "fameTiers "+code
+		requireReason(&b.p, name, o.Reason)
+		switch {
+		case !b.inPool(code):
+			b.p.add("%s: not a pool code", name)
+		case o.Tier < 1 || o.Tier > 3:
+			b.p.add("%s: tier %d is not 1-3", name, o.Tier)
+		case o.Tier == tiers[code]:
+			b.p.add("%s: equals tier %d from area rank %d", name, o.Tier, rank[code])
+		default:
+			tiers[code] = o.Tier
+		}
+	}
+	return tiers
+}
+
 // applyLabels returns names with the override's languages replaced.
 func applyLabels(p *problems, name string, names country.Names, ov labelOverride) country.Names {
 	requireReason(p, name, ov.Reason)
@@ -286,7 +420,8 @@ func requireReason(p *problems, name, reason string) {
 }
 
 // validate checks every entry against the schema and the cross-entry invariants.
-func validate(countries []country.Country, p *problems) {
+func validate(ds country.Dataset, p *problems) {
+	countries := ds.Countries
 	byCode := make(map[string]country.Country, len(countries))
 	for _, c := range countries {
 		byCode[c.Code] = c
@@ -315,8 +450,11 @@ func validate(countries []country.Country, p *problems) {
 				p.add("%s: other capital %+v lacks a label", c.Code, other)
 			}
 		}
-		if !slices.Contains(regions, c.Region) {
-			p.add("%s: region %q is not one of %v", c.Code, c.Region, regions)
+		if _, ok := ds.Labels.Regions[c.Region]; !ok {
+			p.add("%s: region %q is not one of %v", c.Code, c.Region, slices.Sorted(maps.Keys(regionLabels)))
+		}
+		if c.Fame < 1 || c.Fame > 3 {
+			p.add("%s: fame %d is not 1-3", c.Code, c.Fame)
 		}
 		if !flagKeyRe.MatchString(c.FlagKey) {
 			p.add("%s: flag key %q is not 10 hex chars", c.Code, c.FlagKey)
@@ -327,6 +465,16 @@ func validate(countries []country.Country, p *problems) {
 		for _, other := range c.Lookalikes {
 			if !slices.Contains(byCode[other].Lookalikes, c.Code) {
 				p.add("%s: lookalike %s does not list it back", c.Code, other)
+			}
+		}
+	}
+	// A question about a primary capital must not have a second country's other capital as a true option.
+	for _, c := range countries {
+		for _, other := range c.OtherCapitals {
+			for _, k := range []labelKey{{"primary-capital de", other.De}, {"primary-capital en", other.En}} {
+				if prev, ok := owner[k]; ok {
+					p.add("%s: other capital %q is the primary capital of %s", c.Code, k.label, prev)
+				}
 			}
 		}
 	}

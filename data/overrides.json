@@ -60,5 +60,38 @@
       "pair": ["NI", "SV"],
       "reason": "Blue-white-blue triband; the central emblems are unreadable at card size"
     }
-  ]
+  ],
+  "fameTiers": {
+    "BE": {"tier": 1, "reason": "EU seat, well known in Europe"},
+    "CH": {"tier": 1, "reason": "Neighbour of Germany, widely known"},
+    "GR": {"tier": 1, "reason": "Ancient history, major holiday destination"},
+    "IL": {"tier": 1, "reason": "Constant in the news"},
+    "JM": {"tier": 1, "reason": "Known for reggae and sprinters"},
+    "LU": {"tier": 1, "reason": "Neighbour of Germany, EU founder"},
+    "MC": {"tier": 1, "reason": "Grand Prix and famous microstate"},
+    "NL": {"tier": 1, "reason": "Neighbour of Germany, widely known"},
+    "PT": {"tier": 1, "reason": "Major holiday destination, football"},
+    "QA": {"tier": 1, "reason": "Hosted the 2022 football World Cup"},
+    "SG": {"tier": 1, "reason": "Global city and trade hub"},
+    "VA": {"tier": 1, "reason": "Seat of the Pope, famous microstate"}
+  },
+  "languages": {
+    "AT": {"remove": ["bar"], "add": ["de"], "reason": "German is the official language; mledoze lists only the Bavarian dialect"},
+    "BZ": {"remove": ["bjz"], "reason": "CLDR names no Belizean Creole (bjz)"},
+    "CH": {"remove": ["gsw"], "add": ["de"], "reason": "German is an official language; mledoze lists only the Swiss German dialect"},
+    "GW": {"remove": ["pov"], "reason": "CLDR names no Upper Guinea Creole (pov)"},
+    "KM": {"remove": ["zdj"], "add": ["swb"], "reason": "CLDR names no Ngazidja (zdj); swb is the Comorian macrolanguage it belongs to"},
+    "MA": {"remove": ["ber"], "add": ["zgh"], "reason": "CLDR names no Berber family (ber); zgh is the official Standard Moroccan Tamazight"},
+    "ME": {"remove": ["sr-ME"], "add": ["sr"], "reason": "CLDR de names no Montenegrin (cnr, alias sr-ME); the constitution allows Serbian in official use"},
+    "NA": {"remove": ["hgm", "kwn"], "add": ["naq"], "reason": "mledoze labels hgm Khoekhoe, whose ISO 639-3 code is naq; CLDR names neither hgm nor Kwangali (kwn)"},
+    "NO": {"remove": ["smi"], "add": ["se"], "reason": "CLDR names no Sami family (smi); Northern Sami (se) is its most spoken member"},
+    "NZ": {"remove": ["nzs"], "reason": "CLDR names no New Zealand Sign Language (nzs)"},
+    "ZW": {"remove": ["bwg", "kck", "khi", "ndc", "toi", "zib"], "reason": "CLDR names none of these minor, family or sign-language codes"}
+  },
+  "currencies": {
+    "FM": {"add": ["USD"], "reason": "mledoze lists no currency; Micronesia uses the US dollar"},
+    "KI": {"remove": ["KID"], "reason": "Kiribati dollar has no ISO 4217 code or CLDR name; AUD remains"},
+    "TV": {"remove": ["TVD"], "reason": "Tuvaluan dollar has no ISO 4217 code or CLDR name; AUD remains"},
+    "ZW": {"remove": ["ZWB"], "add": ["ZWG"], "reason": "Bond notes (ZWB) have no CLDR name; Zimbabwe Gold (ZWG) is the national currency"}
+  }
 }

@@ -12,6 +12,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "ca"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "b246d536c6",
       "lookalikes": []
     },
@@ -27,6 +34,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "AED"
+      ],
+      "fame": 2,
       "flagKey": "fa70ff26ca",
       "lookalikes": []
     },
@@ -42,6 +56,15 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "fa-AF",
+        "ps",
+        "tk"
+      ],
+      "currencies": [
+        "AFN"
+      ],
+      "fame": 1,
       "flagKey": "b838aa65e7",
       "lookalikes": []
     },
@@ -57,6 +80,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "XCD"
+      ],
+      "fame": 3,
       "flagKey": "b609406c07",
       "lookalikes": []
     },
@@ -72,6 +102,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sq"
+      ],
+      "currencies": [
+        "ALL"
+      ],
+      "fame": 3,
       "flagKey": "213fda8799",
       "lookalikes": []
     },
@@ -87,6 +124,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "hy"
+      ],
+      "currencies": [
+        "AMD"
+      ],
+      "fame": 3,
       "flagKey": "a5f08d19cd",
       "lookalikes": []
     },
@@ -102,6 +146,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "AOA"
+      ],
+      "fame": 1,
       "flagKey": "d9cc2194a5",
       "lookalikes": []
     },
@@ -117,6 +168,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es",
+        "gn"
+      ],
+      "currencies": [
+        "ARS"
+      ],
+      "fame": 1,
       "flagKey": "fc0451c2f9",
       "lookalikes": []
     },
@@ -132,6 +191,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "de"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 2,
       "flagKey": "ce1cbf6d87",
       "lookalikes": []
     },
@@ -147,6 +213,13 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "AUD"
+      ],
+      "fame": 1,
       "flagKey": "7a162dd4cf",
       "lookalikes": []
     },
@@ -162,6 +235,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "az",
+        "ru"
+      ],
+      "currencies": [
+        "AZN"
+      ],
+      "fame": 2,
       "flagKey": "5ac3c0ca12",
       "lookalikes": []
     },
@@ -177,6 +258,15 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "bs",
+        "hr",
+        "sr"
+      ],
+      "currencies": [
+        "BAM"
+      ],
+      "fame": 3,
       "flagKey": "652954ca73",
       "lookalikes": []
     },
@@ -192,6 +282,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "BBD"
+      ],
+      "fame": 3,
       "flagKey": "cfc04ec33d",
       "lookalikes": []
     },
@@ -207,6 +304,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "bn"
+      ],
+      "currencies": [
+        "BDT"
+      ],
+      "fame": 2,
       "flagKey": "61a0bb02e5",
       "lookalikes": []
     },
@@ -222,6 +326,15 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "de",
+        "fr",
+        "nl"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "5964f0a157",
       "lookalikes": []
     },
@@ -237,6 +350,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 2,
       "flagKey": "c8414d1305",
       "lookalikes": []
     },
@@ -252,6 +372,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "bg"
+      ],
+      "currencies": [
+        "BGN"
+      ],
+      "fame": 2,
       "flagKey": "99fcabf15a",
       "lookalikes": []
     },
@@ -267,6 +394,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "BHD"
+      ],
+      "fame": 3,
       "flagKey": "3329c08c2b",
       "lookalikes": []
     },
@@ -282,6 +416,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr",
+        "rn"
+      ],
+      "currencies": [
+        "BIF"
+      ],
+      "fame": 3,
       "flagKey": "6ad42561f4",
       "lookalikes": []
     },
@@ -297,6 +439,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 2,
       "flagKey": "31a0989bd5",
       "lookalikes": []
     },
@@ -312,6 +461,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ms"
+      ],
+      "currencies": [
+        "BND",
+        "SGD"
+      ],
+      "fame": 3,
       "flagKey": "f877fa4307",
       "lookalikes": []
     },
@@ -332,6 +489,16 @@
         }
       ],
       "region": "Americas",
+      "languages": [
+        "ay",
+        "es",
+        "gn",
+        "qu"
+      ],
+      "currencies": [
+        "BOB"
+      ],
+      "fame": 1,
       "flagKey": "4c4363b622",
       "lookalikes": []
     },
@@ -347,6 +514,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "BRL"
+      ],
+      "fame": 1,
       "flagKey": "e64efd550c",
       "lookalikes": []
     },
@@ -362,6 +536,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "BSD",
+        "USD"
+      ],
+      "fame": 3,
       "flagKey": "bd09d85fc3",
       "lookalikes": []
     },
@@ -377,6 +559,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "dz"
+      ],
+      "currencies": [
+        "BTN",
+        "INR"
+      ],
+      "fame": 3,
       "flagKey": "ebbaa9874a",
       "lookalikes": []
     },
@@ -392,6 +582,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "tn"
+      ],
+      "currencies": [
+        "BWP"
+      ],
+      "fame": 1,
       "flagKey": "8deea6ed8a",
       "lookalikes": []
     },
@@ -407,6 +605,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "be",
+        "ru"
+      ],
+      "currencies": [
+        "BYN"
+      ],
+      "fame": 2,
       "flagKey": "585622f44f",
       "lookalikes": []
     },
@@ -422,6 +628,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "currencies": [
+        "BZD"
+      ],
+      "fame": 3,
       "flagKey": "08cdc4ceec",
       "lookalikes": []
     },
@@ -437,6 +651,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "currencies": [
+        "CAD"
+      ],
+      "fame": 1,
       "flagKey": "a8809b1287",
       "lookalikes": []
     },
@@ -452,6 +674,17 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr",
+        "kg",
+        "ln",
+        "lua",
+        "sw"
+      ],
+      "currencies": [
+        "CDF"
+      ],
+      "fame": 1,
       "flagKey": "d57799b61c",
       "lookalikes": []
     },
@@ -467,6 +700,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr",
+        "sg"
+      ],
+      "currencies": [
+        "XAF"
+      ],
+      "fame": 1,
       "flagKey": "4cd4ea6471",
       "lookalikes": []
     },
@@ -482,6 +723,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr",
+        "kg",
+        "ln"
+      ],
+      "currencies": [
+        "XAF"
+      ],
+      "fame": 2,
       "flagKey": "6c84eaf332",
       "lookalikes": []
     },
@@ -497,6 +747,16 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "de",
+        "fr",
+        "it",
+        "rm"
+      ],
+      "currencies": [
+        "CHF"
+      ],
+      "fame": 1,
       "flagKey": "d026041dff",
       "lookalikes": []
     },
@@ -512,6 +772,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 2,
       "flagKey": "dad80919fd",
       "lookalikes": []
     },
@@ -527,6 +794,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "CLP"
+      ],
+      "fame": 1,
       "flagKey": "4444e5acae",
       "lookalikes": []
     },
@@ -542,6 +816,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "currencies": [
+        "XAF"
+      ],
+      "fame": 2,
       "flagKey": "9d5cf6d0dc",
       "lookalikes": []
     },
@@ -557,6 +839,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "zh"
+      ],
+      "currencies": [
+        "CNY"
+      ],
+      "fame": 1,
       "flagKey": "6b572ba2eb",
       "lookalikes": []
     },
@@ -572,6 +861,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "COP"
+      ],
+      "fame": 1,
       "flagKey": "8ee02471d2",
       "lookalikes": []
     },
@@ -587,6 +883,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "CRC"
+      ],
+      "fame": 3,
       "flagKey": "c83647edeb",
       "lookalikes": []
     },
@@ -602,6 +905,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "CUC",
+        "CUP"
+      ],
+      "fame": 2,
       "flagKey": "7f63afb41a",
       "lookalikes": []
     },
@@ -617,6 +928,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "CVE"
+      ],
+      "fame": 3,
       "flagKey": "8e743d1f41",
       "lookalikes": []
     },
@@ -632,6 +950,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "el",
+        "tr"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "1625a52e09",
       "lookalikes": []
     },
@@ -647,6 +973,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "cs",
+        "sk"
+      ],
+      "currencies": [
+        "CZK"
+      ],
+      "fame": 2,
       "flagKey": "e71bf7b6c3",
       "lookalikes": []
     },
@@ -662,6 +996,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "de"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 2,
       "flagKey": "b7720d2173",
       "lookalikes": []
     },
@@ -677,6 +1018,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "fr"
+      ],
+      "currencies": [
+        "DJF"
+      ],
+      "fame": 3,
       "flagKey": "15061051f1",
       "lookalikes": []
     },
@@ -692,6 +1041,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "da"
+      ],
+      "currencies": [
+        "DKK"
+      ],
+      "fame": 3,
       "flagKey": "2b0f2d6b31",
       "lookalikes": []
     },
@@ -707,6 +1063,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "XCD"
+      ],
+      "fame": 3,
       "flagKey": "f3927a419d",
       "lookalikes": []
     },
@@ -722,6 +1085,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "DOP"
+      ],
+      "fame": 3,
       "flagKey": "8a054b4c5f",
       "lookalikes": []
     },
@@ -737,6 +1107,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "DZD"
+      ],
+      "fame": 1,
       "flagKey": "ba1ff49bc4",
       "lookalikes": []
     },
@@ -752,6 +1129,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 2,
       "flagKey": "45eaadb895",
       "lookalikes": []
     },
@@ -767,6 +1151,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "et"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "30d7ab2b46",
       "lookalikes": []
     },
@@ -782,6 +1173,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "EGP"
+      ],
+      "fame": 1,
       "flagKey": "848a73f1ec",
       "lookalikes": []
     },
@@ -797,6 +1195,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "en",
+        "ti"
+      ],
+      "currencies": [
+        "ERN"
+      ],
+      "fame": 2,
       "flagKey": "b95d85e968",
       "lookalikes": []
     },
@@ -812,6 +1219,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 2,
       "flagKey": "cd188a6f0f",
       "lookalikes": []
     },
@@ -827,6 +1241,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "am"
+      ],
+      "currencies": [
+        "ETB"
+      ],
+      "fame": 1,
       "flagKey": "957d6f9875",
       "lookalikes": []
     },
@@ -842,6 +1263,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "fi",
+        "sv"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 2,
       "flagKey": "ba9d5c7bee",
       "lookalikes": []
     },
@@ -857,6 +1286,15 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "fj",
+        "hif"
+      ],
+      "currencies": [
+        "FJD"
+      ],
+      "fame": 3,
       "flagKey": "683900491e",
       "lookalikes": []
     },
@@ -872,6 +1310,13 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 3,
       "flagKey": "149403fae1",
       "lookalikes": []
     },
@@ -887,6 +1332,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "3bcc2e1ca0",
       "lookalikes": []
     },
@@ -902,6 +1354,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XAF"
+      ],
+      "fame": 2,
       "flagKey": "2e8d9e9745",
       "lookalikes": []
     },
@@ -917,6 +1376,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "GBP"
+      ],
+      "fame": 2,
       "flagKey": "33ee37a7cb",
       "lookalikes": []
     },
@@ -932,6 +1398,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "XCD"
+      ],
+      "fame": 3,
       "flagKey": "4eb4ba4d53",
       "lookalikes": []
     },
@@ -947,6 +1420,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ka"
+      ],
+      "currencies": [
+        "GEL"
+      ],
+      "fame": 2,
       "flagKey": "c63c0e127a",
       "lookalikes": []
     },
@@ -962,6 +1442,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "GHS"
+      ],
+      "fame": 2,
       "flagKey": "f307b0243b",
       "lookalikes": []
     },
@@ -977,6 +1464,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "GMD"
+      ],
+      "fame": 3,
       "flagKey": "63a53471af",
       "lookalikes": []
     },
@@ -992,6 +1486,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "GNF"
+      ],
+      "fame": 2,
       "flagKey": "1c7d6e24f9",
       "lookalikes": []
     },
@@ -1007,6 +1508,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "es",
+        "fr",
+        "pt"
+      ],
+      "currencies": [
+        "XAF"
+      ],
+      "fame": 3,
       "flagKey": "ea1eed94a7",
       "lookalikes": []
     },
@@ -1022,6 +1532,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "el"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "000c009325",
       "lookalikes": []
     },
@@ -1037,6 +1554,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "GTQ"
+      ],
+      "fame": 2,
       "flagKey": "95ff5176b2",
       "lookalikes": []
     },
@@ -1052,6 +1576,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 3,
       "flagKey": "74ad4ffc6e",
       "lookalikes": []
     },
@@ -1067,6 +1598,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "GYD"
+      ],
+      "fame": 2,
       "flagKey": "e3e6584c3f",
       "lookalikes": []
     },
@@ -1082,6 +1620,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "HNL"
+      ],
+      "fame": 2,
       "flagKey": "da3f98270c",
       "lookalikes": []
     },
@@ -1097,6 +1642,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "hr"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "5dc6f174cf",
       "lookalikes": []
     },
@@ -1112,6 +1664,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "fr",
+        "ht"
+      ],
+      "currencies": [
+        "HTG"
+      ],
+      "fame": 3,
       "flagKey": "5aceb27893",
       "lookalikes": []
     },
@@ -1127,6 +1687,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "hu"
+      ],
+      "currencies": [
+        "HUF"
+      ],
+      "fame": 2,
       "flagKey": "a85bdb3771",
       "lookalikes": []
     },
@@ -1142,6 +1709,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "id"
+      ],
+      "currencies": [
+        "IDR"
+      ],
+      "fame": 1,
       "flagKey": "d90da1e7b0",
       "lookalikes": []
     },
@@ -1157,6 +1731,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "en",
+        "ga"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 2,
       "flagKey": "2401dbfeeb",
       "lookalikes": []
     },
@@ -1172,6 +1754,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar",
+        "he"
+      ],
+      "currencies": [
+        "ILS"
+      ],
+      "fame": 1,
       "flagKey": "1928156423",
       "lookalikes": []
     },
@@ -1187,6 +1777,15 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "en",
+        "hi",
+        "ta"
+      ],
+      "currencies": [
+        "INR"
+      ],
+      "fame": 1,
       "flagKey": "01b9d82159",
       "lookalikes": []
     },
@@ -1202,6 +1801,15 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar",
+        "arc",
+        "ckb"
+      ],
+      "currencies": [
+        "IQD"
+      ],
+      "fame": 2,
       "flagKey": "c33b3fd29d",
       "lookalikes": []
     },
@@ -1217,6 +1825,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "fa"
+      ],
+      "currencies": [
+        "IRR"
+      ],
+      "fame": 1,
       "flagKey": "56f1d1d1d2",
       "lookalikes": []
     },
@@ -1232,6 +1847,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "is"
+      ],
+      "currencies": [
+        "ISK"
+      ],
+      "fame": 2,
       "flagKey": "73e5671d4e",
       "lookalikes": []
     },
@@ -1247,6 +1869,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "it"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 2,
       "flagKey": "b92086d16b",
       "lookalikes": []
     },
@@ -1262,6 +1891,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en",
+        "jam"
+      ],
+      "currencies": [
+        "JMD"
+      ],
+      "fame": 1,
       "flagKey": "db74fb38f8",
       "lookalikes": []
     },
@@ -1277,6 +1914,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "JOD"
+      ],
+      "fame": 2,
       "flagKey": "26faa1572c",
       "lookalikes": []
     },
@@ -1292,6 +1936,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ja"
+      ],
+      "currencies": [
+        "JPY"
+      ],
+      "fame": 2,
       "flagKey": "5fc96eed81",
       "lookalikes": []
     },
@@ -1307,6 +1958,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "sw"
+      ],
+      "currencies": [
+        "KES"
+      ],
+      "fame": 1,
       "flagKey": "1a2f47dded",
       "lookalikes": []
     },
@@ -1322,6 +1981,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ky",
+        "ru"
+      ],
+      "currencies": [
+        "KGS"
+      ],
+      "fame": 2,
       "flagKey": "dbd77c24df",
       "lookalikes": []
     },
@@ -1337,6 +2004,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "km"
+      ],
+      "currencies": [
+        "KHR",
+        "USD"
+      ],
+      "fame": 2,
       "flagKey": "4154c9ae1b",
       "lookalikes": []
     },
@@ -1352,6 +2027,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "gil"
+      ],
+      "currencies": [
+        "AUD"
+      ],
+      "fame": 3,
       "flagKey": "904407fdbc",
       "lookalikes": []
     },
@@ -1367,6 +2050,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "fr",
+        "swb"
+      ],
+      "currencies": [
+        "KMF"
+      ],
+      "fame": 3,
       "flagKey": "8ce7441046",
       "lookalikes": []
     },
@@ -1382,6 +2074,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "XCD"
+      ],
+      "fame": 3,
       "flagKey": "b6c60c3da0",
       "lookalikes": []
     },
@@ -1397,6 +2096,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ko"
+      ],
+      "currencies": [
+        "KPW"
+      ],
+      "fame": 2,
       "flagKey": "b30ca2d560",
       "lookalikes": []
     },
@@ -1412,6 +2118,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ko"
+      ],
+      "currencies": [
+        "KRW"
+      ],
+      "fame": 2,
       "flagKey": "940b54c4fc",
       "lookalikes": []
     },
@@ -1427,6 +2140,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "KWD"
+      ],
+      "fame": 3,
       "flagKey": "5a6c124bff",
       "lookalikes": []
     },
@@ -1442,6 +2162,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "kk",
+        "ru"
+      ],
+      "currencies": [
+        "KZT"
+      ],
+      "fame": 1,
       "flagKey": "d679a3be3d",
       "lookalikes": []
     },
@@ -1457,6 +2185,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "lo"
+      ],
+      "currencies": [
+        "LAK"
+      ],
+      "fame": 2,
       "flagKey": "38d2ede108",
       "lookalikes": []
     },
@@ -1472,6 +2207,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar",
+        "fr"
+      ],
+      "currencies": [
+        "LBP"
+      ],
+      "fame": 3,
       "flagKey": "af23f19074",
       "lookalikes": []
     },
@@ -1487,6 +2230,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "XCD"
+      ],
+      "fame": 3,
       "flagKey": "b0eff52cf4",
       "lookalikes": []
     },
@@ -1502,6 +2252,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "de"
+      ],
+      "currencies": [
+        "CHF"
+      ],
+      "fame": 3,
       "flagKey": "309097c499",
       "lookalikes": []
     },
@@ -1522,6 +2279,14 @@
         }
       ],
       "region": "Asia",
+      "languages": [
+        "si",
+        "ta"
+      ],
+      "currencies": [
+        "LKR"
+      ],
+      "fame": 2,
       "flagKey": "ce91f8ad20",
       "lookalikes": []
     },
@@ -1537,6 +2302,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "LRD"
+      ],
+      "fame": 2,
       "flagKey": "bb075a48ba",
       "lookalikes": []
     },
@@ -1552,6 +2324,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "st"
+      ],
+      "currencies": [
+        "LSL",
+        "ZAR"
+      ],
+      "fame": 3,
       "flagKey": "48f7c91174",
       "lookalikes": []
     },
@@ -1567,6 +2348,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "lt"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "0f628ab921",
       "lookalikes": []
     },
@@ -1582,6 +2370,15 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "de",
+        "fr",
+        "lb"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "ba1599fe67",
       "lookalikes": []
     },
@@ -1597,6 +2394,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "lv"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "5bdac9582c",
       "lookalikes": []
     },
@@ -1612,6 +2416,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "LYD"
+      ],
+      "fame": 1,
       "flagKey": "ce9d0370a6",
       "lookalikes": []
     },
@@ -1627,6 +2438,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "zgh"
+      ],
+      "currencies": [
+        "MAD"
+      ],
+      "fame": 2,
       "flagKey": "84244c7433",
       "lookalikes": []
     },
@@ -1642,6 +2461,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "c5b988b68f",
       "lookalikes": []
     },
@@ -1657,6 +2483,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "ro"
+      ],
+      "currencies": [
+        "MDL"
+      ],
+      "fame": 3,
       "flagKey": "afb2c63e10",
       "lookalikes": []
     },
@@ -1672,6 +2505,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sr"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "bf94e7214f",
       "lookalikes": []
     },
@@ -1687,6 +2527,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr",
+        "mg"
+      ],
+      "currencies": [
+        "MGA"
+      ],
+      "fame": 1,
       "flagKey": "94c1a71560",
       "lookalikes": []
     },
@@ -1702,6 +2550,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "mh"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 3,
       "flagKey": "174891fb9d",
       "lookalikes": []
     },
@@ -1717,6 +2573,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "mk"
+      ],
+      "currencies": [
+        "MKD"
+      ],
+      "fame": 3,
       "flagKey": "0dfa50f793",
       "lookalikes": []
     },
@@ -1732,6 +2595,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 1,
       "flagKey": "e74133adcf",
       "lookalikes": []
     },
@@ -1747,6 +2617,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "my"
+      ],
+      "currencies": [
+        "MMK"
+      ],
+      "fame": 1,
       "flagKey": "4a466ec629",
       "lookalikes": []
     },
@@ -1762,6 +2639,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "mn"
+      ],
+      "currencies": [
+        "MNT"
+      ],
+      "fame": 1,
       "flagKey": "84b1295a81",
       "lookalikes": []
     },
@@ -1777,6 +2661,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "MRU"
+      ],
+      "fame": 1,
       "flagKey": "3910c218e8",
       "lookalikes": []
     },
@@ -1792,6 +2683,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "en",
+        "mt"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "e0fa050791",
       "lookalikes": []
     },
@@ -1807,6 +2706,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "fr",
+        "mfe"
+      ],
+      "currencies": [
+        "MUR"
+      ],
+      "fame": 3,
       "flagKey": "a326c8ef24",
       "lookalikes": []
     },
@@ -1822,6 +2730,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "dv"
+      ],
+      "currencies": [
+        "MVR"
+      ],
+      "fame": 3,
       "flagKey": "150ceeaeb9",
       "lookalikes": []
     },
@@ -1837,6 +2752,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "ny"
+      ],
+      "currencies": [
+        "MWK"
+      ],
+      "fame": 2,
       "flagKey": "9de986562f",
       "lookalikes": []
     },
@@ -1852,6 +2775,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "MXN"
+      ],
+      "fame": 1,
       "flagKey": "6ca4587f27",
       "lookalikes": []
     },
@@ -1867,6 +2797,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "en",
+        "ms"
+      ],
+      "currencies": [
+        "MYR"
+      ],
+      "fame": 2,
       "flagKey": "5078ec3191",
       "lookalikes": []
     },
@@ -1882,6 +2820,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "MZN"
+      ],
+      "fame": 1,
       "flagKey": "24d09e420f",
       "lookalikes": []
     },
@@ -1897,6 +2842,21 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "af",
+        "de",
+        "en",
+        "hz",
+        "loz",
+        "naq",
+        "ng",
+        "tn"
+      ],
+      "currencies": [
+        "NAD",
+        "ZAR"
+      ],
+      "fame": 1,
       "flagKey": "23df22b26d",
       "lookalikes": []
     },
@@ -1912,6 +2872,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 1,
       "flagKey": "1650ed87d1",
       "lookalikes": []
     },
@@ -1927,6 +2894,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "NGN"
+      ],
+      "fame": 1,
       "flagKey": "ebfa1af8ec",
       "lookalikes": []
     },
@@ -1942,6 +2916,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "NIO"
+      ],
+      "fame": 2,
       "flagKey": "65a323a019",
       "lookalikes": [
         "SV"
@@ -1959,6 +2940,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "nl"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "6de9af98e1",
       "lookalikes": []
     },
@@ -1974,6 +2962,15 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "nb",
+        "nn",
+        "se"
+      ],
+      "currencies": [
+        "NOK"
+      ],
+      "fame": 2,
       "flagKey": "e11df79fc4",
       "lookalikes": []
     },
@@ -1989,6 +2986,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ne"
+      ],
+      "currencies": [
+        "NPR"
+      ],
+      "fame": 2,
       "flagKey": "d2c003092f",
       "lookalikes": []
     },
@@ -2004,6 +3008,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "na"
+      ],
+      "currencies": [
+        "AUD"
+      ],
+      "fame": 3,
       "flagKey": "ca4a71993e",
       "lookalikes": []
     },
@@ -2019,6 +3031,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "mi"
+      ],
+      "currencies": [
+        "NZD"
+      ],
+      "fame": 2,
       "flagKey": "d734828731",
       "lookalikes": []
     },
@@ -2034,6 +3054,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "OMR"
+      ],
+      "fame": 2,
       "flagKey": "1d5c6cfa3a",
       "lookalikes": []
     },
@@ -2049,6 +3076,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "PAB",
+        "USD"
+      ],
+      "fame": 2,
       "flagKey": "f01128263a",
       "lookalikes": []
     },
@@ -2064,6 +3099,15 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "ay",
+        "es",
+        "qu"
+      ],
+      "currencies": [
+        "PEN"
+      ],
+      "fame": 1,
       "flagKey": "018c0b1ef0",
       "lookalikes": []
     },
@@ -2079,6 +3123,15 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "ho",
+        "tpi"
+      ],
+      "currencies": [
+        "PGK"
+      ],
+      "fame": 2,
       "flagKey": "9b6297d132",
       "lookalikes": []
     },
@@ -2094,6 +3147,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "en",
+        "fil"
+      ],
+      "currencies": [
+        "PHP"
+      ],
+      "fame": 2,
       "flagKey": "65912bc70c",
       "lookalikes": []
     },
@@ -2109,6 +3170,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "en",
+        "ur"
+      ],
+      "currencies": [
+        "PKR"
+      ],
+      "fame": 1,
       "flagKey": "de249a66fb",
       "lookalikes": []
     },
@@ -2124,6 +3193,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "pl"
+      ],
+      "currencies": [
+        "PLN"
+      ],
+      "fame": 2,
       "flagKey": "7762d8267e",
       "lookalikes": []
     },
@@ -2144,6 +3220,15 @@
         }
       ],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "EGP",
+        "ILS",
+        "JOD"
+      ],
+      "fame": 3,
       "flagKey": "794b36031c",
       "lookalikes": []
     },
@@ -2159,6 +3244,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "a25b71b737",
       "lookalikes": []
     },
@@ -2174,6 +3266,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "pau"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 3,
       "flagKey": "b373ae69fb",
       "lookalikes": []
     },
@@ -2189,6 +3289,14 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es",
+        "gn"
+      ],
+      "currencies": [
+        "PYG"
+      ],
+      "fame": 2,
       "flagKey": "ce6185d3a5",
       "lookalikes": []
     },
@@ -2204,6 +3312,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "QAR"
+      ],
+      "fame": 1,
       "flagKey": "66c5cac73c",
       "lookalikes": []
     },
@@ -2219,6 +3334,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "ro"
+      ],
+      "currencies": [
+        "RON"
+      ],
+      "fame": 2,
       "flagKey": "70d1368aa0",
       "lookalikes": []
     },
@@ -2234,6 +3356,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sr"
+      ],
+      "currencies": [
+        "RSD"
+      ],
+      "fame": 2,
       "flagKey": "367b0c6061",
       "lookalikes": []
     },
@@ -2249,6 +3378,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "ru"
+      ],
+      "currencies": [
+        "RUB"
+      ],
+      "fame": 1,
       "flagKey": "b5764cf4be",
       "lookalikes": []
     },
@@ -2264,6 +3400,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "fr",
+        "rw"
+      ],
+      "currencies": [
+        "RWF"
+      ],
+      "fame": 3,
       "flagKey": "401551a116",
       "lookalikes": []
     },
@@ -2279,6 +3424,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "SAR"
+      ],
+      "fame": 1,
       "flagKey": "711cf7a96b",
       "lookalikes": []
     },
@@ -2294,6 +3446,13 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "SBD"
+      ],
+      "fame": 3,
       "flagKey": "388a756ba5",
       "lookalikes": []
     },
@@ -2309,6 +3468,15 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "crs",
+        "en",
+        "fr"
+      ],
+      "currencies": [
+        "SCR"
+      ],
+      "fame": 3,
       "flagKey": "37944d6262",
       "lookalikes": []
     },
@@ -2324,6 +3492,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "currencies": [
+        "SDG"
+      ],
+      "fame": 1,
       "flagKey": "135908a602",
       "lookalikes": []
     },
@@ -2339,6 +3515,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sv"
+      ],
+      "currencies": [
+        "SEK"
+      ],
+      "fame": 2,
       "flagKey": "10a710762c",
       "lookalikes": []
     },
@@ -2354,6 +3537,16 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "en",
+        "ms",
+        "ta",
+        "zh"
+      ],
+      "currencies": [
+        "SGD"
+      ],
+      "fame": 1,
       "flagKey": "4cebaf666d",
       "lookalikes": []
     },
@@ -2369,6 +3562,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sl"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "78f0ab53a2",
       "lookalikes": []
     },
@@ -2384,6 +3584,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sk"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "c3723f5ef1",
       "lookalikes": []
     },
@@ -2399,6 +3606,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "SLL"
+      ],
+      "fame": 2,
       "flagKey": "6eabafe4ad",
       "lookalikes": []
     },
@@ -2414,6 +3628,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "it"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "88b548ba1d",
       "lookalikes": []
     },
@@ -2429,6 +3650,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 2,
       "flagKey": "e4fc97502c",
       "lookalikes": []
     },
@@ -2444,6 +3672,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "so"
+      ],
+      "currencies": [
+        "SOS"
+      ],
+      "fame": 1,
       "flagKey": "d7105a7def",
       "lookalikes": []
     },
@@ -2459,6 +3695,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "nl"
+      ],
+      "currencies": [
+        "SRD"
+      ],
+      "fame": 2,
       "flagKey": "6e351931a7",
       "lookalikes": []
     },
@@ -2474,6 +3717,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "SSP"
+      ],
+      "fame": 1,
       "flagKey": "f19665ca89",
       "lookalikes": []
     },
@@ -2489,6 +3739,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "pt"
+      ],
+      "currencies": [
+        "STN"
+      ],
+      "fame": 3,
       "flagKey": "0e13cfbb52",
       "lookalikes": []
     },
@@ -2504,6 +3761,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 3,
       "flagKey": "08a998d445",
       "lookalikes": [
         "NI"
@@ -2521,6 +3785,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "SYP"
+      ],
+      "fame": 2,
       "flagKey": "2d7972eb5f",
       "lookalikes": []
     },
@@ -2541,6 +3812,15 @@
         }
       ],
       "region": "Africa",
+      "languages": [
+        "en",
+        "ss"
+      ],
+      "currencies": [
+        "SZL",
+        "ZAR"
+      ],
+      "fame": 3,
       "flagKey": "58eb1f15f1",
       "lookalikes": []
     },
@@ -2556,6 +3836,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar",
+        "fr"
+      ],
+      "currencies": [
+        "XAF"
+      ],
+      "fame": 1,
       "flagKey": "8ac85ce8ce",
       "lookalikes": []
     },
@@ -2571,6 +3859,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "fr"
+      ],
+      "currencies": [
+        "XOF"
+      ],
+      "fame": 3,
       "flagKey": "6d305055f1",
       "lookalikes": []
     },
@@ -2586,6 +3881,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "th"
+      ],
+      "currencies": [
+        "THB"
+      ],
+      "fame": 1,
       "flagKey": "a05e4c7d38",
       "lookalikes": []
     },
@@ -2601,6 +3903,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ru",
+        "tg"
+      ],
+      "currencies": [
+        "TJS"
+      ],
+      "fame": 2,
       "flagKey": "0577191c2d",
       "lookalikes": []
     },
@@ -2616,6 +3926,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "pt",
+        "tet"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 3,
       "flagKey": "52133d2643",
       "lookalikes": []
     },
@@ -2631,6 +3949,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ru",
+        "tk"
+      ],
+      "currencies": [
+        "TMT"
+      ],
+      "fame": 2,
       "flagKey": "56dd45b038",
       "lookalikes": []
     },
@@ -2646,6 +3972,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "TND"
+      ],
+      "fame": 2,
       "flagKey": "12ff3091d2",
       "lookalikes": []
     },
@@ -2661,6 +3994,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "to"
+      ],
+      "currencies": [
+        "TOP"
+      ],
+      "fame": 3,
       "flagKey": "b8b005b552",
       "lookalikes": []
     },
@@ -2676,6 +4017,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "tr"
+      ],
+      "currencies": [
+        "TRY"
+      ],
+      "fame": 1,
       "flagKey": "497bd842bf",
       "lookalikes": []
     },
@@ -2691,6 +4039,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "TTD"
+      ],
+      "fame": 3,
       "flagKey": "928ea93a0a",
       "lookalikes": []
     },
@@ -2706,6 +4061,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "tvl"
+      ],
+      "currencies": [
+        "AUD"
+      ],
+      "fame": 3,
       "flagKey": "62c9daac01",
       "lookalikes": []
     },
@@ -2721,6 +4084,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "zh"
+      ],
+      "currencies": [
+        "TWD"
+      ],
+      "fame": 3,
       "flagKey": "e7f7e8a895",
       "lookalikes": []
     },
@@ -2736,6 +4106,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "sw"
+      ],
+      "currencies": [
+        "TZS"
+      ],
+      "fame": 1,
       "flagKey": "0f6db769b9",
       "lookalikes": []
     },
@@ -2751,6 +4129,13 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "uk"
+      ],
+      "currencies": [
+        "UAH"
+      ],
+      "fame": 1,
       "flagKey": "12d335d348",
       "lookalikes": []
     },
@@ -2766,6 +4151,14 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "sw"
+      ],
+      "currencies": [
+        "UGX"
+      ],
+      "fame": 2,
       "flagKey": "ab32c6e81c",
       "lookalikes": []
     },
@@ -2781,6 +4174,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "USD"
+      ],
+      "fame": 1,
       "flagKey": "ab56c8dd72",
       "lookalikes": []
     },
@@ -2796,6 +4196,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "UYU"
+      ],
+      "fame": 2,
       "flagKey": "a43139cc7f",
       "lookalikes": []
     },
@@ -2811,6 +4218,14 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "ru",
+        "uz"
+      ],
+      "currencies": [
+        "UZS"
+      ],
+      "fame": 2,
       "flagKey": "4effb7e678",
       "lookalikes": []
     },
@@ -2826,6 +4241,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "it",
+        "la"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 1,
       "flagKey": "5f6c54ec7e",
       "lookalikes": []
     },
@@ -2841,6 +4264,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "XCD"
+      ],
+      "fame": 3,
       "flagKey": "f9606c33a4",
       "lookalikes": []
     },
@@ -2856,6 +4286,13 @@
       },
       "otherCapitals": [],
       "region": "Americas",
+      "languages": [
+        "es"
+      ],
+      "currencies": [
+        "VES"
+      ],
+      "fame": 1,
       "flagKey": "dc837cec8c",
       "lookalikes": []
     },
@@ -2871,6 +4308,13 @@
       },
       "otherCapitals": [],
       "region": "Asia",
+      "languages": [
+        "vi"
+      ],
+      "currencies": [
+        "VND"
+      ],
+      "fame": 2,
       "flagKey": "8fbd8998c4",
       "lookalikes": []
     },
@@ -2886,6 +4330,15 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "bi",
+        "en",
+        "fr"
+      ],
+      "currencies": [
+        "VUV"
+      ],
+      "fame": 3,
       "flagKey": "ee2d5e026e",
       "lookalikes": []
     },
@@ -2901,6 +4354,14 @@
       },
       "otherCapitals": [],
       "region": "Oceania",
+      "languages": [
+        "en",
+        "sm"
+      ],
+      "currencies": [
+        "WST"
+      ],
+      "fame": 3,
       "flagKey": "9cd36d9e50",
       "lookalikes": []
     },
@@ -2916,6 +4377,14 @@
       },
       "otherCapitals": [],
       "region": "Europe",
+      "languages": [
+        "sq",
+        "sr"
+      ],
+      "currencies": [
+        "EUR"
+      ],
+      "fame": 3,
       "flagKey": "4ba3abe046",
       "lookalikes": []
     },
@@ -2936,6 +4405,13 @@
         }
       ],
       "region": "Asia",
+      "languages": [
+        "ar"
+      ],
+      "currencies": [
+        "YER"
+      ],
+      "fame": 1,
       "flagKey": "9fa6c367e6",
       "lookalikes": []
     },
@@ -2960,6 +4436,23 @@
         }
       ],
       "region": "Africa",
+      "languages": [
+        "af",
+        "en",
+        "nr",
+        "nso",
+        "ss",
+        "st",
+        "tn",
+        "ts",
+        "ve",
+        "xh",
+        "zu"
+      ],
+      "currencies": [
+        "ZAR"
+      ],
+      "fame": 1,
       "flagKey": "c080d7bc55",
       "lookalikes": []
     },
@@ -2975,6 +4468,13 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en"
+      ],
+      "currencies": [
+        "ZMW"
+      ],
+      "fame": 1,
       "flagKey": "f38f506bf1",
       "lookalikes": []
     },
@@ -2990,8 +4490,1143 @@
       },
       "otherCapitals": [],
       "region": "Africa",
+      "languages": [
+        "en",
+        "nd",
+        "ny",
+        "sn",
+        "st",
+        "tn",
+        "ts",
+        "ve",
+        "xh"
+      ],
+      "currencies": [
+        "BWP",
+        "CNY",
+        "EUR",
+        "GBP",
+        "INR",
+        "JPY",
+        "USD",
+        "ZAR",
+        "ZWG"
+      ],
+      "fame": 2,
       "flagKey": "9d8e9b25f4",
       "lookalikes": []
     }
-  ]
+  ],
+  "labels": {
+    "languages": {
+      "af": {
+        "de": "Afrikaans",
+        "en": "Afrikaans"
+      },
+      "am": {
+        "de": "Amharisch",
+        "en": "Amharic"
+      },
+      "ar": {
+        "de": "Arabisch",
+        "en": "Arabic"
+      },
+      "arc": {
+        "de": "Aramäisch",
+        "en": "Aramaic"
+      },
+      "ay": {
+        "de": "Aymara",
+        "en": "Aymara"
+      },
+      "az": {
+        "de": "Aserbaidschanisch",
+        "en": "Azerbaijani"
+      },
+      "be": {
+        "de": "Belarussisch",
+        "en": "Belarusian"
+      },
+      "bg": {
+        "de": "Bulgarisch",
+        "en": "Bulgarian"
+      },
+      "bi": {
+        "de": "Bislama",
+        "en": "Bislama"
+      },
+      "bn": {
+        "de": "Bengalisch",
+        "en": "Bangla"
+      },
+      "bs": {
+        "de": "Bosnisch",
+        "en": "Bosnian"
+      },
+      "ca": {
+        "de": "Katalanisch",
+        "en": "Catalan"
+      },
+      "ckb": {
+        "de": "Zentralkurdisch",
+        "en": "Central Kurdish"
+      },
+      "crs": {
+        "de": "Seychellenkreol",
+        "en": "Seselwa Creole French"
+      },
+      "cs": {
+        "de": "Tschechisch",
+        "en": "Czech"
+      },
+      "da": {
+        "de": "Dänisch",
+        "en": "Danish"
+      },
+      "de": {
+        "de": "Deutsch",
+        "en": "German"
+      },
+      "dv": {
+        "de": "Dhivehi",
+        "en": "Divehi"
+      },
+      "dz": {
+        "de": "Dzongkha",
+        "en": "Dzongkha"
+      },
+      "el": {
+        "de": "Griechisch",
+        "en": "Greek"
+      },
+      "en": {
+        "de": "Englisch",
+        "en": "English"
+      },
+      "es": {
+        "de": "Spanisch",
+        "en": "Spanish"
+      },
+      "et": {
+        "de": "Estnisch",
+        "en": "Estonian"
+      },
+      "fa": {
+        "de": "Persisch",
+        "en": "Persian"
+      },
+      "fa-AF": {
+        "de": "Dari",
+        "en": "Dari"
+      },
+      "fi": {
+        "de": "Finnisch",
+        "en": "Finnish"
+      },
+      "fil": {
+        "de": "Filipino",
+        "en": "Filipino"
+      },
+      "fj": {
+        "de": "Fidschi",
+        "en": "Fijian"
+      },
+      "fr": {
+        "de": "Französisch",
+        "en": "French"
+      },
+      "ga": {
+        "de": "Irisch",
+        "en": "Irish"
+      },
+      "gil": {
+        "de": "Kiribatisch",
+        "en": "Gilbertese"
+      },
+      "gn": {
+        "de": "Guaraní",
+        "en": "Guarani"
+      },
+      "he": {
+        "de": "Hebräisch",
+        "en": "Hebrew"
+      },
+      "hi": {
+        "de": "Hindi",
+        "en": "Hindi"
+      },
+      "hif": {
+        "de": "Fidschi-Hindi",
+        "en": "Fiji Hindi"
+      },
+      "ho": {
+        "de": "Hiri-Motu",
+        "en": "Hiri Motu"
+      },
+      "hr": {
+        "de": "Kroatisch",
+        "en": "Croatian"
+      },
+      "ht": {
+        "de": "Haiti-Kreolisch",
+        "en": "Haitian Creole"
+      },
+      "hu": {
+        "de": "Ungarisch",
+        "en": "Hungarian"
+      },
+      "hy": {
+        "de": "Armenisch",
+        "en": "Armenian"
+      },
+      "hz": {
+        "de": "Herero",
+        "en": "Herero"
+      },
+      "id": {
+        "de": "Indonesisch",
+        "en": "Indonesian"
+      },
+      "is": {
+        "de": "Isländisch",
+        "en": "Icelandic"
+      },
+      "it": {
+        "de": "Italienisch",
+        "en": "Italian"
+      },
+      "ja": {
+        "de": "Japanisch",
+        "en": "Japanese"
+      },
+      "jam": {
+        "de": "Jamaikanisch-Kreolisch",
+        "en": "Jamaican Creole English"
+      },
+      "ka": {
+        "de": "Georgisch",
+        "en": "Georgian"
+      },
+      "kg": {
+        "de": "Kongolesisch",
+        "en": "Kongo"
+      },
+      "kk": {
+        "de": "Kasachisch",
+        "en": "Kazakh"
+      },
+      "km": {
+        "de": "Khmer",
+        "en": "Khmer"
+      },
+      "ko": {
+        "de": "Koreanisch",
+        "en": "Korean"
+      },
+      "ky": {
+        "de": "Kirgisisch",
+        "en": "Kyrgyz"
+      },
+      "la": {
+        "de": "Latein",
+        "en": "Latin"
+      },
+      "lb": {
+        "de": "Luxemburgisch",
+        "en": "Luxembourgish"
+      },
+      "ln": {
+        "de": "Lingala",
+        "en": "Lingala"
+      },
+      "lo": {
+        "de": "Laotisch",
+        "en": "Lao"
+      },
+      "loz": {
+        "de": "Lozi",
+        "en": "Lozi"
+      },
+      "lt": {
+        "de": "Litauisch",
+        "en": "Lithuanian"
+      },
+      "lua": {
+        "de": "Luba-Lulua",
+        "en": "Luba-Lulua"
+      },
+      "lv": {
+        "de": "Lettisch",
+        "en": "Latvian"
+      },
+      "mfe": {
+        "de": "Morisyen",
+        "en": "Morisyen"
+      },
+      "mg": {
+        "de": "Malagasy",
+        "en": "Malagasy"
+      },
+      "mh": {
+        "de": "Marschallesisch",
+        "en": "Marshallese"
+      },
+      "mi": {
+        "de": "Māori",
+        "en": "Māori"
+      },
+      "mk": {
+        "de": "Mazedonisch",
+        "en": "Macedonian"
+      },
+      "mn": {
+        "de": "Mongolisch",
+        "en": "Mongolian"
+      },
+      "ms": {
+        "de": "Malaiisch",
+        "en": "Malay"
+      },
+      "mt": {
+        "de": "Maltesisch",
+        "en": "Maltese"
+      },
+      "my": {
+        "de": "Birmanisch",
+        "en": "Burmese"
+      },
+      "na": {
+        "de": "Nauruisch",
+        "en": "Nauru"
+      },
+      "naq": {
+        "de": "Nama",
+        "en": "Nama"
+      },
+      "nb": {
+        "de": "Norwegisch (Bokmål)",
+        "en": "Norwegian Bokmål"
+      },
+      "nd": {
+        "de": "Nord-Ndebele",
+        "en": "North Ndebele"
+      },
+      "ne": {
+        "de": "Nepalesisch",
+        "en": "Nepali"
+      },
+      "ng": {
+        "de": "Ndonga",
+        "en": "Ndonga"
+      },
+      "nl": {
+        "de": "Niederländisch",
+        "en": "Dutch"
+      },
+      "nn": {
+        "de": "Norwegisch (Nynorsk)",
+        "en": "Norwegian Nynorsk"
+      },
+      "nr": {
+        "de": "Süd-Ndebele",
+        "en": "South Ndebele"
+      },
+      "nso": {
+        "de": "Nord-Sotho",
+        "en": "Northern Sotho"
+      },
+      "ny": {
+        "de": "Nyanja",
+        "en": "Nyanja"
+      },
+      "pau": {
+        "de": "Palau",
+        "en": "Palauan"
+      },
+      "pl": {
+        "de": "Polnisch",
+        "en": "Polish"
+      },
+      "ps": {
+        "de": "Paschtu",
+        "en": "Pashto"
+      },
+      "pt": {
+        "de": "Portugiesisch",
+        "en": "Portuguese"
+      },
+      "qu": {
+        "de": "Quechua",
+        "en": "Quechua"
+      },
+      "rm": {
+        "de": "Rätoromanisch",
+        "en": "Romansh"
+      },
+      "rn": {
+        "de": "Rundi",
+        "en": "Rundi"
+      },
+      "ro": {
+        "de": "Rumänisch",
+        "en": "Romanian"
+      },
+      "ru": {
+        "de": "Russisch",
+        "en": "Russian"
+      },
+      "rw": {
+        "de": "Kinyarwanda",
+        "en": "Kinyarwanda"
+      },
+      "se": {
+        "de": "Nordsamisch",
+        "en": "Northern Sami"
+      },
+      "sg": {
+        "de": "Sango",
+        "en": "Sango"
+      },
+      "si": {
+        "de": "Singhalesisch",
+        "en": "Sinhala"
+      },
+      "sk": {
+        "de": "Slowakisch",
+        "en": "Slovak"
+      },
+      "sl": {
+        "de": "Slowenisch",
+        "en": "Slovenian"
+      },
+      "sm": {
+        "de": "Samoanisch",
+        "en": "Samoan"
+      },
+      "sn": {
+        "de": "Shona",
+        "en": "Shona"
+      },
+      "so": {
+        "de": "Somali",
+        "en": "Somali"
+      },
+      "sq": {
+        "de": "Albanisch",
+        "en": "Albanian"
+      },
+      "sr": {
+        "de": "Serbisch",
+        "en": "Serbian"
+      },
+      "ss": {
+        "de": "Swazi",
+        "en": "Swati"
+      },
+      "st": {
+        "de": "Süd-Sotho",
+        "en": "Southern Sotho"
+      },
+      "sv": {
+        "de": "Schwedisch",
+        "en": "Swedish"
+      },
+      "sw": {
+        "de": "Suaheli",
+        "en": "Swahili"
+      },
+      "swb": {
+        "de": "Komorisch",
+        "en": "Comorian"
+      },
+      "ta": {
+        "de": "Tamil",
+        "en": "Tamil"
+      },
+      "tet": {
+        "de": "Tetum",
+        "en": "Tetum"
+      },
+      "tg": {
+        "de": "Tadschikisch",
+        "en": "Tajik"
+      },
+      "th": {
+        "de": "Thailändisch",
+        "en": "Thai"
+      },
+      "ti": {
+        "de": "Tigrinya",
+        "en": "Tigrinya"
+      },
+      "tk": {
+        "de": "Turkmenisch",
+        "en": "Turkmen"
+      },
+      "tn": {
+        "de": "Tswana",
+        "en": "Tswana"
+      },
+      "to": {
+        "de": "Tongaisch",
+        "en": "Tongan"
+      },
+      "tpi": {
+        "de": "Neumelanesisch",
+        "en": "Tok Pisin"
+      },
+      "tr": {
+        "de": "Türkisch",
+        "en": "Turkish"
+      },
+      "ts": {
+        "de": "Tsonga",
+        "en": "Tsonga"
+      },
+      "tvl": {
+        "de": "Tuvaluisch",
+        "en": "Tuvalu"
+      },
+      "uk": {
+        "de": "Ukrainisch",
+        "en": "Ukrainian"
+      },
+      "ur": {
+        "de": "Urdu",
+        "en": "Urdu"
+      },
+      "uz": {
+        "de": "Usbekisch",
+        "en": "Uzbek"
+      },
+      "ve": {
+        "de": "Venda",
+        "en": "Venda"
+      },
+      "vi": {
+        "de": "Vietnamesisch",
+        "en": "Vietnamese"
+      },
+      "xh": {
+        "de": "Xhosa",
+        "en": "Xhosa"
+      },
+      "zgh": {
+        "de": "Tamazight",
+        "en": "Standard Moroccan Tamazight"
+      },
+      "zh": {
+        "de": "Chinesisch",
+        "en": "Chinese"
+      },
+      "zu": {
+        "de": "Zulu",
+        "en": "Zulu"
+      }
+    },
+    "currencies": {
+      "AED": {
+        "de": "VAE-Dirham",
+        "en": "United Arab Emirates Dirham"
+      },
+      "AFN": {
+        "de": "Afghanischer Afghani",
+        "en": "Afghan Afghani"
+      },
+      "ALL": {
+        "de": "Albanischer Lek",
+        "en": "Albanian Lek"
+      },
+      "AMD": {
+        "de": "Armenischer Dram",
+        "en": "Armenian Dram"
+      },
+      "AOA": {
+        "de": "Angolanischer Kwanza",
+        "en": "Angolan Kwanza"
+      },
+      "ARS": {
+        "de": "Argentinischer Peso",
+        "en": "Argentine Peso"
+      },
+      "AUD": {
+        "de": "Australischer Dollar",
+        "en": "Australian Dollar"
+      },
+      "AZN": {
+        "de": "Aserbaidschan-Manat",
+        "en": "Azerbaijani Manat"
+      },
+      "BAM": {
+        "de": "Konvertible Mark Bosnien und Herzegowina",
+        "en": "Bosnia-Herzegovina Convertible Mark"
+      },
+      "BBD": {
+        "de": "Barbados-Dollar",
+        "en": "Barbadian Dollar"
+      },
+      "BDT": {
+        "de": "Bangladesch-Taka",
+        "en": "Bangladeshi Taka"
+      },
+      "BGN": {
+        "de": "Bulgarischer Lew",
+        "en": "Bulgarian Lev"
+      },
+      "BHD": {
+        "de": "Bahrain-Dinar",
+        "en": "Bahraini Dinar"
+      },
+      "BIF": {
+        "de": "Burundi-Franc",
+        "en": "Burundian Franc"
+      },
+      "BND": {
+        "de": "Brunei-Dollar",
+        "en": "Brunei Dollar"
+      },
+      "BOB": {
+        "de": "Bolivianischer Boliviano",
+        "en": "Bolivian Boliviano"
+      },
+      "BRL": {
+        "de": "Brasilianischer Real",
+        "en": "Brazilian Real"
+      },
+      "BSD": {
+        "de": "Bahamas-Dollar",
+        "en": "Bahamian Dollar"
+      },
+      "BTN": {
+        "de": "Bhutan-Ngultrum",
+        "en": "Bhutanese Ngultrum"
+      },
+      "BWP": {
+        "de": "Botswanischer Pula",
+        "en": "Botswanan Pula"
+      },
+      "BYN": {
+        "de": "Weißrussischer Rubel",
+        "en": "Belarusian Ruble"
+      },
+      "BZD": {
+        "de": "Belize-Dollar",
+        "en": "Belize Dollar"
+      },
+      "CAD": {
+        "de": "Kanadischer Dollar",
+        "en": "Canadian Dollar"
+      },
+      "CDF": {
+        "de": "Kongo-Franc",
+        "en": "Congolese Franc"
+      },
+      "CHF": {
+        "de": "Schweizer Franken",
+        "en": "Swiss Franc"
+      },
+      "CLP": {
+        "de": "Chilenischer Peso",
+        "en": "Chilean Peso"
+      },
+      "CNY": {
+        "de": "Renminbi Yuan",
+        "en": "Chinese Yuan"
+      },
+      "COP": {
+        "de": "Kolumbianischer Peso",
+        "en": "Colombian Peso"
+      },
+      "CRC": {
+        "de": "Costa-Rica-Colón",
+        "en": "Costa Rican Colón"
+      },
+      "CUC": {
+        "de": "Kubanischer Peso (konvertibel)",
+        "en": "Cuban Convertible Peso"
+      },
+      "CUP": {
+        "de": "Kubanischer Peso",
+        "en": "Cuban Peso"
+      },
+      "CVE": {
+        "de": "Cabo-Verde-Escudo",
+        "en": "Cape Verdean Escudo"
+      },
+      "CZK": {
+        "de": "Tschechische Krone",
+        "en": "Czech Koruna"
+      },
+      "DJF": {
+        "de": "Dschibuti-Franc",
+        "en": "Djiboutian Franc"
+      },
+      "DKK": {
+        "de": "Dänische Krone",
+        "en": "Danish Krone"
+      },
+      "DOP": {
+        "de": "Dominikanischer Peso",
+        "en": "Dominican Peso"
+      },
+      "DZD": {
+        "de": "Algerischer Dinar",
+        "en": "Algerian Dinar"
+      },
+      "EGP": {
+        "de": "Ägyptisches Pfund",
+        "en": "Egyptian Pound"
+      },
+      "ERN": {
+        "de": "Eritreischer Nakfa",
+        "en": "Eritrean Nakfa"
+      },
+      "ETB": {
+        "de": "Äthiopischer Birr",
+        "en": "Ethiopian Birr"
+      },
+      "EUR": {
+        "de": "Euro",
+        "en": "Euro"
+      },
+      "FJD": {
+        "de": "Fidschi-Dollar",
+        "en": "Fijian Dollar"
+      },
+      "GBP": {
+        "de": "Britisches Pfund",
+        "en": "British Pound"
+      },
+      "GEL": {
+        "de": "Georgischer Lari",
+        "en": "Georgian Lari"
+      },
+      "GHS": {
+        "de": "Ghanaischer Cedi",
+        "en": "Ghanaian Cedi"
+      },
+      "GMD": {
+        "de": "Gambia-Dalasi",
+        "en": "Gambian Dalasi"
+      },
+      "GNF": {
+        "de": "Guinea-Franc",
+        "en": "Guinean Franc"
+      },
+      "GTQ": {
+        "de": "Guatemaltekischer Quetzal",
+        "en": "Guatemalan Quetzal"
+      },
+      "GYD": {
+        "de": "Guyana-Dollar",
+        "en": "Guyanaese Dollar"
+      },
+      "HNL": {
+        "de": "Honduras-Lempira",
+        "en": "Honduran Lempira"
+      },
+      "HTG": {
+        "de": "Haitianische Gourde",
+        "en": "Haitian Gourde"
+      },
+      "HUF": {
+        "de": "Ungarischer Forint",
+        "en": "Hungarian Forint"
+      },
+      "IDR": {
+        "de": "Indonesische Rupiah",
+        "en": "Indonesian Rupiah"
+      },
+      "ILS": {
+        "de": "Israelischer Neuer Schekel",
+        "en": "Israeli New Shekel"
+      },
+      "INR": {
+        "de": "Indische Rupie",
+        "en": "Indian Rupee"
+      },
+      "IQD": {
+        "de": "Irakischer Dinar",
+        "en": "Iraqi Dinar"
+      },
+      "IRR": {
+        "de": "Iranischer Rial",
+        "en": "Iranian Rial"
+      },
+      "ISK": {
+        "de": "Isländische Krone",
+        "en": "Icelandic Króna"
+      },
+      "JMD": {
+        "de": "Jamaika-Dollar",
+        "en": "Jamaican Dollar"
+      },
+      "JOD": {
+        "de": "Jordanischer Dinar",
+        "en": "Jordanian Dinar"
+      },
+      "JPY": {
+        "de": "Japanischer Yen",
+        "en": "Japanese Yen"
+      },
+      "KES": {
+        "de": "Kenia-Schilling",
+        "en": "Kenyan Shilling"
+      },
+      "KGS": {
+        "de": "Kirgisischer Som",
+        "en": "Kyrgyz Som"
+      },
+      "KHR": {
+        "de": "Kambodschanischer Riel",
+        "en": "Cambodian Riel"
+      },
+      "KMF": {
+        "de": "Komoren-Franc",
+        "en": "Comorian Franc"
+      },
+      "KPW": {
+        "de": "Nordkoreanischer Won",
+        "en": "North Korean Won"
+      },
+      "KRW": {
+        "de": "Südkoreanischer Won",
+        "en": "South Korean Won"
+      },
+      "KWD": {
+        "de": "Kuwait-Dinar",
+        "en": "Kuwaiti Dinar"
+      },
+      "KZT": {
+        "de": "Kasachischer Tenge",
+        "en": "Kazakhstani Tenge"
+      },
+      "LAK": {
+        "de": "Laotischer Kip",
+        "en": "Laotian Kip"
+      },
+      "LBP": {
+        "de": "Libanesisches Pfund",
+        "en": "Lebanese Pound"
+      },
+      "LKR": {
+        "de": "Sri-Lanka-Rupie",
+        "en": "Sri Lankan Rupee"
+      },
+      "LRD": {
+        "de": "Liberianischer Dollar",
+        "en": "Liberian Dollar"
+      },
+      "LSL": {
+        "de": "Loti",
+        "en": "Lesotho Loti"
+      },
+      "LYD": {
+        "de": "Libyscher Dinar",
+        "en": "Libyan Dinar"
+      },
+      "MAD": {
+        "de": "Marokkanischer Dirham",
+        "en": "Moroccan Dirham"
+      },
+      "MDL": {
+        "de": "Moldau-Leu",
+        "en": "Moldovan Leu"
+      },
+      "MGA": {
+        "de": "Madagaskar-Ariary",
+        "en": "Malagasy Ariary"
+      },
+      "MKD": {
+        "de": "Mazedonischer Denar",
+        "en": "Macedonian Denar"
+      },
+      "MMK": {
+        "de": "Myanmarischer Kyat",
+        "en": "Myanmar Kyat"
+      },
+      "MNT": {
+        "de": "Mongolischer Tögrög",
+        "en": "Mongolian Tugrik"
+      },
+      "MRU": {
+        "de": "Mauretanischer Ouguiya",
+        "en": "Mauritanian Ouguiya"
+      },
+      "MUR": {
+        "de": "Mauritius-Rupie",
+        "en": "Mauritian Rupee"
+      },
+      "MVR": {
+        "de": "Malediven-Rufiyaa",
+        "en": "Maldivian Rufiyaa"
+      },
+      "MWK": {
+        "de": "Malawi-Kwacha",
+        "en": "Malawian Kwacha"
+      },
+      "MXN": {
+        "de": "Mexikanischer Peso",
+        "en": "Mexican Peso"
+      },
+      "MYR": {
+        "de": "Malaysischer Ringgit",
+        "en": "Malaysian Ringgit"
+      },
+      "MZN": {
+        "de": "Mosambikanischer Metical",
+        "en": "Mozambican Metical"
+      },
+      "NAD": {
+        "de": "Namibia-Dollar",
+        "en": "Namibian Dollar"
+      },
+      "NGN": {
+        "de": "Nigerianischer Naira",
+        "en": "Nigerian Naira"
+      },
+      "NIO": {
+        "de": "Nicaragua-Córdoba",
+        "en": "Nicaraguan Córdoba"
+      },
+      "NOK": {
+        "de": "Norwegische Krone",
+        "en": "Norwegian Krone"
+      },
+      "NPR": {
+        "de": "Nepalesische Rupie",
+        "en": "Nepalese Rupee"
+      },
+      "NZD": {
+        "de": "Neuseeland-Dollar",
+        "en": "New Zealand Dollar"
+      },
+      "OMR": {
+        "de": "Omanischer Rial",
+        "en": "Omani Rial"
+      },
+      "PAB": {
+        "de": "Panamaischer Balboa",
+        "en": "Panamanian Balboa"
+      },
+      "PEN": {
+        "de": "Peruanischer Sol",
+        "en": "Peruvian Sol"
+      },
+      "PGK": {
+        "de": "Papua-neuguineischer Kina",
+        "en": "Papua New Guinean Kina"
+      },
+      "PHP": {
+        "de": "Philippinischer Peso",
+        "en": "Philippine Peso"
+      },
+      "PKR": {
+        "de": "Pakistanische Rupie",
+        "en": "Pakistani Rupee"
+      },
+      "PLN": {
+        "de": "Polnischer Złoty",
+        "en": "Polish Zloty"
+      },
+      "PYG": {
+        "de": "Paraguayischer Guaraní",
+        "en": "Paraguayan Guarani"
+      },
+      "QAR": {
+        "de": "Katar-Riyal",
+        "en": "Qatari Riyal"
+      },
+      "RON": {
+        "de": "Rumänischer Leu",
+        "en": "Romanian Leu"
+      },
+      "RSD": {
+        "de": "Serbischer Dinar",
+        "en": "Serbian Dinar"
+      },
+      "RUB": {
+        "de": "Russischer Rubel",
+        "en": "Russian Ruble"
+      },
+      "RWF": {
+        "de": "Ruanda-Franc",
+        "en": "Rwandan Franc"
+      },
+      "SAR": {
+        "de": "Saudi-Rial",
+        "en": "Saudi Riyal"
+      },
+      "SBD": {
+        "de": "Salomonen-Dollar",
+        "en": "Solomon Islands Dollar"
+      },
+      "SCR": {
+        "de": "Seychellen-Rupie",
+        "en": "Seychellois Rupee"
+      },
+      "SDG": {
+        "de": "Sudanesisches Pfund",
+        "en": "Sudanese Pound"
+      },
+      "SEK": {
+        "de": "Schwedische Krone",
+        "en": "Swedish Krona"
+      },
+      "SGD": {
+        "de": "Singapur-Dollar",
+        "en": "Singapore Dollar"
+      },
+      "SLL": {
+        "de": "Sierra-leonischer Leone (1964–2022)",
+        "en": "Sierra Leonean Leone (1964—2022)"
+      },
+      "SOS": {
+        "de": "Somalia-Schilling",
+        "en": "Somali Shilling"
+      },
+      "SRD": {
+        "de": "Suriname-Dollar",
+        "en": "Surinamese Dollar"
+      },
+      "SSP": {
+        "de": "Südsudanesisches Pfund",
+        "en": "South Sudanese Pound"
+      },
+      "STN": {
+        "de": "São-toméischer Dobra",
+        "en": "São Tomé \u0026 Príncipe Dobra"
+      },
+      "SYP": {
+        "de": "Syrisches Pfund",
+        "en": "Syrian Pound"
+      },
+      "SZL": {
+        "de": "Swasiländischer Lilangeni",
+        "en": "Swazi Lilangeni"
+      },
+      "THB": {
+        "de": "Thailändischer Baht",
+        "en": "Thai Baht"
+      },
+      "TJS": {
+        "de": "Tadschikistan-Somoni",
+        "en": "Tajikistani Somoni"
+      },
+      "TMT": {
+        "de": "Turkmenistan-Manat",
+        "en": "Turkmenistani Manat"
+      },
+      "TND": {
+        "de": "Tunesischer Dinar",
+        "en": "Tunisian Dinar"
+      },
+      "TOP": {
+        "de": "Tongaischer Paʻanga",
+        "en": "Tongan Paʻanga"
+      },
+      "TRY": {
+        "de": "Türkische Lira",
+        "en": "Turkish Lira"
+      },
+      "TTD": {
+        "de": "Trinidad-und-Tobago-Dollar",
+        "en": "Trinidad \u0026 Tobago Dollar"
+      },
+      "TWD": {
+        "de": "Neuer Taiwan-Dollar",
+        "en": "New Taiwan Dollar"
+      },
+      "TZS": {
+        "de": "Tansania-Schilling",
+        "en": "Tanzanian Shilling"
+      },
+      "UAH": {
+        "de": "Ukrainische Hrywnja",
+        "en": "Ukrainian Hryvnia"
+      },
+      "UGX": {
+        "de": "Uganda-Schilling",
+        "en": "Ugandan Shilling"
+      },
+      "USD": {
+        "de": "US-Dollar",
+        "en": "US Dollar"
+      },
+      "UYU": {
+        "de": "Uruguayischer Peso",
+        "en": "Uruguayan Peso"
+      },
+      "UZS": {
+        "de": "Usbekistan-Sum",
+        "en": "Uzbekistani Som"
+      },
+      "VES": {
+        "de": "Venezolanischer Bolívar",
+        "en": "Venezuelan Bolívar"
+      },
+      "VND": {
+        "de": "Vietnamesischer Dong",
+        "en": "Vietnamese Dong"
+      },
+      "VUV": {
+        "de": "Vanuatu-Vatu",
+        "en": "Vanuatu Vatu"
+      },
+      "WST": {
+        "de": "Samoanischer Tala",
+        "en": "Samoan Tala"
+      },
+      "XAF": {
+        "de": "CFA-Franc (BEAC)",
+        "en": "Central African CFA Franc"
+      },
+      "XCD": {
+        "de": "Ostkaribischer Dollar",
+        "en": "East Caribbean Dollar"
+      },
+      "XOF": {
+        "de": "CFA-Franc (BCEAO)",
+        "en": "West African CFA Franc"
+      },
+      "YER": {
+        "de": "Jemen-Rial",
+        "en": "Yemeni Rial"
+      },
+      "ZAR": {
+        "de": "Südafrikanischer Rand",
+        "en": "South African Rand"
+      },
+      "ZMW": {
+        "de": "Kwacha",
+        "en": "Zambian Kwacha"
+      },
+      "ZWG": {
+        "de": "Simbabwe-Gold",
+        "en": "Zimbabwean Gold"
+      }
+    },
+    "regions": {
+      "Africa": {
+        "de": "Afrika",
+        "en": "Africa"
+      },
+      "Americas": {
+        "de": "Amerika",
+        "en": "Americas"
+      },
+      "Asia": {
+        "de": "Asien",
+        "en": "Asia"
+      },
+      "Europe": {
+        "de": "Europa",
+        "en": "Europe"
+      },
+      "Oceania": {
+        "de": "Ozeanien",
+        "en": "Oceania"
+      }
+    }
+  }
 }

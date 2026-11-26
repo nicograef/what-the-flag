@@ -19,8 +19,25 @@ type Country struct {
 	Capital       Names    `json:"capital"`
 	OtherCapitals []Names  `json:"otherCapitals"`
 	Region        string   `json:"region"`
+	Languages     []string `json:"languages"`
+	Currencies    []string `json:"currencies"`
+	Fame          int      `json:"fame"`
 	FlagKey       string   `json:"flagKey"`
 	Lookalikes    []string `json:"lookalikes"`
+}
+
+// Labels names every attribute code the pool uses, per kind: CLDR language codes,
+// ISO 4217 currency codes and regions.
+type Labels struct {
+	Languages  map[string]Names `json:"languages"`
+	Currencies map[string]Names `json:"currencies"`
+	Regions    map[string]Names `json:"regions"`
+}
+
+// Dataset is the shape of dataset/countries.json.
+type Dataset struct {
+	Countries []Country `json:"countries"`
+	Labels    Labels    `json:"labels"`
 }
 
 // FlagKey returns the key that names a country's flag file, from its upper-case alpha-2 code.

@@ -25,10 +25,9 @@ const (
 var ownedDirs = []string{datasetDir, flagsDir}
 
 // render returns every owned file's content, keyed by its repo-relative path.
-func render(countries []country.Country, src sources) (map[string][]byte, error) {
-	dataset, err := json.MarshalIndent(struct {
-		Countries []country.Country `json:"countries"`
-	}{countries}, "", "  ")
+func render(ds country.Dataset, src sources) (map[string][]byte, error) {
+	// encoding/json writes map keys sorted, so each labels section is sorted by code.
+	dataset, err := json.MarshalIndent(ds, "", "  ")
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +37,7 @@ func render(countries []country.Country, src sources) (map[string][]byte, error)
 		path.Join(flagsDir, "LICENSE"):          src.flagLicense,
 	}
 	var errs []error
-	for _, c := range countries {
+	for _, c := range ds.Countries {
 		svg, err := rewriteFlag(c.Code, src.flags[c.Code])
 		if err != nil {
 			errs = append(errs, err)
