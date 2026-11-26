@@ -17,6 +17,7 @@ mledoze/countries
 
 Unicode CLDR
   URL:       https://github.com/unicode-org/cldr-json
+  Packages:  cldr-localenames-full, cldr-numbers-full, cldr-core
   Pin:       tag 49.0.0
   Licence:   Unicode-3.0
   Copyright: Copyright © 2001–2026 Unicode, Inc.
