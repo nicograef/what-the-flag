@@ -161,11 +161,11 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `backend/internal/contract/harness_integration_test.go — newServer(), newClient(), decode(), expectError()` (decisions); `backend/internal/contract/health_integration_test.go — TestHealth` (200 `{"status":"ok"}`), `TestUnknownRoute` (`GET /api/nope` → 404 `not_found`). `go mod tidy`.
 
 ### Acceptance criteria
-- [ ] `test "$(cd backend && go test -v -run '^(TestReadJSON|TestWriteError|TestMapError|TestRecover|TestRequireJSON|TestCheckOrigin)$' ./internal/httpx | grep -c '^--- PASS')" -eq 6` exits 0.
-- [ ] With `make db` and `make db-migrate` done: `set -a && . ./.env && set +a && test "$(cd backend && go test -tags=integration -v -run '^(TestHealth|TestUnknownRoute|TestTxRollsBack)$' ./internal/contract ./internal/postgres | grep -c '^--- PASS')" -eq 3` exits 0.
-- [ ] With `make db` and `make be` running: `test "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Origin: http://evil.example' localhost:8080/api/health)" = 403` exits 0.
-- [ ] With `make db` running: `set -a && . ./.env && set +a && cd backend && go build -o /tmp/wtf ./cmd/what-the-flag && (APP_PORT=18080 /tmp/wtf >/tmp/wtf.log 2>&1 & p=$!; curl -fsS --retry 15 --retry-connrefused --retry-delay 1 -o /dev/null localhost:18080/api/health; c=$?; kill -TERM $p; wait $p && [ $c = 0 ]) && tail -1 /tmp/wtf.log | grep -q 'server stopped'` exits 0.
-- [ ] `make check` passes.
+- [x] `test "$(cd backend && go test -v -run '^(TestReadJSON|TestWriteError|TestMapError|TestRecover|TestRequireJSON|TestCheckOrigin)$' ./internal/httpx | grep -c '^--- PASS')" -eq 6` exits 0.
+- [x] With `make db` and `make db-migrate` done: `set -a && . ./.env && set +a && test "$(cd backend && go test -tags=integration -v -run '^(TestHealth|TestUnknownRoute|TestTxRollsBack)$' ./internal/contract ./internal/postgres | grep -c '^--- PASS')" -eq 3` exits 0.
+- [x] With `make db` and `make be` running: `test "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Origin: http://evil.example' localhost:8080/api/health)" = 403` exits 0.
+- [x] With `make db` running: `set -a && . ./.env && set +a && cd backend && go build -o /tmp/wtf ./cmd/what-the-flag && (APP_PORT=18080 /tmp/wtf >/tmp/wtf.log 2>&1 & p=$!; curl -fsS --retry 15 --retry-connrefused --retry-delay 1 -o /dev/null localhost:18080/api/health; c=$?; kill -TERM $p; wait $p && [ $c = 0 ]) && tail -1 /tmp/wtf.log | grep -q 'server stopped'` exits 0.
+- [x] `make check` passes.
 
 ## Phase 3: Frontend shell with landing tracer
 
