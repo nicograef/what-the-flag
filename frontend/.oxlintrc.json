@@ -4,5 +4,13 @@
   "rules": {
     "react/rules-of-hooks": "error",
     "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+  },
+  "overrides": [
+    {
+      // shadcn components export their variants, and the locale store sits beside its provider;
+      // Fast Refresh reloads these modules whole instead of patching them.
+      "files": ["src/components/ui/**", "src/lib/i18n/locale.tsx"],
+      "rules": { "react/only-export-components": "off" }
+    }
+  ]
 }
