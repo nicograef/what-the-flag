@@ -1,0 +1,65 @@
+# Copy to reverse-proxy/Caddyfile and put your domain in place of the example one.
+# The edge image (Dockerfile.edge) bakes this file in, so a change ships with the next release.
+
+# ── Global options ──
+# {
+# 	# Enable to receive Let's Encrypt expiry notices for this account.
+# 	email <you@what-the-flag.de>
+# }
+
+# ── Redirect www to the apex domain ──
+www.what-the-flag.de {
+	redir https://what-the-flag.de{uri} permanent
+}
+
+# ── Primary site (HTTP redirects to HTTPS automatically) ──
+what-the-flag.de {
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Caddy is the edge: it replaces a client-sent X-Forwarded-For with the real peer.
+	handle /api/* {
+		reverse_proxy backend:8080
+	}
+
+	# >>> stack: frontend
+	# The SPA build the edge image bakes into /srv.
+	handle {
+		root * /srv
+		encode zstd gzip
+
+		# Build output under /assets/ has content-hashed names, so a file never changes.
+		# A missing one is a 404, never index.html, and `match` keeps a 404 out of caches.
+		handle /assets/* {
+			header {
+				Cache-Control "public, max-age=31536000, immutable"
+				match status 2xx 3xx
+			}
+			file_server
+		}
+
+		# Unhashed files from public/: icons, fonts and the manifest.
+		# The base image's /etc/mime.types serves .webmanifest as application/manifest+json.
+		@public path *.ico *.png *.svg *.webp *.woff *.woff2 *.webmanifest
+		handle @public {
+			header {
+				Cache-Control "public, max-age=3600"
+				match status 2xx 3xx
+			}
+			file_server
+		}
+
+		# Every route falls back to index.html; revalidating it lets a deploy reach clients at once.
+		handle {
+			header Cache-Control "no-cache"
+			try_files {path} /index.html
+			file_server
+		}
+	}
+	# <<< stack: frontend
+}
