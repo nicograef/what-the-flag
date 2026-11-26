@@ -1,11 +1,11 @@
-# Plan: First release
+# Plan: Release
 
-> Source PRD: docs/prds/prd-rebuild.md (Operations: runs and the leaderboard in the first release)
+> Source PRD: docs/prds/prd-rebuild.md (Operations, Testing Decisions)
 
 ## Goal
 
-Make `v0.1.0` taggable once runs and the leaderboard land. The real images run behind the real edge with local TLS, and a smoke script proves them.
-Migrations apply on deploy through a one-shot service, and every image carries its licences.
+Make `v0.1.0` taggable for the silent beta. The real images run behind the real edge with local TLS, and a smoke script proves them.
+Migrations apply on deploy through a one-shot service, every image carries its licences, a CSP guards the SPA, and `docs/game-rules.md` states the rules.
 
 ## Architectural decisions
 
@@ -22,13 +22,16 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 | Stack under test | Files `docker-compose.prod.yml` and `docker-compose.e2e.yml`, plus `docker-compose.local.yml` when present. The override adds `build:` and the images `what-the-flag-{backend,migrate,edge}:e2e` |
 | Local TLS | The override runs `caddy run --adapter caddyfile --config /etc/caddy/e2e.Caddyfile`. That file holds `{ local_certs skip_install_trust }` and `import /etc/caddy/Caddyfile`; site blocks stay verbatim |
 | Edge port and network | Edge `ports: !override ["127.0.0.1:${E2E_STACK_PORT:-8443}:443"]`; `app-network.enable_ipv6: false` (CI runners lack IPv6) |
-| Stack runner | `scripts/e2e-stack.sh <command> [args]`, the jotti pattern. Defaults `E2E_STACK_PROJECT=what-the-flag-e2e`, `E2E_STACK_PORT=8443`, both overridable |
+| Stack runner | `scripts/e2e-stack.sh <command> [args]`. Defaults `E2E_STACK_PROJECT=what-the-flag-e2e`, `E2E_STACK_PORT=8443`, both overridable |
 | Smoke script | `scripts/smoke.sh` checks one running stack at `E2E_BASE_URL` with curl and `jq`, printing `ok <check>` per check. The first failure exits 1 |
 | Docker in the cloud session | `dockerd &`, then wait until `docker info` exits 0. The gitignored `docker-compose.local.yml` carries the session CA and `network: host` for builds. Committed Dockerfiles stay clean |
 | CI job `e2e` | `timeout-minutes: 20`, `needs: changes`, runs `make e2e` when filter output `e2e` is true or on `refs/heads/main`. The main run closes the gap of path-filtered jobs on a tagged commit |
 | Licences in images | `backend/Dockerfile` copies `internal/country/dataset/LICENSE` and, through the named build context `root`, `NOTICE` to `/usr/share/doc/what-the-flag/`. `reverse-proxy/Dockerfile` copies `NOTICE` and `data/LICENSE` there |
 | Named context `root` | `docker-compose.yml` and `docker-compose.e2e.yml` set backend `build.additional_contexts: {root: .}`; the release matrix passes `build-contexts: root=.` for backend. It keeps the template Dockerfile's other `COPY` lines |
 | Dependabot | `.github/dependabot.yml` gains a `docker` entry for `/database`, monthly and grouped like the template's entries |
+| CSP | In `reverse-proxy/Caddyfile`: `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'` |
+| Why `data:` | Vite inlines assets under 4 KiB as `data:` URLs, images and fonts alike |
+| No inline styles | No planned component injects a runtime `<style>`. React `style` props go through the CSSOM, which `style-src` does not block. A violation shows only in a browser console, so phase 2 loads the site once in the session's Chromium |
 
 `scripts/e2e-stack.sh` steps (handbook script header, `set -euo pipefail`):
 
@@ -41,10 +44,12 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 | Check | Request | Expect |
 | --- | --- | --- |
 | `health` | `GET /api/health` | `{"status":"ok"}` |
-| `run` | `POST /api/runs`, body `{"name":"smoke"}`, `Content-Type: application/json`, `Origin: $E2E_BASE_URL` | 201, a `runId` |
+| `run` | `POST /api/runs`, body `{"name":"smoke"}`, `Content-Type: application/json`, `Origin: $E2E_BASE_URL` | 201, a `runId` and a `quizId` |
 | `question` | `GET /api/runs/<runId>` | `status` `playing`, `question.position` 0 |
-| `leaderboard` | `GET /api/leaderboard` | 200 with `today` and `allTime` arrays |
-| `spa` | `GET /play/<runId>` | 200 HTML with `<div id="root">` |
+| `challenge` | `GET /api/quizzes/<quizId>` | the creator's name `smoke` |
+| `leaderboard` | `GET /api/leaderboard` | 200 with a `top` array |
+| `spa` | `GET /q/<quizId>` | 200 HTML with `<div id="root">` and `og:image` |
+| `csp` | `GET /` headers | `Content-Security-Policy` contains `frame-ancestors 'none'` |
 | `migrations` | `docker compose exec -T postgres psql -U e2e -d whattheflag -tAc 'SELECT version, dirty FROM schema_migrations'` | `<highest number in database/migrations>\|f` |
 
 ## Inventory
@@ -52,8 +57,9 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 - `docker-compose.prod.yml`, `docker-compose.yml`, `scripts/prod-init.sh`, `.github/workflows/release.yml`, `reverse-proxy/Caddyfile`, `reverse-proxy/Dockerfile`, `backend/Dockerfile` (foundation) — prod stack and images.
 - `Makefile — CLASS_developer, CLASS_production, MIGRATE_VERSION`, `.github/workflows/ci.yml — changes, upgrade-path`, `.github/dependabot.yml` (foundation) — targets, filters, pins.
 - `NOTICE`, `data/LICENSE`, `backend/internal/country/dataset/LICENSE` (country-data) — licence files the images carry.
-- `backend/internal/quiz — POST /api/runs, GET /api/runs/{id}`, `frontend/src/features/play/play-page.tsx` (runs), `backend/internal/leaderboard — GET /api/leaderboard` (leaderboard) — the smoke path.
-- jotti `scripts/e2e-stack.sh`, `docker-compose.prod.yml — migrate` — patterns for the runner and the one-shot service.
+- `backend/internal/quiz/httpapi` routes, `frontend/src/features/{play,challenge}/` (quiz) — the smoke path.
+- `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md` — docs true to the final tree.
+- Compose docs on `depends_on` conditions and `--wait`, Caddy docs on `local_certs` — read at execution.
 
 ## Open questions / Risks
 
@@ -93,13 +99,13 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 
 - [ ] Stack, migrate image, `up --wait` with an exited one-shot and every smoke check: `make e2e`
 - [ ] A failing command fails the run and leaves no container: `! E2E_STACK_PROJECT=wtf-e2e-neg scripts/e2e-stack.sh false && test -z "$(docker ps -aq --filter label=com.docker.compose.project=wtf-e2e-neg)"`
-- [ ] Manual migrate keeps the DSN: `test "$(docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -r '.services.migrate.entrypoint[1:3] | join(" ")')" = '-path /migrations'`
+- [ ] Manual migrate keeps the DSN: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -e '.services.migrate.entrypoint[3] == "-database" and .services.migrate.command == ["up"]'`
 - [ ] `! make help | grep -q UNCLASSIFIED`
 - [ ] `grep -q 'directory: "/database"' .github/dependabot.yml`
 - [ ] CI job `e2e` green on the pushed head (lead checks).
 - [ ] `make check` passes.
 
-## Phase 2: Licences in images and the v0.1.0 check
+## Phase 2: Licences, CSP, docs and the v0.1.0 check
 
 **Depends on**: 1
 
@@ -113,6 +119,14 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 
 - `backend/Dockerfile`, `reverse-proxy/Dockerfile` per the licence decision; `reverse-proxy/Dockerfile.dockerignore` gains `!NOTICE` and `!data/LICENSE`.
 - `docker-compose.yml`, `docker-compose.e2e.yml`, `.github/workflows/release.yml`: the `root` build context for backend.
+- `reverse-proxy/Caddyfile`: the CSP header from the decisions, beside the handbook's security headers. `scripts/smoke.sh`: the `csp` check.
+- `docs/game-rules.md`, current state, sections Questions, Runs, Quizzes and Leaderboards. It states the question types and tiers, the clock and the 300 ms rule, the end reasons and the ranking.
+  It says the data comes from open sources and implies no political position. No links into `docs/prds/` or `docs/plans/`.
+- `README.md`: quick start (`make db`, `make db-migrate`, `make be`, `make fe`, `make check`, `make be-integration`, `make e2e`), a link to `docs/game-rules.md`.
+  A deploy section links the handbook's `guides/deploy.md` and `guides/backup-restore.md`, names `DOMAIN=what-the-flag.de make prod-deploy`, `make prod-migrate ARGS=version`, `make prod-stats` and `make prod-hide`.
+- `docs/README.md`: one row per file in `docs/`. `AGENTS.md`: targets and layout true to the tree, a link to `docs/game-rules.md`.
+- `docs/decisions.md`: every D line true; the e2e stack's D line; one for the CSP without `'unsafe-inline'`.
+- `scripts/backup-postgres.sh`: its `/opt/<project>` comment filled.
 - Any pin or placeholder the criteria below find wrong, fixed in the file that holds it. No feature lands here.
 
 ### Acceptance criteria
@@ -121,7 +135,13 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 - [ ] Edge image (built by the criterion above): `test "$(docker run --rm --entrypoint ls what-the-flag-edge:e2e /usr/share/doc/what-the-flag | paste -sd' ')" = 'LICENSE NOTICE'`
 - [ ] Dev build keeps working: `docker compose build backend`
 - [ ] Prod pins: `test "$(grep -cE 'what-the-flag-(backend|edge|migrate):v0\.1\.0' docker-compose.prod.yml)" = 3`
-- [ ] One migrate version: `test "$(grep -hoE 'v4\.[0-9]+\.[0-9]+' database/Dockerfile .github/workflows/ci.yml | sort -u | wc -l)" = 1`
+- [ ] One migrate version: `test "$(grep -hoE 'migrate/migrate:v[0-9.]+|MIGRATE_VERSION: v[0-9.]+' database/Dockerfile .github/workflows/ci.yml | grep -oE 'v[0-9.]+' | sort -u | wc -l)" = 1`
 - [ ] Release matrix: `test "$(grep -cE 'service: (backend|edge|migrate)$' .github/workflows/release.yml)" = 3`
-- [ ] No placeholders: `! grep -rnE '<(owner|project|name|domain|database-name)>' docker-compose*.yml database .github reverse-proxy scripts Makefile`
+- [ ] No placeholders: `! grep -rnE '<(owner|project|name|domain|database-name)>' docker-compose*.yml database .github reverse-proxy Makefile scripts --exclude=make-help.awk`
+- [ ] No inline-style exception: `! grep -q 'unsafe-inline' reverse-proxy/Caddyfile`
+- [ ] Game rules complete and standalone: `for h in Questions Runs Quizzes Leaderboards; do grep -q "^## $h" docs/game-rules.md || exit 1; done && ! grep -qE 'prds/|plans/' docs/game-rules.md`
+- [ ] Docs index complete: `for f in docs/*.md; do [ "$f" = docs/README.md ] || grep -q "$(basename "$f")" docs/README.md || exit 1; done`
+- [ ] Targets true: `grep -ohE 'make [a-z-]+' README.md AGENTS.md | awk '{print $2}' | sort -u | while read -r t; do grep -qE "^$t:" Makefile || exit 1; done`
+- [ ] Smoke with CSP (local): `make e2e`
+- [ ] `/`, `/q/<quizId>` and `/leaderboard` load in Chromium through the e2e stack with no console error (lead checks with a one-off Playwright script).
 - [ ] `make check` passes.

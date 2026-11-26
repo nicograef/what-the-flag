@@ -2,7 +2,7 @@
 
 > Source PRD: [prd-rebuild.md](../prds/prd-rebuild.md)
 
-Six plans carry the PRD. They run one after another, so every wave holds one lane.
+Five plans carry the PRD. They run one after another, so every wave holds one lane.
 This file is the only run status. The orchestrator plans, dispatches, reviews and lands; phase agents write code and never land.
 
 ## Plans
@@ -11,12 +11,11 @@ This file is the only run status. The orchestrator plans, dispatches, reviews an
 | --- | --- | --- | --- | --- |
 | 1 | [plan-foundation.md](plan-foundation.md) | Clean slate, handbook scaffold, backend and frontend skeleton, contract harness, prod and agent files | 4 | |
 | 2 | [plan-country-data.md](plan-country-data.md) | Vendored sources, importer, generated dataset and flags, `country` catalogue | 3 | |
-| 3 | [plan-runs.md](plan-runs.md) | Name rules, question generation, runs, clock, sweep, word filter, rate limit, `play` feature | 4 | |
-| 4 | [plan-leaderboard.md](plan-leaderboard.md) | Entries, today and all-time rankings, `leaderboard` feature, ranks in the result | 2 | |
-| 5 | [plan-first-release.md](plan-first-release.md) | Prod stack under test, migrate service and image, licences in images | 2 | `v0.1.0` |
-| 6 | [plan-release-readiness.md](plan-release-readiness.md) | Browser test, CSP review, game rules doc, `v1.0.0` checklist | 3 | `v1.0.0` |
+| 3 | [plan-country-attributes.md](plan-country-attributes.md) | CLDR language and currency labels, regions, fame tiers in the dataset and catalogue | 2 | |
+| 4 | [plan-quiz.md](plan-quiz.md) | Domain core, Postgres and HTTP adapters, leaderboards, challenge, rate limit, owner commands, `play`, `challenge` and `leaderboard` features | 5 | |
+| 5 | [plan-release.md](plan-release.md) | Prod stack under test, migrate image, licences, CSP, game rules, docs | 2 | `v0.1.0` |
 
-- `v0.1.0` ships the whole game. `v1.0.0` adds the browser test, the CSP and the final docs.
+- `v0.1.0` goes to a silent beta. Later work follows the PRD's Further Notes after the beta.
 
 ## Session setup
 
@@ -49,12 +48,11 @@ Every session that runs this programme checks these before wave 1 and after a co
 | --- | --- | --- |
 | 1 | `found` | foundation 1–4 |
 | 2 | `data` | country-data 1–3 |
-| 3 | `runs` | runs 1–4 |
-| 4 | `board` | leaderboard 1–2 |
-| 5 | `first` | first-release 1–2 |
-| 6 | `rel` | release-readiness 1–3 |
+| 3 | `attr` | country-attributes 1–2 |
+| 4 | `quiz` | quiz 1–5 |
+| 5 | `rel` | release 1–2 |
 
-- Each wave starts when the previous one has landed. The owner may tag `v0.1.0` after wave 5 while wave 6 runs.
+- Each wave starts when the previous one has landed. The owner tags `v0.1.0` after wave 5.
 
 ## Stores and migrations
 
@@ -65,8 +63,7 @@ Every session that runs this programme checks these before wave 1 and after a co
 | Migration | Plan and phase |
 | --- | --- |
 | `000001_init` | foundation 1 |
-| `000002_runs` | runs 1 |
-| `000003_leaderboard` | leaderboard 1 |
+| `000002_quiz` | quiz 2 |
 
 ## Spend
 
@@ -75,10 +72,10 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 ## Owner items
 
 - Apply the hardening calls of the handbook's new-project guide; cloud sessions have no `gh`.
-- After first-release lands: wait for the green CI push run on `main`, then tag with `make prod-release VERSION=0.1.0`.
+- After release lands: wait for the green CI push run on `main`, then tag with `make prod-release VERSION=0.1.0`.
 - For the first deploy: DNS A/AAAA for `what-the-flag.de` and `www`, provision the server, GHCR read token, `DOMAIN=what-the-flag.de make prod-deploy`, backup cron, imprint and privacy texts before the public launch.
 - Optional: re-run `scripts/fetch-data-sources.sh` on a machine with network access to refresh the vendored data.
-- After release-readiness lands: tag `make prod-release VERSION=1.0.0`, then `make prod-deploy`. The lead then prunes the PRD, this file and the plans; `docs/game-rules.md` keeps the rules.
+- After the beta: read `make prod-stats`, decide the public launch, then the lead prunes the PRD, this file and the plans; `docs/game-rules.md` keeps the rules.
 
 ## Status
 
@@ -91,14 +88,12 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 | country-data 1 | data | landed | 408f493 | |
 | country-data 2 | data | landed | 727bbba | |
 | country-data 3 | data | landed | ebe71b1 | |
-| runs 1 | runs | waiting | | |
-| runs 2 | runs | waiting | | |
-| runs 3 | runs | waiting | | |
-| runs 4 | runs | waiting | | |
-| leaderboard 1 | board | waiting | | |
-| leaderboard 2 | board | waiting | | |
-| first-release 1 | first | waiting | | |
-| first-release 2 | first | waiting | | |
-| release-readiness 1 | rel | waiting | | |
-| release-readiness 2 | rel | waiting | | |
-| release-readiness 3 | rel | waiting | | |
+| country-attributes 1 | attr | waiting | | |
+| country-attributes 2 | attr | waiting | | |
+| quiz 1 | quiz | waiting | | |
+| quiz 2 | quiz | waiting | | |
+| quiz 3 | quiz | waiting | | |
+| quiz 4 | quiz | waiting | | |
+| quiz 5 | quiz | waiting | | |
+| release 1 | rel | waiting | | |
+| release 2 | rel | waiting | | |
