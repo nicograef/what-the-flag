@@ -219,5 +219,5 @@ ORDER BY ?iso2 ?capital
 
 ### Acceptance criteria
 
-- [ ] Pool invariants hold (unit): `cd backend && go test ./internal/country -run TestPoolInvariants`
-- [ ] `make check` passes
+- [x] Pool invariants hold (unit): `cd backend && go test ./internal/country -run TestPoolInvariants`
+- [x] `make check` passes
