@@ -1,0 +1,64 @@
+{
+  "unMember": {
+    "VA": {
+      "value": false,
+      "reason": "Holy See is a UN observer; mledoze says true. UN count must be 193"
+    }
+  },
+  "poolAdditions": {
+    "codes": ["PS", "TW", "VA", "XK"],
+    "reason": "PRD pool: 193 UN members + 4 = 197"
+  },
+  "primaryCapitals": {
+    "BO": {
+      "qid": "Q2907",
+      "reason": "Constitutional capital; La Paz (Q1491) is the seat of government"
+    },
+    "LK": {
+      "qid": "Q41963",
+      "reason": "Official capital; Colombo (Q35381) is the commercial one"
+    },
+    "PS": {
+      "qid": "Q158119",
+      "reason": "Seat of government; East Jerusalem (Q212938) is claimed"
+    },
+    "SZ": {
+      "qid": "Q3904",
+      "reason": "Executive capital; Lobamba (Q101418) is royal and legislative"
+    },
+    "YE": {
+      "qid": "Q2471",
+      "reason": "Constitutional capital; Aden (Q131694) is temporary"
+    },
+    "ZA": {
+      "qid": "Q3926",
+      "reason": "Executive capital; Bloemfontein (Q37701), Cape Town (Q5465) are others"
+    }
+  },
+  "capitalLabels": {
+    "Q31026": {
+      "en": "Yaren",
+      "reason": "Wikidata en says \"Yaren District\"; de already \"Yaren\""
+    },
+    "Q41963": {
+      "de": "Sri Jayawardenepura Kotte",
+      "reason": "Wikidata de \"Sri Jayewardenepura Kotte\" differs from en and the official spelling"
+    },
+    "Q23438": {
+      "de": "Aschgabat",
+      "reason": "Wikidata de uses Turkmen \"Aşgabat\"; Duden form wins"
+    }
+  },
+  "countryNames": {
+    "PS": {
+      "de": "Palästina",
+      "reason": "CLDR PS is \"Palästinensische Autonomiegebiete\"; CLDR PS-alt-short \"Palästina\" matches en \"Palestine\""
+    }
+  },
+  "lookalikes": [
+    {
+      "pair": ["NI", "SV"],
+      "reason": "Blue-white-blue triband; the central emblems are unreadable at card size"
+    }
+  ]
+}

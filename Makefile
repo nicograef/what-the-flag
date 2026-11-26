@@ -66,6 +66,14 @@ be-check:      ## Backend: Go gate (modules, generated code, format, vet, lint, 
 
 be-integration: ## Backend: integration tests against the `make db` database
 	cd $(BACKEND_DIR) && go test -tags=integration -race ./...
+
+.PHONY: data data-check
+
+data:          ## Regenerate the country dataset and flags from data/
+	cd $(BACKEND_DIR) && go run ./cmd/importdata
+
+data-check:    ## Fail when the generated dataset differs from the importer's output
+	cd $(BACKEND_DIR) && go run ./cmd/importdata -check
 # <<< stack: go
 
 # >>> stack: frontend
@@ -155,7 +163,7 @@ db-migrate:    ## Apply pending migrations to the `make db` database
 
 # Every documented target stands in exactly one CLASS_* list, and `make help` prints the
 # lists as its sections. A target in none prints under UNCLASSIFIED.
-CLASS_developer := db be fe be-check be-integration fe-check check up down logs db-shell db-migrate help
+CLASS_developer := db be fe be-check be-integration data data-check fe-check check up down logs db-shell db-migrate help
 CLASS_production := prod-deploy prod-down prod-logs prod-release
 
 HELP_WIDTH ?= 96
