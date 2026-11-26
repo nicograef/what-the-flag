@@ -4,8 +4,8 @@
 
 ## Goal
 
-Make `v1.0.0` taggable: practice, accounts, duels and the all-time leaderboard.
-One browser test registers two players, plays a duel and reads the result, through the real edge over local TLS.
+Make `v1.0.0` taggable: runs and the leaderboard.
+One browser test enters a name, plays a run to its end and finds it on today's leaderboard, through the real edge over local TLS.
 The CSP is reviewed, the docs describe the final tree, and the durable game rules live in `docs/game-rules.md`.
 
 ## Architectural decisions
@@ -19,10 +19,10 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 | Config | jotti settings: `forbidOnly` on CI, `retries: 0`, `trace: 'retain-on-failure'`, `screenshot: 'only-on-failure'`, reporter `github` + `html` on CI |
 | Device | One project on `devices['Pixel 7']`, since the layout is mobile first. `locale: 'en-US'`, `timeout: 120_000` |
 | Browser routing | `baseURL` is `E2E_BASE_URL`. Chromium runs with `--host-resolver-rules=MAP what-the-flag.de 127.0.0.1` and `ignoreHTTPSErrors` |
-| Origin and cookie | The page origin is `https://what-the-flag.de:<port>`, the `Host` Caddy passes. The `__Host-session` cookie is `Secure` over real HTTPS |
-| Rate limit | Only two registrations pass the edge, well inside the per-address burst |
-| Clock | The test clicks the first option as soon as a question renders. No test-only server switch exists |
-| Console gate | Any `pageerror` fails the test, as does any console error except `Failed to load resource`. That exception covers the expected 401 from `/api/me` |
+| Origin | The page origin is `https://what-the-flag.de:<port>`, the `Host` Caddy passes. No cookie exists |
+| Rate limit | One run start passes the edge, well inside the per-address burst |
+| Clock | The test clicks the first option as soon as a question renders. The run ends at the first wrong answer, after 197 questions at most. No test-only server switch exists |
+| Console gate | Any `pageerror` and any console error fail the test. No request is expected to fail |
 | CSP | In `reverse-proxy/Caddyfile`: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'` |
 | Why `'unsafe-inline'` styles | Radix dialogs inject a runtime `<style>` through `react-remove-scroll`. A static SPA has no per-request nonce. Vite emits no inline script |
 | Why `data:` | Vite inlines assets under 4 KiB as `data:` URLs, images and fonts alike |
@@ -37,7 +37,7 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 - `scripts/e2e-stack.sh`, `docker-compose.e2e.yml`, `reverse-proxy/e2e.Caddyfile`, `scripts/smoke.sh` (first-release) — the stack under test.
 - `reverse-proxy/Caddyfile` — the primary site's `header` block gains the CSP.
 - `.github/workflows/ci.yml — changes, e2e`, `.github/dependabot.yml`, `Makefile — check, e2e` — gates and their wiring.
-- `frontend/src/features/{auth,dashboard,duels,leaderboard}/` — routes and English labels the test selects by role.
+- `frontend/src/features/{landing,play,leaderboard}/` — routes and English labels the test selects by role.
 - `docker-compose.prod.yml`, `database/Dockerfile`, `.github/workflows/release.yml` — release pins.
 - `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md`, `docs/prds/prd-rebuild.md`, `.gitignore`.
 - jotti `e2e/package.json`, `e2e/playwright.config.ts`, `e2e/tsconfig.json`, `Makefile — check-e2e`, `.github/workflows/ci.yml — e2e` — the patterns.
@@ -46,28 +46,25 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 
 - Phase agents re-read every file and symbol named here against the landed tree first.
 - `pnpm exec playwright install chromium` downloads a browser. If the session's network blocks it, the stack criteria wait for CI.
-- Chromium may refuse `Secure` cookies under `ignoreHTTPSErrors`. Fallback: trust the edge's local root CA in the runner's NSS database.
 
-## Phase 1: Browser test of the duel flow
+## Phase 1: Browser test of a run
 
 **Depends on**: none
 
 ### Context
 
 - `scripts/e2e-stack.sh`, `Makefile`, `.github/workflows/ci.yml` — the stack runner, its target and its CI job.
-- `frontend/src/features/{auth,dashboard,duels,leaderboard}/` — pages and labels the test drives.
+- `frontend/src/features/{landing,play,leaderboard}/` — pages and labels the test drives.
 
 ### What to build
 
 - `e2e/package.json`, `e2e/pnpm-lock.yaml`: `@playwright/test`, `typescript@~7.0`, `oxlint`, `oxlint-tsgolint`, `prettier`, `@types/node`, `eslint-plugin-playwright`.
   Versions resolve at execution with `pnpm add -D`.
 - `e2e/playwright.config.ts`, `e2e/tsconfig.json`, `e2e/.oxlintrc.json`, `e2e/.prettierignore` per the decisions.
-- `e2e/tests/duel.spec.ts`, one test. Usernames are `a_`/`b_` plus 8 base36 characters.
-  - Two browser contexts register A and B through `/register`.
-  - A opens the challenge dialog on `/dashboard`, picks B, and plays ten questions on `/duels/:id`.
-  - B sees the duel as `your_turn` on `/dashboard` and plays the same way.
-  - Both result pages list both players and ten question rows.
-  - Each player opens `/leaderboard` through the navbar link and finds their own points from the result page.
+- `e2e/tests/run.spec.ts`, one test. The player name is `e2e_` plus 8 base36 characters.
+  - It enters the name on `/` and starts a run.
+  - On `/play/:runId` it clicks the first option of each question until the result shows, and reads the score.
+  - It follows the result's leaderboard link and finds the name with that score on today's tab.
   - The console gate applies to every page.
 - `Makefile`: `e2e-check` (frozen install, `format:check`, `typecheck`, `lint` in `e2e/`) in `CLASS_developer`, a prerequisite of `check`.
   `e2e` runs the Playwright install, then `scripts/e2e-stack.sh pnpm --dir e2e test`.
@@ -79,7 +76,7 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 
 ### Acceptance criteria
 
-- [ ] The duel flow passes through the edge (local): `make e2e`
+- [ ] A run passes through the edge (local): `make e2e`
 - [ ] CI uploads the report on failure: `grep -q 'e2e/playwright-report/' .github/workflows/ci.yml`
 - [ ] No reference to the deleted smoke script remains: `! grep -rq 'smoke.sh' Makefile .github scripts README.md AGENTS.md`
 - [ ] `make check` passes
@@ -96,7 +93,7 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 ### What to build
 
 - `reverse-proxy/Caddyfile`: the CSP header from the decisions, beside the handbook's security headers.
-- `e2e/tests/duel.spec.ts`: the response to `/` carries `Content-Security-Policy` containing `frame-ancestors 'none'`.
+- `e2e/tests/run.spec.ts`: the response to `/` carries `Content-Security-Policy` containing `frame-ancestors 'none'`.
 - `.github/dependabot.yml`: an entry for every directory with a manifest or Dockerfile, `/database` included.
 - `docs/decisions.md`: one D line for the CSP with its two exceptions and their reasons.
 
@@ -113,14 +110,14 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 
 ### Context
 
-- `docs/prds/prd-rebuild.md` — sections Quiz rules, Round rules, Accounts, Duels, Leaderboard and points.
+- `docs/prds/prd-rebuild.md` — sections Question rules, Run rules and Leaderboard.
 - `README.md`, `AGENTS.md`, `docs/README.md`, `docs/decisions.md` — current state after phases 1–2.
 - `docker-compose.prod.yml`, `database/Dockerfile`, `Makefile`, `.github/workflows/ci.yml` — release pins.
 
 ### What to build
 
-- `docs/game-rules.md`, a current-state doc with sections Quiz, Rounds, Accounts, Duels and Points.
-  It states the durable rules, the duel status names and the points table, without links into `docs/prds/` or `docs/plans/`.
+- `docs/game-rules.md`, a current-state doc with sections Questions, Runs and Leaderboard.
+  It states the durable rules, the clock, the end reasons and the ranking, without links into `docs/prds/` or `docs/plans/`.
 - `README.md` quick start: `make db`, `make db-migrate`, `make be`, `make fe`, `make check`, `make be-integration`, `make e2e`.
   A link to `docs/game-rules.md`. The licence section stays as country-data wrote it.
 - `README.md` deploy section: links to the handbook's `guides/deploy.md` and `guides/backup-restore.md`, and `DOMAIN=what-the-flag.de make prod-deploy`.
@@ -134,7 +131,7 @@ The CSP is reviewed, the docs describe the final tree, and the durable game rule
 
 ### Acceptance criteria
 
-- [ ] Game rules complete: `for h in Quiz Rounds Accounts Duels Points; do grep -q "^## $h" docs/game-rules.md || exit 1; done`
+- [ ] Game rules complete: `for h in Questions Runs Leaderboard; do grep -q "^## $h" docs/game-rules.md || exit 1; done`
 - [ ] Game rules stand alone: `! grep -qE 'prds/|plans/' docs/game-rules.md`
 - [ ] README and AGENTS link the rules: `grep -q 'docs/game-rules.md' README.md && grep -q 'docs/game-rules.md' AGENTS.md`
 - [ ] Docs index complete: `for f in docs/*.md; do [ "$f" = docs/README.md ] || grep -q "$(basename "$f")" docs/README.md || exit 1; done`

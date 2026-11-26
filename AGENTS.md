@@ -1,6 +1,6 @@
 # Agents
 
-What The Flag is a Quizduell-like game about flags, countries and capitals for `what-the-flag.de`.
+What The Flag is an endless quiz about flags, countries and capitals for `what-the-flag.de`, with a public leaderboard and no accounts.
 A Go backend on Postgres serves a React SPA through a Caddy edge.
 
 - What the game does: [docs/prds/prd-rebuild.md](docs/prds/prd-rebuild.md).

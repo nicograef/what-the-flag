@@ -1,7 +1,7 @@
 # What The Flag
 
-A Quizduell-like game about flags, countries and capitals, in German and English.
-Play a practice round without an account, or challenge another player to a duel.
+An endless quiz about flags, countries and capitals, in German and English.
+Enter a name, answer until the first miss, and land on the leaderboard.
 
 ## Setup
 

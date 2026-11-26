@@ -1,10 +1,10 @@
 # Plan: First release
 
-> Source PRD: docs/prds/prd-rebuild.md (Operations: practice rounds only in the first release)
+> Source PRD: docs/prds/prd-rebuild.md (Operations: runs and the leaderboard in the first release)
 
 ## Goal
 
-Make `v0.1.0` taggable once practice rounds land. The real images run behind the real edge with local TLS, and a smoke script proves them.
+Make `v0.1.0` taggable once runs and the leaderboard land. The real images run behind the real edge with local TLS, and a smoke script proves them.
 Migrations apply on deploy through a one-shot service, and every image carries its licences.
 
 ## Architectural decisions
@@ -41,9 +41,10 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 | Check | Request | Expect |
 | --- | --- | --- |
 | `health` | `GET /api/health` | `{"status":"ok"}` |
-| `practice` | `POST /api/practice`, body `{}`, `Content-Type: application/json`, `Origin: $E2E_BASE_URL` | 201, a `roundId` |
-| `round` | `GET /api/rounds/<roundId>` | `status` `playing`, `question.position` 0 |
-| `spa` | `GET /practice/<roundId>` | 200 HTML with `<div id="root">` |
+| `run` | `POST /api/runs`, body `{"name":"smoke"}`, `Content-Type: application/json`, `Origin: $E2E_BASE_URL` | 201, a `runId` |
+| `question` | `GET /api/runs/<runId>` | `status` `playing`, `question.position` 0 |
+| `leaderboard` | `GET /api/leaderboard` | 200 with `today` and `allTime` arrays |
+| `spa` | `GET /play/<runId>` | 200 HTML with `<div id="root">` |
 | `migrations` | `docker compose exec -T postgres psql -U e2e -d whattheflag -tAc 'SELECT version, dirty FROM schema_migrations'` | `<highest number in database/migrations>\|f` |
 
 ## Inventory
@@ -51,7 +52,7 @@ Migrations apply on deploy through a one-shot service, and every image carries i
 - `docker-compose.prod.yml`, `docker-compose.yml`, `scripts/prod-init.sh`, `.github/workflows/release.yml`, `reverse-proxy/Caddyfile`, `reverse-proxy/Dockerfile`, `backend/Dockerfile` (foundation) — prod stack and images.
 - `Makefile — CLASS_developer, CLASS_production, MIGRATE_VERSION`, `.github/workflows/ci.yml — changes, upgrade-path`, `.github/dependabot.yml` (foundation) — targets, filters, pins.
 - `NOTICE`, `data/LICENSE`, `backend/internal/country/dataset/LICENSE` (country-data) — licence files the images carry.
-- `backend/internal/quiz — POST /api/practice, GET /api/rounds/{id}`, `frontend/src/features/play/practice-page.tsx` (quiz-practice) — the smoke path.
+- `backend/internal/quiz — POST /api/runs, GET /api/runs/{id}`, `frontend/src/features/play/play-page.tsx` (runs), `backend/internal/leaderboard — GET /api/leaderboard` (leaderboard) — the smoke path.
 - jotti `scripts/e2e-stack.sh`, `docker-compose.prod.yml — migrate` — patterns for the runner and the one-shot service.
 
 ## Open questions / Risks

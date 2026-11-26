@@ -38,7 +38,7 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
   Nothing reads `Accept-Language`: localised texts travel as `{"de": "…", "en": "…"}`.
 - **Server**: `log/slog` JSON to stdout on `:$APP_PORT` (default 8080). `ReadHeaderTimeout` 5 s, `ReadTimeout` 10 s, `WriteTimeout` 15 s, `IdleTimeout` 120 s.
   SIGINT or SIGTERM → `Shutdown` with 10 s, then the pool closes. `server stopped` is the last log line. `config.Load(getenv)` requires `DB_HOST`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`. `DatabaseURL()` uses port 5432, `sslmode=disable`, escaped credentials.
-- **Wiring**: `main.go` loads config, opens the pool and serves `app.New(deps)`. `app.New` builds the mux, registers each domain and wraps the middleware. Later plans add a `Deps` field and one `Register(mux)` call in `backend/internal/app/app.go`; quiz-practice adds `country.Load()` there.
+- **Wiring**: `main.go` loads config, opens the pool and serves `app.New(deps)`. `app.New` builds the mux, registers each domain and wraps the middleware. Later plans add a `Deps` field and one `Register(mux)` call in `backend/internal/app/app.go`; runs adds `country.Load()` there.
 
 | Package | Signatures |
 | --- | --- |

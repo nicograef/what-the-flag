@@ -112,8 +112,8 @@ ORDER BY ?iso2 ?capital
   - `type Catalogue struct` (unexported fields); `func Load() (*Catalogue, error)` parses the embedded file.
   - `func (c *Catalogue) Pool() []Country` (197 entries, sorted by code, a fresh outer slice).
   - Read-only rule: callers never mutate nested slices. The catalogue is then safe for concurrent reads.
-- **What quiz-practice gets.** `Pool()` yields per country: `Code`, `Region`, `FlagKey`, `Name`, `Capital`, `OtherCapitals`, `Lookalikes`. Quiz uses `country.Country` and `country.Names` directly.
-- **No wiring in `main.go`.** The quiz-practice plan calls `country.Load()` at start. This plan leaves `backend/cmd/what-the-flag/main.go` untouched.
+- **What runs gets.** `Pool()` yields per country: `Code`, `Region`, `FlagKey`, `Name`, `Capital`, `OtherCapitals`, `Lookalikes`. Quiz uses `country.Country` and `country.Names` directly.
+- **No wiring in `main.go`.** The runs plan calls `country.Load()` at start. This plan leaves `backend/cmd/what-the-flag/main.go` untouched.
 - **Licences.** Code is MIT under the root `LICENSE` the foundation plan creates. Data is ODbL-1.0.
   - `data/LICENSE`: the official ODbL-1.0 plain text from opendatacommons.org. It covers `data/overrides.json` and the generated dataset.
   - Share-alike: the importer copies `data/LICENSE` to `backend/internal/country/dataset/LICENSE`, so the licence sits beside the derived database.
