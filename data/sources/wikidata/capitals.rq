@@ -1,0 +1,10 @@
+SELECT DISTINCT ?iso2 ?capital ?capitalEn ?capitalDe WHERE {
+  ?country wdt:P297 ?iso2 ; wdt:P31/wdt:P279* wd:Q3624078 .
+  OPTIONAL { ?country wdt:P36 ?capital .
+    OPTIONAL { ?capital rdfs:label ?capEn FILTER(LANG(?capEn) = "en") }
+    OPTIONAL { ?capital rdfs:label ?capMul FILTER(LANG(?capMul) = "mul") }
+    OPTIONAL { ?capital rdfs:label ?capDe FILTER(LANG(?capDe) = "de") }
+    BIND(COALESCE(?capEn, ?capMul) AS ?capitalEn)
+    BIND(COALESCE(?capDe, ?capMul, ?capEn) AS ?capitalDe) }
+}
+ORDER BY ?iso2 ?capital
