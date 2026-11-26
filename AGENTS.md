@@ -1,0 +1,48 @@
+# Agents
+
+What The Flag is a Quizduell-like game about flags, countries and capitals for `what-the-flag.de`.
+A Go backend on Postgres serves a React SPA through a Caddy edge.
+
+- What the game does: [docs/prds/prd-rebuild.md](docs/prds/prd-rebuild.md).
+- Domain terms: [docs/UBIQUITOUS_LANGUAGE.md](docs/UBIQUITOUS_LANGUAGE.md).
+- Architecture decisions: [docs/decisions.md](docs/decisions.md).
+
+## Make targets
+
+| Target | Does |
+| --- | --- |
+| `make db` | Starts the Postgres container |
+| `make db-migrate` | Applies pending migrations to the `make db` database |
+| `make be` | Starts the backend on :8080 |
+| `make fe` | Starts the Vite dev server, which proxies `/api` to :8080 |
+| `make check` | Runs the backend and frontend gates, as CI does |
+| `make be-integration` | Runs the integration tests against the `make db` database |
+| `make help` | Lists every target, the production ones included |
+
+## Rules
+
+### Language
+
+- The UI speaks German and English. Repository files are English.
+- UI strings live only in a `messages.ts` built with `defineMessages`: a feature's, or `src/app/messages.ts`.
+- A feature maps its own error codes there. Generic codes map in `src/lib/i18n/error-messages.ts`.
+
+### Frontend
+
+- Code lives in `features/<name>/`. File names are kebab-case.
+- Components reach the server only through feature API functions over `ApiClient`.
+- Feature tests fake the server only via `FakeApi` and `renderRoute()`.
+
+### Backend
+
+- A domain lives in `internal/<domain>/{handler,service,store}.go`. Wiring lives in `internal/app/app.go`.
+- Each domain has one sqlc block and `sqlc/queries/<domain>.sql`. Generated code is regenerated, never edited.
+- Stores take `DB` (`DBTX` plus `Begin`). A method taking a `pgx.Tx` rejects nil.
+- Integration tests carry the `integration` tag, are named `*_integration_test.go` and never truncate.
+- A route lands with `internal/contract/<domain>_integration_test.go`.
+- The error envelope's `message` is English developer text.
+
+### Database
+
+- Migrations are forward-only `.up.sql` files, each wrapped in `BEGIN; … COMMIT;`.
+- Enumerations are `text` with a `CHECK`, never `ENUM`.
