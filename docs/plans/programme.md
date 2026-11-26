@@ -88,7 +88,7 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 
 | Phase | Lane | Status | Sha | Note |
 | --- | --- | --- | --- | --- |
-| foundation 1 | found | waiting | | |
+| foundation 1 | found | landed | eb85d78 | migration 000001_init |
 | foundation 2 | found | waiting | | |
 | foundation 3 | found | waiting | | |
 | foundation 4 | found | waiting | | |

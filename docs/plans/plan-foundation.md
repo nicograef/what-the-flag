@@ -131,13 +131,13 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `frontend/` from `pnpm create vite frontend --template react-ts --no-interactive`, then `packageManager`, the Package scripts block, `frontend/.prettierignore`, `pnpm run format`.
 
 ### Acceptance criteria
-- [ ] `[ "$(cd backend && go env GOVERSION)" = "go$(cd backend && go mod edit -json | jq -r .Go)" ] && [ "$(node --version | cut -d. -f1)" = "v$(cat .node-version)" ]` exits 0.
-- [ ] `test -z "$(git ls-files client server nginx-conf package.json Dockerfile Procfile .dockerignore .github/workflows/challenge-of-the-week-cronjob.yml)"` exits 0.
-- [ ] `! grep -nE 'stack: python|^[^#]*<[a-z][a-z-]+>' Makefile docker-compose.yml .devcontainer/* scripts/setup-dev-tools.sh .github/*.yml .github/workflows/*.yml backend/Dockerfile` exits 0.
-- [ ] `make help | grep -q be-integration && ! make help | grep -q UNCLASSIFIED` exits 0.
-- [ ] `test "$(docker compose config --services | sort | paste -sd' ')" = 'backend postgres'` exits 0.
-- [ ] With `make db` running: `make db-migrate && test "$(docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT version, dirty FROM schema_migrations"')" = '1|f'` exits 0.
-- [ ] `make check` passes.
+- [x] `[ "$(cd backend && go env GOVERSION)" = "go$(cd backend && go mod edit -json | jq -r .Go)" ] && [ "$(node --version | cut -d. -f1)" = "v$(cat .node-version)" ]` exits 0.
+- [x] `test -z "$(git ls-files client server nginx-conf package.json Dockerfile Procfile .dockerignore .github/workflows/challenge-of-the-week-cronjob.yml)"` exits 0.
+- [x] `! grep -nE 'stack: python|^[^#]*<[a-z][a-z-]+>' Makefile docker-compose.yml .devcontainer/* scripts/setup-dev-tools.sh .github/*.yml .github/workflows/*.yml backend/Dockerfile` exits 0.
+- [x] `make help | grep -q be-integration && ! make help | grep -q UNCLASSIFIED` exits 0.
+- [x] `test "$(docker compose config --services | sort | paste -sd' ')" = 'backend postgres'` exits 0.
+- [x] With `make db` running: `make db-migrate && test "$(docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT version, dirty FROM schema_migrations"')" = '1|f'` exits 0.
+- [x] `make check` passes.
 
 ## Phase 2: Backend skeleton, database health and contract harness
 
