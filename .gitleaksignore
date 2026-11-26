@@ -1,0 +1,6 @@
+# Old Express app (deleted in the rebuild): its example JWT secret, public since 2019 and read by no current code.
+d8fc52e24c15d2cfcffa13b67268e0ae4cc7f509:.env.example:generic-api-key:3
+f4d9cb32878a367e924d67bf152968f87c167615:.env.example:generic-api-key:3
+6c8dfdf9a1ec691979099d45e73cf4e11197ac4d:config/default.example.json:generic-api-key:3
+# False positive: a Go function name in a plan.
+1c1b18414a7a22b54832dbfd477a52ff8f504c6a:docs/plans/plan-accounts.md:generic-api-key:17
