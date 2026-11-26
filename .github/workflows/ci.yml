@@ -69,6 +69,8 @@ jobs:
           filters: |
             backend:
               - 'backend/**'
+              - 'data/**'  # the importer's inputs
+              - 'frontend/public/flags/**'  # the importer's output
               - 'scripts/setup-dev-tools.sh'  # pins the lint and tool versions
               - '.github/workflows/ci.yml'
             frontend:
@@ -123,6 +125,9 @@ jobs:
             echo "$DRIFT"
             exit 1
           fi
+
+      - name: Check generated dataset is current
+        run: go run ./cmd/importdata -check
 
       - name: Check format
         run: |

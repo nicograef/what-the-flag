@@ -51,7 +51,7 @@ check:         ## Run all checks
 .PHONY: be-check
 check: be-check
 
-be-check:      ## Backend: Go gate (modules, generated code, format, vet, lint, build, tests, vulns)
+be-check: data-check ## Backend: Go gate (modules, generated code, format, vet, lint, build, tests, vulns)
 	cd $(BACKEND_DIR) && go mod verify
 	cd $(BACKEND_DIR) && go mod tidy -diff
 	cd $(BACKEND_DIR) && go tool sqlc diff
