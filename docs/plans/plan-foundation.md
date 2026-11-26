@@ -194,11 +194,11 @@ Inputs to `<handbook>/guides/new-project.md` (`<handbook>` = the handbook clone,
 - `frontend/index.html`: `lang="de"`, title "What The Flag", `frontend/public/favicon.svg`.
 
 ### Acceptance criteria
-- [ ] `cd frontend && ls src/lib/api.test.ts src/lib/query-client.test.ts src/lib/i18n/locale.test.ts src/features/landing/landing-page.test.tsx && pnpm exec vitest run src/lib src/features/landing` exits 0.
-- [ ] `! grep -rl 'fetch(' frontend/src --exclude-dir=test --exclude='*.test.*' | grep -v '^frontend/src/lib/api.ts$'` exits 0.
-- [ ] `! grep -rniE 'accept-language' backend frontend/src` exits 0.
-- [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running: `test "$(curl -fsS localhost:5173/api/health)" = '{"status":"ok"}'` exits 0.
-- [ ] `make check` passes.
+- [x] `cd frontend && ls src/lib/api.test.ts src/lib/query-client.test.ts src/lib/i18n/locale.test.ts src/features/landing/landing-page.test.tsx && pnpm exec vitest run src/lib src/features/landing` exits 0.
+- [x] `! grep -rl 'fetch(' frontend/src --exclude-dir=test --exclude='*.test.*' | grep -v '^frontend/src/lib/api.ts$'` exits 0.
+- [x] `! grep -rniE 'accept-language' backend frontend/src` exits 0.
+- [x] With `make db`, `make db-migrate`, `make be` and `make fe` running: `test "$(curl -fsS localhost:5173/api/health)" = '{"status":"ok"}'` exits 0.
+- [x] `make check` passes.
 
 ## Phase 4: Production files, agent files and decisions
 
