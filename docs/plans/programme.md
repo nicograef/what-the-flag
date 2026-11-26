@@ -66,7 +66,7 @@ Every session that runs this programme checks these before wave 1 and after a co
 
 | Migration | Plan and phase |
 | --- | --- |
-| `000001_init` | foundation 2 |
+| `000001_init` | foundation 1 |
 | `000002_quiz` | quiz-practice 1 |
 | `000003_accounts` (with the `rounds.user_id` foreign key) | accounts 1 |
 | `000004_ledger` | duels 1 |
