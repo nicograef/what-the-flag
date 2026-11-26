@@ -5,20 +5,25 @@
 | Country | One entry of the catalogue, identified by its ISO 3166-1 alpha-2 code. | nation, state |
 | Catalogue | All countries loaded from the generated dataset, looked up by code. | country list, database |
 | Quiz pool | The 197 countries that questions are drawn from; the generated dataset holds exactly these. | sovereign list |
+| Attribute | One kind of fact about a country with labels in both languages, e.g. capital or currency. | property, field |
 | Primary capital | The one capital a question about a country uses. | main city |
 | Flag key | The opaque file name of a flag, which hides the country code. | flag id, flag code |
 | Look-alike pair | Two flags a player cannot tell apart; they never share a flag question. | similar flags, twin flags |
-| Mode | The kind of a question: what is shown and what is asked, e.g. flag to capital. | quiz mode, type |
-| Question | A target country, a mode, four options and the correct option. | task, challenge |
+| Question type | A prompt attribute paired with an answer attribute, e.g. flag to capital. | mode, quiz mode |
+| Difficulty tier | How hard a question type is; a quiz moves from easy tiers to hard ones. | level |
+| Fame tier | How well known a country is, derived from its area and region. | popularity |
+| Question | A target country, a question type, four options and the correct option. | task, challenge |
 | Option | One of the four selectable answers of a question. | choice, answer |
 | Target | The country a question asks about. | solution |
 | Distractor | A wrong option. | decoy |
-| Run | One visitor's pass of questions, from the start until the first wrong or late answer. | game, round, session, challenge, attempt |
-| Player name | The free text a visitor enters to start a run; the leaderboard shows it. | username, account, nickname |
+| Quiz | A stored sequence of questions with a public id; every run on it gets the same questions. | game, set, challenge |
+| Run | One visitor's pass through a quiz, until the first wrong or late answer; its id is private. | game, round, session, attempt |
+| Creator | The run that created its quiz; only creators count on the global leaderboard. | owner, host |
+| Challenge link | The public link `/q/<quizId>` that lets others play the same quiz. | invite, share URL |
+| Player name | The free text a visitor enters to start a run; the leaderboards show it. | username, account, nickname |
 | Answer | The option a visitor picked for one question of a run, or a timeout. | result, guess |
 | Score | The number of correct answers of a run. | points, high score |
 | End reason | Why a run ended: `wrong`, `timeout` or `completed`. | status, outcome |
-| Sweep | The server job that ends runs with an expired question and deletes old runs. | cron, cleanup job |
-| Leaderboard | The two rankings of finished runs: today and all time, top 100 each. | ranking, high-score list |
-| Entry | One finished run on the leaderboard: player name, score and end time. | row, record, high score |
-| Today | The current calendar day in Europe/Berlin, which bounds today's list. | daily, last 24 hours |
+| Global leaderboard | The top 100 creator runs of all time. | ranking, high-score list |
+| Quiz leaderboard | The top 100 runs of one quiz. | challenge ranking |
+| Hidden run | A run the owner removed from every leaderboard. | banned, deleted |
