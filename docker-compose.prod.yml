@@ -1,0 +1,113 @@
+# Production stack with Caddy: automatic Let's Encrypt TLS.
+# The app runs pinned registry images built by CI; the server builds nothing.
+
+name: what-the-flag
+
+# Cap container logs — the json-file driver grows unbounded otherwise and can
+# fill the server disk over time.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "5m"
+    max-file: "3"
+
+# Every service gets a memory and CPU limit, so one runaway container cannot starve
+# the database or the proxy. Size them to the host.
+services:
+  # ── Database ──
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    logging: *default-logging
+    # Docker's 64 MB /dev/shm default is too small for parallel queries.
+    shm_size: 128mb
+    # Time for a clean shutdown checkpoint before Docker sends SIGKILL.
+    stop_grace_period: 1m
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    networks:
+      - db-network
+    # TCP, not the socket: the image's init server listens on the socket only and
+    # restarts, so a socket probe reports ready before the real server is up.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "2.0"
+
+  # ── Backend ──
+  # The release tag is the deploy version: bump it in git, never float on `latest`.
+  # scripts/prod-init.sh reads it here and refuses a downgrade.
+  backend:
+    image: ghcr.io/nicograef/what-the-flag-backend:v0.1.0
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      DB_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - app-network
+      - db-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # The image's HEALTHCHECK probes /api/health with a tool the image ships; `up --wait` polls it
+    # after every deploy. Dockerfile: backend/Dockerfile.
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.5"
+    # No exposed ports — reachable only via reverse-proxy
+
+  # ── Reverse Proxy (TLS termination, certificate issuance and renewal, the SPA) ──
+  # The edge image bakes in reverse-proxy/Caddyfile and the SPA build (reverse-proxy/Dockerfile).
+  # Its HEALTHCHECK accepts any 2xx or 3xx on port 80; the HTTPS redirect is a 308.
+  reverse-proxy:
+    image: ghcr.io/nicograef/what-the-flag-edge:v0.1.0 # same tag as backend
+    restart: unless-stopped
+    logging: *default-logging
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    volumes:
+      # Holds the certificates and the ACME account; losing it re-issues and risks rate limits.
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - app-network
+    # Gated on a healthy upstream, so a fresh start never serves a 502 before the app is ready.
+    depends_on:
+      backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+
+networks:
+  app-network:
+    driver: bridge
+    # Dual-stack, so IPv6 clients reach Caddy directly, not through docker-proxy, which hides their address.
+    enable_ipv6: true
+  db-network:
+    driver: bridge
+    internal: true
+
+volumes:
+  postgres-data:
+  caddy-data:
+  caddy-config:
