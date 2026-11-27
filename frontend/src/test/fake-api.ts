@@ -50,7 +50,6 @@ export class FakeApi {
 
     const body =
       typeof reply.body === "function" ? reply.body(call) : reply.body;
-    if (reply.status === 204) return new Response(null, { status: 204 });
     return new Response(JSON.stringify(body), {
       status: reply.status,
       headers: { "Content-Type": "application/json" },

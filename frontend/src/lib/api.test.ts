@@ -32,9 +32,9 @@ describe("createApiClient", () => {
 
   it("turns an error envelope into an ApiError with its field", async () => {
     const { api, client } = setup();
-    api.fail("PATCH /api/x", 400, "invalid_json", "name");
+    api.fail("POST /api/x", 400, "invalid_json", "name");
 
-    await expect(client.patch("/api/x", okSchema, {})).rejects.toMatchObject({
+    await expect(client.post("/api/x", okSchema, {})).rejects.toMatchObject({
       status: 400,
       code: "invalid_json",
       field: "name",
@@ -62,14 +62,5 @@ describe("createApiClient", () => {
 
     expect(err).toBeInstanceOf(ApiError);
     expect(err).toMatchObject({ status: 0, code: "network" });
-  });
-
-  it("parses a 204 as undefined", async () => {
-    const { api, client } = setup();
-    api.respond("DELETE /api/x", null, 204);
-
-    await expect(
-      client.delete("/api/x", z.undefined()),
-    ).resolves.toBeUndefined();
   });
 });

@@ -9,8 +9,6 @@ import { z } from "zod";
 export interface ApiClient {
   get<T>(path: string, schema: z.ZodType<T>): Promise<T>;
   post: <T>(path: string, schema: z.ZodType<T>, body?: unknown) => Promise<T>;
-  patch: <T>(path: string, schema: z.ZodType<T>, body?: unknown) => Promise<T>;
-  delete: <T>(path: string, schema: z.ZodType<T>, body?: unknown) => Promise<T>;
 }
 
 /** `code` is the server's envelope code, or `network` / `invalid_response` from the client. */
@@ -41,7 +39,7 @@ const envelopeSchema = z.object({
   }),
 });
 
-type Method = "GET" | "POST" | "PATCH" | "DELETE";
+type Method = "GET" | "POST";
 
 export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
   // Called unbound: the browser's fetch throws "Illegal invocation" when `this` is `deps`.
@@ -67,19 +65,15 @@ export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
     }
 
     let data: unknown;
-    if (res.status !== 204) {
-      try {
-        data = await res.json();
-      } catch (cause) {
-        throw new ApiError(
-          res.status,
-          "invalid_response",
-          `${method} ${path}: body is no JSON`,
-          {
-            cause,
-          },
-        );
-      }
+    try {
+      data = await res.json();
+    } catch (cause) {
+      throw new ApiError(
+        res.status,
+        "invalid_response",
+        `${method} ${path}: body is no JSON`,
+        { cause },
+      );
     }
 
     if (!res.ok) {
@@ -112,8 +106,6 @@ export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
   return {
     get: (path, schema) => request("GET", path, schema),
     post: (path, schema, body) => request("POST", path, schema, body),
-    patch: (path, schema, body) => request("PATCH", path, schema, body),
-    delete: (path, schema, body) => request("DELETE", path, schema, body),
   };
 }
 
