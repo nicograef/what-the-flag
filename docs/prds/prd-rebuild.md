@@ -81,8 +81,8 @@ Stored questions keep a shared quiz identical forever and show which questions p
 
 | Need | Source | Licence |
 | --- | --- | --- |
-| Codes, English names, regions, languages, currencies, area | mledoze/countries, pinned commit | ODbL-1.0 |
-| German country, language and currency names | Unicode CLDR `de`, pinned release | Unicode-3.0 |
+| Country, language and currency codes, English country names, regions, area | mledoze/countries, pinned commit | ODbL-1.0 |
+| German country names; German and English language and currency names | Unicode CLDR `de` and `en`, pinned release | Unicode-3.0 |
 | Capital names in German and English | Wikidata SPARQL export of capitals only, checked in | CC0 |
 | Flags as 4:3 SVG | lipis/flag-icons v7.6.0 | MIT |
 
@@ -109,61 +109,25 @@ Stored questions keep a shared quiz identical forever and show which questions p
 - An application service runs each use case in one transaction.
 - The leaderboards are read queries over runs. They have no tables of their own.
 
-### Question rules
+### Game rules
 
-- A question pairs a prompt attribute with an answer attribute of the target country. It has four options.
-- A question is valid only when exactly one option is true for the target.
-- The first release has six attributes: name, flag, capital, continent, language and currency.
-- Name, flag and capital identify a country, so they can prompt for any attribute and answer each other.
-- Continent, language and currency are only answers: "Which language is spoken in X?".
-- Multi-valued answers pick distractors that are false for the target, such as languages not spoken there.
-- Distractor countries come from the target's region where it has enough countries, else from the whole pool.
-- A curated list names flags a player cannot tell apart, such as Nicaragua and El Salvador. Such a pair never shares a flag question.
-- No two options of one question display the same text.
-- Every question type has a difficulty tier. Every country has a fame tier, derived from its area and region.
-- A quiz starts with easy types and well-known countries and gets harder with each position.
-- No country repeats as the target within a quiz.
+[game-rules.md](../game-rules.md) is the single source for the rules of questions, runs, quizzes and leaderboards.
+The PRD adds what those rules leave to the implementation:
+
+- A quiz has a public, unguessable id. A run has a private, unguessable id, which is its only credential.
+- An answer names the question's position and an option. The response reveals the correct option.
+- A run whose open question has expired counts as ended everywhere, even before it is written. The next read or answer writes the timeout.
+- Quizzes and runs are kept; nothing is deleted automatically.
+- No response carries a run id other than the requester's own.
 - The API sends every label in both languages as `{"de": "…", "en": "…"}`. The client shows one.
-
-### Quiz and run rules
-
-- A quiz is a sequence of questions with a public, unguessable id. Its questions are stored when first served.
-- A run is one visitor's pass through a quiz, with a private, unguessable id. That id is its only credential.
-- Starting from the home page creates a fresh quiz and its first run. That run is the quiz's creator.
-- Starting from a challenge link creates a run on the existing quiz.
-- A challenge link opens for play once the creator's run has ended.
-- A run on a quiz reads questions already stored and generates the next new position when it gets there.
-- A name has 1 to 20 characters after trimming. Inner spaces collapse to one.
-- A name holds letters, digits, spaces, `_`, `-` and `.`. Names need not be unique.
 - The name field says that the name appears publicly on the leaderboards.
 - The browser remembers the last name to prefill the form, and the personal best to compare with.
-- The server reveals one question at a time. The clock starts when it serves the question.
-- A question allows 15 seconds plus 2 seconds of grace.
-- An answer names the question's position and an option. The response reveals the correct option.
-- An answer within 300 ms of serving counts as wrong: no person reads that fast.
-- A correct answer adds one point. The next read serves the next question.
-- A wrong, late or missing answer ends the run. Answering every question the pool allows ends it as completed.
-- A served question stays served across reloads; its clock keeps running.
-- A run whose open question has expired counts as ended everywhere, even before it is written. The next read or answer writes the timeout.
-- A finished run is immutable. Quizzes and runs are kept; nothing is deleted automatically.
-
-### Leaderboards
-
-- The global list ranks runs that created their quiz. Runs from a challenge link count only on their quiz's list.
-- Each quiz has its own list of all its runs.
-- Both lists show the top 100, by score descending, then by earlier end.
-- Equal scores share a rank: 1, 1, 3.
-- A finished run shows its rank on its quiz's list, and on the global list when it counts there.
-- A name may appear many times, once per run, like an arcade high-score table.
-- A hidden run appears on no list. Only the owner hides runs.
-- No response carries a run id other than the requester's own.
 
 ### Sharing
 
 - The result offers a share button: the system share sheet on phones, else a copy to the clipboard.
 - The text names the score and the quiz link, nothing that spoils a question.
 - The challenge page `/q/<quizId>` shows the creator's name and score, or that the creator still plays. Below it are the quiz's list and the name form.
-- A challenge link opens for play once the creator's run has ended.
 - `index.html` carries fixed Open Graph tags and a static image, so a shared link shows a preview.
 
 ### Abuse protection
@@ -212,7 +176,7 @@ No route negotiates language. There is no authentication. State-changing request
 - The health endpoint, port, environment variable names and image names follow the handbook templates.
 - Migrations are forward-only. A deploy applies them through a one-shot migrate service before the backend starts.
 - The domain stays `what-the-flag.de`. A `vX.Y.Z` tag builds the release images.
-- `v0.1.0` is the first release and goes to a silent beta with friends. A public launch follows when `make stats` shows that people replay and share.
+- `v0.1.0` is the first release and goes to a silent beta with friends. A public launch follows when `make prod-stats` shows that people replay and share.
 
 ## Testing Decisions
 
