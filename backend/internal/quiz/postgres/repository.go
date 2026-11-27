@@ -49,11 +49,6 @@ func (r *Repository) CreateRun(ctx context.Context, run quiz.Run) error {
 	})
 }
 
-// QuizExists reports whether the quiz is stored.
-func (r *Repository) QuizExists(ctx context.Context, id quiz.QuizID) (bool, error) {
-	return db.New(r.db).QuizExists(ctx, uuid.UUID(id))
-}
-
 // InRun calls fn in one transaction with the run row locked FOR UPDATE; fn's error rolls it back.
 func (r *Repository) InRun(ctx context.Context, id quiz.RunID, fn func(quiz.UnitOfWork) error) (err error) {
 	tx, err := r.db.Begin(ctx)

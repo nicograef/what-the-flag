@@ -35,7 +35,6 @@ type Clock interface {
 type Repository interface {
 	CreateQuiz(ctx context.Context, now time.Time) (QuizID, error)
 	CreateRun(ctx context.Context, r Run) error
-	QuizExists(ctx context.Context, id QuizID) (bool, error)
 	// InRun calls fn in one transaction with the run locked; an unknown run is ErrRunNotFound.
 	InRun(ctx context.Context, id RunID, fn func(UnitOfWork) error) error
 }

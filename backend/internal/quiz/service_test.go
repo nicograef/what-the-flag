@@ -34,6 +34,15 @@ func TestService(t *testing.T) {
 		}
 		return st
 	}
+	// endRun serves the run's next question and answers it wrong.
+	endRun := func(t *testing.T, s *Service, mem *memory, id RunID) {
+		t.Helper()
+		st := state(t, s, id)
+		wrong := (mem.questions[st.QuizID][st.Question.Position].Correct + 1) % 4
+		if _, err := s.Answer(ctx, id, st.Question.Position, &wrong); err != nil {
+			t.Fatalf("Answer: %v", err)
+		}
+	}
 
 	t.Run("Start without a quiz creates one with a creator run", func(t *testing.T) {
 		s, mem, _ := setup()
@@ -49,13 +58,34 @@ func TestService(t *testing.T) {
 
 	t.Run("Start on a quiz creates a non-creator run", func(t *testing.T) {
 		s, mem, _ := setup()
-		_, quizID, err := s.Start(ctx, "Nico", nil)
+		creator, quizID, err := s.Start(ctx, "Nico", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
+		endRun(t, s, mem, creator)
 		runID, got, err := s.Start(ctx, "Ana", &quizID)
 		if err != nil || got != quizID || mem.runs[runID].Creator || len(mem.quizzes) != 1 {
 			t.Errorf("Start = %v, %v; creator %t, %d quizzes", got, err, mem.runs[runID].Creator, len(mem.quizzes))
+		}
+	})
+
+	t.Run("Start on a quiz waits for the creator run to end", func(t *testing.T) {
+		s, mem, clock := setup()
+		creator, quizID, err := s.Start(ctx, "Nico", nil)
+		if err != nil {
+			t.Fatalf("Start: %v", err)
+		}
+		state(t, s, creator)
+		for _, at := range []time.Duration{0, Limit + Grace} {
+			clock.now = t0.Add(at)
+			if _, _, err := s.Start(ctx, "Ana", &quizID); !errors.Is(err, ErrQuizInProgress) || len(mem.runs) != 1 {
+				t.Fatalf("Start at +%v = %v with %d runs, want ErrQuizInProgress and only the creator", at, err, len(mem.runs))
+			}
+		}
+		// Past Limit plus Grace the open answer is late, so the creator run has ended.
+		clock.now = t0.Add(Limit + Grace + time.Microsecond)
+		if _, _, err := s.Start(ctx, "Ana", &quizID); err != nil {
+			t.Errorf("Start after the creator's deadline = %v, want a run", err)
 		}
 	})
 
@@ -106,6 +136,7 @@ func TestService(t *testing.T) {
 				t.Fatalf("Answer %d: %v", position, err)
 			}
 		}
+		endRun(t, s, mem, first)
 		second, _, err := s.Start(ctx, "Ana", &quizID)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
@@ -120,8 +151,8 @@ func TestService(t *testing.T) {
 				t.Fatalf("Answer %d: %v", position, err)
 			}
 		}
-		if len(mem.questions[quizID]) != 2 {
-			t.Errorf("quiz holds %d questions, want 2", len(mem.questions[quizID]))
+		if len(mem.questions[quizID]) != 3 {
+			t.Errorf("quiz holds %d questions, want the creator's 3", len(mem.questions[quizID]))
 		}
 	})
 }

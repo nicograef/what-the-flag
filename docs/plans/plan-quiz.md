@@ -89,16 +89,16 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 | Port | Methods |
 | --- | --- |
-| `Repository` | `CreateQuiz(ctx, now) (QuizID, error)`; `CreateRun(ctx, Run) error`; `QuizExists(ctx, QuizID) (bool, error)`; `InRun(ctx, RunID, func(UnitOfWork) error) error` |
+| `Repository` | `CreateQuiz(ctx, now) (QuizID, error)`; `CreateRun(ctx, Run) error`; `InRun(ctx, RunID, func(UnitOfWork) error) error` |
 | `UnitOfWork` (one transaction, run row locked) | `Run() *Run`; `Question(position) (Question, bool, error)`; `AddQuestion(position, Question) (Question, error)`; `Targets() (map[string]bool, error)`; `SaveRun(*Run) error` |
 | `Leaderboards` | `Global(ctx, now, own *RunID) ([]Entry, error)`; `Quiz(ctx, QuizID, now, own *RunID) ([]Entry, error)`; `Creator(ctx, QuizID, now) (CreatorView, error)`; `Ranks(ctx, RunID, now) (Ranks, error)` |
 | `Clock`, `Rand` | `Now() time.Time`; see Generation |
 
 - `AddQuestion` stores the question unless another run stored that position first. It returns the stored one either way, so two runs on one quiz always agree.
 - `Service` methods: `Start(ctx, name string, quiz *QuizID) (RunID, QuizID, error)`, `State(ctx, RunID) (RunState, error)`, `Answer(ctx, RunID, position int, option *int) (Outcome, error)`, `Challenge(ctx, QuizID, own *RunID)`, `Global(ctx, own *RunID)`.
-- `Start` without a quiz creates one and a creator run. With a quiz it creates a non-creator run; an unknown quiz is `ErrQuizNotFound`.
+- `Start` without a quiz creates one and a creator run. With a quiz it creates a non-creator run; an unknown quiz is `ErrQuizNotFound`, a playing creator run `ErrQuizInProgress`.
 - `State` runs `InRun`: expire, then serve the next position, using the stored question or generating and adding one.
-- Errors: `ErrInvalidName`, `ErrQuizNotFound`, `ErrRunNotFound`, `ErrNotCurrentQuestion`, `ErrInvalidOption`, `ErrQuizExhausted`, `ErrPoolTooSmall`.
+- Errors: `ErrInvalidName`, `ErrQuizNotFound`, `ErrQuizInProgress`, `ErrRunNotFound`, `ErrNotCurrentQuestion`, `ErrInvalidOption`, `ErrQuizExhausted`, `ErrPoolTooSmall`.
 - `backend/internal/quiz/memory_test.go`: an in-memory `Repository` and `Leaderboards` for the core's tests; no lock, no rollback.
 
 ### Schema (`database/migrations/000002_quiz.up.sql`, wrapped in `BEGIN; … COMMIT;`)
@@ -156,6 +156,7 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 | --- | --- | --- | --- |
 | `ErrInvalidName` | 400 | `invalid_name` | `name` |
 | `ErrQuizNotFound`, also an unparsable `{id}` or `quizId` | 404 | `quiz_not_found` | |
+| `ErrQuizInProgress`: a start on a quiz whose creator run has not ended | 409 | `quiz_in_progress` | |
 | `ErrRunNotFound`, also an unparsable `{id}` | 404 | `run_not_found` | |
 | `ErrNotCurrentQuestion` | 409 | `not_current_question` | |
 | `ErrInvalidOption` | 400 | `invalid_option` | `option` |

@@ -1,9 +1,6 @@
 -- name: CreateQuiz :one
 INSERT INTO quizzes (created_at) VALUES (@created_at) RETURNING id;
 
--- name: QuizExists :one
-SELECT EXISTS (SELECT 1 FROM quizzes WHERE id = @id);
-
 -- name: CreateRun :exec
 INSERT INTO runs (id, quiz_id, name, creator, started_at)
 VALUES (@id, @quiz_id, @name, @creator, @started_at);

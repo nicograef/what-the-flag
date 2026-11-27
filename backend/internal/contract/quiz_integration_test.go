@@ -296,6 +296,7 @@ func TestRunOnQuiz(t *testing.T) {
 	first, second := newClient(t, srv), newClient(t, srv)
 	a := startRun(t, first, map[string]any{"name": "creator"})
 	qa := readState(t, first, a.RunID).Question
+	answerWrong(t, first, a.RunID, 0)
 
 	b := startRun(t, second, map[string]any{"name": "challenger", "quizId": a.QuizID})
 	if b.QuizID != a.QuizID || b.RunID == a.RunID {
@@ -323,6 +324,8 @@ func TestChallenge(t *testing.T) {
 	if view.ID != a.QuizID || view.Creator == nil || *view.Creator != (creatorView{Name: "creator"}) || len(view.Top) != 0 {
 		t.Fatalf("view while the creator plays = %+v", view)
 	}
+	expectError(t, second.post("/api/runs", map[string]any{"name": "scout", "quizId": a.QuizID}),
+		http.StatusConflict, "quiz_in_progress")
 
 	answerCorrectly(t, first, a.RunID, 0)
 	readState(t, first, a.RunID)

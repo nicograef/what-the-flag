@@ -131,6 +131,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 - A run is one visitor's pass through a quiz, with a private, unguessable id. That id is its only credential.
 - Starting from the home page creates a fresh quiz and its first run. That run is the quiz's creator.
 - Starting from a challenge link creates a run on the existing quiz.
+- A challenge link opens for play once the creator's run has ended.
 - A run on a quiz reads questions already stored and generates the next new position when it gets there.
 - A name has 1 to 20 characters after trimming. Inner spaces collapse to one.
 - A name holds letters, digits, spaces, `_`, `-` and `.`. Names need not be unique.
@@ -162,6 +163,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 - The result offers a share button: the system share sheet on phones, else a copy to the clipboard.
 - The text names the score and the quiz link, nothing that spoils a question.
 - The challenge page `/q/<quizId>` shows the creator's name and score, or that the creator still plays. Below it are the quiz's list and the name form.
+- A challenge link opens for play once the creator's run has ended.
 - `index.html` carries fixed Open Graph tags and a static image, so a shared link shows a preview.
 
 ### Abuse protection

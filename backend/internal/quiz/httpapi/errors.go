@@ -18,6 +18,7 @@ var errorTable = []httpx.ErrorCode{
 	{Err: quiz.ErrInvalidName, Status: http.StatusBadRequest, Code: "invalid_name", Field: "name"},
 	{Err: quiz.ErrQuizNotFound, Status: http.StatusNotFound, Code: "quiz_not_found"},
 	{Err: errUnparsableQuiz, Status: http.StatusNotFound, Code: "quiz_not_found"},
+	{Err: quiz.ErrQuizInProgress, Status: http.StatusConflict, Code: "quiz_in_progress"},
 	{Err: quiz.ErrRunNotFound, Status: http.StatusNotFound, Code: "run_not_found"},
 	{Err: errUnparsableRun, Status: http.StatusNotFound, Code: "run_not_found"},
 	{Err: quiz.ErrNotCurrentQuestion, Status: http.StatusConflict, Code: "not_current_question"},

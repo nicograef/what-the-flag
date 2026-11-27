@@ -42,11 +42,6 @@ func (m *memory) CreateRun(_ context.Context, r Run) error {
 	return nil
 }
 
-func (m *memory) QuizExists(_ context.Context, id QuizID) (bool, error) {
-	_, ok := m.quizzes[id]
-	return ok, nil
-}
-
 func (m *memory) InRun(_ context.Context, id RunID, fn func(UnitOfWork) error) error {
 	r, ok := m.runs[id]
 	if !ok {

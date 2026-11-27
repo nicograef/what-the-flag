@@ -70,7 +70,8 @@ func (s *Service) now() time.Time {
 	return s.clock.Now().Truncate(time.Microsecond)
 }
 
-// Start creates a run named name. Without a quiz it creates a fresh quiz with this run as its creator.
+// Start creates a run named name. Without a quiz it creates a fresh quiz with this run as its creator;
+// on a quiz it waits for the creator run to end.
 func (s *Service) Start(ctx context.Context, name string, quiz *QuizID) (RunID, QuizID, error) {
 	name, err := NormalizeName(name)
 	if err != nil {
@@ -84,12 +85,17 @@ func (s *Service) Start(ctx context.Context, name string, quiz *QuizID) (RunID, 
 		}
 		r.Creator = true
 	} else {
-		ok, err := s.repo.QuizExists(ctx, *quiz)
-		if err != nil {
-			return RunID{}, QuizID{}, fmt.Errorf("find quiz: %w", err)
+		// A challenge run would generate and reveal positions the creator has not reached yet.
+		// A hidden creator run ranks nowhere, so its quiz stays playable.
+		creator, err := s.boards.Creator(ctx, *quiz, now)
+		if errors.Is(err, ErrQuizNotFound) {
+			return RunID{}, QuizID{}, err
 		}
-		if !ok {
-			return RunID{}, QuizID{}, ErrQuizNotFound
+		if err != nil {
+			return RunID{}, QuizID{}, fmt.Errorf("find creator run: %w", err)
+		}
+		if creator != nil && !creator.Ended {
+			return RunID{}, QuizID{}, ErrQuizInProgress
 		}
 		r.QuizID = *quiz
 	}

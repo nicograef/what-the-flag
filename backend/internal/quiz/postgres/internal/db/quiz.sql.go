@@ -281,17 +281,6 @@ func (q *Queries) LockRun(ctx context.Context, id uuid.UUID) (Run, error) {
 	return i, err
 }
 
-const quizExists = `-- name: QuizExists :one
-SELECT EXISTS (SELECT 1 FROM quizzes WHERE id = $1)
-`
-
-func (q *Queries) QuizExists(ctx context.Context, id uuid.UUID) (bool, error) {
-	row := q.db.QueryRow(ctx, quizExists, id)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
 const quizTop = `-- name: QuizTop :many
 WITH ended AS (
   SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
