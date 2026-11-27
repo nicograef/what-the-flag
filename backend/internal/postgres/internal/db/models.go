@@ -4,7 +4,48 @@
 
 package db
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type AppMetum struct {
 	Key   string
 	Value string
+}
+
+type Quiz struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+}
+
+type QuizQuestion struct {
+	QuizID       uuid.UUID
+	Position     int16
+	Type         string
+	Target       string
+	Options      []string
+	CorrectIndex int16
+}
+
+type Run struct {
+	ID         uuid.UUID
+	QuizID     uuid.UUID
+	Name       string
+	Creator    bool
+	StartedAt  time.Time
+	Score      int32
+	FinishedAt *time.Time
+	EndReason  *string
+	Hidden     bool
+}
+
+type RunAnswer struct {
+	RunID       uuid.UUID
+	Position    int16
+	ServedAt    time.Time
+	AnsweredAt  *time.Time
+	OptionIndex *int16
+	Correct     *bool
 }

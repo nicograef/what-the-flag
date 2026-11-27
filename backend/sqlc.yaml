@@ -31,3 +31,7 @@ sql:
               import: time
               type: Time
               pointer: true
+  - <<: *block
+    name: quiz
+    queries: sqlc/queries/quiz.sql
+    gen: {go: {<<: *go, out: internal/quiz/postgres/internal/db}}
