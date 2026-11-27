@@ -32,15 +32,30 @@ func NewRepository(d DB) *Repository {
 	return &Repository{db: d}
 }
 
-// CreateQuiz stores a fresh quiz created at now.
-func (r *Repository) CreateQuiz(ctx context.Context, now time.Time) (quiz.QuizID, error) {
-	id, err := db.New(r.db).CreateQuiz(ctx, now)
-	return quiz.QuizID(id), err
+// CreateQuizWithRun stores a fresh quiz created at run.StartedAt and run as its creator run, in one transaction.
+func (r *Repository) CreateQuizWithRun(ctx context.Context, run quiz.Run) (quiz.QuizID, error) {
+	err := r.inTx(ctx, func(q *db.Queries) error {
+		id, err := q.CreateQuiz(ctx, run.StartedAt)
+		if err != nil {
+			return fmt.Errorf("create quiz: %w", err)
+		}
+		run.QuizID = quiz.QuizID(id)
+		return createRun(ctx, q, run)
+	})
+	if err != nil {
+		return quiz.QuizID{}, err
+	}
+	return run.QuizID, nil
 }
 
-// CreateRun stores a fresh run; a fresh run has no score, answers or end.
+// CreateRun stores a fresh run on an existing quiz.
 func (r *Repository) CreateRun(ctx context.Context, run quiz.Run) error {
-	return db.New(r.db).CreateRun(ctx, db.CreateRunParams{
+	return createRun(ctx, db.New(r.db), run)
+}
+
+// createRun stores a fresh run; a fresh run has no score, answers or end.
+func createRun(ctx context.Context, q *db.Queries, run quiz.Run) error {
+	return q.CreateRun(ctx, db.CreateRunParams{
 		ID:        uuid.UUID(run.ID),
 		QuizID:    uuid.UUID(run.QuizID),
 		Name:      run.Name,
@@ -50,7 +65,22 @@ func (r *Repository) CreateRun(ctx context.Context, run quiz.Run) error {
 }
 
 // InRun calls fn in one transaction with the run row locked FOR UPDATE; fn's error rolls it back.
-func (r *Repository) InRun(ctx context.Context, id quiz.RunID, fn func(quiz.UnitOfWork) error) (err error) {
+func (r *Repository) InRun(ctx context.Context, id quiz.RunID, fn func(quiz.UnitOfWork) error) error {
+	return r.inTx(ctx, func(q *db.Queries) error {
+		run, err := loadRun(ctx, q, id)
+		if err != nil {
+			return err
+		}
+		u := &unit{ctx: ctx, q: q, run: run, saved: map[int]quiz.Answer{}}
+		for _, a := range run.Answers {
+			u.saved[a.Position] = a
+		}
+		return fn(u)
+	})
+}
+
+// inTx calls fn in one transaction, which fn's error rolls back.
+func (r *Repository) inTx(ctx context.Context, fn func(*db.Queries) error) (err error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("begin: %w", err)
@@ -61,16 +91,7 @@ func (r *Repository) InRun(ctx context.Context, id quiz.RunID, fn func(quiz.Unit
 			_ = tx.Rollback(ctx)
 		}
 	}()
-	q := db.New(tx)
-	run, err := loadRun(ctx, q, id)
-	if err != nil {
-		return err
-	}
-	u := &unit{ctx: ctx, q: q, run: run, saved: map[int]quiz.Answer{}}
-	for _, a := range run.Answers {
-		u.saved[a.Position] = a
-	}
-	if err := fn(u); err != nil {
+	if err := fn(db.New(tx)); err != nil {
 		return err
 	}
 	if err := tx.Commit(ctx); err != nil {

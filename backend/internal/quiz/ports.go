@@ -33,7 +33,8 @@ type Clock interface {
 
 // Repository stores quizzes, their questions and runs.
 type Repository interface {
-	CreateQuiz(ctx context.Context, now time.Time) (QuizID, error)
+	// CreateQuizWithRun stores a fresh quiz created at r.StartedAt and r as its creator run, in one transaction.
+	CreateQuizWithRun(ctx context.Context, r Run) (QuizID, error)
 	CreateRun(ctx context.Context, r Run) error
 	// InRun calls fn in one transaction with the run locked; an unknown run is ErrRunNotFound.
 	InRun(ctx context.Context, id RunID, fn func(UnitOfWork) error) error

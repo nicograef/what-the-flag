@@ -30,11 +30,12 @@ func cloneRun(r *Run) *Run {
 	return &c
 }
 
-func (m *memory) CreateQuiz(_ context.Context, now time.Time) (QuizID, error) {
-	id := QuizID(uuid.New())
-	m.quizzes[id] = now
-	m.questions[id] = map[int]Question{}
-	return id, nil
+func (m *memory) CreateQuizWithRun(_ context.Context, r Run) (QuizID, error) {
+	r.QuizID = QuizID(uuid.New())
+	m.quizzes[r.QuizID] = r.StartedAt
+	m.questions[r.QuizID] = map[int]Question{}
+	m.runs[r.ID] = cloneRun(&r)
+	return r.QuizID, nil
 }
 
 func (m *memory) CreateRun(_ context.Context, r Run) error {

@@ -22,18 +22,37 @@ func newRun(t *testing.T, repo *Repository, q *quiz.QuizID) quiz.Run {
 	now := time.Now().Truncate(time.Microsecond)
 	r := quiz.Run{ID: quiz.RunID(uuid.New()), Name: "repo test", StartedAt: now}
 	if q == nil {
-		id, err := repo.CreateQuiz(ctx, now)
+		r.Creator = true
+		id, err := repo.CreateQuizWithRun(ctx, r)
 		if err != nil {
 			t.Fatalf("create quiz: %v", err)
 		}
-		r.QuizID, r.Creator = id, true
-	} else {
-		r.QuizID = *q
+		r.QuizID = id
+		return r
 	}
+	r.QuizID = *q
 	if err := repo.CreateRun(ctx, r); err != nil {
 		t.Fatalf("create run: %v", err)
 	}
 	return r
+}
+
+func TestCreateQuizWithRunIsAtomic(t *testing.T) {
+	ctx := context.Background()
+	tx := postgres.TestTx(t)
+	now := time.Now().Truncate(time.Microsecond)
+	// An empty name breaks the runs CHECK, so the run insert fails after the quiz insert.
+	run := quiz.Run{ID: quiz.RunID(uuid.New()), Creator: true, StartedAt: now}
+	if _, err := NewRepository(tx).CreateQuizWithRun(ctx, run); err == nil {
+		t.Fatal("CreateQuizWithRun with an empty name succeeded")
+	}
+	var quizzes int
+	if err := tx.QueryRow(ctx, "SELECT count(*) FROM quizzes WHERE created_at = $1", now).Scan(&quizzes); err != nil {
+		t.Fatalf("count quizzes: %v", err)
+	}
+	if quizzes != 0 {
+		t.Fatalf("%d quizzes left behind, want 0", quizzes)
+	}
 }
 
 func TestAddQuestionRace(t *testing.T) {

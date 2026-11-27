@@ -77,33 +77,32 @@ func (s *Service) Start(ctx context.Context, name string, quiz *QuizID) (RunID, 
 	if err != nil {
 		return RunID{}, QuizID{}, err
 	}
-	now := s.now()
-	r := Run{Name: name, StartedAt: now}
-	if quiz == nil {
-		if r.QuizID, err = s.repo.CreateQuiz(ctx, now); err != nil {
-			return RunID{}, QuizID{}, fmt.Errorf("create quiz: %w", err)
-		}
-		r.Creator = true
-	} else {
-		// A challenge run would generate and reveal positions the creator has not reached yet.
-		// A hidden creator run ranks nowhere, so its quiz stays playable.
-		creator, err := s.boards.Creator(ctx, *quiz, now)
-		if errors.Is(err, ErrQuizNotFound) {
-			return RunID{}, QuizID{}, err
-		}
-		if err != nil {
-			return RunID{}, QuizID{}, fmt.Errorf("find creator run: %w", err)
-		}
-		if creator != nil && !creator.Ended {
-			return RunID{}, QuizID{}, ErrQuizInProgress
-		}
-		r.QuizID = *quiz
-	}
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return RunID{}, QuizID{}, fmt.Errorf("run id: %w", err)
 	}
-	r.ID = RunID(id)
+	now := s.now()
+	r := Run{ID: RunID(id), Name: name, StartedAt: now}
+	if quiz == nil {
+		r.Creator = true
+		if r.QuizID, err = s.repo.CreateQuizWithRun(ctx, r); err != nil {
+			return RunID{}, QuizID{}, fmt.Errorf("create quiz: %w", err)
+		}
+		return r.ID, r.QuizID, nil
+	}
+	// A challenge run would generate and reveal positions the creator has not reached yet.
+	// A hidden creator run ranks nowhere, so its quiz stays playable.
+	creator, err := s.boards.Creator(ctx, *quiz, now)
+	if errors.Is(err, ErrQuizNotFound) {
+		return RunID{}, QuizID{}, err
+	}
+	if err != nil {
+		return RunID{}, QuizID{}, fmt.Errorf("find creator run: %w", err)
+	}
+	if creator != nil && !creator.Ended {
+		return RunID{}, QuizID{}, ErrQuizInProgress
+	}
+	r.QuizID = *quiz
 	if err := s.repo.CreateRun(ctx, r); err != nil {
 		return RunID{}, QuizID{}, fmt.Errorf("create run: %w", err)
 	}
