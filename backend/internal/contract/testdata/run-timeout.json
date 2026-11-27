@@ -1,0 +1,55 @@
+{
+  "id": "00000000-0000-4000-8000-000000000001",
+  "name": "silent",
+  "question": null,
+  "quizId": "00000000-0000-4000-8000-000000000002",
+  "result": {
+    "endReason": "timeout",
+    "globalRank": 1,
+    "last": {
+      "chosenOption": null,
+      "correctOption": 0,
+      "options": [
+        {
+          "kind": "text",
+          "text": {
+            "de": "Deutschland",
+            "en": "Germany"
+          }
+        },
+        {
+          "kind": "text",
+          "text": {
+            "de": "Frankreich",
+            "en": "France"
+          }
+        },
+        {
+          "kind": "text",
+          "text": {
+            "de": "Italien",
+            "en": "Italy"
+          }
+        },
+        {
+          "kind": "text",
+          "text": {
+            "de": "Spanien",
+            "en": "Spain"
+          }
+        }
+      ],
+      "position": 0,
+      "prompt": {
+        "flagKey": "0123456789",
+        "kind": "flag"
+      },
+      "type": "flag_name"
+    },
+    "quizRank": 1,
+    "score": 0
+  },
+  "score": 0,
+  "serverNow": "2026-01-01T12:00:00.123456Z",
+  "status": "finished"
+}

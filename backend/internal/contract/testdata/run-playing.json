@@ -1,0 +1,48 @@
+{
+  "id": "00000000-0000-4000-8000-000000000001",
+  "name": "Ada Lovelace",
+  "question": {
+    "deadline": "2026-01-01T12:00:15.123456Z",
+    "options": [
+      {
+        "kind": "text",
+        "text": {
+          "de": "Deutschland",
+          "en": "Germany"
+        }
+      },
+      {
+        "kind": "text",
+        "text": {
+          "de": "Frankreich",
+          "en": "France"
+        }
+      },
+      {
+        "kind": "text",
+        "text": {
+          "de": "Italien",
+          "en": "Italy"
+        }
+      },
+      {
+        "kind": "text",
+        "text": {
+          "de": "Spanien",
+          "en": "Spain"
+        }
+      }
+    ],
+    "position": 0,
+    "prompt": {
+      "flagKey": "0123456789",
+      "kind": "flag"
+    },
+    "type": "flag_name"
+  },
+  "quizId": "00000000-0000-4000-8000-000000000002",
+  "result": null,
+  "score": 0,
+  "serverNow": "2026-01-01T12:00:00.123456Z",
+  "status": "playing"
+}

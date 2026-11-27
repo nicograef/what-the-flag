@@ -126,6 +126,19 @@ func decodeQuiz[T any](t *testing.T, resp *http.Response, status int) T {
 	return decode[T](t, resp, status)
 }
 
+// decodeGolden is decodeQuiz that also compares the body with its golden file; edit is as for golden.
+func decodeGolden[T any](t *testing.T, name string, resp *http.Response, status int, edit func(map[string]any)) T {
+	t.Helper()
+	body, err := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	if err != nil {
+		t.Fatalf("read body: %v", err)
+	}
+	golden(t, name, body, edit)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
+	return decodeQuiz[T](t, resp, status)
+}
+
 func poolCodeIn(t *testing.T, v any) (string, bool) {
 	t.Helper()
 	switch v := v.(type) {
@@ -175,6 +188,19 @@ func correctOption(t *testing.T, runID string, position int) int {
 	return correct
 }
 
+// pinQuestion replaces the stored question of runID's quiz at position with a fixed flag_name question
+// whose correct option is 0, so a golden file holds the same question on every test run.
+func pinQuestion(t *testing.T, runID string, position int) {
+	t.Helper()
+	tag, err := postgres.TestPool(t).Exec(context.Background(), `
+		UPDATE quiz_questions q
+		SET type = 'flag_name', target = 'DE', options = '{DE,FR,IT,ES}', correct_index = 0
+		FROM runs r WHERE r.id = $1 AND q.quiz_id = r.quiz_id AND q.position = $2`, runID, position)
+	if err != nil || tag.RowsAffected() != 1 {
+		t.Fatalf("pin question %d of %s: %v, %d rows", position, runID, err, tag.RowsAffected())
+	}
+}
+
 func startRun(t *testing.T, c *client, body map[string]any) started {
 	t.Helper()
 	return decodeQuiz[started](t, c.post("/api/runs", body), http.StatusCreated)
@@ -199,7 +225,8 @@ func answerCorrectly(t *testing.T, c *client, runID string, position int) outcom
 
 func TestRun(t *testing.T) {
 	c := newClient(t, newServer(t))
-	s := startRun(t, c, map[string]any{"name": "  Ada   Lovelace "})
+	s := decodeGolden[started](t, "start", c.post("/api/runs", map[string]any{"name": "  Ada   Lovelace "}),
+		http.StatusCreated, nil)
 
 	st := readState(t, c, s.RunID)
 	if st.ID != s.RunID || st.QuizID != s.QuizID || st.Name != "Ada Lovelace" || st.Status != "playing" ||
@@ -212,6 +239,8 @@ func TestRun(t *testing.T) {
 	if again := readState(t, c, s.RunID); again.Question == nil || *again.Question != *st.Question {
 		t.Fatalf("second read = %+v, want the served question %+v", again.Question, st.Question)
 	}
+	pinQuestion(t, s.RunID, 0)
+	decodeGolden[runState](t, "run-playing", c.get("/api/runs/"+s.RunID), http.StatusOK, nil)
 
 	for position := range 2 {
 		got := answerCorrectly(t, c, s.RunID, position)
@@ -223,17 +252,19 @@ func TestRun(t *testing.T) {
 		}
 	}
 
-	right := correctOption(t, s.RunID, 2)
-	wrong := (right + 1) % 4
+	pinQuestion(t, s.RunID, 2)
+	right, wrong := 0, 1
 	want := outcome{Position: 2, ChosenOption: &wrong, CorrectOption: right, Finished: true, Score: 2}
-	if got := answer(t, c, s.RunID, 2, &wrong); !sameOutcome(got, want) {
+	got := decodeGolden[outcome](t, "outcome-wrong",
+		c.post("/api/runs/"+s.RunID+"/answers", answerBody{2, &wrong}), http.StatusOK, nil)
+	if !sameOutcome(got, want) {
 		t.Fatalf("wrong answer = %+v, want %+v", got, want)
 	}
 	if got := answer(t, c, s.RunID, 2, &right); !sameOutcome(got, want) {
 		t.Fatalf("repeat answer = %+v, want the stored %+v", got, want)
 	}
 
-	end := readState(t, c, s.RunID)
+	end := decodeGolden[runState](t, "run-finished", c.get("/api/runs/"+s.RunID), http.StatusOK, nil)
 	if end.Status != "finished" || end.Question != nil || end.Result == nil ||
 		end.Result.Score != 2 || end.Result.EndReason != "wrong" || end.Result.Last == nil ||
 		end.Result.QuizRank != 1 || end.Result.GlobalRank == nil || *end.Result.GlobalRank < 1 {
@@ -258,11 +289,13 @@ func TestTimeout(t *testing.T) {
 	t.Run("null answer", func(t *testing.T) {
 		s := startRun(t, c, map[string]any{"name": "silent"})
 		readState(t, c, s.RunID)
-		got := answer(t, c, s.RunID, 0, nil)
-		if want := (outcome{TimedOut: true, CorrectOption: correctOption(t, s.RunID, 0), Finished: true}); !sameOutcome(got, want) {
+		pinQuestion(t, s.RunID, 0)
+		got := decodeGolden[outcome](t, "outcome-timeout",
+			c.post("/api/runs/"+s.RunID+"/answers", answerBody{0, nil}), http.StatusOK, nil)
+		if want := (outcome{TimedOut: true, Finished: true}); !sameOutcome(got, want) {
 			t.Fatalf("null answer = %+v, want %+v", got, want)
 		}
-		end := readState(t, c, s.RunID)
+		end := decodeGolden[runState](t, "run-timeout", c.get("/api/runs/"+s.RunID), http.StatusOK, nil)
 		if end.Result == nil || end.Result.EndReason != "timeout" || end.Result.Last == nil ||
 			end.Result.Last.ChosenOption != nil {
 			t.Fatalf("state after a null answer = %+v, want a timeout with no chosen option", end)
@@ -396,12 +429,19 @@ func TestChallenge(t *testing.T) {
 		t.Fatalf("challenger result = %+v, want quiz rank 2 and no global rank", res)
 	}
 
-	view = decodeQuiz[challenge](t, second.get("/api/quizzes/"+a.QuizID+"?run="+b.RunID), http.StatusOK)
+	view = decodeGolden[challenge](t, "challenge", second.get("/api/quizzes/"+a.QuizID+"?run="+b.RunID), http.StatusOK, nil)
 	want := []entry{{Rank: 1, Name: "creator", Score: 1}, {Rank: 2, Name: "challenger", Own: true}}
 	if len(view.Top) != 2 || view.Top[0] != want[0] || view.Top[1] != want[1] {
 		t.Fatalf("quiz list = %+v, want %+v", view.Top, want)
 	}
-	global := decodeQuiz[leaderboard](t, second.get("/api/leaderboard?run="+b.RunID), http.StatusOK)
+	// The global list holds every run the database holds, so its golden keeps the first row with fixed values.
+	global := decodeGolden[leaderboard](t, "leaderboard", second.get("/api/leaderboard?run="+b.RunID), http.StatusOK,
+		func(m map[string]any) {
+			top := m["top"].([]any)[:1]
+			first := top[0].(map[string]any)
+			first["name"], first["score"] = "creator", 1
+			m["top"] = top
+		})
 	for _, e := range global.Top {
 		if e.Own {
 			t.Fatalf("global list holds the challenger's run: %+v", e)
@@ -418,7 +458,7 @@ func TestChallenge(t *testing.T) {
 		`UPDATE runs SET hidden = true WHERE id = $1`, a.RunID); err != nil {
 		t.Fatalf("hide creator: %v", err)
 	}
-	view = decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
+	view = decodeGolden[challenge](t, "challenge-hidden", first.get("/api/quizzes/"+a.QuizID), http.StatusOK, nil)
 	if view.Creator != nil || len(view.Top) != 1 || view.Top[0].Name != "challenger" {
 		t.Fatalf("view after hiding the creator = %+v, want no creator and only the challenger", view)
 	}
