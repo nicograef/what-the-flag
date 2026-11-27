@@ -6,8 +6,8 @@
 #
 # What it does:
 #   1. Reaches E2E_BASE_URL (https://<host>:<port>) on 127.0.0.1, trusting any certificate.
-#   2. Checks health, a new run, its first question, the run's quiz, the leaderboard and the SPA route
-#      of the quiz, then the migration version of the stack's database (Compose `postgres` service).
+#   2. Checks health, a new run, its first question, the run's quiz, the leaderboard, the SPA route
+#      of the quiz and the CSP header, then the migration version of the stack's database (Compose `postgres` service).
 #   3. Prints `ok <check>` per passed check; the first failure exits 1.
 set -euo pipefail
 
@@ -62,6 +62,10 @@ body="$(req "$E2E_BASE_URL/q/$QUIZ_ID")" || fail spa "request failed"
 grep -q '<div id="root">' <<<"$body" || fail spa "no <div id=\"root\">"
 grep -q 'og:image' <<<"$body" || fail spa "no og:image"
 ok spa
+
+headers="$(req -o /dev/null -D - "$E2E_BASE_URL/")" || fail csp "request failed"
+grep -qi "^content-security-policy:.*frame-ancestors 'none'" <<<"$headers" || fail csp "no CSP with frame-ancestors 'none'"
+ok csp
 
 LATEST="$(find database/migrations -name '*.up.sql' | sed -E 's#.*/0*([0-9]+)_[^/]*$#\1#' | sort -n | tail -n1)"
 got="$(docker compose exec -T postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc 'SELECT version, dirty FROM schema_migrations')" \

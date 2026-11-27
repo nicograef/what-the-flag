@@ -19,6 +19,9 @@ what-the-flag.de {
 		X-Content-Type-Options "nosniff"
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
+		# The SPA loads only its own files and has no inline script or style, so no 'unsafe-inline'.
+		# Vite inlines assets under 4 KiB as data: URLs, images and fonts alike.
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
 		-Server
 	}
 
