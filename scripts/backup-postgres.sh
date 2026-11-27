@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # backup-postgres.sh — verified, retained PostgreSQL backups for a Compose stack.
 #
-# Usage (as the deploy user, from the project clone under /opt/<project>):
+# Usage (as the deploy user, from the project clone under /opt/what-the-flag):
 #   scripts/backup-postgres.sh                        # defaults below
 #   BACKUP_DIR=<dir> RETENTION_DAYS=<days> scripts/backup-postgres.sh
 #

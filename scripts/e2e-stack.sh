@@ -3,7 +3,7 @@
 #
 # Usage:
 #   scripts/e2e-stack.sh <command> [args]          # make e2e runs scripts/smoke.sh
-#   E2E_STACK_PROJECT=<name> E2E_STACK_PORT=<port> scripts/e2e-stack.sh <command> [args]
+#   E2E_STACK_PROJECT=<compose-project> E2E_STACK_PORT=<port> scripts/e2e-stack.sh <command> [args]
 #
 # What it does:
 #   1. Selects docker-compose.prod.yml and docker-compose.e2e.yml, plus docker-compose.local.yml when present,
