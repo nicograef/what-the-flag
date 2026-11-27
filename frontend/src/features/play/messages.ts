@@ -12,6 +12,7 @@ export const messages = defineMessages<{
   start: string;
   starting: string;
   loading: string;
+  retry: string;
   score: (score: number) => string;
   question: (position: number) => string;
   questions: Record<QuestionType, string>;
@@ -56,6 +57,7 @@ export const messages = defineMessages<{
     start: "Los geht's",
     starting: "Wird gestartet …",
     loading: "Wird geladen …",
+    retry: "Erneut versuchen",
     score: (score) => `Punkte: ${score}`,
     question: (position) => `Frage ${position + 1}`,
     questions: {
@@ -125,6 +127,7 @@ export const messages = defineMessages<{
     start: "Let's go",
     starting: "Starting …",
     loading: "Loading …",
+    retry: "Try again",
     score: (score) => `Score: ${score}`,
     question: (position) => `Question ${position + 1}`,
     questions: {

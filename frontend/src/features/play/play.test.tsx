@@ -61,6 +61,29 @@ it("reveals a correct answer, then shows the next question", async () => {
   expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
 });
 
+it("keeps the question under a failed refetch and retries it", async () => {
+  const { api, ids, user } = await startPlaying();
+  api.fail(`GET /api/runs/${ids.runId}`, 503, "database_unavailable");
+
+  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+
+  expect(await screen.findByRole("alert", {}, slow)).toHaveTextContent(
+    "Die Datenbank ist gerade nicht erreichbar.",
+  );
+  expect(
+    screen.getByRole("heading", { name: "Welches Land hat diese Flagge?" }),
+  ).toBeInTheDocument();
+  const reads = api.calls.length;
+
+  await user.click(screen.getByRole("button", { name: "Erneut versuchen" }));
+
+  await waitFor(() => {
+    expect(api.calls.slice(reads).map((c) => c.route)).toContain(
+      `GET /api/runs/${ids.runId}`,
+    );
+  });
+});
+
 it("shows the missed question and both ranks after a wrong answer", async () => {
   const { ids, user } = await startPlaying({ quizRank: 3, globalRank: 12 });
 

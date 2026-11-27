@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useParams } from "react-router";
+import { Button } from "@/components/ui/button";
 import { Countdown } from "@/features/play/countdown";
 import { messages, playError } from "@/features/play/messages";
 import { QuestionCard } from "@/features/play/question-card";
@@ -7,6 +8,29 @@ import { RunResult } from "@/features/play/run-result";
 import { useRun } from "@/features/play/use-run";
 import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
+
+function RunError({
+  error,
+  retrying,
+  onRetry,
+}: {
+  error: Error;
+  retrying: boolean;
+  onRetry: () => void;
+}): ReactNode {
+  const t = useMessages(messages);
+  const { locale } = useLocale();
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <p role="alert" className="text-destructive">
+        {playError(error, locale)}
+      </p>
+      <Button variant="outline" disabled={retrying} onClick={onRetry}>
+        {t.retry}
+      </Button>
+    </div>
+  );
+}
 
 function Run({ runId }: { runId: string }): ReactNode {
   const t = useMessages(messages);
@@ -20,13 +44,15 @@ function Run({ runId }: { runId: string }): ReactNode {
       </p>
     );
   }
-  if (query.isError) {
-    return (
-      <p role="alert" className="text-destructive">
-        {playError(query.error, locale)}
-      </p>
-    );
-  }
+  // A failed refetch keeps the last state, so the run stays playable under the error.
+  const failure = query.isError && (
+    <RunError
+      error={query.error}
+      retrying={query.isFetching}
+      onRetry={() => void query.refetch()}
+    />
+  );
+  if (!query.data) return failure;
 
   const { state, receivedAt } = query.data;
   if (state.result) return <RunResult run={state} result={state.result} />;
@@ -43,6 +69,7 @@ function Run({ runId }: { runId: string }): ReactNode {
 
   return (
     <section className="flex flex-col gap-4">
+      {failure}
       <div className="flex items-center justify-between text-sm">
         <h1 className="font-medium">{state.name}</h1>
         <p className="tabular-nums">{t.score(shown?.score ?? state.score)}</p>
