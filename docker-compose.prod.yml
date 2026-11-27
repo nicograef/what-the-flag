@@ -44,6 +44,27 @@ services:
           memory: 1G
           cpus: "2.0"
 
+  # ── Migrations (one-shot) ──
+  # `up --wait` starts it, the backend waits for its exit 0, and a non-zero exit fails the deploy.
+  # Run by hand: make prod-migrate ARGS="version"; a `run` argument replaces only `command`.
+  migrate:
+    image: ghcr.io/nicograef/what-the-flag-migrate:v0.1.0 # same tag as backend; database/Dockerfile
+    restart: "no"
+    logging: *default-logging
+    # Host `postgres` takes port 5432. The password must be URL-safe (.env.example).
+    entrypoint: ["migrate", "-path", "/migrations", "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}?sslmode=disable"]
+    command: ["up"]
+    networks:
+      - db-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.5"
+
   # ── Backend ──
   # The release tag is the deploy version: bump it in git, never float on `latest`.
   # scripts/prod-init.sh reads it here and refuses a downgrade.
@@ -62,6 +83,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     # The image's HEALTHCHECK probes /api/health with a tool the image ships; `up --wait` polls it
     # after every deploy. Dockerfile: backend/Dockerfile.
     deploy:

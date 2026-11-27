@@ -119,7 +119,11 @@ prod-down:     ## Stop production stack
 prod-logs:     ## Follow production logs
 	docker compose -f docker-compose.prod.yml logs -f
 
-.PHONY: prod-stats prod-hide
+.PHONY: prod-migrate prod-stats prod-hide
+
+# The `migrate` service's entrypoint holds the database URL, so ARGS replace only `up`.
+prod-migrate:  ## Run golang-migrate on the production database (ARGS="version", default up)
+	docker compose -f docker-compose.prod.yml run --rm migrate $(or $(ARGS),up)
 
 prod-stats:    ## Print the owner statistics of database/stats.sql from production
 	$(PSQL_PROD) < database/stats.sql
@@ -194,7 +198,7 @@ hide:          ## Hide a run from every leaderboard (RUN=<uuid>)
 # Every documented target stands in exactly one CLASS_* list, and `make help` prints the
 # lists as its sections. A target in none prints under UNCLASSIFIED.
 CLASS_developer := db be fe be-check be-integration data data-check fe-check check up down logs db-shell db-migrate stats hide help
-CLASS_production := prod-deploy prod-down prod-logs prod-stats prod-hide prod-release
+CLASS_production := prod-deploy prod-down prod-logs prod-migrate prod-stats prod-hide prod-release
 
 HELP_WIDTH ?= 96
 
