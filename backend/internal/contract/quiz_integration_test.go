@@ -252,6 +252,58 @@ func sameOutcome(a, b outcome) bool {
 		a.CorrectOption == b.CorrectOption && a.Finished == b.Finished && a.Score == b.Score
 }
 
+func TestTimeout(t *testing.T) {
+	c := newClient(t, newServer(t))
+
+	t.Run("null answer", func(t *testing.T) {
+		s := startRun(t, c, map[string]any{"name": "silent"})
+		readState(t, c, s.RunID)
+		got := answer(t, c, s.RunID, 0, nil)
+		if want := (outcome{TimedOut: true, CorrectOption: correctOption(t, s.RunID, 0), Finished: true}); !sameOutcome(got, want) {
+			t.Fatalf("null answer = %+v, want %+v", got, want)
+		}
+		end := readState(t, c, s.RunID)
+		if end.Result == nil || end.Result.EndReason != "timeout" || end.Result.Last == nil ||
+			end.Result.Last.ChosenOption != nil {
+			t.Fatalf("state after a null answer = %+v, want a timeout with no chosen option", end)
+		}
+		expectStoredTimeout(t, s.RunID)
+	})
+
+	t.Run("late answer", func(t *testing.T) {
+		s := startRun(t, c, map[string]any{"name": "late"})
+		readState(t, c, s.RunID)
+		if _, err := postgres.TestPool(t).Exec(context.Background(),
+			`UPDATE run_answers SET served_at = served_at - interval '18 seconds' WHERE run_id = $1`, s.RunID); err != nil {
+			t.Fatalf("age answer: %v", err)
+		}
+		if st := readState(t, c, s.RunID); st.Result == nil || st.Result.EndReason != "timeout" {
+			t.Fatalf("state past the deadline = %+v, want a timeout", st)
+		}
+		expectStoredTimeout(t, s.RunID)
+	})
+}
+
+// expectStoredTimeout checks that the database holds runID as ended by a timeout at position 0.
+func expectStoredTimeout(t *testing.T, runID string) {
+	t.Helper()
+	var reason *string
+	var finished bool
+	var correct *bool
+	var option *int16
+	err := postgres.TestPool(t).QueryRow(context.Background(), `
+		SELECT r.end_reason, r.finished_at IS NOT NULL, a.correct, a.option_index
+		FROM runs r JOIN run_answers a ON a.run_id = r.id AND a.position = 0
+		WHERE r.id = $1`, runID).Scan(&reason, &finished, &correct, &option)
+	if err != nil {
+		t.Fatalf("read stored run %s: %v", runID, err)
+	}
+	if reason == nil || *reason != "timeout" || !finished || correct == nil || *correct || option != nil {
+		t.Fatalf("stored run: end %v, finished %t, correct %v, option %v; want a timeout with no option",
+			reason, finished, correct, option)
+	}
+}
+
 func TestRunErrors(t *testing.T) {
 	c := newClient(t, newServer(t))
 	s := startRun(t, c, map[string]any{"name": "errors"})
