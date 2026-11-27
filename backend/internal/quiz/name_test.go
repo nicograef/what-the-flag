@@ -24,6 +24,15 @@ func TestNormalizeName(t *testing.T) {
 		{"whitespace trims and collapses", "  Nico \t\n Gräf  ", "Nico Gräf", nil},
 		{"allowed punctuation", "a_b-c.d", "a_b-c.d", nil},
 		{"forbidden rune", "Nico!", "", ErrInvalidName},
+		{"only punctuation", "_-.", "", ErrInvalidName},
+		{"Hangul filler", "\u3164\u3164", "", ErrInvalidName},
+		{"Hangul choseong filler", "\u115f", "", ErrInvalidName},
+		{"halfwidth Hangul filler in a name", "Nico\uffa0", "", ErrInvalidName},
+		{"variation selector", "Nico\ufe0f", "", ErrInvalidName},
+		{"lone mark", "\u0301", "", ErrInvalidName},
+		{"mark after a space", "Nico \u0301", "", ErrInvalidName},
+		{"two marks on a letter", "x\u0301\u0302", "x\u0301\u0302", nil},
+		{"three marks on a letter", "x\u0301\u0302\u0303", "", ErrInvalidName},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
