@@ -170,7 +170,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 
 - Run starts are rate limited per client address, generous enough for a school class behind one address.
 - Leaderboard reads are rate limited per client address as well.
-- IPv6 addresses count per /64 network. A global cap per minute stops floods.
+- IPv6 addresses count per /64 network, and each /48 has four times that limit. A global cap per minute stops floods.
 - Client addresses live only in process memory and are never stored.
 - The owner hides a run with `make hide` and reads anomalies with `make stats`.
 - `make stats` reports runs per day, the replay rate, the share rate, the median score and the fastest runs.

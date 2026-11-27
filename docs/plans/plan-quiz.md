@@ -124,11 +124,13 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 ### Rate limit (`backend/internal/ratelimit/`)
 
-- `New(burst int, every time.Duration, now func() time.Time) *Limiter`, `(l *Limiter) Allow(key string) (ok bool, retryAfter time.Duration)`. Full buckets are pruned at most once a minute.
-- `ClientKey(r *http.Request) string`: the last `X-Forwarded-For` entry, else the host of `RemoteAddr`. IPv6 is masked to its /64.
+- `New(burst int, every time.Duration, now func() time.Time) *Limiter`, `(l *Limiter) Allow(key string) (ok bool, retryAfter time.Duration)`, `Refund(key)`. Full buckets are pruned at most once a minute.
+- A limiter holds at most 100 000 keys; beyond that a new key is refused with a 1 s wait.
+- `AllowAll(steps ...Step)` takes a token from each bucket in order and refunds the taken ones on a refusal.
+- `ClientKeys(r *http.Request) (client, network string)`: the last `X-Forwarded-For` entry, else the host of `RemoteAddr`. IPv6 is masked to its /64 as client and its /48 as network; IPv4 has no network key.
   Caddy's `reverse_proxy` sets that header from the client connection; verify against the Caddy docs at execution.
-- `POST /api/runs` checks a per-key limiter (burst 60, one more every 5 s) and a global one under key `""` (burst 600, one more every 100 ms).
-- `GET /api/leaderboard` and `GET /api/quizzes/{id}` share a per-key limiter (burst 120, one more every 500 ms).
+- `POST /api/runs` checks a per-key limiter (burst 60, one more every 5 s), a per-/48 one at four times that, and a global one under key `""` (burst 600, one more every 100 ms).
+- `GET /api/leaderboard` and `GET /api/quizzes/{id}` share a per-key limiter (burst 120, one more every 500 ms) and a per-/48 one at four times that.
 - A refusal is 429 `rate_limited` with `Retry-After` in whole seconds, rounded up. It runs before the body is read.
 
 ### HTTP (`backend/internal/quiz/httpapi`)
@@ -287,7 +289,7 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 - `backend/sqlc/queries/quiz.sql`: the leaderboard, ranks and creator queries; `backend/internal/quiz/postgres/leaderboards.go`.
 - `backend/internal/quiz/service.go`: ranks in the result, `Challenge`, `Global`; `httpapi`: `GET /api/quizzes/{id}`, `GET /api/leaderboard`, ranks in `result`.
-- `backend/internal/ratelimit/limiter.go` and `limiter_test.go — TestAllow` (burst, refill, `retryAfter`, pruning), `TestClientKey` (forwarded IPv4, IPv6 /64, `RemoteAddr`).
+- `backend/internal/ratelimit/limiter.go` and `limiter_test.go — TestAllow` (burst, refill, `retryAfter`, pruning), `TestAllowCapsKeys`, `TestAllowAll` (refund on a later refusal), `TestClientKeys` (forwarded IPv4, IPv6 /64 and /48, `RemoteAddr`).
   The limiters on `POST /api/runs`.
 - `database/stats.sql`; `Makefile`: `stats`, `hide`, `prod-stats`, `prod-hide`.
 - `backend/internal/quiz/postgres/leaderboards_integration_test.go`, on `postgres.TestTx(t)`, with its own runs at scores ≥ 10000:

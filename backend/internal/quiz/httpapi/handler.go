@@ -20,20 +20,26 @@ type Handler struct {
 	limits Limits
 }
 
-// Limits rate-limit run starts per client key and across all clients, and leaderboard reads per client key.
+// Limits rate-limit run starts and leaderboard reads. Each kind has a bucket per client key and per network
+// key; run starts also share a global bucket.
 type Limits struct {
-	PerClient *ratelimit.Limiter
-	Global    *ratelimit.Limiter
-	Reads     *ratelimit.Limiter
+	Start        *ratelimit.Limiter
+	StartNetwork *ratelimit.Limiter
+	StartGlobal  *ratelimit.Limiter
+	Read         *ratelimit.Limiter
+	ReadNetwork  *ratelimit.Limiter
 }
 
-// NewLimits returns the limits: run starts 60 per client and one more every 5 s,
-// 600 in all and one more every 100 ms; leaderboard reads 120 per client and one more every 500 ms.
+// NewLimits returns the limits. Run starts: 60 per client and one more every 5 s, four times that per IPv6 /48,
+// 600 in all and one more every 100 ms. Leaderboard reads: 120 per client and one more every 500 ms,
+// four times that per IPv6 /48.
 func NewLimits(now func() time.Time) Limits {
 	return Limits{
-		PerClient: ratelimit.New(60, 5*time.Second, now),
-		Global:    ratelimit.New(600, 100*time.Millisecond, now),
-		Reads:     ratelimit.New(120, 500*time.Millisecond, now),
+		Start:        ratelimit.New(60, 5*time.Second, now),
+		StartNetwork: ratelimit.New(240, 1250*time.Millisecond, now),
+		StartGlobal:  ratelimit.New(600, 100*time.Millisecond, now),
+		Read:         ratelimit.New(120, 500*time.Millisecond, now),
+		ReadNetwork:  ratelimit.New(480, 125*time.Millisecond, now),
 	}
 }
 
@@ -51,19 +57,27 @@ func (h *Handler) Register(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/leaderboard", h.leaderboard)
 }
 
-// allowStart takes a token from the client's and the global limiter, and answers a refusal with 429.
+// allowStart takes a token from the client's, its network's and the global bucket, and answers a refusal with 429.
 func (h *Handler) allowStart(w http.ResponseWriter, r *http.Request) bool {
-	ok, wait := h.limits.PerClient.Allow(ratelimit.ClientKey(r))
-	if ok {
-		ok, wait = h.limits.Global.Allow("")
-	}
+	steps := clientSteps(r, h.limits.Start, h.limits.StartNetwork)
+	ok, wait := ratelimit.AllowAll(append(steps, ratelimit.Step{Limiter: h.limits.StartGlobal})...)
 	return allowed(w, r, ok, wait, "too many run starts; retry later")
 }
 
-// allowRead takes a token from the client's read limiter, and answers a refusal with 429.
+// allowRead takes a token from the client's and its network's read bucket, and answers a refusal with 429.
 func (h *Handler) allowRead(w http.ResponseWriter, r *http.Request) bool {
-	ok, wait := h.limits.Reads.Allow(ratelimit.ClientKey(r))
+	ok, wait := ratelimit.AllowAll(clientSteps(r, h.limits.Read, h.limits.ReadNetwork)...)
 	return allowed(w, r, ok, wait, "too many leaderboard reads; retry later")
+}
+
+// clientSteps returns the client's bucket in perClient and, for an IPv6 client, its network's in perNetwork.
+func clientSteps(r *http.Request, perClient, perNetwork *ratelimit.Limiter) []ratelimit.Step {
+	client, network := ratelimit.ClientKeys(r)
+	steps := []ratelimit.Step{{Limiter: perClient, Key: client}}
+	if network != "" {
+		steps = append(steps, ratelimit.Step{Limiter: perNetwork, Key: network})
+	}
+	return steps
 }
 
 // allowed answers a refusal with 429 and a Retry-After of wait in whole seconds.
