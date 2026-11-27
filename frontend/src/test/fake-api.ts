@@ -5,7 +5,8 @@ export interface FakeCall {
   init: RequestInit;
 }
 
-type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+export type Json =
+  string | number | boolean | null | Json[] | { [key: string]: Json };
 
 type Reply = { status: number; body: Json | ((call: FakeCall) => Json) };
 
@@ -13,10 +14,6 @@ type Reply = { status: number; body: Json | ((call: FakeCall) => Json) };
 export class FakeApi {
   readonly calls: FakeCall[] = [];
   private readonly replies = new Map<string, Reply>();
-
-  constructor() {
-    this.fail("GET /api/me", 401, "unauthenticated");
-  }
 
   respond(
     route: string,

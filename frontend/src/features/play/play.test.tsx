@@ -1,0 +1,198 @@
+import { screen, waitFor } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
+import { fakeRun, sampleQuestions } from "@/features/play/fake-run";
+import { FakeApi } from "@/test/fake-api";
+import { renderRoute } from "@/test/render";
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+const slow = { timeout: 2000 };
+
+function answers(api: FakeApi): unknown[] {
+  return api.calls
+    .filter((c) => c.route.endsWith("/answers"))
+    .map((c) => c.body);
+}
+
+/** Pins `performance.now()`; the returned setter moves it. */
+function clock(start = 0): (ms: number) => void {
+  let now = start;
+  vi.spyOn(performance, "now").mockImplementation(() => now);
+  return (ms) => {
+    now = ms;
+  };
+}
+
+async function startPlaying(
+  options?: Parameters<typeof fakeRun>[2],
+): Promise<
+  { api: FakeApi; ids: ReturnType<typeof fakeRun> } & ReturnType<
+    typeof renderRoute
+  >
+> {
+  const api = new FakeApi();
+  const ids = fakeRun(api, sampleQuestions, options);
+  const rendered = renderRoute(`/play/${ids.runId}`, { api });
+  await screen.findByRole("heading", {
+    name: "Welches Land hat diese Flagge?",
+  });
+  return { api, ids, ...rendered };
+}
+
+it("reveals a correct answer, then shows the next question", async () => {
+  const { api, user } = await startPlaying();
+
+  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+
+  expect(await screen.findByText("Richtig!")).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: /^Deutschland\s*, richtige Antwort$/ }),
+  ).toBeDisabled();
+  expect(
+    await screen.findByRole(
+      "heading",
+      { name: "Was ist die Hauptstadt dieses Landes?" },
+      slow,
+    ),
+  ).toHaveFocus();
+  expect(screen.getByText("Punkte: 1")).toBeInTheDocument();
+  expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+});
+
+it("shows the missed question and both ranks after a wrong answer", async () => {
+  const { user } = await startPlaying({ quizRank: 3, globalRank: 12 });
+
+  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+
+  expect(
+    await screen.findByRole("heading", { name: "Spiel vorbei" }),
+  ).toBeInTheDocument();
+  expect(screen.getByText("0 richtige Antworten")).toBeInTheDocument();
+  expect(
+    screen.getByText("Die letzte Antwort war falsch."),
+  ).toBeInTheDocument();
+  expect(screen.getByText("Platz 3 in diesem Quiz")).toBeInTheDocument();
+  expect(screen.getByText("Platz 12 weltweit")).toBeInTheDocument();
+  expect(screen.getByText("Deutschland").parentElement).toHaveTextContent(
+    "Deutschland, richtige Antwort",
+  );
+  expect(screen.getByText("Frankreich").parentElement).toHaveTextContent(
+    "Frankreich, deine Antwort",
+  );
+});
+
+it("answers nothing when the time runs out", async () => {
+  const setNow = clock();
+  const { api } = await startPlaying();
+
+  setNow(15_000);
+
+  await waitFor(() => {
+    expect(answers(api)).toEqual([{ position: 0, option: null }]);
+  });
+  expect(
+    await screen.findByText("Die Zeit für die letzte Frage ist abgelaufen."),
+  ).toBeInTheDocument();
+});
+
+it("resumes with the served question and its running deadline", async () => {
+  const setNow = clock(1_000);
+  await startPlaying({ remainingMs: 5_000 });
+
+  expect(screen.getByText("5 s")).toBeInTheDocument();
+  expect(
+    screen.getByRole("progressbar", { name: "Verbleibende Zeit" }),
+  ).toHaveAttribute("aria-valuetext", "5 Sekunden");
+
+  setNow(3_000);
+
+  expect(await screen.findByText("3 s")).toBeInTheDocument();
+});
+
+it("stores and announces a new personal best", async () => {
+  const { user } = await startPlaying();
+
+  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+  await screen.findByRole(
+    "heading",
+    { name: "Was ist die Hauptstadt dieses Landes?" },
+    slow,
+  );
+  await user.click(screen.getByRole("button", { name: "Kyoto" }));
+
+  expect(await screen.findByText("Neue Bestleistung!")).toBeInTheDocument();
+  expect(screen.getByText("Deine Bestleistung: 1")).toBeInTheDocument();
+  expect(JSON.parse(localStorage.getItem("wtf.best") ?? "null")).toMatchObject({
+    score: 1,
+  });
+});
+
+it("plays again under the same name on a fresh quiz", async () => {
+  const { api, user } = await startPlaying({ name: "Bea" });
+  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+
+  await user.click(
+    await screen.findByRole("button", { name: "Nochmal spielen" }),
+  );
+
+  expect(
+    await screen.findByRole("heading", {
+      name: "Welches Land hat diese Flagge?",
+    }),
+  ).toBeInTheDocument();
+  const starts = api.calls.filter((c) => c.route === "POST /api/runs");
+  expect(starts.map((c) => c.body)).toEqual([{ name: "Bea" }]);
+  expect(api.calls.at(-1)?.route).toBe(
+    "GET /api/runs/00000000-0000-4000-8000-000000000002",
+  );
+});
+
+it("shares the challenge link through the share sheet", async () => {
+  const share = vi.fn<(data: ShareData) => Promise<void>>();
+  share.mockResolvedValue(undefined);
+  Object.defineProperty(navigator, "share", {
+    value: share,
+    configurable: true,
+  });
+  try {
+    const { ids, user } = await startPlaying();
+    await user.click(screen.getByRole("button", { name: "Frankreich" }));
+
+    await user.click(await screen.findByRole("button", { name: "Teilen" }));
+
+    expect(share).toHaveBeenCalledWith({
+      text: "Ich habe 0 Fragen über die Welt beantwortet. Schaffst du mehr?",
+      url: `${window.location.origin}/q/${ids.quizId}`,
+    });
+  } finally {
+    Reflect.deleteProperty(navigator, "share");
+  }
+});
+
+it("copies the challenge link without a share sheet", async () => {
+  const { ids, user } = await startPlaying();
+  const write = vi.spyOn(navigator.clipboard, "writeText");
+  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+
+  await user.click(await screen.findByRole("button", { name: "Teilen" }));
+
+  expect(write).toHaveBeenCalledWith(
+    `Ich habe 0 Fragen über die Welt beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
+  );
+  expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
+});
+
+it("switches the language without a request", async () => {
+  const { api, user } = await startPlaying();
+  const requests = api.calls.length;
+
+  await user.click(screen.getByRole("button", { name: "English" }));
+
+  expect(
+    screen.getByRole("heading", { name: "Which country has this flag?" }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Germany" })).toBeInTheDocument();
+  expect(api.calls).toHaveLength(requests);
+});
