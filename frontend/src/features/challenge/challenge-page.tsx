@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { CircleAlert, Hourglass } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getChallenge, type Challenge } from "@/features/challenge/api";
 import {
   challengeError,
@@ -12,18 +15,46 @@ import {
 import { useOwnRun } from "@/features/leaderboard/own-run";
 import { RankingTable } from "@/features/leaderboard/ranking-table";
 import { NameForm } from "@/features/play/name-form";
-import { useApiClient } from "@/lib/api";
+import { RuleChips } from "@/features/play/rule-chips";
+import { ApiError, useApiClient } from "@/lib/api";
 import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
 
-function CreatorLine({ creator }: Pick<Challenge, "creator">): ReactNode {
+function Creator({ creator }: Pick<Challenge, "creator">): ReactNode {
   const t = useMessages(messages);
   if (!creator) return null;
+  if (!creator.ended) {
+    return (
+      <>
+        <Hourglass
+          aria-hidden="true"
+          className="size-8 text-muted-foreground"
+        />
+        <p className="text-lg font-semibold">{t.stillPlaying(creator.name)}</p>
+        <p className="text-sm text-muted-foreground">{t.autoRefresh}</p>
+      </>
+    );
+  }
   return (
-    <p className="text-lg">
-      {creator.ended
-        ? t.creatorScore(creator.name, creator.score)
-        : t.stillPlaying(creator.name)}
+    <p className="flex flex-col items-center">
+      <span className="sr-only">
+        {t.creatorScore(creator.name, creator.score)}
+      </span>
+      <span aria-hidden="true" className="text-lg font-semibold">
+        {creator.name}
+      </span>
+      <span
+        aria-hidden="true"
+        className="text-6xl leading-none font-bold text-primary tabular-nums"
+      >
+        {creator.score}
+      </span>
+      <span aria-hidden="true" className="text-sm text-muted-foreground">
+        {t.scoreLabel(creator.score)}
+      </span>
+      <span aria-hidden="true" className="mt-2 text-lg font-semibold">
+        {t.beatIt}
+      </span>
     </p>
   );
 }
@@ -37,26 +68,52 @@ export function ChallengePage(): ReactNode {
   const query = useQuery({
     queryKey: ["quiz", quizId, run],
     queryFn: () => getChallenge(api, quizId, run),
+    refetchInterval: (q) =>
+      q.state.data?.creator && !q.state.data.creator.ended ? 5000 : false,
   });
 
   if (query.isPending) {
     return (
-      <p role="status" className="text-muted-foreground">
-        {t.loading}
-      </p>
+      <section className="flex flex-col gap-6">
+        <p role="status" className="sr-only">
+          {t.loading}
+        </p>
+        <Skeleton className="h-36 rounded-2xl" />
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-12 rounded-xl" />
+          <Skeleton className="h-12 rounded-xl" />
+        </div>
+        <Card className="gap-0 divide-y divide-border py-0">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Skeleton key={i} className="h-12 rounded-none" />
+          ))}
+        </Card>
+      </section>
     );
   }
   if (query.isError) {
+    const missing =
+      query.error instanceof ApiError && query.error.code === "quiz_not_found";
     return (
-      <section className="flex flex-col items-start gap-4">
-        <h1 className="font-heading text-2xl font-bold">{t.title}</h1>
+      <EmptyState icon={<CircleAlert />}>
+        <h1 className="text-2xl font-bold">{t.title}</h1>
         <p role="alert" className="text-destructive">
           {challengeError(query.error, locale)}
         </p>
-        <Button asChild variant="outline">
+        <Button asChild size="lg" className="w-full">
           <Link to="/">{t.home}</Link>
         </Button>
-      </section>
+        {!missing && (
+          <Button
+            variant="outline"
+            size="lg"
+            className="w-full"
+            onClick={() => void query.refetch()}
+          >
+            {t.retry}
+          </Button>
+        )}
+      </EmptyState>
     );
   }
 
@@ -65,22 +122,18 @@ export function ChallengePage(): ReactNode {
   const playable = !creator || creator.ended;
   return (
     <section className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="font-heading text-3xl font-bold">{t.title}</h1>
-        <CreatorLine creator={creator} />
+      <div className="flex flex-col items-center gap-1 pt-2 text-center">
+        <h1 className="text-sm font-semibold text-primary">{t.title}</h1>
+        <Creator creator={creator} />
       </div>
       {playable && (
-        <Card>
-          <CardHeader>
-            <h2 className="font-heading text-xl font-semibold">{t.play}</h2>
-          </CardHeader>
-          <CardContent>
-            <NameForm quizId={query.data.id} errorText={startError} />
-          </CardContent>
-        </Card>
+        <>
+          <RuleChips />
+          <NameForm quizId={query.data.id} errorText={startError} />
+        </>
       )}
       <div className="flex flex-col gap-2">
-        <h2 className="font-heading text-xl font-semibold">{t.ranking}</h2>
+        <h2 className="text-lg font-semibold">{t.ranking}</h2>
         <RankingTable entries={query.data.top} caption={t.ranking} />
       </div>
     </section>

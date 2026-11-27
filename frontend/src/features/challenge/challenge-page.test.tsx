@@ -15,7 +15,7 @@ function challenge(creator: Json, top: Json[] = []): Json {
 it.each([
   {
     creator: { name: "Ada", score: 7, ended: true },
-    text: "Ada hat 7 Fragen geschafft. Schaffst du mehr?",
+    text: "Ada hat 7 Fragen richtig beantwortet. Schaffst du mehr?",
     form: true,
   },
   {
