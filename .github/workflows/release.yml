@@ -43,7 +43,7 @@ jobs:
       matrix:
         # One entry per app image in docker-compose.prod.yml, with its build context and Dockerfile.
         # The edge image reads frontend/ and reverse-proxy/, so it builds from the repo root.
-        # The backend image reads NOTICE through the named context `root`, as docker-compose.yml passes it.
+        # The backend image reads NOTICE and the licences through the named context `root`, as docker-compose.yml passes it.
         include:
           - service: backend
             context: ./backend

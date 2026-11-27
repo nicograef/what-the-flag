@@ -28,7 +28,7 @@ services:
   backend:
     build:
       context: ./backend
-      # backend/Dockerfile copies NOTICE from the repo root through this named context.
+      # backend/Dockerfile copies NOTICE and the licences from the repo root through this named context.
       additional_contexts:
         root: .
     environment:

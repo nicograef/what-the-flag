@@ -22,8 +22,9 @@ RUN pnpm build
 # The base image's CMD runs /etc/caddy/Caddyfile; its WORKDIR /srv is the site root.
 FROM caddy:2.11.9-alpine
 COPY reverse-proxy/Caddyfile /etc/caddy/Caddyfile
-# The SPA serves ODbL flags and country names, so the image carries the data licence and the credits.
-COPY NOTICE data/LICENSE /usr/share/doc/what-the-flag/
+# The SPA is MIT code and holds no ODbL data; the MIT flags carry their licence in /srv/flags/LICENSE.
+# The image carries the code licence and NOTICE, the credits of every source.
+COPY LICENSE NOTICE /usr/share/doc/what-the-flag/
 # >>> stack: frontend
 COPY --from=build /app/dist /srv
 # <<< stack: frontend
