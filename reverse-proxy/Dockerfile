@@ -21,7 +21,7 @@ RUN pnpm build
 
 # ── Runtime ──
 # The base image's CMD runs /etc/caddy/Caddyfile; its WORKDIR /srv is the site root.
-FROM caddy:2.11.7-alpine
+FROM caddy:2.11.9-alpine
 COPY reverse-proxy/Caddyfile /etc/caddy/Caddyfile
 # The SPA serves ODbL flags and country names, so the image carries the data licence and the credits.
 COPY NOTICE data/LICENSE /usr/share/doc/what-the-flag/
