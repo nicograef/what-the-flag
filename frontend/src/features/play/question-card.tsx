@@ -88,51 +88,53 @@ export function QuestionCard({
 
   return (
     <div className="mt-3 flex min-h-0 flex-1 flex-col gap-3 motion-safe:animate-enter">
-      <h2
-        ref={headingRef}
-        tabIndex={-1}
-        className="text-center text-lg leading-snug font-semibold text-balance outline-none"
-      >
-        {t.questions[question.type]}
-      </h2>
-      <div className="relative flex min-h-20 flex-1 items-center justify-center">
-        {question.prompt.kind === "flag" ? (
-          <ItemView
-            item={question.prompt}
-            alt={t.flag}
-            width={240}
-            height={180}
-            className="h-full max-h-44 w-auto max-w-full rounded-lg object-contain shadow-sm ring-1 ring-foreground/10"
-          />
-        ) : (
-          <p className="text-center text-3xl font-bold text-balance">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4">
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          className="text-center text-lg leading-snug font-semibold text-balance outline-none"
+        >
+          {t.questions[question.type]}
+        </h2>
+        <div className="relative flex min-h-20 w-full shrink items-center justify-center">
+          {question.prompt.kind === "flag" ? (
             <ItemView
               item={question.prompt}
               alt={t.flag}
               width={240}
               height={180}
+              className="h-full max-h-44 w-auto max-w-full rounded-lg object-contain shadow-sm ring-1 ring-foreground/10"
             />
-          </p>
-        )}
-        <p
-          role="status"
-          aria-live="polite"
-          className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-1/2 justify-center"
-        >
-          {status && (
-            <span
-              className={cn(
-                "inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-semibold shadow-md motion-safe:animate-pop",
-                status.tone === "success"
-                  ? "bg-success text-success-foreground"
-                  : "bg-destructive text-destructive-foreground",
-              )}
-            >
-              <StatusIcon aria-hidden="true" className="size-4" />
-              {status.text}
-            </span>
+          ) : (
+            <p className="text-center text-3xl font-bold text-balance">
+              <ItemView
+                item={question.prompt}
+                alt={t.flag}
+                width={240}
+                height={180}
+              />
+            </p>
           )}
-        </p>
+          <p
+            role="status"
+            aria-live="polite"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex translate-y-1/2 justify-center"
+          >
+            {status && (
+              <span
+                className={cn(
+                  "inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-semibold shadow-md motion-safe:animate-pop",
+                  status.tone === "success"
+                    ? "bg-success text-success-foreground"
+                    : "bg-destructive text-destructive-foreground",
+                )}
+              >
+                <StatusIcon aria-hidden="true" className="size-4" />
+                {status.text}
+              </span>
+            )}
+          </p>
+        </div>
       </div>
       <ol
         className={cn(
@@ -167,7 +169,7 @@ export function QuestionCard({
                   alt={t.flagOption(i + 1)}
                   width={160}
                   height={120}
-                  className="max-h-full max-w-full rounded-sm object-contain ring-1 ring-foreground/10"
+                  className="h-auto max-h-full w-auto max-w-full rounded-sm object-contain ring-1 ring-foreground/10"
                 />
                 {correct && (
                   <>
