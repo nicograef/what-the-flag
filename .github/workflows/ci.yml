@@ -92,6 +92,9 @@ jobs:
               - 'docker-compose.e2e.yml'
               - 'scripts/e2e-stack.sh'
               - 'scripts/smoke.sh'
+              - 'data/**'  # the backend image ships its licences
+              - 'LICENSE'
+              - 'NOTICE'
               - '.github/workflows/ci.yml'
 
   # >>> stack: go
