@@ -3,7 +3,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ownRunState } from "@/features/leaderboard/own-run";
 import {
+  isTooFast,
   startRun,
   type RunResultData,
   type RunState,
@@ -32,7 +34,7 @@ export function RunResult({
   const tooFast =
     result.endReason === "wrong" &&
     result.last !== null &&
-    result.last.chosenOption === result.last.correctOption;
+    isTooFast(result.last);
   const again = useMutation({
     mutationFn: () => startRun(api, { name: run.name }),
     onSuccess: async ({ runId }) => {
@@ -89,14 +91,14 @@ export function RunResult({
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
             <Link
               to={`/q/${run.quizId}`}
-              state={{ runId: run.id }}
+              state={ownRunState(run.id)}
               className="underline underline-offset-4"
             >
               {t.quizRanking}
             </Link>
             <Link
               to="/leaderboard"
-              state={{ runId: run.id }}
+              state={ownRunState(run.id)}
               className="underline underline-offset-4"
             >
               {t.globalRanking}

@@ -1,7 +1,7 @@
 import { createBrowserRouter, type RouteObject } from "react-router";
 import { Layout } from "@/app/layout";
+import { NotFoundPage } from "@/app/not-found-page";
 import { ChallengePage } from "@/features/challenge/challenge-page";
-import { NotFoundPage } from "@/features/landing/not-found-page";
 import { LeaderboardPage } from "@/features/leaderboard/leaderboard-page";
 import { HomePage } from "@/features/play/home-page";
 import { PlayPage } from "@/features/play/play-page";

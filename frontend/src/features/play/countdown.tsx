@@ -3,7 +3,6 @@ import { Progress } from "@/components/ui/progress";
 import { messages } from "@/features/play/messages";
 import { useMessages } from "@/lib/i18n/messages";
 
-const limitMs = 15_000;
 const tickMs = 100;
 
 /**
@@ -21,12 +20,14 @@ function remainingMs(
 
 export function Countdown({
   deadline,
+  limitMs,
   serverNow,
   receivedAt,
   paused,
   onExpire,
 }: {
   deadline: string;
+  limitMs: number;
   serverNow: string;
   receivedAt: number;
   paused: boolean;

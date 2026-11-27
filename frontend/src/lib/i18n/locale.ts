@@ -1,4 +1,5 @@
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useSyncExternalStore } from "react";
+import { readItem, writeItem } from "@/lib/storage";
 
 export type Locale = "de" | "en";
 
@@ -11,34 +12,21 @@ function isLocale(value: unknown): value is Locale {
   return value === "de" || value === "en";
 }
 
-function readStored(): Locale | null {
-  try {
-    const value = localStorage.getItem(storageKey);
-    return isLocale(value) ? value : null;
-  } catch {
-    return null;
-  }
-}
-
 /** The stored choice, else German for a German browser, else English. */
 export function detectLocale(): Locale {
-  const stored = readStored();
-  if (stored) return stored;
+  const stored = readItem(storageKey);
+  if (isLocale(stored)) return stored;
   return navigator.language.toLowerCase().startsWith("de") ? "de" : "en";
 }
 
-export function getLocale(): Locale {
+function getLocale(): Locale {
   current ??= detectLocale();
   return current;
 }
 
 export function setLocale(locale: Locale): void {
   current = locale;
-  try {
-    localStorage.setItem(storageKey, locale);
-  } catch {
-    // Storage can be blocked; the choice then lasts for this page only.
-  }
+  writeItem(storageKey, locale);
   for (const listener of listeners) listener();
 }
 
@@ -59,16 +47,4 @@ export function useLocale(): {
 } {
   const locale = useSyncExternalStore(subscribe, getLocale);
   return { locale, setLocale };
-}
-
-export function LocaleProvider({
-  children,
-}: {
-  children: ReactNode;
-}): ReactNode {
-  const { locale } = useLocale();
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-  return children;
 }

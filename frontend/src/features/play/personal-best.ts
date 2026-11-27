@@ -1,4 +1,5 @@
 import { z } from "zod/mini";
+import { readItem, writeItem } from "@/lib/storage";
 
 const storageKey = "wtf.best";
 
@@ -10,9 +11,9 @@ const storedSchema = z.object({
 type Stored = z.infer<typeof storedSchema>;
 
 function read(): Stored | null {
+  const raw = readItem(storageKey);
+  if (raw === null) return null;
   try {
-    const raw = localStorage.getItem(storageKey);
-    if (raw === null) return null;
     const parsed = storedSchema.safeParse(JSON.parse(raw));
     return parsed.success ? parsed.data : null;
   } catch {
@@ -33,10 +34,6 @@ export function recordScore(
   if (score === 0 || (stored && stored.score >= score)) {
     return { best: stored?.score ?? score, isNew: false };
   }
-  try {
-    localStorage.setItem(storageKey, JSON.stringify({ score, runId }));
-  } catch {
-    // Storage can be blocked; the best then lasts for this result only.
-  }
+  writeItem(storageKey, JSON.stringify({ score, runId }));
   return { best: score, isNew: true };
 }

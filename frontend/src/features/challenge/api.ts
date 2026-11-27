@@ -1,5 +1,6 @@
 import { z } from "zod/mini";
 import { entrySchema } from "@/features/leaderboard/api";
+import { runQuery } from "@/features/leaderboard/own-run";
 import type { ApiClient } from "@/lib/api";
 
 const challengeSchema = z.object({
@@ -23,9 +24,8 @@ export function getChallenge(
   quizId: string,
   run: string | null,
 ): Promise<Challenge> {
-  const query = run ? `?run=${encodeURIComponent(run)}` : "";
   return api.get(
-    `/api/quizzes/${encodeURIComponent(quizId)}${query}`,
+    `/api/quizzes/${encodeURIComponent(quizId)}${runQuery(run)}`,
     challengeSchema,
   );
 }

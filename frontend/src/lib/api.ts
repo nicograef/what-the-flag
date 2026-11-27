@@ -45,6 +45,8 @@ const envelopeSchema = z.object({
 
 type Method = "GET" | "POST";
 
+const gatewayStatuses = new Set([502, 503, 504]);
+
 export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
   // Called unbound: the browser's fetch throws "Illegal invocation" when `this` is `deps`.
   const { fetch: send } = deps;
@@ -68,13 +70,18 @@ export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
       throw new ApiError(0, "network", `${method} ${path} failed`, { cause });
     }
 
+    // The edge answers a gateway status with its own body when the backend is down.
+    const unexpected = gatewayStatuses.has(res.status)
+      ? "network"
+      : "invalid_response";
+
     let data: unknown;
     try {
       data = await res.json();
     } catch (cause) {
       throw new ApiError(
         res.status,
-        "invalid_response",
+        unexpected,
         `${method} ${path}: body is no JSON`,
         { cause },
       );
@@ -85,7 +92,7 @@ export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
       if (!envelope.success) {
         throw new ApiError(
           res.status,
-          "invalid_response",
+          unexpected,
           `${method} ${path}: no error envelope`,
         );
       }

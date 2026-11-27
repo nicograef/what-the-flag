@@ -8,7 +8,7 @@ import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
 
 /** The revealed options: the correct one and the player's pick, null for no pick. */
-export interface Marks {
+interface Marks {
   correct: number;
   chosen: number | null;
 }

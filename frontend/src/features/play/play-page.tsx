@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useParams } from "react-router";
 import { Button } from "@/components/ui/button";
+import { isTooFast } from "@/features/play/api";
 import { Countdown } from "@/features/play/countdown";
 import { messages, playError } from "@/features/play/messages";
 import { QuestionCard } from "@/features/play/question-card";
@@ -35,7 +36,7 @@ function RunError({
 function Run({ runId }: { runId: string }): ReactNode {
   const t = useMessages(messages);
   const { locale } = useLocale();
-  const { query, reveal, answering, answerError, answer } = useRun(runId);
+  const { query, reveal, busy, answerError, answer } = useRun(runId);
 
   if (query.isPending) {
     return (
@@ -65,8 +66,7 @@ function Run({ runId }: { runId: string }): ReactNode {
   if (shown) {
     if (shown.correct) feedback = t.correct;
     else if (shown.timedOut) feedback = t.timedOut;
-    // The server counts a pick within 300 ms as wrong, the correct option included.
-    else if (shown.chosenOption === shown.correctOption) feedback = t.tooFast;
+    else if (isTooFast(shown)) feedback = t.tooFast;
     else feedback = t.wrong;
   }
 
@@ -80,9 +80,10 @@ function Run({ runId }: { runId: string }): ReactNode {
       <Countdown
         key={question.position}
         deadline={question.deadline}
+        limitMs={question.limitMs}
         serverNow={state.serverNow}
         receivedAt={receivedAt}
-        paused={answering || reveal !== null}
+        paused={busy}
         onExpire={() => answer(null)}
       />
       <QuestionCard
@@ -94,7 +95,7 @@ function Run({ runId }: { runId: string }): ReactNode {
             ? { correct: shown.correctOption, chosen: shown.chosenOption }
             : null
         }
-        disabled={answering || reveal !== null}
+        disabled={busy}
         onAnswer={answer}
       />
       <p

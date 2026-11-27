@@ -1,7 +1,15 @@
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { ApiClientProvider, type ApiClient } from "@/lib/api";
-import { LocaleProvider } from "@/lib/i18n/locale";
+import { useLocale } from "@/lib/i18n/locale";
+
+function DocumentLang({ children }: { children: ReactNode }): ReactNode {
+  const { locale } = useLocale();
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+  return children;
+}
 
 export function Providers({
   api,
@@ -14,9 +22,9 @@ export function Providers({
 }): ReactNode {
   return (
     <QueryClientProvider client={queryClient}>
-      <LocaleProvider>
+      <DocumentLang>
         <ApiClientProvider client={api}>{children}</ApiClientProvider>
-      </LocaleProvider>
+      </DocumentLang>
     </QueryClientProvider>
   );
 }

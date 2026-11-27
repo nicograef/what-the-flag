@@ -8,24 +8,9 @@ import { messages, playError } from "@/features/play/messages";
 import { ApiError, useApiClient } from "@/lib/api";
 import { useLocale, type Locale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
+import { readItem, writeItem } from "@/lib/storage";
 
 const nameKey = "wtf.name";
-
-function storedName(): string {
-  try {
-    return localStorage.getItem(nameKey) ?? "";
-  } catch {
-    return "";
-  }
-}
-
-function storeName(name: string): void {
-  try {
-    localStorage.setItem(nameKey, name);
-  } catch {
-    // Storage can be blocked; the form then starts empty next time.
-  }
-}
 
 /** Starts a run: on a fresh quiz, or with `quizId` on that quiz. `errorText` words a failed start. */
 export function NameForm({
@@ -39,7 +24,7 @@ export function NameForm({
   const { locale } = useLocale();
   const api = useApiClient();
   const navigate = useNavigate();
-  const [name, setName] = useState(storedName);
+  const [name, setName] = useState(() => readItem(nameKey) ?? "");
   const inputId = useId();
   const hintId = useId();
   const errorId = useId();
@@ -47,7 +32,7 @@ export function NameForm({
     mutationFn: (body: { name: string; quizId?: string }) =>
       startRun(api, body),
     onSuccess: async ({ runId }, { name: started }) => {
-      storeName(started);
+      writeItem(nameKey, started);
       await navigate(`/play/${runId}`);
     },
   });

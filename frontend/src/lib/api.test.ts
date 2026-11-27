@@ -51,6 +51,22 @@ describe("createApiClient", () => {
     });
   });
 
+  it.each([
+    [502, "network"],
+    [503, "network"],
+    [504, "network"],
+    [500, "invalid_response"],
+  ])("turns a %i without JSON into %s", async (status, code) => {
+    const client = createApiClient({
+      fetch: () => Promise.resolve(new Response("", { status })),
+    });
+
+    await expect(client.get("/api/x", okSchema)).rejects.toMatchObject({
+      status,
+      code,
+    });
+  });
+
   it("turns a rejected fetch into a network error", async () => {
     const client = createApiClient({
       fetch: () => Promise.reject(new TypeError("offline")),

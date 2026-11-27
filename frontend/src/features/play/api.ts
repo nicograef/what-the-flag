@@ -39,16 +39,18 @@ const questionSchema = z.object({
   prompt: itemSchema,
   options: z.tuple([itemSchema, itemSchema, itemSchema, itemSchema]),
   deadline: z.iso.datetime({ offset: true }),
+  limitMs: z.int().check(z.positive()),
 });
 
 export type Question = z.infer<typeof questionSchema>;
 
-const missedSchema = z.extend(z.omit(questionSchema, { deadline: true }), {
-  correctOption: optionIndexSchema,
-  chosenOption: z.nullable(optionIndexSchema),
-});
-
-export type Missed = z.infer<typeof missedSchema>;
+const missedSchema = z.extend(
+  z.omit(questionSchema, { deadline: true, limitMs: true }),
+  {
+    correctOption: optionIndexSchema,
+    chosenOption: z.nullable(optionIndexSchema),
+  },
+);
 
 const resultSchema = z.object({
   score: z.int().check(z.minimum(0)),
@@ -85,9 +87,17 @@ const outcomeSchema = z.object({
 
 export type Outcome = z.infer<typeof outcomeSchema>;
 
+/** Whether a wrong answer picked the correct option: the server counts a pick within 300 ms as wrong. */
+export function isTooFast(answer: {
+  correctOption: number;
+  chosenOption: number | null;
+}): boolean {
+  return answer.chosenOption === answer.correctOption;
+}
+
 const startedSchema = z.object({ runId: z.uuid(), quizId: z.uuid() });
 
-export type Started = z.infer<typeof startedSchema>;
+type Started = z.infer<typeof startedSchema>;
 
 export function startRun(
   api: ApiClient,

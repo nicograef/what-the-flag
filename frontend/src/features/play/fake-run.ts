@@ -1,14 +1,14 @@
 import type { Item, QuestionType } from "@/features/play/api";
 import type { FakeApi, Json } from "@/test/fake-api";
 
-export interface FakeQuestion {
+interface FakeQuestion {
   type: QuestionType;
   prompt: Item;
   options: [Item, Item, Item, Item];
   correctOption: number;
 }
 
-export interface FakeRunOptions {
+interface FakeRunOptions {
   name?: string;
   /** The time left on a served question when it is read. */
   remainingMs?: number;
@@ -28,7 +28,7 @@ interface RunRecord {
   } | null;
 }
 
-export const fakeQuizId = "00000000-0000-4000-8000-0000000000aa";
+const fakeQuizId = "00000000-0000-4000-8000-0000000000aa";
 const serverNow = "2026-01-01T12:00:00.000000Z";
 
 function runId(n: number): string {
@@ -73,6 +73,7 @@ export function fakeRun(
           ...wire(questions[run.score]),
           position: run.score,
           deadline,
+          limitMs: 15_000,
         },
         result: null,
       };

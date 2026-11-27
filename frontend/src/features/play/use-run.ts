@@ -14,18 +14,14 @@ import {
 import { useApiClient, type ApiClient } from "@/lib/api";
 
 /** A run state with the `performance.now()` instant it arrived, the base of the countdown. */
-export interface LoadedRun {
+interface LoadedRun {
   state: RunState;
   receivedAt: number;
 }
 
-export const revealMs = 800;
+const revealMs = 800;
 
-export function runQueryOptions(
-  api: ApiClient,
-  runId: string,
-  enabled: boolean,
-) {
+function runQueryOptions(api: ApiClient, runId: string, enabled: boolean) {
   return queryOptions({
     queryKey: ["run", runId],
     queryFn: async (): Promise<LoadedRun> => {
@@ -38,11 +34,12 @@ export function runQueryOptions(
   });
 }
 
-export interface UseRun {
+interface UseRun {
   query: UseQueryResult<LoadedRun>;
   /** The outcome of the last answer while it shows; the query is disabled meanwhile. */
   reveal: Outcome | null;
-  answering: boolean;
+  /** True while an answer is in flight or its outcome shows; the question takes no answer meanwhile. */
+  busy: boolean;
   answerError: Error | null;
   answer: (option: number | null) => void;
 }
@@ -83,7 +80,7 @@ export function useRun(runId: string): UseRun {
   return {
     query,
     reveal,
-    answering: mutation.isPending,
+    busy,
     // An error belongs to the question it answered; a refetch that moves on drops it.
     answerError:
       mutation.variables?.position === question?.position

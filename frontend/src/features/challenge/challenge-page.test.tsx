@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
+import { ownRunState } from "@/features/leaderboard/own-run";
 import { fakeRun, sampleQuestions } from "@/features/play/fake-run";
 import { FakeApi, type Json } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
@@ -44,7 +45,7 @@ it("highlights the requester's own row in the quiz ranking", async () => {
     ]),
   );
 
-  renderRoute(`/q/${quizId}`, { api, state: { runId: ownRun } });
+  renderRoute(`/q/${quizId}`, { api, state: ownRunState(ownRun) });
 
   const table = await screen.findByRole("table", {
     name: "Rangliste dieses Quiz",

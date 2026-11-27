@@ -1,5 +1,5 @@
 /** A recorded request; `route` reads like `"GET /api/health"`. */
-export interface FakeCall {
+interface FakeCall {
   route: string;
   body: unknown;
   init: RequestInit;

@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
+import { ownRunState } from "@/features/leaderboard/own-run";
 import { FakeApi } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
 
@@ -38,7 +39,7 @@ it("highlights the own row named by the router state", async () => {
     ],
   });
 
-  renderRoute("/leaderboard", { api, state: { runId: ownRun } });
+  renderRoute("/leaderboard", { api, state: ownRunState(ownRun) });
 
   const shown = await rows();
   expect(shown.map((r) => r.getAttribute("aria-current"))).toEqual([
