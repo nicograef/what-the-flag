@@ -65,12 +65,19 @@ func (s *statusRecorder) Write(b []byte) (int, error) {
 
 func (s *statusRecorder) Unwrap() http.ResponseWriter { return s.ResponseWriter }
 
+// healthPath is the route the container healthcheck polls.
+const healthPath = "/api/health"
+
 // RequestLog logs one line per request with method, path, status and duration.
+// A successful health check goes unlogged, so the probes do not crowd out the capped log.
 func RequestLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		rec := &statusRecorder{ResponseWriter: w}
 		next.ServeHTTP(rec, r)
+		if r.Method == http.MethodGet && r.URL.Path == healthPath && rec.status == http.StatusOK {
+			return
+		}
 		Logger(r.Context()).Info("request",
 			"method", r.Method,
 			"path", r.URL.Path,

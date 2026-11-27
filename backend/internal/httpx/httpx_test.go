@@ -132,6 +132,32 @@ func TestRecover(t *testing.T) {
 	assertEnvelope(t, rec, 500, "internal")
 }
 
+func TestRequestLog(t *testing.T) {
+	tests := []struct {
+		name   string
+		method string
+		path   string
+		status int
+		logged bool
+	}{
+		{name: "healthy check", method: http.MethodGet, path: "/api/health", status: 200, logged: false},
+		{name: "failed health check", method: http.MethodGet, path: "/api/health", status: 503, logged: true},
+		{name: "other route", method: http.MethodGet, path: "/api/leaderboard", status: 200, logged: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var logs bytes.Buffer
+			h := RequestID(slog.New(slog.NewJSONHandler(&logs, nil)))(RequestLog(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(tt.status)
+			})))
+			h.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(tt.method, tt.path, nil))
+			if got := logs.Len() > 0; got != tt.logged {
+				t.Fatalf("logged = %t, want %t: %s", got, tt.logged, logs.String())
+			}
+		})
+	}
+}
+
 func TestRequireJSON(t *testing.T) {
 	tests := []struct {
 		contentType string
