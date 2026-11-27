@@ -10,7 +10,6 @@
         "de": "Andorra la Vella",
         "en": "Andorra la Vella"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -33,7 +32,6 @@
         "de": "Abu Dhabi",
         "en": "Abu Dhabi"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -56,7 +54,6 @@
         "de": "Kabul",
         "en": "Kabul"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -81,7 +78,6 @@
         "de": "St. John's",
         "en": "St. John's"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -104,7 +100,6 @@
         "de": "Tirana",
         "en": "Tirana"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -127,7 +122,6 @@
         "de": "Jerewan",
         "en": "Yerevan"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [
         "Europe"
@@ -152,7 +146,6 @@
         "de": "Luanda",
         "en": "Luanda"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -175,7 +168,6 @@
         "de": "Buenos Aires",
         "en": "Buenos Aires"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -199,7 +191,6 @@
         "de": "Wien",
         "en": "Vienna"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -222,7 +213,6 @@
         "de": "Canberra",
         "en": "Canberra"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -245,7 +235,6 @@
         "de": "Baku",
         "en": "Baku"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [
         "Europe"
@@ -271,7 +260,6 @@
         "de": "Sarajevo",
         "en": "Sarajevo"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -296,7 +284,6 @@
         "de": "Bridgetown",
         "en": "Bridgetown"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -319,7 +306,6 @@
         "de": "Dhaka",
         "en": "Dhaka"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -342,7 +328,6 @@
         "de": "Brüssel",
         "en": "Brussels"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -367,7 +352,6 @@
         "de": "Ouagadougou",
         "en": "Ouagadougou"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -390,7 +374,6 @@
         "de": "Sofia",
         "en": "Sofia"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -413,7 +396,6 @@
         "de": "Manama",
         "en": "Manama"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -436,7 +418,6 @@
         "de": "Gitega",
         "en": "Gitega"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -460,7 +441,6 @@
         "de": "Porto-Novo",
         "en": "Porto-Novo"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -483,7 +463,6 @@
         "de": "Bandar Seri Begawan",
         "en": "Bandar Seri Begawan"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -507,12 +486,6 @@
         "de": "Sucre",
         "en": "Sucre"
       },
-      "otherCapitals": [
-        {
-          "de": "La Paz",
-          "en": "La Paz"
-        }
-      ],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -538,7 +511,6 @@
         "de": "Brasília",
         "en": "Brasília"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -561,7 +533,6 @@
         "de": "Nassau",
         "en": "Nassau"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -585,7 +556,6 @@
         "de": "Thimphu",
         "en": "Thimphu"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -609,7 +579,6 @@
         "de": "Gaborone",
         "en": "Gaborone"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -633,7 +602,6 @@
         "de": "Minsk",
         "en": "Minsk"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -657,7 +625,6 @@
         "de": "Belmopan",
         "en": "Belmopan"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -681,7 +648,6 @@
         "de": "Ottawa",
         "en": "Ottawa"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -705,7 +671,6 @@
         "de": "Kinshasa",
         "en": "Kinshasa"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -732,7 +697,6 @@
         "de": "Bangui",
         "en": "Bangui"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -756,7 +720,6 @@
         "de": "Brazzaville",
         "en": "Brazzaville"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -781,7 +744,6 @@
         "de": "Bern",
         "en": "Bern"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -807,7 +769,6 @@
         "de": "Yamoussoukro",
         "en": "Yamoussoukro"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -830,7 +791,6 @@
         "de": "Santiago de Chile",
         "en": "Santiago"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -853,7 +813,6 @@
         "de": "Yaoundé",
         "en": "Yaoundé"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -877,7 +836,6 @@
         "de": "Peking",
         "en": "Beijing"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -900,7 +858,6 @@
         "de": "Bogotá",
         "en": "Bogotá"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -923,7 +880,6 @@
         "de": "San José",
         "en": "San José"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -946,7 +902,6 @@
         "de": "Havanna",
         "en": "Havana"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -969,7 +924,6 @@
         "de": "Praia",
         "en": "Praia"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -992,7 +946,6 @@
         "de": "Nikosia",
         "en": "Nicosia"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [
         "Asia"
@@ -1018,7 +971,6 @@
         "de": "Prag",
         "en": "Prague"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1042,7 +994,6 @@
         "de": "Berlin",
         "en": "Berlin"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1065,7 +1016,6 @@
         "de": "Dschibuti",
         "en": "Djibouti"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1089,7 +1039,6 @@
         "de": "Kopenhagen",
         "en": "Copenhagen"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1112,7 +1061,6 @@
         "de": "Roseau",
         "en": "Roseau"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1135,7 +1083,6 @@
         "de": "Santo Domingo",
         "en": "Santo Domingo"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1158,7 +1105,6 @@
         "de": "Algier",
         "en": "Algiers"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1181,7 +1127,6 @@
         "de": "Quito",
         "en": "Quito"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1204,7 +1149,6 @@
         "de": "Tallinn",
         "en": "Tallinn"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1227,7 +1171,6 @@
         "de": "Kairo",
         "en": "Cairo"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [
         "Asia"
@@ -1252,7 +1195,6 @@
         "de": "Asmara",
         "en": "Asmara"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1277,7 +1219,6 @@
         "de": "Madrid",
         "en": "Madrid"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1300,7 +1241,6 @@
         "de": "Addis Abeba",
         "en": "Addis Ababa"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1323,7 +1263,6 @@
         "de": "Helsinki",
         "en": "Helsinki"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1347,7 +1286,6 @@
         "de": "Suva",
         "en": "Suva"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -1372,7 +1310,6 @@
         "de": "Palikir",
         "en": "Palikir"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -1395,7 +1332,6 @@
         "de": "Paris",
         "en": "Paris"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1418,7 +1354,6 @@
         "de": "Libreville",
         "en": "Libreville"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1441,7 +1376,6 @@
         "de": "London",
         "en": "London"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1464,7 +1398,6 @@
         "de": "St. George’s",
         "en": "St. George's"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1487,7 +1420,6 @@
         "de": "Tiflis",
         "en": "Tbilisi"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [
         "Europe"
@@ -1512,7 +1444,6 @@
         "de": "Accra",
         "en": "Accra"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1535,7 +1466,6 @@
         "de": "Banjul",
         "en": "Banjul"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1558,7 +1488,6 @@
         "de": "Conakry",
         "en": "Conakry"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1581,7 +1510,6 @@
         "de": "Ciudad de la Paz",
         "en": "Ciudad de la Paz"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1606,7 +1534,6 @@
         "de": "Athen",
         "en": "Athens"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1629,7 +1556,6 @@
         "de": "Guatemala-Stadt",
         "en": "Guatemala City"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1652,7 +1578,6 @@
         "de": "Bissau",
         "en": "Bissau"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -1675,7 +1600,6 @@
         "de": "Georgetown",
         "en": "Georgetown"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1698,7 +1622,6 @@
         "de": "Tegucigalpa",
         "en": "Tegucigalpa"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1721,7 +1644,6 @@
         "de": "Zagreb",
         "en": "Zagreb"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1744,7 +1666,6 @@
         "de": "Port-au-Prince",
         "en": "Port-au-Prince"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -1768,7 +1689,6 @@
         "de": "Budapest",
         "en": "Budapest"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1791,7 +1711,6 @@
         "de": "Jakarta",
         "en": "Jakarta"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [
         "Oceania"
@@ -1818,7 +1737,6 @@
         "de": "Dublin",
         "en": "Dublin"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1842,7 +1760,6 @@
         "de": "Jerusalem",
         "en": "Jerusalem"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -1866,7 +1783,6 @@
         "de": "Neu-Delhi",
         "en": "New Delhi"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -1891,7 +1807,6 @@
         "de": "Bagdad",
         "en": "Baghdad"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -1916,7 +1831,6 @@
         "de": "Teheran",
         "en": "Tehran"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -1939,7 +1853,6 @@
         "de": "Reykjavík",
         "en": "Reykjavík"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1962,7 +1875,6 @@
         "de": "Rom",
         "en": "Rome"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -1985,7 +1897,6 @@
         "de": "Kingston",
         "en": "Kingston"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -2009,7 +1920,6 @@
         "de": "Amman",
         "en": "Amman"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2032,7 +1942,6 @@
         "de": "Tokio",
         "en": "Tokyo"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2055,7 +1964,6 @@
         "de": "Nairobi",
         "en": "Nairobi"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2079,7 +1987,6 @@
         "de": "Bischkek",
         "en": "Bishkek"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2103,7 +2010,6 @@
         "de": "Phnom Penh",
         "en": "Phnom Penh"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2127,7 +2033,6 @@
         "de": "South Tarawa",
         "en": "South Tarawa"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -2151,7 +2056,6 @@
         "de": "Moroni",
         "en": "Moroni"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2176,7 +2080,6 @@
         "de": "Basseterre",
         "en": "Basseterre"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -2199,7 +2102,6 @@
         "de": "Pjöngjang",
         "en": "Pyongyang"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2222,7 +2124,6 @@
         "de": "Seoul",
         "en": "Seoul"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2245,7 +2146,6 @@
         "de": "Kuweit-Stadt",
         "en": "Kuwait City"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2268,7 +2168,6 @@
         "de": "Astana",
         "en": "Astana"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [
         "Europe"
@@ -2294,7 +2193,6 @@
         "de": "Vientiane",
         "en": "Vientiane"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2317,7 +2215,6 @@
         "de": "Beirut",
         "en": "Beirut"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2341,7 +2238,6 @@
         "de": "Castries",
         "en": "Castries"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -2364,7 +2260,6 @@
         "de": "Vaduz",
         "en": "Vaduz"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2387,12 +2282,6 @@
         "de": "Sri Jayawardenepura Kotte",
         "en": "Sri Jayawardenepura Kotte"
       },
-      "otherCapitals": [
-        {
-          "de": "Colombo",
-          "en": "Colombo"
-        }
-      ],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2416,7 +2305,6 @@
         "de": "Monrovia",
         "en": "Monrovia"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2439,7 +2327,6 @@
         "de": "Maseru",
         "en": "Maseru"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2464,7 +2351,6 @@
         "de": "Vilnius",
         "en": "Vilnius"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2487,7 +2373,6 @@
         "de": "Luxemburg",
         "en": "Luxembourg"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2512,7 +2397,6 @@
         "de": "Riga",
         "en": "Riga"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2535,7 +2419,6 @@
         "de": "Tripolis",
         "en": "Tripoli"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2558,7 +2441,6 @@
         "de": "Rabat",
         "en": "Rabat"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2582,7 +2464,6 @@
         "de": "Monaco",
         "en": "Monaco"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2607,7 +2488,6 @@
         "de": "Kischinau",
         "en": "Chișinău"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2630,7 +2510,6 @@
         "de": "Podgorica",
         "en": "Podgorica"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2653,7 +2532,6 @@
         "de": "Antananarivo",
         "en": "Antananarivo"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2677,7 +2555,6 @@
         "de": "Majuro",
         "en": "Majuro"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -2701,7 +2578,6 @@
         "de": "Skopje",
         "en": "Skopje"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2724,7 +2600,6 @@
         "de": "Bamako",
         "en": "Bamako"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2747,7 +2622,6 @@
         "de": "Naypyidaw",
         "en": "Naypyidaw"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2770,7 +2644,6 @@
         "de": "Ulaanbaatar",
         "en": "Ulaanbaatar"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2793,7 +2666,6 @@
         "de": "Nouakchott",
         "en": "Nouakchott"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2816,7 +2688,6 @@
         "de": "Valletta",
         "en": "Valletta"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -2840,7 +2711,6 @@
         "de": "Port Louis",
         "en": "Port Louis"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2865,7 +2735,6 @@
         "de": "Malé",
         "en": "Malé"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2888,7 +2757,6 @@
         "de": "Lilongwe",
         "en": "Lilongwe"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2912,7 +2780,6 @@
         "de": "Mexiko-Stadt",
         "en": "Mexico City"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -2935,7 +2802,6 @@
         "de": "Kuala Lumpur",
         "en": "Kuala Lumpur"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -2959,7 +2825,6 @@
         "de": "Maputo",
         "en": "Maputo"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -2982,7 +2847,6 @@
         "de": "Windhoek",
         "en": "Windhoek"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3013,7 +2877,6 @@
         "de": "Niamey",
         "en": "Niamey"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3036,7 +2899,6 @@
         "de": "Abuja",
         "en": "Abuja"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3059,7 +2921,6 @@
         "de": "Managua",
         "en": "Managua"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -3084,7 +2945,6 @@
         "de": "Amsterdam",
         "en": "Amsterdam"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3107,7 +2967,6 @@
         "de": "Oslo",
         "en": "Oslo"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3132,7 +2991,6 @@
         "de": "Kathmandu",
         "en": "Kathmandu"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3155,7 +3013,6 @@
         "de": "Yaren",
         "en": "Yaren"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -3179,7 +3036,6 @@
         "de": "Wellington",
         "en": "Wellington"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -3203,7 +3059,6 @@
         "de": "Maskat",
         "en": "Muscat"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3226,7 +3081,6 @@
         "de": "Panama-Stadt",
         "en": "Panama City"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -3250,7 +3104,6 @@
         "de": "Lima",
         "en": "Lima"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -3275,7 +3128,6 @@
         "de": "Port Moresby",
         "en": "Port Moresby"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -3300,7 +3152,6 @@
         "de": "Manila",
         "en": "Manila"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3324,7 +3175,6 @@
         "de": "Islamabad",
         "en": "Islamabad"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3348,7 +3198,6 @@
         "de": "Warschau",
         "en": "Warsaw"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3371,12 +3220,6 @@
         "de": "Ramallah",
         "en": "Ramallah"
       },
-      "otherCapitals": [
-        {
-          "de": "Ostjerusalem",
-          "en": "East Jerusalem"
-        }
-      ],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3401,7 +3244,6 @@
         "de": "Lissabon",
         "en": "Lisbon"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3424,7 +3266,6 @@
         "de": "Ngerulmud",
         "en": "Ngerulmud"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -3448,7 +3289,6 @@
         "de": "Asunción",
         "en": "Asunción"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -3472,7 +3312,6 @@
         "de": "Doha",
         "en": "Doha"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3495,7 +3334,6 @@
         "de": "Bukarest",
         "en": "Bucharest"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3520,7 +3358,6 @@
         "de": "Belgrad",
         "en": "Belgrade"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3543,7 +3380,6 @@
         "de": "Moskau",
         "en": "Moscow"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [
         "Asia"
@@ -3568,7 +3404,6 @@
         "de": "Kigali",
         "en": "Kigali"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3593,7 +3428,6 @@
         "de": "Riad",
         "en": "Riyadh"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3616,7 +3450,6 @@
         "de": "Honiara",
         "en": "Honiara"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -3639,7 +3472,6 @@
         "de": "Victoria",
         "en": "Victoria"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3664,7 +3496,6 @@
         "de": "Chartum",
         "en": "Khartoum"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3688,7 +3519,6 @@
         "de": "Stockholm",
         "en": "Stockholm"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3711,7 +3541,6 @@
         "de": "Singapur",
         "en": "Singapore"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3737,7 +3566,6 @@
         "de": "Ljubljana",
         "en": "Ljubljana"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3760,7 +3588,6 @@
         "de": "Bratislava",
         "en": "Bratislava"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3783,7 +3610,6 @@
         "de": "Freetown",
         "en": "Freetown"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3806,7 +3632,6 @@
         "de": "San Marino",
         "en": "San Marino"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -3829,7 +3654,6 @@
         "de": "Dakar",
         "en": "Dakar"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3852,7 +3676,6 @@
         "de": "Mogadischu",
         "en": "Mogadishu"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3876,7 +3699,6 @@
         "de": "Paramaribo",
         "en": "Paramaribo"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -3899,7 +3721,6 @@
         "de": "Juba",
         "en": "Juba"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3922,7 +3743,6 @@
         "de": "São Tomé",
         "en": "São Tomé"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -3945,7 +3765,6 @@
         "de": "San Salvador",
         "en": "San Salvador"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -3970,7 +3789,6 @@
         "de": "Damaskus",
         "en": "Damascus"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -3993,12 +3811,6 @@
         "de": "Mbabane",
         "en": "Mbabane"
       },
-      "otherCapitals": [
-        {
-          "de": "Lobamba",
-          "en": "Lobamba"
-        }
-      ],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4023,7 +3835,6 @@
         "de": "N’Djamena",
         "en": "N'Djamena"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4049,7 +3860,6 @@
         "de": "Lomé",
         "en": "Lomé"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4072,7 +3882,6 @@
         "de": "Bangkok",
         "en": "Bangkok"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4095,7 +3904,6 @@
         "de": "Duschanbe",
         "en": "Dushanbe"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4119,7 +3927,6 @@
         "de": "Dili",
         "en": "Dili"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4143,7 +3950,6 @@
         "de": "Aschgabat",
         "en": "Ashgabat"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4167,7 +3973,6 @@
         "de": "Tunis",
         "en": "Tunis"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4190,7 +3995,6 @@
         "de": "Nukuʻalofa",
         "en": "Nukuʻalofa"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -4214,7 +4018,6 @@
         "de": "Ankara",
         "en": "Ankara"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [
         "Europe"
@@ -4239,7 +4042,6 @@
         "de": "Port of Spain",
         "en": "Port of Spain"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -4262,7 +4064,6 @@
         "de": "Funafuti",
         "en": "Funafuti"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -4286,7 +4087,6 @@
         "de": "Taipeh",
         "en": "Taipei"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4309,7 +4109,6 @@
         "de": "Dodoma",
         "en": "Dodoma"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4333,7 +4132,6 @@
         "de": "Kiew",
         "en": "Kyiv"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -4356,7 +4154,6 @@
         "de": "Kampala",
         "en": "Kampala"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4380,7 +4177,6 @@
         "de": "Washington, D.C.",
         "en": "Washington, D.C."
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -4403,7 +4199,6 @@
         "de": "Montevideo",
         "en": "Montevideo"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -4426,7 +4221,6 @@
         "de": "Taschkent",
         "en": "Tashkent"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4450,7 +4244,6 @@
         "de": "Vatikanstadt",
         "en": "Vatican City"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -4474,7 +4267,6 @@
         "de": "Kingstown",
         "en": "Kingstown"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -4497,7 +4289,6 @@
         "de": "Caracas",
         "en": "Caracas"
       },
-      "otherCapitals": [],
       "region": "Americas",
       "otherRegions": [],
       "languages": [
@@ -4520,7 +4311,6 @@
         "de": "Hanoi",
         "en": "Hanoi"
       },
-      "otherCapitals": [],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4543,7 +4333,6 @@
         "de": "Port Vila",
         "en": "Port Vila"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -4568,7 +4357,6 @@
         "de": "Apia",
         "en": "Apia"
       },
-      "otherCapitals": [],
       "region": "Oceania",
       "otherRegions": [],
       "languages": [
@@ -4592,7 +4380,6 @@
         "de": "Pristina",
         "en": "Pristina"
       },
-      "otherCapitals": [],
       "region": "Europe",
       "otherRegions": [],
       "languages": [
@@ -4616,12 +4403,6 @@
         "de": "Sanaa",
         "en": "Sanaa"
       },
-      "otherCapitals": [
-        {
-          "de": "Aden",
-          "en": "Aden"
-        }
-      ],
       "region": "Asia",
       "otherRegions": [],
       "languages": [
@@ -4644,16 +4425,6 @@
         "de": "Pretoria",
         "en": "Pretoria"
       },
-      "otherCapitals": [
-        {
-          "de": "Bloemfontein",
-          "en": "Bloemfontein"
-        },
-        {
-          "de": "Kapstadt",
-          "en": "Cape Town"
-        }
-      ],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4686,7 +4457,6 @@
         "de": "Lusaka",
         "en": "Lusaka"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [
@@ -4709,7 +4479,6 @@
         "de": "Harare",
         "en": "Harare"
       },
-      "otherCapitals": [],
       "region": "Africa",
       "otherRegions": [],
       "languages": [

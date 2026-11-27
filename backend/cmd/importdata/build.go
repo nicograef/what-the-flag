@@ -90,17 +90,16 @@ func build(src sources) (country.Dataset, []string) {
 		}
 		c := capitals[code]
 		countries = append(countries, country.Country{
-			Code:          code,
-			Name:          names[code],
-			Capital:       c.primary,
-			OtherCapitals: c.others,
-			Region:        b.byCode[code].Region,
-			OtherRegions:  append([]string{}, otherRegions[code]...),
-			Languages:     languages[code],
-			Currencies:    currencies[code],
-			Fame:          fame[code],
-			FlagKey:       country.FlagKey(code),
-			Lookalikes:    append([]string{}, lookalikes[code]...),
+			Code:         code,
+			Name:         names[code],
+			Capital:      c.primary,
+			Region:       b.byCode[code].Region,
+			OtherRegions: append([]string{}, otherRegions[code]...),
+			Languages:    languages[code],
+			Currencies:   currencies[code],
+			Fame:         fame[code],
+			FlagKey:      country.FlagKey(code),
+			Lookalikes:   append([]string{}, lookalikes[code]...),
 		})
 	}
 	labels := country.Labels{Languages: map[string]country.Names{}, Currencies: map[string]country.Names{}, Regions: map[string]country.Names{}}
@@ -255,14 +254,33 @@ func (b *builder) capitals() map[string]capitalSet {
 				continue
 			}
 		}
-		set := capitalSet{primary: label[primary], others: []country.Names{}}
+		set := capitalSet{primary: label[primary]}
 		for _, qid := range qids {
 			if qid != primary {
 				set.others = append(set.others, label[qid])
 			}
 		}
-		slices.SortFunc(set.others, func(x, y country.Names) int { return strings.Compare(x.En, y.En) })
 		sets[code] = set
+	}
+
+	// A question about a primary capital must not have a second country's other capital as a true option.
+	primaryOf := map[country.Names]string{}
+	for code, set := range sets {
+		primaryOf[country.Names{De: set.primary.De}] = code
+		primaryOf[country.Names{En: set.primary.En}] = code
+	}
+	for _, code := range b.pool {
+		for _, other := range sets[code].others {
+			if other.De == "" || other.En == "" {
+				b.p.add("%s: other capital %+v lacks a label", code, other)
+				continue
+			}
+			for _, k := range []country.Names{{De: other.De}, {En: other.En}} {
+				if owner, ok := primaryOf[k]; ok {
+					b.p.add("%s: other capital %q is the primary capital of %s", code, k.De+k.En, owner)
+				}
+			}
+		}
 	}
 	return sets
 }
@@ -482,11 +500,6 @@ func validate(ds country.Dataset, p *problems) {
 			}
 			owner[k] = c.Code
 		}
-		for _, other := range c.OtherCapitals {
-			if other.De == "" || other.En == "" {
-				p.add("%s: other capital %+v lacks a label", c.Code, other)
-			}
-		}
 		if _, ok := ds.Labels.Regions[c.Region]; !ok {
 			p.add("%s: region %q is not one of %v", c.Code, c.Region, slices.Sorted(maps.Keys(regionLabels)))
 		}
@@ -502,16 +515,6 @@ func validate(ds country.Dataset, p *problems) {
 		for _, other := range c.Lookalikes {
 			if !slices.Contains(byCode[other].Lookalikes, c.Code) {
 				p.add("%s: lookalike %s does not list it back", c.Code, other)
-			}
-		}
-	}
-	// A question about a primary capital must not have a second country's other capital as a true option.
-	for _, c := range countries {
-		for _, other := range c.OtherCapitals {
-			for _, k := range []labelKey{{"primary-capital de", other.De}, {"primary-capital en", other.En}} {
-				if prev, ok := owner[k]; ok {
-					p.add("%s: other capital %q is the primary capital of %s", c.Code, k.label, prev)
-				}
 			}
 		}
 	}

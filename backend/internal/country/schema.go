@@ -14,17 +14,16 @@ type Names struct {
 
 // Country is one pool entry of dataset/countries.json, its fields in file order.
 type Country struct {
-	Code          string   `json:"code"`
-	Name          Names    `json:"name"`
-	Capital       Names    `json:"capital"`
-	OtherCapitals []Names  `json:"otherCapitals"`
-	Region        string   `json:"region"`
-	OtherRegions  []string `json:"otherRegions"` // regions the country is also counted in, never a wrong option for it
-	Languages     []string `json:"languages"`
-	Currencies    []string `json:"currencies"`
-	Fame          int      `json:"fame"`
-	FlagKey       string   `json:"flagKey"`
-	Lookalikes    []string `json:"lookalikes"`
+	Code         string   `json:"code"`
+	Name         Names    `json:"name"`
+	Capital      Names    `json:"capital"`
+	Region       string   `json:"region"`
+	OtherRegions []string `json:"otherRegions"` // regions the country is also counted in, never a wrong option for it
+	Languages    []string `json:"languages"`
+	Currencies   []string `json:"currencies"`
+	Fame         int      `json:"fame"`
+	FlagKey      string   `json:"flagKey"`
+	Lookalikes   []string `json:"lookalikes"`
 }
 
 // Labels names every attribute code the pool uses, per kind: CLDR language codes,
