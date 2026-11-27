@@ -22,6 +22,7 @@ linters:
     - nolintlint
     - forbidigo
     - exhaustive
+    - depguard
   exclusions:
     rules:
       # Contract tests hand each response to decode or expectError, which close it;
@@ -30,6 +31,23 @@ linters:
         linters:
           - bodyclose
   settings:
+    depguard:
+      rules:
+        # The quiz core imports neither HTTP nor database code; its adapters live in subpackages.
+        quiz-domain:
+          files:
+            - "**/internal/quiz/*.go"
+          deny:
+            - pkg: net/http
+              desc: the quiz core is pure; HTTP belongs in internal/quiz/httpapi
+            - pkg: github.com/jackc/pgx
+              desc: the quiz core is pure; Postgres belongs in internal/quiz/postgres
+            - pkg: github.com/nicograef/what-the-flag/internal/httpx
+              desc: the quiz core is pure; HTTP belongs in internal/quiz/httpapi
+            - pkg: github.com/nicograef/what-the-flag/internal/postgres
+              desc: the quiz core is pure; Postgres belongs in internal/quiz/postgres
+            - pkg: github.com/nicograef/what-the-flag/internal/quiz/postgres
+              desc: the core defines ports; the adapter depends on the core, not the reverse
     gosec:
       excludes:
         - G115 # integer-conversion overflow: false positives on bounded casts
