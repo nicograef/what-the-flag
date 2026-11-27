@@ -115,7 +115,7 @@ function Run({ runId }: { runId: string }): ReactNode {
   } else if (shown) status = { text: t.wrong, tone: "danger" };
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col">
+    <section className="flex min-h-0 flex-1 flex-col pb-[max(1rem,env(safe-area-inset-bottom))]">
       {failure}
       <div className="flex items-center justify-between">
         <h1 className="sr-only">{state.name}</h1>

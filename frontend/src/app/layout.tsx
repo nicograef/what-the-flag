@@ -13,9 +13,7 @@ export function Layout(): ReactNode {
       <main
         className={cn(
           "mx-auto flex w-full max-w-md flex-1 flex-col px-4 pt-4",
-          playing
-            ? "min-h-0 overflow-y-auto overscroll-y-contain pb-[max(1rem,env(safe-area-inset-bottom))]"
-            : "pb-8",
+          playing ? "min-h-0 overflow-y-auto overscroll-y-contain" : "pb-8",
         )}
       >
         <Outlet />

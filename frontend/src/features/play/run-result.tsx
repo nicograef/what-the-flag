@@ -230,7 +230,7 @@ export function RunResult({
           />
         </Link>
       </Card>
-      <div className="sticky bottom-0 -mx-4 mt-auto flex flex-col gap-2 bg-background/85 px-4 pt-3 pb-1 backdrop-blur-md">
+      <div className="sticky bottom-0 -mx-4 mt-auto flex flex-col gap-2 bg-background/85 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md">
         {again.isError && (
           <p role="alert" className="text-sm text-destructive">
             {playError(again.error, locale)}
