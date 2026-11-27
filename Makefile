@@ -166,13 +166,14 @@ db-migrate:    ## Apply pending migrations to the `make db` database
 PSQL_DEV = docker compose exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
 PSQL_PROD = docker compose -f docker-compose.prod.yml exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
 
-# hide-run sets hidden on run $(RUN) through the psql command $(1), and fails on a malformed or unknown id.
+# hide-run sets hidden on run RUN through the psql command $(1), and fails on a malformed or unknown id.
+# RUN reaches the shell only as the quoted variable "$$RUN" (the top-level `export`), never as recipe text.
 define hide-run
-@echo "$(RUN)" | grep -Eqi '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$$' \
-  || { echo "Error: set RUN=<uuid> (got '$(RUN)')" >&2; exit 1; }
+@printf '%s' "$$RUN" | tr '\n' ' ' | grep -Eqi '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$$' \
+  || { printf "Error: set RUN=<uuid> (got '%s')\n" "$$RUN" >&2; exit 1; }
 @echo "UPDATE runs SET hidden = true WHERE id = :'run' RETURNING id;" \
-  | $(1) -qtA -v run=$(RUN) | grep . \
-  || { echo "Error: no run $(RUN)" >&2; exit 1; }
+  | $(1) -qtA -v run="$$RUN" | grep . \
+  || { printf 'Error: no run %s\n' "$$RUN" >&2; exit 1; }
 endef
 
 .PHONY: stats hide
