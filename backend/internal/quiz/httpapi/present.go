@@ -53,9 +53,19 @@ type question struct {
 }
 
 type result struct {
-	Score     int     `json:"score"`
-	EndReason string  `json:"endReason"`
-	Last      *missed `json:"last"`
+	Score      int     `json:"score"`
+	EndReason  string  `json:"endReason"`
+	Last       *missed `json:"last"`
+	QuizRank   int     `json:"quizRank"`
+	GlobalRank *int    `json:"globalRank"`
+}
+
+// entry is a leaderboard row; own is present only on the requester's row.
+type entry struct {
+	Rank  int    `json:"rank"`
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+	Own   bool   `json:"own,omitempty"`
 }
 
 type missed struct {
@@ -101,7 +111,12 @@ func (p *presenter) state(st quiz.RunState) (runState, error) {
 	}
 	if st.Result != nil {
 		out.Status = "finished"
-		out.Result = &result{Score: st.Result.Score, EndReason: string(st.Result.EndReason)}
+		out.Result = &result{
+			Score:      st.Result.Score,
+			EndReason:  string(st.Result.EndReason),
+			QuizRank:   st.Result.QuizRank,
+			GlobalRank: st.Result.GlobalRank,
+		}
 		if last := st.Result.Last; last != nil {
 			prompt, options, err := p.question(last.Question)
 			if err != nil {
@@ -190,4 +205,12 @@ func presentOutcome(o quiz.Outcome) outcome {
 		Finished:      o.Finished,
 		Score:         o.Score,
 	}
+}
+
+func presentEntries(es []quiz.Entry) []entry {
+	out := make([]entry, len(es))
+	for i, e := range es {
+		out[i] = entry{Rank: e.Rank, Name: e.Name, Score: e.Score, Own: e.Own}
+	}
+	return out
 }

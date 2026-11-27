@@ -30,11 +30,11 @@ func New(d Deps) http.Handler {
 	if err != nil {
 		panic(err)
 	}
-	svc := quiz.NewService(quizpg.NewRepository(d.Pool), nil, cat, systemClock{}, quizpg.NewRand())
+	svc := quiz.NewService(quizpg.NewRepository(d.Pool), quizpg.NewLeaderboards(d.Pool), cat, systemClock{}, quizpg.NewRand())
 
 	mux := http.NewServeMux()
 	health.NewHandler(d.Pool).Register(mux)
-	httpapi.NewHandler(svc, cat).Register(mux)
+	httpapi.NewHandler(svc, cat, httpapi.NewLimits(time.Now)).Register(mux)
 	mux.HandleFunc("/api/", httpx.NotFound)
 	return httpx.Chain(mux,
 		httpx.RequestID(d.Log),

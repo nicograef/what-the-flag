@@ -160,13 +160,10 @@ func (m *memory) Ranks(_ context.Context, id RunID, now time.Time) (Ranks, error
 	if !ok {
 		return Ranks{}, ErrRunNotFound
 	}
+	// A run's rank is one more than the visible ended runs of its list with a higher score.
 	rankIn := func(keep func(*Run) bool) int {
-		runs, ranks := m.ranking(now, keep)
-		i := slices.Index(runs, r)
-		if i < 0 {
-			return 0
-		}
-		return ranks[i]
+		runs, _ := m.ranking(now, keep)
+		return 1 + len(slices.DeleteFunc(runs, func(o *Run) bool { return o.Score <= r.Score }))
 	}
 	ranks := Ranks{Quiz: rankIn(func(o *Run) bool { return o.QuizID == r.QuizID })}
 	if r.Creator {

@@ -42,10 +42,19 @@ type Served struct {
 }
 
 // Result is how a run ended; Last is the missed question, nil for a completed run.
+// GlobalRank is nil for a run from a challenge link.
 type Result struct {
-	Score     int
-	EndReason EndReason
-	Last      *Missed
+	Score      int
+	EndReason  EndReason
+	Last       *Missed
+	QuizRank   int
+	GlobalRank *int
+}
+
+// Challenge is a quiz as its challenge page shows it: the creator's run and the quiz's list.
+type Challenge struct {
+	Creator CreatorView
+	Top     []Entry
 }
 
 // Missed is the question that ended a run; Chosen is nil for a timeout.
@@ -113,7 +122,39 @@ func (s *Service) State(ctx context.Context, id RunID) (RunState, error) {
 		st, err = s.state(uow, r, now)
 		return err
 	})
-	return st, err
+	if err != nil || st.Result == nil {
+		return st, err
+	}
+	// Ranks read after the commit, so they see the run's final score.
+	ranks, err := s.boards.Ranks(ctx, id, st.Now)
+	if err != nil {
+		return RunState{}, fmt.Errorf("ranks: %w", err)
+	}
+	st.Result.QuizRank, st.Result.GlobalRank = ranks.Quiz, ranks.Global
+	return st, nil
+}
+
+// Challenge returns a quiz's creator run and its list; own marks the requester's row.
+func (s *Service) Challenge(ctx context.Context, id QuizID, own *RunID) (Challenge, error) {
+	now := s.now()
+	creator, err := s.boards.Creator(ctx, id, now)
+	if err != nil {
+		return Challenge{}, err
+	}
+	top, err := s.boards.Quiz(ctx, id, now, own)
+	if err != nil {
+		return Challenge{}, fmt.Errorf("quiz list: %w", err)
+	}
+	return Challenge{Creator: creator, Top: top}, nil
+}
+
+// Global returns the global list; own marks the requester's row.
+func (s *Service) Global(ctx context.Context, own *RunID) ([]Entry, error) {
+	top, err := s.boards.Global(ctx, s.now(), own)
+	if err != nil {
+		return nil, fmt.Errorf("global list: %w", err)
+	}
+	return top, nil
 }
 
 // serveNext serves the stored question at the run's next position, generating and storing it first if needed.

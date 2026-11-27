@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 	"testing"
 	"time"
 
@@ -50,9 +51,34 @@ type missed struct {
 }
 
 type result struct {
-	Score     int     `json:"score"`
-	EndReason string  `json:"endReason"`
-	Last      *missed `json:"last"`
+	Score      int     `json:"score"`
+	EndReason  string  `json:"endReason"`
+	Last       *missed `json:"last"`
+	QuizRank   int     `json:"quizRank"`
+	GlobalRank *int    `json:"globalRank"`
+}
+
+type entry struct {
+	Rank  int    `json:"rank"`
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+	Own   bool   `json:"own"`
+}
+
+type creatorView struct {
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+	Ended bool   `json:"ended"`
+}
+
+type challenge struct {
+	ID      string      `json:"id"`
+	Creator creatorView `json:"creator"`
+	Top     []entry     `json:"top"`
+}
+
+type leaderboard struct {
+	Top []entry `json:"top"`
 }
 
 type runState struct {
@@ -209,7 +235,8 @@ func TestRun(t *testing.T) {
 
 	end := readState(t, c, s.RunID)
 	if end.Status != "finished" || end.Question != nil || end.Result == nil ||
-		end.Result.Score != 2 || end.Result.EndReason != "wrong" || end.Result.Last == nil {
+		end.Result.Score != 2 || end.Result.EndReason != "wrong" || end.Result.Last == nil ||
+		end.Result.QuizRank != 1 || end.Result.GlobalRank == nil || *end.Result.GlobalRank < 1 {
 		t.Fatalf("final state = %+v", end)
 	}
 	if last := end.Result.Last; last.Position != 2 || last.CorrectOption != right ||
@@ -278,4 +305,74 @@ func TestRunOnQuiz(t *testing.T) {
 	if qa == nil || qb == nil || qa.Type != qb.Type || qa.Prompt != qb.Prompt || qa.Options != qb.Options {
 		t.Fatalf("challenger question = %+v, want the creator's %+v", qb, qa)
 	}
+}
+
+// answerWrong ends a run with a wrong answer at position.
+func answerWrong(t *testing.T, c *client, runID string, position int) outcome {
+	t.Helper()
+	return answer(t, c, runID, position, new((correctOption(t, runID, position)+1)%4))
+}
+
+func TestChallenge(t *testing.T) {
+	srv := newServer(t)
+	first, second := newClient(t, srv), newClient(t, srv)
+	a := startRun(t, first, map[string]any{"name": "creator"})
+	readState(t, first, a.RunID)
+
+	view := decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
+	if view.ID != a.QuizID || view.Creator != (creatorView{Name: "creator"}) || len(view.Top) != 0 {
+		t.Fatalf("view while the creator plays = %+v", view)
+	}
+
+	answerCorrectly(t, first, a.RunID, 0)
+	readState(t, first, a.RunID)
+	answerWrong(t, first, a.RunID, 1)
+	view = decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
+	if view.Creator != (creatorView{Name: "creator", Score: 1, Ended: true}) ||
+		len(view.Top) != 1 || view.Top[0] != (entry{Rank: 1, Name: "creator", Score: 1}) {
+		t.Fatalf("view after the creator ended = %+v", view)
+	}
+
+	b := startRun(t, second, map[string]any{"name": "challenger", "quizId": a.QuizID})
+	readState(t, second, b.RunID)
+	answerWrong(t, second, b.RunID, 0)
+	res := readState(t, second, b.RunID).Result
+	if res == nil || res.QuizRank != 2 || res.GlobalRank != nil {
+		t.Fatalf("challenger result = %+v, want quiz rank 2 and no global rank", res)
+	}
+
+	view = decodeQuiz[challenge](t, second.get("/api/quizzes/"+a.QuizID+"?run="+b.RunID), http.StatusOK)
+	want := []entry{{Rank: 1, Name: "creator", Score: 1}, {Rank: 2, Name: "challenger", Own: true}}
+	if len(view.Top) != 2 || view.Top[0] != want[0] || view.Top[1] != want[1] {
+		t.Fatalf("quiz list = %+v, want %+v", view.Top, want)
+	}
+	global := decodeQuiz[leaderboard](t, second.get("/api/leaderboard?run="+b.RunID), http.StatusOK)
+	for _, e := range global.Top {
+		if e.Own {
+			t.Fatalf("global list holds the challenger's run: %+v", e)
+		}
+	}
+
+	const unknown = "00000000-0000-4000-8000-000000000000"
+	expectError(t, first.get("/api/quizzes/"+unknown), http.StatusNotFound, "quiz_not_found")
+	expectError(t, first.get("/api/quizzes/nope"), http.StatusNotFound, "quiz_not_found")
+	decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID+"?run=nope"), http.StatusOK)
+}
+
+func TestRateLimit(t *testing.T) {
+	srv := newServer(t)
+	c := newClient(t, srv)
+	for i := range 60 {
+		if resp := c.post("/api/runs", map[string]any{"name": "limit"}); resp.StatusCode != http.StatusCreated {
+			t.Fatalf("start %d: status %d, want 201", i+1, resp.StatusCode)
+		} else {
+			_ = resp.Body.Close()
+		}
+	}
+	resp := c.post("/api/runs", map[string]any{"name": "limit"})
+	if retry, err := strconv.Atoi(resp.Header.Get("Retry-After")); err != nil || retry < 1 {
+		t.Fatalf("Retry-After = %q, want whole seconds", resp.Header.Get("Retry-After"))
+	}
+	expectError(t, resp, http.StatusTooManyRequests, "rate_limited")
+	startRun(t, newClient(t, srv), map[string]any{"name": "other"})
 }
