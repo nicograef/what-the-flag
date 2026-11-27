@@ -8,7 +8,11 @@ tool (
 	golang.org/x/vuln/cmd/govulncheck
 )
 
-require github.com/jackc/pgx/v5 v5.13.0
+require (
+	github.com/google/uuid v1.6.0
+	github.com/jackc/pgx/v5 v5.13.0
+	golang.org/x/text v0.44.0
+)
 
 require (
 	cel.dev/expr v0.25.1 // indirect
@@ -49,7 +53,6 @@ require (
 	golang.org/x/sync v0.25.0 // indirect
 	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/telemetry v0.0.0-20261116191925-e77a43154acb // indirect
-	golang.org/x/text v0.44.0 // indirect
 	golang.org/x/tools v0.53.0 // indirect
 	golang.org/x/vuln v1.10.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260120221211-b8f7ae30c516 // indirect
