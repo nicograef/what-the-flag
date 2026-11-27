@@ -66,7 +66,7 @@ export function Countdown({
         aria-hidden="true"
         className="w-10 text-right text-sm tabular-nums text-muted-foreground"
       >
-        {seconds} s
+        {t.secondsShort(seconds)}
       </span>
     </div>
   );

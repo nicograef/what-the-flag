@@ -19,6 +19,7 @@ export const messages = defineMessages<{
   flagOption: (n: number) => string;
   timeLeft: string;
   seconds: (s: number) => string;
+  secondsShort: (s: number) => string;
   correct: string;
   wrong: string;
   timedOut: string;
@@ -79,6 +80,7 @@ export const messages = defineMessages<{
     flagOption: (n) => `Flagge ${n}`,
     timeLeft: "Verbleibende Zeit",
     seconds: (s) => `${s} Sekunden`,
+    secondsShort: (s) => `${s} s`,
     correct: "Richtig!",
     wrong: "Leider falsch.",
     timedOut: "Die Zeit ist abgelaufen.",
@@ -148,6 +150,7 @@ export const messages = defineMessages<{
     flagOption: (n) => `Flag ${n}`,
     timeLeft: "Time left",
     seconds: (s) => `${s} seconds`,
+    secondsShort: (s) => `${s} s`,
     correct: "Correct!",
     wrong: "Sorry, that's wrong.",
     timedOut: "Time is up.",
