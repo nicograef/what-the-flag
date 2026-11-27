@@ -28,7 +28,6 @@ type Run struct {
 	StartedAt  time.Time
 	FinishedAt *time.Time
 	EndReason  EndReason
-	Hidden     bool
 	Answers    []Answer
 }
 

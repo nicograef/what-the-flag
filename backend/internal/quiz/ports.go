@@ -44,8 +44,8 @@ type Repository interface {
 type UnitOfWork interface {
 	Run() *Run
 	Question(position int) (Question, bool, error)
-	// AddQuestion stores q unless another run stored that position first, and returns the stored question.
-	AddQuestion(position int, q Question) (Question, error)
+	// AddQuestion stores q unless another run stored that position first.
+	AddQuestion(position int, q Question) error
 	// Targets returns the targets of the quiz's stored questions.
 	Targets() (map[string]bool, error)
 	SaveRun(r *Run) error

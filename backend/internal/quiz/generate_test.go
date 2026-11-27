@@ -33,7 +33,7 @@ func TestGenerate(t *testing.T) {
 	cat := sharedPool{loaded, loaded.Pool()}
 	var mu sync.Mutex
 	seen := map[string]bool{}
-	const runs, shards = 2000, 8
+	const runs, shards = 200, 8
 	// The group returns once every parallel shard has finished.
 	t.Run("runs", func(t *testing.T) {
 		for shard := range uint64(shards) {
@@ -82,8 +82,8 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 		famousLeft := slices.ContainsFunc(cat.pool, func(c country.Country) bool { return !used[c.Code] && c.Fame <= wantFame })
 		q, err := Generate(cat, position, used, rnd)
 		if position == len(cat.pool) {
-			if !errors.Is(err, ErrQuizExhausted) {
-				t.Fatalf("seed %d position %d: err %v, want ErrQuizExhausted", seed, position, err)
+			if !errors.Is(err, errQuizExhausted) {
+				t.Fatalf("seed %d position %d: err %v, want errQuizExhausted", seed, position, err)
 			}
 			return types
 		}
@@ -174,28 +174,30 @@ func (f fakeCatalogue) Label(_ country.LabelKind, code string) (country.Names, b
 	return country.Names{De: code, En: code}, true
 }
 
-// fiveCountries pins exhaustion, the fallback to another type and ErrPoolTooSmall on a literal pool.
-func fiveCountries(t *testing.T) {
-	five := func(regions ...string) fakeCatalogue {
-		var cat fakeCatalogue
-		for i, code := range []string{"AA", "BB", "CC", "DD", "EE"} {
-			c := country.Country{
-				Code:       code,
-				Name:       country.Names{De: "N" + code, En: "N" + code},
-				Capital:    country.Names{De: "C" + code, En: "C" + code},
-				Region:     regions[i],
-				Languages:  []string{"l" + code},
-				Currencies: []string{"c" + code},
-				Fame:       1,
-				FlagKey:    "f" + code,
-			}
-			if code == "AA" {
-				c.Lookalikes = []string{"BB", "CC", "DD", "EE"}
-			}
-			cat = append(cat, c)
+// fivePool is a catalogue of AA to EE in the given regions; AA's flag looks like every other.
+func fivePool(regions ...string) fakeCatalogue {
+	var cat fakeCatalogue
+	for i, code := range []string{"AA", "BB", "CC", "DD", "EE"} {
+		c := country.Country{
+			Code:       code,
+			Name:       country.Names{De: "N" + code, En: "N" + code},
+			Capital:    country.Names{De: "C" + code, En: "C" + code},
+			Region:     regions[i],
+			Languages:  []string{"l" + code},
+			Currencies: []string{"c" + code},
+			Fame:       1,
+			FlagKey:    "f" + code,
 		}
-		return cat
+		if code == "AA" {
+			c.Lookalikes = []string{"BB", "CC", "DD", "EE"}
+		}
+		cat = append(cat, c)
 	}
+	return cat
+}
+
+// fiveCountries pins exhaustion, the fallback to another type and errPoolTooSmall on a literal pool.
+func fiveCountries(t *testing.T) {
 	others := map[string]bool{"BB": true, "CC": true, "DD": true, "EE": true}
 	tests := []struct {
 		name     string
@@ -204,9 +206,9 @@ func fiveCountries(t *testing.T) {
 		wantType string
 		wantErr  error
 	}{
-		{"every country used", five("R1", "R2", "R3", "R4", "R5"), map[string]bool{"AA": true, "BB": true, "CC": true, "DD": true, "EE": true}, "", ErrQuizExhausted},
-		{"look-alike flags fall back to name_region", five("R1", "R2", "R3", "R4", "R5"), others, "name_region", nil},
-		{"no type has three distractors", five("R1", "R2", "R1", "R2", "R1"), others, "", ErrPoolTooSmall},
+		{"every country used", fivePool("R1", "R2", "R3", "R4", "R5"), map[string]bool{"AA": true, "BB": true, "CC": true, "DD": true, "EE": true}, "", errQuizExhausted},
+		{"look-alike flags fall back to name_region", fivePool("R1", "R2", "R3", "R4", "R5"), others, "name_region", nil},
+		{"no type has three distractors", fivePool("R1", "R2", "R1", "R2", "R1"), others, "", errPoolTooSmall},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -6,7 +6,7 @@ INSERT INTO runs (id, quiz_id, name, creator, started_at)
 VALUES (@id, @quiz_id, @name, @creator, @started_at);
 
 -- name: LockRun :one
-SELECT id, quiz_id, name, creator, started_at, score, finished_at, end_reason, hidden
+SELECT id, quiz_id, name, creator, started_at, score, finished_at, end_reason
 FROM runs
 WHERE id = @id
 FOR UPDATE;

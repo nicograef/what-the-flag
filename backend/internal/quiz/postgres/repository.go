@@ -120,7 +120,6 @@ func loadRun(ctx context.Context, q *db.Queries, id quiz.RunID) (*quiz.Run, erro
 		Score:      int(row.Score),
 		StartedAt:  row.StartedAt,
 		FinishedAt: row.FinishedAt,
-		Hidden:     row.Hidden,
 		Answers:    make([]quiz.Answer, 0, len(answers)),
 	}
 	if row.EndReason != nil {
@@ -159,8 +158,8 @@ func (u *unit) Question(position int) (quiz.Question, bool, error) {
 }
 
 // AddQuestion inserts q unless the position is taken. A concurrent insert of the same
-// position blocks until the other transaction ends, so the read after it sees the winner.
-func (u *unit) AddQuestion(position int, q quiz.Question) (quiz.Question, error) {
+// position blocks until the other transaction ends, so a later read sees the winner.
+func (u *unit) AddQuestion(position int, q quiz.Question) error {
 	err := u.q.InsertQuestion(u.ctx, db.InsertQuestionParams{
 		QuizID:       uuid.UUID(u.run.QuizID),
 		Position:     int16(position),
@@ -170,16 +169,9 @@ func (u *unit) AddQuestion(position int, q quiz.Question) (quiz.Question, error)
 		CorrectIndex: int16(q.Correct),
 	})
 	if err != nil {
-		return quiz.Question{}, fmt.Errorf("insert question: %w", err)
+		return fmt.Errorf("insert question: %w", err)
 	}
-	stored, ok, err := u.Question(position)
-	if err != nil {
-		return quiz.Question{}, err
-	}
-	if !ok {
-		return quiz.Question{}, fmt.Errorf("question %d missing after insert", position)
-	}
-	return stored, nil
+	return nil
 }
 
 func (u *unit) Targets() (map[string]bool, error) {

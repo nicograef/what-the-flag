@@ -10,7 +10,6 @@ import (
 
 // Config holds the settings the backend reads at startup.
 type Config struct {
-	Port       string
 	DBHost     string
 	DBUser     string
 	DBPassword string
@@ -20,14 +19,10 @@ type Config struct {
 // Load reads the configuration through getenv, usually os.Getenv.
 func Load(getenv func(string) string) (Config, error) {
 	cfg := Config{
-		Port:       getenv("APP_PORT"),
 		DBHost:     getenv("DB_HOST"),
 		DBUser:     getenv("POSTGRES_USER"),
 		DBPassword: getenv("POSTGRES_PASSWORD"),
 		DBName:     getenv("POSTGRES_DB"),
-	}
-	if cfg.Port == "" {
-		cfg.Port = "8080"
 	}
 	var missing []string
 	for _, v := range []struct{ name, value string }{

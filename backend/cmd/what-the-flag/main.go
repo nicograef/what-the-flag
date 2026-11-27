@@ -14,7 +14,11 @@ import (
 	"github.com/nicograef/what-the-flag/internal/postgres"
 )
 
-const shutdownTimeout = 10 * time.Second
+const (
+	// addr is the listen address the Caddyfile, the image healthcheck and the Vite proxy expect.
+	addr            = ":8080"
+	shutdownTimeout = 10 * time.Second
+)
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
@@ -38,7 +42,7 @@ func run(log *slog.Logger) error {
 		return err
 	}
 	srv := &http.Server{
-		Addr:              ":" + cfg.Port,
+		Addr:              addr,
 		Handler:           app.New(app.Deps{Pool: pool, Log: log}),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,

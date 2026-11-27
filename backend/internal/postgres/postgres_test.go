@@ -33,7 +33,7 @@ func TestPingWithRetry(t *testing.T) {
 				}
 				return nil
 			}
-			err := PingWithRetry(tt.ctx, ping, 100*time.Millisecond, time.Millisecond)
+			err := pingWithRetry(tt.ctx, ping, 100*time.Millisecond, time.Millisecond)
 			if tt.wantErr == nil {
 				if err != nil {
 					t.Fatalf("err = %v", err)

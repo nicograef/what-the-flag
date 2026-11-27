@@ -4,6 +4,8 @@ package postgres
 
 import (
 	"context"
+	"fmt"
+	"math/rand/v2"
 	"sync"
 	"testing"
 	"time"
@@ -69,19 +71,25 @@ func TestAddQuestionRace(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Go(func() {
 		errs[0] = repo.InRun(ctx, first.ID, func(u quiz.UnitOfWork) error {
-			var err error
-			got[0], err = u.AddQuestion(0, q1)
+			err := u.AddQuestion(0, q1)
 			close(added)
+			if err != nil {
+				return err
+			}
 			// Hold the uncommitted insert so the second transaction's insert has to wait for it.
 			time.Sleep(200 * time.Millisecond)
+			got[0], _, err = u.Question(0)
 			return err
 		})
 	})
 	wg.Go(func() {
 		<-added
 		errs[1] = repo.InRun(ctx, second.ID, func(u quiz.UnitOfWork) error {
+			if err := u.AddQuestion(0, q2); err != nil {
+				return err
+			}
 			var err error
-			got[1], err = u.AddQuestion(0, q2)
+			got[1], _, err = u.Question(0)
 			return err
 		})
 	})
@@ -96,6 +104,32 @@ func TestAddQuestionRace(t *testing.T) {
 	}
 }
 
+// TestEveryTypeFitsTheSchema pins quiz.Types against the quiz_questions type CHECK.
+func TestEveryTypeFitsTheSchema(t *testing.T) {
+	ctx := context.Background()
+	repo := NewRepository(postgres.TestTx(t))
+	run := newRun(t, repo, nil)
+	err := repo.InRun(ctx, run.ID, func(u quiz.UnitOfWork) error {
+		for position, ty := range quiz.Types {
+			q := quiz.Question{Type: ty, Target: "DE", Options: [4]string{"DE", "FR", "IT", "ES"}}
+			if err := u.AddQuestion(position, q); err != nil {
+				return fmt.Errorf("type %s: %w", ty.ID(), err)
+			}
+			stored, ok, err := u.Question(position)
+			if err != nil {
+				return fmt.Errorf("type %s: %w", ty.ID(), err)
+			}
+			if !ok || stored.Type != ty {
+				return fmt.Errorf("type %s stored as %+v, %t", ty.ID(), stored, ok)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestInRunConcurrent(t *testing.T) {
 	ctx := context.Background()
 	pool := postgres.TestPool(t)
@@ -104,7 +138,8 @@ func TestInRunConcurrent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("load catalogue: %v", err)
 	}
-	svc := quiz.NewService(repo, nil, cat, clock{}, NewRand())
+	// A *rand.Rand is not safe for concurrent use; the run's row lock serializes every draw.
+	svc := quiz.NewService(repo, nil, cat, clock{}, rand.New(rand.NewPCG(1, 1))) //nolint:gosec // G404: a seeded test source.
 	run, _, err := svc.Start(ctx, "concurrent", nil)
 	if err != nil {
 		t.Fatalf("start: %v", err)

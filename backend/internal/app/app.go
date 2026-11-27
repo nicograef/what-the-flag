@@ -1,9 +1,10 @@
 // Package app wires the domains and the health check into one HTTP handler.
-// Each domain adds a Deps field and one Register call here.
+// Each domain adds its construction and one Register call here.
 package app
 
 import (
 	"log/slog"
+	"math/rand/v2"
 	"net/http"
 	"time"
 
@@ -30,7 +31,7 @@ func New(d Deps) http.Handler {
 	if err != nil {
 		panic(err)
 	}
-	svc := quiz.NewService(quizpg.NewRepository(d.Pool), quizpg.NewLeaderboards(d.Pool), cat, systemClock{}, quizpg.NewRand())
+	svc := quiz.NewService(quizpg.NewRepository(d.Pool), quizpg.NewLeaderboards(d.Pool), cat, systemClock{}, systemRand{})
 
 	mux := http.NewServeMux()
 	health.NewHandler(d.Pool).Register(mux)
@@ -48,3 +49,10 @@ func New(d Deps) http.Handler {
 type systemClock struct{}
 
 func (systemClock) Now() time.Time { return time.Now() }
+
+// systemRand draws from math/rand/v2's runtime-seeded global source, which is safe for concurrent requests.
+type systemRand struct{}
+
+func (systemRand) IntN(n int) int { return rand.IntN(n) } //nolint:gosec // G404: no secret depends on question draws.
+
+func (systemRand) Shuffle(n int, swap func(i, j int)) { rand.Shuffle(n, swap) } //nolint:gosec // G404: as IntN.

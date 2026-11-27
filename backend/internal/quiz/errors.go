@@ -10,6 +10,4 @@ var (
 	ErrRunNotFound        = errors.New("quiz: run not found")
 	ErrNotCurrentQuestion = errors.New("quiz: not the current question")
 	ErrInvalidOption      = errors.New("quiz: option outside 0..3")
-	ErrQuizExhausted      = errors.New("quiz: no unused country left")
-	ErrPoolTooSmall       = errors.New("quiz: pool too small for any allowed question type")
 )

@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"sync"
 	"testing"
 	"time"
 
@@ -39,6 +40,7 @@ type question struct {
 	Prompt   item      `json:"prompt"`
 	Options  [4]item   `json:"options"`
 	Deadline time.Time `json:"deadline"`
+	LimitMs  int64     `json:"limitMs"`
 }
 
 type missed struct {
@@ -119,7 +121,11 @@ func decodeQuiz[T any](t *testing.T, resp *http.Response, status int) T {
 	if err := json.Unmarshal(body, &v); err != nil {
 		t.Fatalf("parse %s: %v", body, err)
 	}
-	if code, ok := poolCodeIn(t, v); ok {
+	codes, err := poolCodes()
+	if err != nil {
+		t.Fatalf("load catalogue: %v", err)
+	}
+	if code, ok := poolCodeIn(codes, v); ok {
 		t.Fatalf("response carries pool code %q: %s", code, body)
 	}
 	resp.Body = io.NopCloser(bytes.NewReader(body))
@@ -139,21 +145,19 @@ func decodeGolden[T any](t *testing.T, name string, resp *http.Response, status 
 	return decodeQuiz[T](t, resp, status)
 }
 
-func poolCodeIn(t *testing.T, v any) (string, bool) {
-	t.Helper()
+func poolCodeIn(codes map[string]bool, v any) (string, bool) {
 	switch v := v.(type) {
 	case string:
-		_, ok := poolCodes(t)[v]
-		return v, ok
+		return v, codes[v]
 	case []any:
 		for _, e := range v {
-			if code, ok := poolCodeIn(t, e); ok {
+			if code, ok := poolCodeIn(codes, e); ok {
 				return code, true
 			}
 		}
 	case map[string]any:
 		for _, e := range v {
-			if code, ok := poolCodeIn(t, e); ok {
+			if code, ok := poolCodeIn(codes, e); ok {
 				return code, true
 			}
 		}
@@ -161,18 +165,18 @@ func poolCodeIn(t *testing.T, v any) (string, bool) {
 	return "", false
 }
 
-func poolCodes(t *testing.T) map[string]bool {
-	t.Helper()
+// poolCodes is the set of pool country codes, parsed from the embedded dataset once.
+var poolCodes = sync.OnceValues(func() (map[string]bool, error) {
 	cat, err := country.Load()
 	if err != nil {
-		t.Fatalf("load catalogue: %v", err)
+		return nil, err
 	}
 	codes := map[string]bool{}
 	for _, c := range cat.Pool() {
 		codes[c.Code] = true
 	}
-	return codes
-}
+	return codes, nil
+})
 
 // correctOption reads the correct option of a run's question at position from the database.
 func correctOption(t *testing.T, runID string, position int) int {
@@ -373,23 +377,6 @@ func TestRunErrors(t *testing.T) {
 				t.Fatalf("field = %q, want %q", got.Field, tt.field)
 			}
 		})
-	}
-}
-
-func TestRunOnQuiz(t *testing.T) {
-	srv := newServer(t)
-	first, second := newClient(t, srv), newClient(t, srv)
-	a := startRun(t, first, map[string]any{"name": "creator"})
-	qa := readState(t, first, a.RunID).Question
-	answerWrong(t, first, a.RunID, 0)
-
-	b := startRun(t, second, map[string]any{"name": "challenger", "quizId": a.QuizID})
-	if b.QuizID != a.QuizID || b.RunID == a.RunID {
-		t.Fatalf("challenger run = %+v, creator %+v", b, a)
-	}
-	qb := readState(t, second, b.RunID).Question
-	if qa == nil || qb == nil || qa.Type != qb.Type || qa.Prompt != qb.Prompt || qa.Options != qb.Options {
-		t.Fatalf("challenger question = %+v, want the creator's %+v", qb, qa)
 	}
 }
 

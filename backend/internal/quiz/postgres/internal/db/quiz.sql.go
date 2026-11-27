@@ -258,15 +258,26 @@ func (q *Queries) ListTargets(ctx context.Context, quizID uuid.UUID) ([]string, 
 }
 
 const lockRun = `-- name: LockRun :one
-SELECT id, quiz_id, name, creator, started_at, score, finished_at, end_reason, hidden
+SELECT id, quiz_id, name, creator, started_at, score, finished_at, end_reason
 FROM runs
 WHERE id = $1
 FOR UPDATE
 `
 
-func (q *Queries) LockRun(ctx context.Context, id uuid.UUID) (Run, error) {
+type LockRunRow struct {
+	ID         uuid.UUID
+	QuizID     uuid.UUID
+	Name       string
+	Creator    bool
+	StartedAt  time.Time
+	Score      int32
+	FinishedAt *time.Time
+	EndReason  *string
+}
+
+func (q *Queries) LockRun(ctx context.Context, id uuid.UUID) (LockRunRow, error) {
 	row := q.db.QueryRow(ctx, lockRun, id)
-	var i Run
+	var i LockRunRow
 	err := row.Scan(
 		&i.ID,
 		&i.QuizID,
@@ -276,7 +287,6 @@ func (q *Queries) LockRun(ctx context.Context, id uuid.UUID) (Run, error) {
 		&i.Score,
 		&i.FinishedAt,
 		&i.EndReason,
-		&i.Hidden,
 	)
 	return i, err
 }

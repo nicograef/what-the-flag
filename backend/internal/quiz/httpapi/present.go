@@ -50,6 +50,7 @@ type question struct {
 	Prompt   item      `json:"prompt"`
 	Options  [4]item   `json:"options"`
 	Deadline time.Time `json:"deadline"`
+	LimitMs  int64     `json:"limitMs"`
 }
 
 type result struct {
@@ -107,6 +108,7 @@ func (p *presenter) state(st quiz.RunState) (runState, error) {
 			Prompt:   prompt,
 			Options:  options,
 			Deadline: st.Question.Deadline,
+			LimitMs:  quiz.Limit.Milliseconds(),
 		}
 	}
 	if st.Result != nil {

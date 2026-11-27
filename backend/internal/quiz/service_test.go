@@ -155,4 +155,25 @@ func TestService(t *testing.T) {
 			t.Errorf("quiz holds %d questions, want the creator's 3", len(mem.questions[quizID]))
 		}
 	})
+
+	t.Run("a run that used every country completes", func(t *testing.T) {
+		mem, clock := newMemory(), &fixedClock{now: t0}
+		s := NewService(mem, mem, fivePool("R1", "R2", "R3", "R4", "R5"), clock, newRand(1))
+		runID, _, err := s.Start(ctx, "Nico", nil)
+		if err != nil {
+			t.Fatalf("Start: %v", err)
+		}
+		for position := range 5 {
+			st := state(t, s, runID)
+			clock.now = clock.now.Add(time.Second)
+			if _, err := s.Answer(ctx, runID, position, new(st.Question.Question.Correct)); err != nil {
+				t.Fatalf("Answer %d: %v", position, err)
+			}
+		}
+		st := state(t, s, runID)
+		want := &Result{Score: 5, EndReason: EndCompleted}
+		if st.Question != nil || !reflect.DeepEqual(st.Result, want) {
+			t.Errorf("State = question %+v, result %+v; want no question and %+v", st.Question, st.Result, want)
+		}
+	})
 }

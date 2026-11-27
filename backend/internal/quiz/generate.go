@@ -1,9 +1,16 @@
 package quiz
 
 import (
+	"errors"
 	"slices"
 
 	"github.com/nicograef/what-the-flag/internal/country"
+)
+
+// errQuizExhausted ends a run as completed; errPoolTooSmall means the catalogue cannot fill any allowed type.
+var (
+	errQuizExhausted = errors.New("quiz: no unused country left")
+	errPoolTooSmall  = errors.New("quiz: pool too small for any allowed question type")
 )
 
 // minRegion is the region size, target included, from which distractor countries come from the target's region first.
@@ -16,7 +23,7 @@ func maxTier(position int) int { return min(4, 1+position/5) }
 func maxFame(position int) int { return min(3, 1+position/8) }
 
 // Generate draws the question at position of a quiz whose stored targets are used.
-// It returns ErrQuizExhausted when every pool country was a target.
+// It returns errQuizExhausted when every pool country was a target.
 func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Question, error) {
 	pool := cat.Pool()
 	unused := make([]*country.Country, 0, len(pool))
@@ -32,7 +39,7 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 		}
 	}
 	if len(unused) == 0 {
-		return Question{}, ErrQuizExhausted
+		return Question{}, errQuizExhausted
 	}
 	candidates := famous
 	if len(candidates) == 0 {
@@ -58,7 +65,7 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 			return shuffled(t, target.Code, options, rnd), nil
 		}
 	}
-	return Question{}, ErrPoolTooSmall
+	return Question{}, errPoolTooSmall
 }
 
 // countryOptions returns the target's code and three distractor codes, or nil when fewer than three qualify.

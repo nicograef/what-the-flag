@@ -21,16 +21,16 @@ func NewPool(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open pool: %w", err)
 	}
-	if err := PingWithRetry(ctx, pool.Ping, pingBudget, pingInterval); err != nil {
+	if err := pingWithRetry(ctx, pool.Ping, pingBudget, pingInterval); err != nil {
 		pool.Close()
 		return nil, err
 	}
 	return pool, nil
 }
 
-// PingWithRetry calls ping every interval until it succeeds, budget is spent
+// pingWithRetry calls ping every interval until it succeeds, budget is spent
 // or ctx is done.
-func PingWithRetry(ctx context.Context, ping func(context.Context) error, budget, interval time.Duration) error {
+func pingWithRetry(ctx context.Context, ping func(context.Context) error, budget, interval time.Duration) error {
 	ctx, cancel := context.WithTimeout(ctx, budget)
 	defer cancel()
 	ticker := time.NewTicker(interval)

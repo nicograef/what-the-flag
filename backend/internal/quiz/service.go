@@ -144,8 +144,11 @@ func (s *Service) State(ctx context.Context, id RunID) (RunState, error) {
 func (s *Service) Challenge(ctx context.Context, id QuizID, own *RunID) (Challenge, error) {
 	now := s.now()
 	creator, err := s.boards.Creator(ctx, id, now)
-	if err != nil {
+	if errors.Is(err, ErrQuizNotFound) {
 		return Challenge{}, err
+	}
+	if err != nil {
+		return Challenge{}, fmt.Errorf("find creator run: %w", err)
 	}
 	top, err := s.boards.Quiz(ctx, id, now, own)
 	if err != nil {
@@ -177,14 +180,14 @@ func (s *Service) serveNext(uow UnitOfWork, r *Run, now time.Time) error {
 			return fmt.Errorf("read targets: %w", err)
 		}
 		q, err := Generate(s.cat, position, used, s.rnd)
-		if errors.Is(err, ErrQuizExhausted) {
+		if errors.Is(err, errQuizExhausted) {
 			r.Complete(now)
 			return nil
 		}
 		if err != nil {
 			return err
 		}
-		if _, err := uow.AddQuestion(position, q); err != nil {
+		if err := uow.AddQuestion(position, q); err != nil {
 			return fmt.Errorf("add question: %w", err)
 		}
 	}
