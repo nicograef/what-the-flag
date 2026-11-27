@@ -2,15 +2,36 @@
 
 An endless quiz about flags, countries and capitals, in German and English.
 Enter a name, answer until the first miss, and land on the leaderboard.
+[docs/game-rules.md](docs/game-rules.md) states the rules.
 
-## Setup
+## Quick start
 
 The repository follows the handbook's [new-project guide](https://github.com/nicograef/handbook/blob/main/guides/new-project.md), Go + React row.
-Copy `.env.example` to `.env`, set a password and uncomment `DB_HOST`. Then run `make db`, `make db-migrate`, `make be` and `make fe`.
+Copy `.env.example` to `.env`, set a password and uncomment `DB_HOST`.
 
-## Commands
+| Command | Does |
+| --- | --- |
+| `make db` | Starts the Postgres container |
+| `make db-migrate` | Applies pending migrations to it |
+| `make be` | Starts the backend on :8080 |
+| `make fe` | Starts the Vite dev server, which proxies `/api` to :8080 |
+| `make check` | Runs the gate that CI runs |
+| `make be-integration` | Runs the integration tests against the `make db` database |
+| `make e2e` | Builds the production stack, serves it with local TLS and smoke-tests it |
 
-`make help` lists every target. `make check` runs the gate that CI runs.
+`make help` lists every target.
+
+## Deploy
+
+The server follows the handbook's [deploy guide](https://github.com/nicograef/handbook/blob/main/guides/deploy.md) and [backup and restore guide](https://github.com/nicograef/handbook/blob/main/guides/backup-restore.md).
+A `vX.Y.Z` tag builds the images; `docker-compose.prod.yml` pins their tag.
+
+| Command | Does |
+| --- | --- |
+| `DOMAIN=what-the-flag.de make prod-deploy` | Backs up, pulls the pinned images, migrates and starts the stack |
+| `make prod-migrate ARGS=version` | Prints the production migration version; without `ARGS` it applies pending migrations |
+| `make prod-stats` | Prints the owner statistics |
+| `make prod-hide RUN=<uuid>` | Hides a run from every leaderboard |
 
 ## Licence
 

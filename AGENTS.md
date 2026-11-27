@@ -3,6 +3,7 @@
 What The Flag is an endless quiz about flags, countries and capitals for `what-the-flag.de`, with a public leaderboard and no accounts.
 A Go backend on Postgres serves a React SPA through a Caddy edge.
 
+- Game rules: [docs/game-rules.md](docs/game-rules.md).
 - What the game does: [docs/prds/prd-rebuild.md](docs/prds/prd-rebuild.md).
 - Domain terms: [docs/UBIQUITOUS_LANGUAGE.md](docs/UBIQUITOUS_LANGUAGE.md).
 - Architecture decisions: [docs/decisions.md](docs/decisions.md).
@@ -17,7 +18,20 @@ A Go backend on Postgres serves a React SPA through a Caddy edge.
 | `make fe` | Starts the Vite dev server, which proxies `/api` to :8080 |
 | `make check` | Runs the backend and frontend gates, as CI does |
 | `make be-integration` | Runs the integration tests against the `make db` database |
+| `make e2e` | Builds the production stack, serves it with local TLS and runs `scripts/smoke.sh` |
 | `make help` | Lists every target, the production ones included |
+
+## Layout
+
+| Path | Holds |
+| --- | --- |
+| `backend/` | The Go module: `cmd/` binaries, `internal/` domains, sqlc config and queries |
+| `frontend/` | The React SPA |
+| `database/` | Migrations, `stats.sql` and the `migrate` image |
+| `reverse-proxy/` | The Caddyfile and the edge image, which bakes in the SPA |
+| `data/` | Vendored country sources, overrides and the data licence |
+| `scripts/` | Deploy, backup, e2e stack, smoke and data-fetch scripts |
+| `docs/` | Game rules, glossary, decisions, PRD and plans; `docs/README.md` indexes them |
 
 ## Rules
 
