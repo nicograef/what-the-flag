@@ -55,7 +55,8 @@ type UnitOfWork interface {
 type Leaderboards interface {
 	Global(ctx context.Context, now time.Time, own *RunID) ([]Entry, error)
 	Quiz(ctx context.Context, id QuizID, now time.Time, own *RunID) ([]Entry, error)
-	Creator(ctx context.Context, id QuizID, now time.Time) (CreatorView, error)
+	// Creator is nil for a hidden creator run; a quiz without a creator run is ErrQuizNotFound.
+	Creator(ctx context.Context, id QuizID, now time.Time) (*CreatorView, error)
 	Ranks(ctx context.Context, id RunID, now time.Time) (Ranks, error)
 }
 

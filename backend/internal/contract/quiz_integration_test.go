@@ -72,9 +72,9 @@ type creatorView struct {
 }
 
 type challenge struct {
-	ID      string      `json:"id"`
-	Creator creatorView `json:"creator"`
-	Top     []entry     `json:"top"`
+	ID      string       `json:"id"`
+	Creator *creatorView `json:"creator"`
+	Top     []entry      `json:"top"`
 }
 
 type leaderboard struct {
@@ -320,7 +320,7 @@ func TestChallenge(t *testing.T) {
 	readState(t, first, a.RunID)
 
 	view := decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
-	if view.ID != a.QuizID || view.Creator != (creatorView{Name: "creator"}) || len(view.Top) != 0 {
+	if view.ID != a.QuizID || view.Creator == nil || *view.Creator != (creatorView{Name: "creator"}) || len(view.Top) != 0 {
 		t.Fatalf("view while the creator plays = %+v", view)
 	}
 
@@ -328,7 +328,7 @@ func TestChallenge(t *testing.T) {
 	readState(t, first, a.RunID)
 	answerWrong(t, first, a.RunID, 1)
 	view = decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
-	if view.Creator != (creatorView{Name: "creator", Score: 1, Ended: true}) ||
+	if view.Creator == nil || *view.Creator != (creatorView{Name: "creator", Score: 1, Ended: true}) ||
 		len(view.Top) != 1 || view.Top[0] != (entry{Rank: 1, Name: "creator", Score: 1}) {
 		t.Fatalf("view after the creator ended = %+v", view)
 	}
@@ -357,6 +357,17 @@ func TestChallenge(t *testing.T) {
 	expectError(t, first.get("/api/quizzes/"+unknown), http.StatusNotFound, "quiz_not_found")
 	expectError(t, first.get("/api/quizzes/nope"), http.StatusNotFound, "quiz_not_found")
 	decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID+"?run=nope"), http.StatusOK)
+
+	// make hide: the creator's name is never served again, and the quiz stays playable.
+	if _, err := postgres.TestPool(t).Exec(context.Background(),
+		`UPDATE runs SET hidden = true WHERE id = $1`, a.RunID); err != nil {
+		t.Fatalf("hide creator: %v", err)
+	}
+	view = decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
+	if view.Creator != nil || len(view.Top) != 1 || view.Top[0].Name != "challenger" {
+		t.Fatalf("view after hiding the creator = %+v, want no creator and only the challenger", view)
+	}
+	startRun(t, second, map[string]any{"name": "late", "quizId": a.QuizID})
 }
 
 func TestRateLimit(t *testing.T) {

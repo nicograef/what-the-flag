@@ -145,14 +145,17 @@ func (m *memory) Quiz(_ context.Context, id QuizID, now time.Time, own *RunID) (
 	return m.entries(now, own, func(r *Run) bool { return r.QuizID == id }), nil
 }
 
-func (m *memory) Creator(_ context.Context, id QuizID, now time.Time) (CreatorView, error) {
+func (m *memory) Creator(_ context.Context, id QuizID, now time.Time) (*CreatorView, error) {
 	for _, r := range m.runs {
 		if r.QuizID == id && r.Creator {
+			if r.Hidden {
+				return nil, nil
+			}
 			_, ok := ended(r, now)
-			return CreatorView{Name: r.Name, Score: r.Score, Ended: ok}, nil
+			return &CreatorView{Name: r.Name, Score: r.Score, Ended: ok}, nil
 		}
 	}
-	return CreatorView{}, ErrQuizNotFound
+	return nil, ErrQuizNotFound
 }
 
 func (m *memory) Ranks(_ context.Context, id RunID, now time.Time) (Ranks, error) {

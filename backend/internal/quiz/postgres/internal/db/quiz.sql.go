@@ -49,7 +49,7 @@ func (q *Queries) CreateRun(ctx context.Context, arg CreateRunParams) error {
 }
 
 const creatorRun = `-- name: CreatorRun :one
-SELECT r.name, r.score,
+SELECT r.name, r.score, r.hidden,
   (r.finished_at IS NOT NULL OR coalesce(a.served_at + $1::interval < $2::timestamptz, false))::boolean AS ended
 FROM runs r
 LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
@@ -63,15 +63,21 @@ type CreatorRunParams struct {
 }
 
 type CreatorRunRow struct {
-	Name  string
-	Score int32
-	Ended bool
+	Name   string
+	Score  int32
+	Hidden bool
+	Ended  bool
 }
 
 func (q *Queries) CreatorRun(ctx context.Context, arg CreatorRunParams) (CreatorRunRow, error) {
 	row := q.db.QueryRow(ctx, creatorRun, arg.LateAfter, arg.Now, arg.QuizID)
 	var i CreatorRunRow
-	err := row.Scan(&i.Name, &i.Score, &i.Ended)
+	err := row.Scan(
+		&i.Name,
+		&i.Score,
+		&i.Hidden,
+		&i.Ended,
+	)
 	return i, err
 }
 

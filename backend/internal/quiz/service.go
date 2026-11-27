@@ -52,8 +52,9 @@ type Result struct {
 }
 
 // Challenge is a quiz as its challenge page shows it: the creator's run and the quiz's list.
+// Creator is nil when the owner hid the creator's run, so its name is never served.
 type Challenge struct {
-	Creator CreatorView
+	Creator *CreatorView
 	Top     []Entry
 }
 

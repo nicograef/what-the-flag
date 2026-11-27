@@ -54,16 +54,19 @@ func (l *Leaderboards) Quiz(ctx context.Context, id quiz.QuizID, now time.Time, 
 	return entries, nil
 }
 
-// Creator returns the quiz's creator run; a quiz without one is ErrQuizNotFound.
-func (l *Leaderboards) Creator(ctx context.Context, id quiz.QuizID, now time.Time) (quiz.CreatorView, error) {
+// Creator returns the quiz's creator run, nil when it is hidden; a quiz without one is ErrQuizNotFound.
+func (l *Leaderboards) Creator(ctx context.Context, id quiz.QuizID, now time.Time) (*quiz.CreatorView, error) {
 	row, err := db.New(l.db).CreatorRun(ctx, db.CreatorRunParams{LateAfter: lateAfter, Now: now, QuizID: uuid.UUID(id)})
 	if errors.Is(err, pgx.ErrNoRows) {
-		return quiz.CreatorView{}, quiz.ErrQuizNotFound
+		return nil, quiz.ErrQuizNotFound
 	}
 	if err != nil {
-		return quiz.CreatorView{}, err
+		return nil, err
 	}
-	return quiz.CreatorView{Name: row.Name, Score: int(row.Score), Ended: row.Ended}, nil
+	if row.Hidden {
+		return nil, nil
+	}
+	return &quiz.CreatorView{Name: row.Name, Score: int(row.Score), Ended: row.Ended}, nil
 }
 
 // Ranks returns the run's rank on its quiz's list and, for a creator, on the global list.

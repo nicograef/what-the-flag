@@ -74,7 +74,7 @@ ORDER BY score DESC, ended_at ASC, id ASC
 LIMIT 100;
 
 -- name: CreatorRun :one
-SELECT r.name, r.score,
+SELECT r.name, r.score, r.hidden,
   (r.finished_at IS NOT NULL OR coalesce(a.served_at + @late_after::interval < @now::timestamptz, false))::boolean AS ended
 FROM runs r
 LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL

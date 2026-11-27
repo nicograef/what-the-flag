@@ -160,8 +160,12 @@ func TestLeaderboard(t *testing.T) {
 			t.Fatalf("quiz list = %+v, %v; want %+v", got, err, want)
 		}
 		playing, _ := b.creator(spec{name: "playing", score: base, open: 16 * time.Second})
-		if v, err := l.Creator(ctx, playing, b.now); err != nil || v != (quiz.CreatorView{Name: "playing", Score: base}) {
+		if v, err := l.Creator(ctx, playing, b.now); err != nil || v == nil || *v != (quiz.CreatorView{Name: "playing", Score: base}) {
 			t.Fatalf("creator view = %+v, %v; want not ended", v, err)
+		}
+		hidden, _ := b.creator(spec{name: "hidden creator", score: base, end: time.Minute, hidden: true})
+		if v, err := l.Creator(ctx, hidden, b.now); err != nil || v != nil {
+			t.Fatalf("hidden creator view = %+v, %v; want nil", v, err)
 		}
 	})
 
@@ -196,7 +200,7 @@ func TestLeaderboard(t *testing.T) {
 		if got := b.global(l, nil); !reflect.DeepEqual(got, want) {
 			t.Fatalf("global = %+v, want %+v", got, want)
 		}
-		if v, err := l.Creator(ctx, q, b.now); err != nil || !v.Ended {
+		if v, err := l.Creator(ctx, q, b.now); err != nil || v == nil || !v.Ended {
 			t.Fatalf("creator view = %+v, %v; want ended", v, err)
 		}
 	})

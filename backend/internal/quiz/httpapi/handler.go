@@ -144,7 +144,7 @@ func (h *Handler) answer(w http.ResponseWriter, r *http.Request) {
 
 type challengeResponse struct {
 	ID      uuid.UUID `json:"id"`
-	Creator creator   `json:"creator"`
+	Creator *creator  `json:"creator"`
 	Top     []entry   `json:"top"`
 }
 
@@ -165,11 +165,11 @@ func (h *Handler) challenge(w http.ResponseWriter, r *http.Request) {
 		httpx.MapError(w, r, err, errorTable)
 		return
 	}
-	httpx.WriteJSON(w, http.StatusOK, challengeResponse{
-		ID:      id,
-		Creator: creator{Name: c.Creator.Name, Score: c.Creator.Score, Ended: c.Creator.Ended},
-		Top:     presentEntries(c.Top),
-	})
+	body := challengeResponse{ID: id, Top: presentEntries(c.Top)}
+	if v := c.Creator; v != nil {
+		body.Creator = &creator{Name: v.Name, Score: v.Score, Ended: v.Ended}
+	}
+	httpx.WriteJSON(w, http.StatusOK, body)
 }
 
 type leaderboardResponse struct {
