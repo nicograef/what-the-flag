@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { ApiClient } from "@/lib/api";
 
-/** A ranked run; `own` arrives only on the row of the run named by `?run=`. */
+/** A ranked run; `own` arrives only on the row of the run the request names. */
 export const entrySchema = z.object({
   rank: z.int().min(1),
   name: z.string(),

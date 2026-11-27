@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { Link, useParams, useSearchParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getChallenge, type Challenge } from "@/features/challenge/api";
@@ -9,6 +9,7 @@ import {
   messages,
   startError,
 } from "@/features/challenge/messages";
+import { useOwnRun } from "@/features/leaderboard/own-run";
 import { RankingTable } from "@/features/leaderboard/ranking-table";
 import { NameForm } from "@/features/play/name-form";
 import { useApiClient } from "@/lib/api";
@@ -32,7 +33,7 @@ export function ChallengePage(): ReactNode {
   const { locale } = useLocale();
   const api = useApiClient();
   const quizId = useParams().quizId ?? "";
-  const run = useSearchParams()[0].get("run");
+  const run = useOwnRun();
   const query = useQuery({
     queryKey: ["quiz", quizId, run],
     queryFn: () => getChallenge(api, quizId, run),

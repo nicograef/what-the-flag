@@ -363,14 +363,14 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 - shadcn `table` via the CLI, only if missing.
 - `frontend/src/features/challenge/` and `frontend/src/features/leaderboard/` per the frontend decisions; `RankingTable` lives in `leaderboard/` and the challenge page imports it.
 - `frontend/src/app/router.tsx`: `/q/:quizId`, `/leaderboard`. `frontend/src/app/navbar.tsx` and `messages.ts`: the leaderboard link.
-- `frontend/src/features/play/run-result.tsx`: links to `/leaderboard?run=<id>` and `/q/<quizId>?run=<id>`.
+- `frontend/src/features/play/run-result.tsx`: links to `/leaderboard` and `/q/<quizId>` with the run id as router state (`state={{ runId }}`), never in the URL.
 - `frontend/index.html`: the Open Graph and Twitter card tags; `frontend/public/og.png`, 1200×630, the brand on a plain background.
 - `frontend/src/features/challenge/challenge-page.test.tsx`:
   - the creator's score, or the "still playing" text;
   - the quiz ranking with the `own` row highlighted;
   - the name form starts a run with that `quizId`;
   - an unknown quiz shows its `quiz_not_found` text.
-- `frontend/src/features/leaderboard/leaderboard-page.test.tsx`: the global list, the `own` row from `?run=`, an empty list's hint, and the navbar link leading there.
+- `frontend/src/features/leaderboard/leaderboard-page.test.tsx`: the global list, the `own` row from the router state's `runId`, an empty list's hint, and the navbar link leading there.
 
 ### Acceptance criteria
 

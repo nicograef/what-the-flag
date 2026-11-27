@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { useSearchParams } from "react-router";
 import { getLeaderboard } from "@/features/leaderboard/api";
 import { messages } from "@/features/leaderboard/messages";
+import { useOwnRun } from "@/features/leaderboard/own-run";
 import { RankingTable } from "@/features/leaderboard/ranking-table";
 import { useApiClient } from "@/lib/api";
 import { errorMessage } from "@/lib/i18n/error-messages";
@@ -13,7 +13,7 @@ export function LeaderboardPage(): ReactNode {
   const t = useMessages(messages);
   const { locale } = useLocale();
   const api = useApiClient();
-  const run = useSearchParams()[0].get("run");
+  const run = useOwnRun();
   const query = useQuery({
     queryKey: ["leaderboard", run],
     queryFn: () => getLeaderboard(api, run),

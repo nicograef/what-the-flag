@@ -72,13 +72,15 @@ export function RunResult({
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
             <Link
-              to={`/q/${run.quizId}?run=${run.id}`}
+              to={`/q/${run.quizId}`}
+              state={{ runId: run.id }}
               className="underline underline-offset-4"
             >
               {t.quizRanking}
             </Link>
             <Link
-              to={`/leaderboard?run=${run.id}`}
+              to="/leaderboard"
+              state={{ runId: run.id }}
               className="underline underline-offset-4"
             >
               {t.globalRanking}

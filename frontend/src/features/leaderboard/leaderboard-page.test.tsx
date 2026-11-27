@@ -30,7 +30,7 @@ it("shows the global list", async () => {
   expect(shown.some((r) => r.hasAttribute("aria-current"))).toBe(false);
 });
 
-it("highlights the own row named by ?run=", async () => {
+it("highlights the own row named by the router state", async () => {
   const api = new FakeApi().respond(`GET /api/leaderboard?run=${ownRun}`, {
     top: [
       { rank: 1, name: "Ada", score: 12 },
@@ -38,7 +38,7 @@ it("highlights the own row named by ?run=", async () => {
     ],
   });
 
-  renderRoute(`/leaderboard?run=${ownRun}`, { api });
+  renderRoute("/leaderboard", { api, state: { runId: ownRun } });
 
   const shown = await rows();
   expect(shown.map((r) => r.getAttribute("aria-current"))).toEqual([

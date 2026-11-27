@@ -44,7 +44,7 @@ it("highlights the requester's own row in the quiz ranking", async () => {
     ]),
   );
 
-  renderRoute(`/q/${quizId}?run=${ownRun}`, { api });
+  renderRoute(`/q/${quizId}`, { api, state: { runId: ownRun } });
 
   const table = await screen.findByRole("table", {
     name: "Rangliste dieses Quiz",

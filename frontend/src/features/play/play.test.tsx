@@ -77,16 +77,30 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
   expect(screen.getByText("Platz 12 weltweit")).toBeInTheDocument();
   expect(
     screen.getByRole("link", { name: "Rangliste dieses Quiz" }),
-  ).toHaveAttribute("href", `/q/${ids.quizId}?run=${ids.runId}`);
+  ).toHaveAttribute("href", `/q/${ids.quizId}`);
   expect(
     screen.getByRole("link", { name: "Globale Rangliste" }),
-  ).toHaveAttribute("href", `/leaderboard?run=${ids.runId}`);
+  ).toHaveAttribute("href", "/leaderboard");
   expect(screen.getByText("Deutschland").parentElement).toHaveTextContent(
     "Deutschland, richtige Antwort",
   );
   expect(screen.getByText("Frankreich").parentElement).toHaveTextContent(
     "Frankreich, deine Antwort",
   );
+});
+
+it("names the run to the global ranking through router state", async () => {
+  const { api, ids, user } = await startPlaying();
+  api.respond(`GET /api/leaderboard?run=${ids.runId}`, {
+    top: [{ rank: 1, name: "Ada", score: 0, own: true }],
+  });
+  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+
+  await user.click(
+    await screen.findByRole("link", { name: "Globale Rangliste" }),
+  );
+
+  expect(await screen.findByText("(du)")).toBeInTheDocument();
 });
 
 it("answers nothing when the time runs out", async () => {
