@@ -20,10 +20,10 @@ name: CI
 on:
   push:
     branches: ['**']
-  # Public repos only: a fork's push runs in the fork, so its PR needs this trigger.
-  # In a private repo it would run a second time on the same commit.
-  # pull_request:
-  #   branches: [main]
+  # A fork's push runs in the fork, so its PR needs this trigger. A same-repo PR's push
+  # has already run, so `changes`, `pins` and `secrets` skip it, and the jobs behind them follow.
+  pull_request:
+    branches: [main]
   # Advisories change without a code change; the schedule runs only the security jobs.
   schedule:
     - cron: "0 4 * * 1"  # Mondays 04:00 UTC
@@ -48,11 +48,15 @@ env:
 
 jobs:
   # ── Change Detection ───────────────────────────────────────────────────────
-  # Skipped on schedule, and so is every job that needs it without `!cancelled()`.
+  # Skipped on schedule and on a same-repo PR, and so is every job that needs it without `!cancelled()`.
   changes:
-    if: ${{ github.event_name != 'schedule' }}
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # paths-filter lists a pull request's files through the API.
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       backend: ${{ steps.changes.outputs.backend }}
       frontend: ${{ steps.changes.outputs.frontend }}
@@ -257,7 +261,7 @@ jobs:
   # One release tag for the three app images, and one golang-migrate version for
   # database/Dockerfile and the CLI the jobs below install.
   pins:
-    if: ${{ github.event_name != 'schedule' }}
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -281,9 +285,10 @@ jobs:
           [ "$(cut -d: -f2 <<<"$IMAGES" | sort -u | wc -l)" -eq 1 ] || { echo "The app images in docker-compose.prod.yml carry different tags."; exit 1; }
 
   # ── Security ───────────────────────────────────────────────────────────────
-  # Every push and every scheduled run: a secret can land in any file, and the
+  # Every push, fork PR and scheduled run: a secret can land in any file, and the
   # weekly run applies new gitleaks rules to the old commits.
   secrets:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
