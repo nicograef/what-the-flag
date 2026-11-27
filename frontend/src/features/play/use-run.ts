@@ -20,6 +20,8 @@ interface LoadedRun {
 }
 
 const revealMs = 800;
+/** A miss holds its marks longer, so the player sees the right answer before the result. */
+export const missRevealMs = 1500;
 
 function runQueryOptions(api: ApiClient, runId: string, enabled: boolean) {
   return queryOptions({
@@ -59,7 +61,7 @@ export function useRun(runId: string): UseRun {
 
   useEffect(() => {
     if (!reveal) return;
-    const delay = reveal.correct && !reveal.finished ? revealMs : 0;
+    const delay = reveal.correct ? revealMs : missRevealMs;
     const timer = setTimeout(() => {
       void refetch().finally(() => setReveal(null));
     }, delay);

@@ -1,9 +1,19 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { cn } from "cn";
 import { Progress } from "@/components/ui/progress";
 import { messages } from "@/features/play/messages";
 import { useMessages } from "@/lib/i18n/messages";
 
 const tickMs = 100;
+
+const toneClasses = {
+  normal: { bar: "bg-primary", text: "text-foreground" },
+  warning: { bar: "bg-warning", text: "text-warning" },
+  danger: {
+    bar: "bg-destructive",
+    text: "text-destructive motion-safe:animate-pulse",
+  },
+};
 
 /**
  * The milliseconds left until `deadline`. It counts from the server's clock at arrival and the
@@ -55,17 +65,22 @@ export function Countdown({
   }, [remaining, paused, onExpire]);
 
   const seconds = Math.ceil(remaining / 1000);
+  const tone = seconds <= 3 ? "danger" : seconds <= 5 ? "warning" : "normal";
   return (
-    <div className="flex items-center gap-3">
+    <div className="mt-3 flex items-center gap-3">
       <Progress
         aria-label={t.timeLeft}
         getValueLabel={() => t.seconds(seconds)}
         value={(remaining / limitMs) * 100}
-        className="h-2"
+        className="h-2.5"
+        indicatorClassName={toneClasses[tone].bar}
       />
       <span
         aria-hidden="true"
-        className="w-10 text-right text-sm tabular-nums text-muted-foreground"
+        className={cn(
+          "w-10 text-right text-base font-bold tabular-nums",
+          toneClasses[tone].text,
+        )}
       >
         {t.secondsShort(seconds)}
       </span>

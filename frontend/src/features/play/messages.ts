@@ -7,6 +7,7 @@ import { defineMessages } from "@/lib/i18n/messages";
 export const messages = defineMessages<{
   title: string;
   tagline: string;
+  rules: Record<"time" | "miss" | "harder", string>;
   nameLabel: string;
   namePublic: string;
   start: string;
@@ -29,12 +30,17 @@ export const messages = defineMessages<{
   yourAnswer: string;
   resultTitle: string;
   resultScore: (score: number) => string;
+  resultScoreLabel: (score: number) => string;
   endReasons: Record<"wrong" | "timeout" | "completed", string>;
   tooFastEnd: string;
   missed: string;
   quizRank: (rank: number) => string;
   globalRank: (rank: number) => string;
   best: (best: number) => string;
+  rankValue: (rank: number) => string;
+  statQuiz: string;
+  statWorld: string;
+  statBest: string;
   newBest: string;
   playAgain: string;
   quizRanking: string;
@@ -42,6 +48,7 @@ export const messages = defineMessages<{
   share: string;
   shareText: (score: number) => string;
   copied: string;
+  copiedShort: string;
   errors: Record<
     "invalid_name" | "run_not_found" | "not_current_question",
     string
@@ -51,6 +58,11 @@ export const messages = defineMessages<{
     title: "What The Flag",
     tagline:
       "Flaggen, Länder und Hauptstädte: Wie viele Fragen schaffst du am Stück?",
+    rules: {
+      time: "15 Sekunden pro Frage",
+      miss: "Ein Fehler beendet das Spiel",
+      harder: "Wird immer schwerer",
+    },
     nameLabel: "Dein Name",
     namePublic: "Dein Name erscheint öffentlich in den Ranglisten.",
     start: "Los geht's",
@@ -91,6 +103,8 @@ export const messages = defineMessages<{
     resultTitle: "Spiel vorbei",
     resultScore: (score) =>
       score === 1 ? "1 richtige Antwort" : `${score} richtige Antworten`,
+    resultScoreLabel: (score) =>
+      score === 1 ? "richtige Antwort" : "richtige Antworten",
     endReasons: {
       wrong: "Die letzte Antwort war falsch.",
       timeout: "Die Zeit für die letzte Frage ist abgelaufen.",
@@ -102,6 +116,10 @@ export const messages = defineMessages<{
     quizRank: (rank) => `Platz ${rank} in diesem Quiz`,
     globalRank: (rank) => `Platz ${rank} weltweit`,
     best: (best) => `Deine Bestleistung: ${best}`,
+    rankValue: (rank) => `${rank}.`,
+    statQuiz: "in diesem Quiz",
+    statWorld: "weltweit",
+    statBest: "Bestleistung",
     newBest: "Neue Bestleistung!",
     playAgain: "Nochmal spielen",
     quizRanking: "Rangliste dieses Quiz",
@@ -109,9 +127,10 @@ export const messages = defineMessages<{
     share: "Teilen",
     shareText: (score) =>
       score === 1
-        ? "Ich habe 1 Frage über die Welt beantwortet. Schaffst du mehr?"
-        : `Ich habe ${score} Fragen über die Welt beantwortet. Schaffst du mehr?`,
+        ? "Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr?"
+        : `Ich habe bei What The Flag ${score} Fragen in Folge richtig beantwortet. Schaffst du mehr?`,
     copied: "Link kopiert.",
+    copiedShort: "Kopiert!",
     errors: {
       invalid_name:
         "Erlaubt sind 1 bis 20 Zeichen mit mindestens einem Buchstaben oder einer Ziffer: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
@@ -123,6 +142,11 @@ export const messages = defineMessages<{
     title: "What The Flag",
     tagline:
       "Flags, countries and capitals: how many questions can you answer in a row?",
+    rules: {
+      time: "15 seconds per question",
+      miss: "One miss ends the run",
+      harder: "Gets harder as you go",
+    },
     nameLabel: "Your name",
     namePublic: "Your name appears publicly on the leaderboards.",
     start: "Let's go",
@@ -164,6 +188,8 @@ export const messages = defineMessages<{
     resultTitle: "Game over",
     resultScore: (score) =>
       score === 1 ? "1 correct answer" : `${score} correct answers`,
+    resultScoreLabel: (score) =>
+      score === 1 ? "correct answer" : "correct answers",
     endReasons: {
       wrong: "The last answer was wrong.",
       timeout: "The time for the last question ran out.",
@@ -174,6 +200,10 @@ export const messages = defineMessages<{
     quizRank: (rank) => `Rank ${rank} in this quiz`,
     globalRank: (rank) => `Rank ${rank} worldwide`,
     best: (best) => `Your personal best: ${best}`,
+    rankValue: (rank) => `#${rank}`,
+    statQuiz: "this quiz",
+    statWorld: "worldwide",
+    statBest: "Personal best",
     newBest: "New personal best!",
     playAgain: "Play again",
     quizRanking: "This quiz's leaderboard",
@@ -181,9 +211,10 @@ export const messages = defineMessages<{
     share: "Share",
     shareText: (score) =>
       score === 1
-        ? "I answered 1 question about the world. Can you beat it?"
-        : `I answered ${score} questions about the world. Can you beat it?`,
+        ? "I got 1 question right on What The Flag. Can you beat it?"
+        : `I got ${score} questions right in a row on What The Flag. Can you beat it?`,
     copied: "Link copied.",
+    copiedShort: "Copied!",
     errors: {
       invalid_name:
         "Use 1 to 20 characters with at least one letter or digit: letters, digits, spaces, _, - and full stops.",

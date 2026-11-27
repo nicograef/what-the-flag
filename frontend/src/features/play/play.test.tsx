@@ -109,8 +109,15 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
 
   await user.click(screen.getByRole("button", { name: "Frankreich" }));
 
+  expect(await screen.findByText("Leider falsch.")).toBeInTheDocument();
   expect(
-    await screen.findByRole("heading", { name: "Spiel vorbei" }),
+    screen.getByRole("button", { name: /^Deutschland\s*, richtige Antwort$/ }),
+  ).toBeDisabled();
+  expect(
+    screen.getByRole("button", { name: /^Frankreich\s*, deine Antwort$/ }),
+  ).toBeDisabled();
+  expect(
+    await screen.findByRole("heading", { name: "Spiel vorbei" }, slow),
   ).toHaveFocus();
   expect(screen.getByText("0 richtige Antworten")).toBeInTheDocument();
   expect(
@@ -140,6 +147,8 @@ it("names a correct pick within the minimum answer time as too fast", async () =
   expect(
     await screen.findByText(
       "Die letzte Antwort kam in weniger als 300 ms und zählt deshalb als falsch.",
+      {},
+      slow,
     ),
   ).toBeInTheDocument();
 });
@@ -152,7 +161,7 @@ it("names the run to the global ranking through router state", async () => {
   await user.click(screen.getByRole("button", { name: "Frankreich" }));
 
   await user.click(
-    await screen.findByRole("link", { name: "Globale Rangliste" }),
+    await screen.findByRole("link", { name: "Globale Rangliste" }, slow),
   );
 
   expect(await screen.findByText("(du)")).toBeInTheDocument();
@@ -168,7 +177,11 @@ it("answers nothing when the time runs out", async () => {
     expect(answers(api)).toEqual([{ position: 0, option: null }]);
   });
   expect(
-    await screen.findByText("Die Zeit für die letzte Frage ist abgelaufen."),
+    await screen.findByText(
+      "Die Zeit für die letzte Frage ist abgelaufen.",
+      {},
+      slow,
+    ),
   ).toBeInTheDocument();
 });
 
@@ -197,7 +210,9 @@ it("stores and announces a new personal best", async () => {
   );
   await user.click(screen.getByRole("button", { name: "Kyoto" }));
 
-  expect(await screen.findByText("Neue Bestleistung!")).toBeInTheDocument();
+  expect(
+    await screen.findByText("Neue Bestleistung!", {}, slow),
+  ).toBeInTheDocument();
   expect(screen.getByText("Deine Bestleistung: 1")).toBeInTheDocument();
   expect(JSON.parse(localStorage.getItem("wtf.best") ?? "null")).toMatchObject({
     score: 1,
@@ -209,7 +224,7 @@ it("plays again under the same name on a fresh quiz", async () => {
   await user.click(screen.getByRole("button", { name: "Frankreich" }));
 
   await user.click(
-    await screen.findByRole("button", { name: "Nochmal spielen" }),
+    await screen.findByRole("button", { name: "Nochmal spielen" }, slow),
   );
 
   expect(
@@ -235,10 +250,12 @@ it("shares the challenge link through the share sheet", async () => {
     const { ids, user } = await startPlaying();
     await user.click(screen.getByRole("button", { name: "Frankreich" }));
 
-    await user.click(await screen.findByRole("button", { name: "Teilen" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Teilen" }, slow),
+    );
 
     expect(share).toHaveBeenCalledWith({
-      text: "Ich habe 0 Fragen über die Welt beantwortet. Schaffst du mehr?",
+      text: "Ich habe bei What The Flag 0 Fragen in Folge richtig beantwortet. Schaffst du mehr?",
       url: `${window.location.origin}/q/${ids.quizId}`,
     });
   } finally {
@@ -251,10 +268,10 @@ it("copies the challenge link without a share sheet", async () => {
   const write = vi.spyOn(navigator.clipboard, "writeText");
   await user.click(screen.getByRole("button", { name: "Frankreich" }));
 
-  await user.click(await screen.findByRole("button", { name: "Teilen" }));
+  await user.click(await screen.findByRole("button", { name: "Teilen" }, slow));
 
   expect(write).toHaveBeenCalledWith(
-    `Ich habe 0 Fragen über die Welt beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
+    `Ich habe bei What The Flag 0 Fragen in Folge richtig beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
   );
   expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
 });

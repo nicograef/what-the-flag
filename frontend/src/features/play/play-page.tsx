@@ -1,31 +1,80 @@
+import { CircleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { useParams } from "react-router";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isTooFast } from "@/features/play/api";
 import { Countdown } from "@/features/play/countdown";
 import { messages, playError } from "@/features/play/messages";
-import { QuestionCard } from "@/features/play/question-card";
+import { QuestionCard, type Status } from "@/features/play/question-card";
 import { RunResult } from "@/features/play/run-result";
 import { useRun } from "@/features/play/use-run";
 import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
 
+function RunLoading(): ReactNode {
+  const t = useMessages(messages);
+  return (
+    <div className="flex flex-col">
+      <p role="status" className="sr-only">
+        {t.loading}
+      </p>
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-8 w-20 rounded-full" />
+        <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
+      <Skeleton className="mt-3 h-2.5" />
+      <Skeleton className="mx-auto mt-3 h-6 w-3/4" />
+      <Skeleton className="mx-auto mt-3 aspect-4/3 w-48 rounded-lg" />
+      <div className="mt-3 grid gap-2">
+        {[0, 1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-13 rounded-xl" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function RunError({
   error,
   retrying,
   onRetry,
+  banner,
 }: {
   error: Error;
   retrying: boolean;
   onRetry: () => void;
+  /** Over a live run the error is a banner; without a run it fills the page. */
+  banner: boolean;
 }): ReactNode {
   const t = useMessages(messages);
   const { locale } = useLocale();
+  const alert = (
+    <p role="alert" className={banner ? "flex-1 text-sm" : "text-destructive"}>
+      {playError(error, locale)}
+    </p>
+  );
+  if (!banner) {
+    return (
+      <EmptyState icon={<CircleAlert />}>
+        {alert}
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full"
+          disabled={retrying}
+          onClick={onRetry}
+        >
+          {t.retry}
+        </Button>
+      </EmptyState>
+    );
+  }
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <p role="alert" className="text-destructive">
-        {playError(error, locale)}
-      </p>
+    <div className="mb-3 flex items-center gap-3 rounded-xl bg-destructive/10 p-3">
+      <CircleAlert aria-hidden="true" className="shrink-0 text-destructive" />
+      {alert}
       <Button variant="outline" disabled={retrying} onClick={onRetry}>
         {t.retry}
       </Button>
@@ -38,19 +87,14 @@ function Run({ runId }: { runId: string }): ReactNode {
   const { locale } = useLocale();
   const { query, reveal, busy, answerError, answer } = useRun(runId);
 
-  if (query.isPending) {
-    return (
-      <p role="status" className="text-muted-foreground">
-        {t.loading}
-      </p>
-    );
-  }
+  if (query.isPending) return <RunLoading />;
   // A failed refetch keeps the last state, so the run stays playable under the error.
   const failure = query.isError && (
     <RunError
       error={query.error}
       retrying={query.isFetching}
       onRetry={() => void query.refetch()}
+      banner={query.data !== undefined}
     />
   );
   if (!query.data) return failure;
@@ -62,20 +106,27 @@ function Run({ runId }: { runId: string }): ReactNode {
 
   // A refetch can land before the reveal clears; marks belong to their own position only.
   const shown = reveal?.position === question.position ? reveal : null;
-  let feedback = "";
-  if (shown) {
-    if (shown.correct) feedback = t.correct;
-    else if (shown.timedOut) feedback = t.timedOut;
-    else if (isTooFast(shown)) feedback = t.tooFast;
-    else feedback = t.wrong;
-  }
+  const score = shown?.score ?? state.score;
+  let status: Status | null = null;
+  if (shown?.correct) status = { text: t.correct, tone: "success" };
+  else if (shown?.timedOut) status = { text: t.timedOut, tone: "danger" };
+  else if (shown && isTooFast(shown)) {
+    status = { text: t.tooFast, tone: "danger" };
+  } else if (shown) status = { text: t.wrong, tone: "danger" };
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-1 flex-col">
       {failure}
-      <div className="flex items-center justify-between text-sm">
-        <h1 className="font-medium">{state.name}</h1>
-        <p className="tabular-nums">{t.score(shown?.score ?? state.score)}</p>
+      <div className="flex items-center justify-between">
+        <h1 className="sr-only">{state.name}</h1>
+        <p className="inline-flex h-8 items-center rounded-full bg-muted px-3 text-sm font-semibold">
+          {t.question(question.position)}
+        </p>
+        <p className="inline-flex h-8 items-center rounded-full bg-primary px-3 text-sm font-bold text-primary-foreground tabular-nums">
+          <span key={score} className="inline-block motion-safe:animate-pop">
+            {t.score(score)}
+          </span>
+        </p>
       </div>
       <Countdown
         key={`timer-${question.position}`}
@@ -89,24 +140,17 @@ function Run({ runId }: { runId: string }): ReactNode {
       <QuestionCard
         key={`question-${question.position}`}
         question={question}
-        heading={t.question(question.position)}
         marks={
           shown
             ? { correct: shown.correctOption, chosen: shown.chosenOption }
             : null
         }
+        status={status}
         disabled={busy}
         onAnswer={answer}
       />
-      <p
-        role="status"
-        aria-live="polite"
-        className="min-h-6 text-center font-medium"
-      >
-        {feedback}
-      </p>
       {answerError && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="mt-3 text-sm text-destructive">
           {playError(answerError, locale)}
         </p>
       )}

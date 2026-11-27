@@ -46,38 +46,40 @@ export function NameForm({
   }
 
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-3">
+    <form onSubmit={submit} noValidate className="flex flex-col gap-2">
       <label htmlFor={inputId} className="text-sm font-medium">
         {t.nameLabel}
       </label>
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <Input
-          id={inputId}
-          name="name"
-          autoComplete="nickname"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          aria-invalid={fieldError}
-          aria-describedby={fieldError ? `${errorId} ${hintId}` : hintId}
-          className="h-10"
-        />
-        <Button
-          type="submit"
-          size="lg"
-          disabled={start.isPending}
-          className="h-10 px-4"
-        >
-          {start.isPending ? t.starting : t.start}
-        </Button>
-      </div>
+      <Input
+        id={inputId}
+        name="name"
+        autoComplete="nickname"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        aria-invalid={fieldError}
+        aria-describedby={fieldError ? `${errorId} ${hintId}` : hintId}
+        maxLength={20}
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
+        enterKeyHint="go"
+      />
+      <p id={hintId} className="text-sm text-muted-foreground">
+        {t.namePublic}
+      </p>
       {start.isError && (
         <p id={errorId} role="alert" className="text-sm text-destructive">
           {errorText(start.error, locale)}
         </p>
       )}
-      <p id={hintId} className="text-sm text-muted-foreground">
-        {t.namePublic}
-      </p>
+      <Button
+        type="submit"
+        size="lg"
+        disabled={start.isPending}
+        className="mt-2 w-full"
+      >
+        {start.isPending ? t.starting : t.start}
+      </Button>
     </form>
   );
 }

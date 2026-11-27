@@ -1,19 +1,29 @@
-import { Share2 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { Check, Share2 } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { messages } from "@/features/play/messages";
 import { useMessages } from "@/lib/i18n/messages";
+
+const copiedMs = 2000;
 
 /** Shares the challenge link: the share sheet where the browser has one, else the clipboard. */
 export function ShareButton({
   quizId,
   score,
+  className,
 }: {
   quizId: string;
   score: number;
+  className?: string;
 }): ReactNode {
   const t = useMessages(messages);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), copiedMs);
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   async function share(): Promise<void> {
     const text = t.shareText(score);
@@ -35,14 +45,19 @@ export function ShareButton({
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <Button variant="outline" size="lg" onClick={() => void share()}>
-        <Share2 aria-hidden="true" />
-        {t.share}
+    <>
+      <Button
+        variant="outline"
+        size="lg"
+        className={className}
+        onClick={() => void share()}
+      >
+        {copied ? <Check aria-hidden="true" /> : <Share2 aria-hidden="true" />}
+        {copied ? t.copiedShort : t.share}
       </Button>
-      <span role="status" className="text-sm text-muted-foreground">
+      <span role="status" className="sr-only">
         {copied ? t.copied : ""}
       </span>
-    </div>
+    </>
   );
 }
