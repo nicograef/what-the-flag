@@ -56,7 +56,7 @@ Every session that runs this programme checks these before wave 1 and after a co
 
 ## Stores and migrations
 
-- One Postgres 18 container from `make db`, database `whattheflag`, backend on port 8080. Every phase migrates it with `make db-migrate`.
+- One Postgres 19 container from `make db`, database `whattheflag`, backend on port 8080. Every phase migrates it with `make db-migrate`.
 - A criterion that calls `go test -tags=integration` directly needs `.env` exported first: `set -a && . ./.env && set +a`.
 - Migrations in landing order, each wrapped in `BEGIN; … COMMIT;`:
 

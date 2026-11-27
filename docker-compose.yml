@@ -6,7 +6,7 @@ services:
   # Service name matches docker-compose.prod.yml, so the Makefile's `db` and
   # `db-shell` targets address the same service in both stacks.
   postgres:
-    image: postgres:18
+    image: postgres:19
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

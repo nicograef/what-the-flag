@@ -16,7 +16,7 @@ x-logging: &default-logging
 services:
   # ── Database ──
   postgres:
-    image: postgres:18
+    image: postgres:19
     restart: unless-stopped
     logging: *default-logging
     # Docker's 64 MB /dev/shm default is too small for parallel queries.

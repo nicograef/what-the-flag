@@ -70,7 +70,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | --- | --- |
 | Layout | Handbook Go + React row: `backend/`, `frontend/`, `database/`, `reverse-proxy/` |
 | Backend | Go, standard `net/http` mux, `log/slog`, pgx v5, sqlc, golang-migrate |
-| Database | PostgreSQL 18. The handbook runs every backend on Postgres, so SQLite is out |
+| Database | PostgreSQL 19. The handbook runs every backend on Postgres, so SQLite is out |
 | Frontend | Vite, React, TypeScript 7, Tailwind, shadcn/ui, TanStack Query, React Router, Zod |
 | Edge | Caddy image with the SPA baked in; `/api/*` proxied to the backend on port 8080 |
 | Look | Clean and minimal: shadcn defaults, one accent colour, short transitions |

@@ -346,7 +346,7 @@ jobs:
     timeout-minutes: 10
     services:
       postgres:
-        image: postgres:18
+        image: postgres:19
         env:
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: admin
@@ -418,7 +418,7 @@ jobs:
       DB_URL: postgres://admin:admin@localhost:5432/whattheflag?sslmode=disable
     services:
       postgres:
-        image: postgres:18  # same image as docker-compose.prod.yml
+        image: postgres:19  # same image as docker-compose.prod.yml
         env:
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: admin
