@@ -12,7 +12,7 @@
 #   4. Polls https://DOMAIN, then records the tag as deployed; on a failure, prints the rollback path.
 #
 # Not checked below: DNS for DOMAIN must already point at this server, or Caddy's ACME
-# challenge fails (see guides/deploy.md, Prerequisites).
+# challenge fails (see the handbook's guides/deploy.md, Prerequisites).
 set -euo pipefail
 
 # ── Configuration ──
@@ -69,8 +69,8 @@ done
 command -v docker >/dev/null 2>&1      || error "docker is not installed."
 docker compose version >/dev/null 2>&1 || error "docker compose plugin is not installed."
 command -v curl >/dev/null 2>&1        || error "curl is not installed."
-command -v jq >/dev/null 2>&1          || error "jq is not installed (setup-server.sh installs it)."
-[[ -f "$PROD_FILE" ]]                  || error "$PROD_FILE not found. Copy the docker-compose.prod.yml template."
+command -v jq >/dev/null 2>&1          || error "jq is not installed."
+[[ -f "$PROD_FILE" ]]                  || error "$PROD_FILE not found. Run 'make prod-deploy' from the repository root."
 
 [[ -n "$DOMAIN" ]] || error "DOMAIN is required. Set it via 'DOMAIN=example.com make prod-deploy'."
 
@@ -160,9 +160,9 @@ fi
 # ── Start and health polling ──
 rollback_hint() {
   [[ -n "$PRE_UPDATE_DUMP" && -n "$DEPLOYED_TAG" ]] || return 0
-  warn "Roll back to $DEPLOYED_TAG (guides/deploy.md, Roll back):"
+  warn "Roll back to $DEPLOYED_TAG (the handbook's guides/deploy.md, Roll back):"
   warn "  1. Set the app image tags in $PROD_FILE back to $DEPLOYED_TAG."
-  warn "  2. Restore $PRE_UPDATE_DUMP (guides/backup-restore.md, Restore)."
+  warn "  2. Restore $PRE_UPDATE_DUMP (the handbook's guides/backup-restore.md, Restore)."
   warn "  3. ROLLBACK=1 DOMAIN=$DOMAIN make prod-deploy"
 }
 

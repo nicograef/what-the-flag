@@ -13,9 +13,6 @@ FRONTEND_DIR ?= frontend
 
 # ── Local Development (one terminal per target) ──
 
-# Each `# >>> stack: NAME` block belongs to one stack; a repo deletes the blocks of the stacks it lacks.
-# A Go backend uncomments its blocks.
-
 # >>> stack: database
 .PHONY: db
 
@@ -80,7 +77,6 @@ data-check:    ## Fail when the generated dataset differs from the importer's ou
 .PHONY: fe-check
 check: fe-check
 
-# The package.json scripts named in reference/stack-conventions.md (Node/TypeScript).
 fe-check:      ## Frontend: pnpm gate (install, format, lint, types, tests, build, audit)
 	cd $(FRONTEND_DIR) && pnpm install --frozen-lockfile
 	cd $(FRONTEND_DIR) && pnpm run format:check
@@ -195,10 +191,6 @@ stats:         ## Print the owner statistics of database/stats.sql from the `mak
 hide:          ## Hide a run from every leaderboard (RUN=<uuid>)
 	$(call hide-run,$(PSQL_DEV))
 # <<< stack: database
-
-# Enable once the server is provisioned.
-# ssh-prod:    ## SSH into production server
-# 	ssh <username>@<host>
 
 # ── Help ──
 

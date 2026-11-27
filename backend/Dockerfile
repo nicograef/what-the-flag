@@ -1,6 +1,3 @@
-# Copy to backend/Dockerfile, the name release.yml builds, and copy .dockerignore beside it.
-# Fill what-the-flag: the command directory under cmd/ that holds main.go.
-# Fill 1.27; the base tag below says what it repeats.
 # The app answers GET /api/health on port 8080; the production Compose files poll its healthcheck.
 
 # ── Build ──

@@ -1,9 +1,8 @@
 # Each stack's env, jobs and steps sit between a `# >>> stack: NAME` and a `# <<< stack: NAME` line
-# (go, python, frontend, database).
+# (go, frontend, database).
 #
 # Toolchain versions come from the project's own pins, so CI and a dev machine agree:
-# Go from go.mod, Node from .node-version, pnpm from packageManager in package.json,
-# uv from the [tool.uv] required-version floor in pyproject.toml.
+# Go from go.mod, Node from .node-version, pnpm from packageManager in package.json.
 #
 # Every `uses:` is pinned to a full commit SHA, with the release it stood for in the
 # trailing comment. A tag is mutable: whoever controls the upstream repository can
@@ -110,10 +109,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          # Only for a diff-scoped lint (one that reads `git diff BASE..HEAD`): a shallow
-          # clone carries no merge base, the diff reads as empty, and the gate is green for
-          # the one reason a gate may never be green.
-          # fetch-depth: 0
       - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: backend/go.mod  # relative to the repo root
@@ -129,7 +124,7 @@ jobs:
         run: go mod tidy -diff
 
       # Generated code must match its source. sqlc is a go.mod tool like goimports and
-      # reads database/migrations. Swap in your generator; the status check stays.
+      # reads database/migrations.
       - name: Check generated code is current
         run: |
           go tool sqlc generate
@@ -386,14 +381,13 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    # Read by the tests of either stack. The names match the backend's environment in
-    # docker-compose.prod.yml, so code that passes here reads the same variables in prod.
+    # The names match the backend's environment in docker-compose.prod.yml, so code that
+    # passes here reads the same variables in prod.
     env:
       DB_HOST: localhost
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: whattheflag  # match the service's POSTGRES_DB above
-      # JWT_SECRET: test-secret  # uncomment and add secrets your app needs
     defaults:
       run:
         working-directory: ./backend
@@ -481,8 +475,6 @@ jobs:
           mkdir -p "$RUNNER_TEMP/previous"
           git archive "$PREVIOUS" "$MIGRATIONS" | tar -x -C "$RUNNER_TEMP/previous"
           migrate -path "$RUNNER_TEMP/previous/$MIGRATIONS" -database "$DB_URL" up
-          # Enable once the project has seed data: some migrations fail only on populated tables.
-          # git show "$PREVIOUS:database/seed.sql" | psql "$DB_URL" -v ON_ERROR_STOP=1
 
       - name: Apply the current migrations
         run: migrate -path "$MIGRATIONS" -database "$DB_URL" up

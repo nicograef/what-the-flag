@@ -1,5 +1,4 @@
-# Copy to reverse-proxy/Caddyfile and put your domain in place of the example one.
-# The edge image (Dockerfile.edge) bakes this file in, so a change ships with the next release.
+# The edge image (reverse-proxy/Dockerfile) bakes this file in, so a change ships with the next release.
 
 # ── Global options ──
 # {
@@ -46,9 +45,8 @@ what-the-flag.de {
 			file_server
 		}
 
-		# Unhashed files from public/: icons, fonts and the manifest.
-		# The base image's /etc/mime.types serves .webmanifest as application/manifest+json.
-		@public path *.ico *.png *.svg *.webp *.woff *.woff2 *.webmanifest
+		# Unhashed files from public/: the favicon, the flags and the Open Graph image.
+		@public path *.png *.svg
 		handle @public {
 			header {
 				Cache-Control "public, max-age=3600"

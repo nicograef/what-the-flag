@@ -1,6 +1,5 @@
-# Copy to reverse-proxy/Dockerfile, the file release.yml builds with the repo root as context.
-# Copy edge.dockerignore to reverse-proxy/Dockerfile.dockerignore; BuildKit reads it before a root .dockerignore.
-# Fill 26: the Node major in .node-version.
+# release.yml builds this file with the repo root as context; BuildKit reads Dockerfile.dockerignore beside it.
+# The node tag's major repeats .node-version.
 # The image bakes in reverse-proxy/Caddyfile and the SPA build; Caddy answers on port 80, which its healthcheck probes.
 
 # >>> stack: frontend

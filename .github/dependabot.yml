@@ -89,6 +89,3 @@ updates:
       # A new major cannot read the old data directory: guides/postgres-upgrade.md is the only path.
       - dependency-name: "postgres"
         update-types: ["version-update:semver-major"]
-      # The dev image's Node major follows .node-version.
-      - dependency-name: "node"
-        update-types: ["version-update:semver-major"]
