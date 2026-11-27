@@ -62,7 +62,7 @@ it("reveals a correct answer, then shows the next question", async () => {
 });
 
 it("shows the missed question and both ranks after a wrong answer", async () => {
-  const { user } = await startPlaying({ quizRank: 3, globalRank: 12 });
+  const { ids, user } = await startPlaying({ quizRank: 3, globalRank: 12 });
 
   await user.click(screen.getByRole("button", { name: "Frankreich" }));
 
@@ -75,6 +75,12 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
   ).toBeInTheDocument();
   expect(screen.getByText("Platz 3 in diesem Quiz")).toBeInTheDocument();
   expect(screen.getByText("Platz 12 weltweit")).toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "Rangliste dieses Quiz" }),
+  ).toHaveAttribute("href", `/q/${ids.quizId}?run=${ids.runId}`);
+  expect(
+    screen.getByRole("link", { name: "Globale Rangliste" }),
+  ).toHaveAttribute("href", `/leaderboard?run=${ids.runId}`);
   expect(screen.getByText("Deutschland").parentElement).toHaveTextContent(
     "Deutschland, richtige Antwort",
   );

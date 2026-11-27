@@ -17,6 +17,9 @@ export function Navbar(): ReactNode {
           {t.brand}
         </Link>
         <div data-slot="nav-right" className="flex items-center gap-2">
+          <Button asChild variant="ghost">
+            <Link to="/leaderboard">{t.leaderboard}</Link>
+          </Button>
           <Button variant="ghost" lang={other} onClick={() => setLocale(other)}>
             {t.switchLocale}
           </Button>

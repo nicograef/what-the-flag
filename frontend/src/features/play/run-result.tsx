@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -69,6 +69,20 @@ export function RunResult({
               {t.playAgain}
             </Button>
             <ShareButton quizId={run.quizId} score={result.score} />
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <Link
+              to={`/q/${run.quizId}?run=${run.id}`}
+              className="underline underline-offset-4"
+            >
+              {t.quizRanking}
+            </Link>
+            <Link
+              to={`/leaderboard?run=${run.id}`}
+              className="underline underline-offset-4"
+            >
+              {t.globalRanking}
+            </Link>
           </div>
           {again.isError && (
             <p role="alert" className="text-sm text-destructive">

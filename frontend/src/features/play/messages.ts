@@ -33,6 +33,8 @@ export const messages = defineMessages<{
   best: (best: number) => string;
   newBest: string;
   playAgain: string;
+  quizRanking: string;
+  globalRanking: string;
   share: string;
   shareText: (score: number) => string;
   copied: string;
@@ -96,6 +98,8 @@ export const messages = defineMessages<{
     best: (best) => `Deine Bestleistung: ${best}`,
     newBest: "Neue Bestleistung!",
     playAgain: "Nochmal spielen",
+    quizRanking: "Rangliste dieses Quiz",
+    globalRanking: "Globale Rangliste",
     share: "Teilen",
     shareText: (score) =>
       score === 1
@@ -163,6 +167,8 @@ export const messages = defineMessages<{
     best: (best) => `Your personal best: ${best}`,
     newBest: "New personal best!",
     playAgain: "Play again",
+    quizRanking: "This quiz's leaderboard",
+    globalRanking: "Global leaderboard",
     share: "Share",
     shareText: (score) =>
       score === 1
