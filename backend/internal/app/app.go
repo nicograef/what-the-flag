@@ -1,5 +1,5 @@
-// Package app wires the domains into one HTTP handler. Each domain adds a Deps
-// field and one Register call here.
+// Package app wires the domains and the health check into one HTTP handler.
+// Each domain adds a Deps field and one Register call here.
 package app
 
 import (

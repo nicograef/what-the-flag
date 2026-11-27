@@ -117,7 +117,7 @@ export const messages = defineMessages<{
     copied: "Link kopiert.",
     errors: {
       invalid_name:
-        "Erlaubt sind 1 bis 20 Zeichen: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
+        "Erlaubt sind 1 bis 20 Zeichen mit mindestens einem Buchstaben oder einer Ziffer: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
       quiz_not_found: "Dieses Quiz gibt es nicht.",
       run_not_found: "Dieses Spiel gibt es nicht.",
       not_current_question: "Diese Frage ist schon beantwortet.",
@@ -190,7 +190,7 @@ export const messages = defineMessages<{
     copied: "Link copied.",
     errors: {
       invalid_name:
-        "Use 1 to 20 characters: letters, digits, spaces, _, - and full stops.",
+        "Use 1 to 20 characters with at least one letter or digit: letters, digits, spaces, _, - and full stops.",
       quiz_not_found: "This quiz does not exist.",
       run_not_found: "This game does not exist.",
       not_current_question: "This question is already answered.",

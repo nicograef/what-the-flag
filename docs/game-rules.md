@@ -33,7 +33,7 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 A run is one player's pass through a quiz. It starts with a name and lasts until the first miss.
 
 - A name has 1 to 20 characters after trimming; inner spaces collapse to one.
-- It holds letters, digits, spaces, `_`, `-` and `.`. It appears publicly on the leaderboards and need not be unique.
+- It holds letters, digits, spaces, `_`, `-` and `.`, with at least one letter or digit. It appears publicly on the leaderboards and need not be unique.
 - The server serves one question at a time and starts its clock when it serves it.
 - A question shows 15 seconds. The server accepts an answer for 2 more seconds, the grace for slow networks.
 - An answer within 300 ms of serving counts as wrong: no person reads that fast.

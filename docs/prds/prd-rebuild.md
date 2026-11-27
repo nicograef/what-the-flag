@@ -216,6 +216,11 @@ Later, each after the beta shows the need:
 - Self-hosted proof of work before a global top-100 entry, if bots show up in the beta.
 - A report button on leaderboard entries, and a Playwright browser test.
 
+Before the public launch:
+
+- An offsite copy of the verified backups; today they share the database's disk.
+- A least-privilege database role for the backend, which today connects as the superuser. It lands in the handbook templates first.
+
 Tuning after the beta, read off `make prod-stats`:
 
 - The positions where harder question and fame tiers unlock, and the fame tiers' area-rank cut-offs, are guesses.

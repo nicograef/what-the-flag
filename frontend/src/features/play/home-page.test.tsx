@@ -41,7 +41,7 @@ it.each([
     code: "invalid_name",
     status: 400,
     field: "name",
-    text: "Erlaubt sind 1 bis 20 Zeichen: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
+    text: "Erlaubt sind 1 bis 20 Zeichen mit mindestens einem Buchstaben oder einer Ziffer: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
     invalid: "true",
   },
   {
