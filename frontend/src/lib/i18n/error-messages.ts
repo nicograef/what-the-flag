@@ -12,7 +12,7 @@ const messages = defineMessages({
     internal: "Auf dem Server ist ein Fehler aufgetreten.",
     database_unavailable: "Die Datenbank ist gerade nicht erreichbar.",
     rate_limited:
-      "Zu viele Spiele auf einmal. Warte kurz und versuch es noch einmal.",
+      "Zu viele Anfragen auf einmal. Warte kurz und versuch es noch einmal.",
     network: "Der Server ist nicht erreichbar. Prüfe deine Verbindung.",
     invalid_response: "Der Server hat unerwartet geantwortet.",
     fallback: "Etwas ist schiefgelaufen.",
@@ -25,7 +25,7 @@ const messages = defineMessages({
     unsupported_media_type: "The request had the wrong format.",
     internal: "Something went wrong on the server.",
     database_unavailable: "The database is unavailable right now.",
-    rate_limited: "Too many games at once. Wait a moment and try again.",
+    rate_limited: "Too many requests at once. Wait a moment and try again.",
     network: "The server is unreachable. Check your connection.",
     invalid_response: "The server answered unexpectedly.",
     fallback: "Something went wrong.",

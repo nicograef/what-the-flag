@@ -20,18 +20,20 @@ type Handler struct {
 	limits Limits
 }
 
-// Limits rate-limit run starts per client key and across all clients.
+// Limits rate-limit run starts per client key and across all clients, and leaderboard reads per client key.
 type Limits struct {
 	PerClient *ratelimit.Limiter
 	Global    *ratelimit.Limiter
+	Reads     *ratelimit.Limiter
 }
 
-// NewLimits returns the run start limits: 60 per client and one more every 5 s,
-// 600 in all and one more every 100 ms.
+// NewLimits returns the limits: run starts 60 per client and one more every 5 s,
+// 600 in all and one more every 100 ms; leaderboard reads 120 per client and one more every 500 ms.
 func NewLimits(now func() time.Time) Limits {
 	return Limits{
 		PerClient: ratelimit.New(60, 5*time.Second, now),
 		Global:    ratelimit.New(600, 100*time.Millisecond, now),
+		Reads:     ratelimit.New(120, 500*time.Millisecond, now),
 	}
 }
 
@@ -55,13 +57,22 @@ func (h *Handler) allowStart(w http.ResponseWriter, r *http.Request) bool {
 	if ok {
 		ok, wait = h.limits.Global.Allow("")
 	}
+	return allowed(w, r, ok, wait, "too many run starts; retry later")
+}
+
+// allowRead takes a token from the client's read limiter, and answers a refusal with 429.
+func (h *Handler) allowRead(w http.ResponseWriter, r *http.Request) bool {
+	ok, wait := h.limits.Reads.Allow(ratelimit.ClientKey(r))
+	return allowed(w, r, ok, wait, "too many leaderboard reads; retry later")
+}
+
+// allowed answers a refusal with 429 and a Retry-After of wait in whole seconds.
+func allowed(w http.ResponseWriter, r *http.Request, ok bool, wait time.Duration, message string) bool {
 	if ok {
 		return true
 	}
 	w.Header().Set("Retry-After", strconv.FormatInt(int64((wait+time.Second-1)/time.Second), 10))
-	httpx.WriteError(w, r, &httpx.Error{
-		Status: http.StatusTooManyRequests, Code: "rate_limited", Message: "too many run starts; retry later",
-	})
+	httpx.WriteError(w, r, &httpx.Error{Status: http.StatusTooManyRequests, Code: "rate_limited", Message: message})
 	return false
 }
 
@@ -155,6 +166,9 @@ type creator struct {
 }
 
 func (h *Handler) challenge(w http.ResponseWriter, r *http.Request) {
+	if !h.allowRead(w, r) {
+		return
+	}
 	id, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
 		httpx.MapError(w, r, errUnparsableQuiz, errorTable)
@@ -177,6 +191,9 @@ type leaderboardResponse struct {
 }
 
 func (h *Handler) leaderboard(w http.ResponseWriter, r *http.Request) {
+	if !h.allowRead(w, r) {
+		return
+	}
 	top, err := h.svc.Global(r.Context(), ownRun(r))
 	if err != nil {
 		httpx.WriteError(w, r, err)

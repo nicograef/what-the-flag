@@ -48,7 +48,7 @@ it.each([
     code: "rate_limited",
     status: 429,
     field: undefined,
-    text: "Zu viele Spiele auf einmal. Warte kurz und versuch es noch einmal.",
+    text: "Zu viele Anfragen auf einmal. Warte kurz und versuch es noch einmal.",
     invalid: "false",
   },
 ])("shows $code", async ({ code, status, field, text, invalid }) => {

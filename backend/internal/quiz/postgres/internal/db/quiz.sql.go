@@ -334,7 +334,7 @@ func (q *Queries) QuizTop(ctx context.Context, arg QuizTopParams) ([]QuizTopRow,
 }
 
 const runRanks = `-- name: RunRanks :one
-WITH ended AS (
+WITH ended AS NOT MATERIALIZED (
   SELECT r.quiz_id, r.creator, r.score
   FROM runs r
   LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
@@ -361,6 +361,7 @@ type RunRanksRow struct {
 }
 
 // A run's rank is one more than the ended, visible runs of its list with a higher score.
+// NOT MATERIALIZED inlines each count, so the global one reads runs_global_score.
 func (q *Queries) RunRanks(ctx context.Context, arg RunRanksParams) (RunRanksRow, error) {
 	row := q.db.QueryRow(ctx, runRanks, arg.ID, arg.LateAfter, arg.Now)
 	var i RunRanksRow

@@ -169,6 +169,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 ### Abuse protection
 
 - Run starts are rate limited per client address, generous enough for a school class behind one address.
+- Leaderboard reads are rate limited per client address as well.
 - IPv6 addresses count per /64 network. A global cap per minute stops floods.
 - Client addresses live only in process memory and are never stored.
 - The owner hides a run with `make hide` and reads anomalies with `make stats`.
@@ -187,8 +188,8 @@ No route negotiates language. There is no authentication. State-changing request
 | `POST /runs` | Start a run with a name, on a fresh quiz or on a given quiz; rate limited |
 | `GET /runs/{id}` | Run state: the current question without its answer, or the result with ranks |
 | `POST /runs/{id}/answers` | Answer the current question; returns correctness, the correct option and the score |
-| `GET /quizzes/{id}` | Challenge view: the creator's name and score, and the quiz's top 100 |
-| `GET /leaderboard` | The global top 100 |
+| `GET /quizzes/{id}` | Challenge view: the creator's name and score, and the quiz's top 100; rate limited |
+| `GET /leaderboard` | The global top 100; rate limited |
 
 ### Frontend
 

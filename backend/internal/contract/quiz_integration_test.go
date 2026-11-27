@@ -390,3 +390,30 @@ func TestRateLimit(t *testing.T) {
 	expectError(t, resp, http.StatusTooManyRequests, "rate_limited")
 	startRun(t, newClient(t, srv), map[string]any{"name": "other"})
 }
+
+func TestReadRateLimit(t *testing.T) {
+	srv := newServer(t)
+	c := newClient(t, srv)
+	a := startRun(t, c, map[string]any{"name": "reader"})
+	// Both routes share one bucket: a burst of 120, then one more read every 500 ms.
+	paths := []string{"/api/leaderboard", "/api/quizzes/" + a.QuizID}
+	for i := 0; ; i++ {
+		resp := c.get(paths[i%2])
+		if resp.StatusCode == http.StatusOK {
+			_ = resp.Body.Close()
+			if i >= 240 {
+				t.Fatalf("%d reads allowed, want a refusal after the burst of 120", i+1)
+			}
+			continue
+		}
+		if i < 120 {
+			t.Fatalf("read %d: status %d, want 200 within the burst", i+1, resp.StatusCode)
+		}
+		if retry, err := strconv.Atoi(resp.Header.Get("Retry-After")); err != nil || retry < 1 {
+			t.Fatalf("Retry-After = %q, want whole seconds", resp.Header.Get("Retry-After"))
+		}
+		expectError(t, resp, http.StatusTooManyRequests, "rate_limited")
+		break
+	}
+	decodeQuiz[leaderboard](t, newClient(t, srv).get(paths[0]), http.StatusOK)
+}

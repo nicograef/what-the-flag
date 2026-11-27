@@ -128,6 +128,7 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 - `ClientKey(r *http.Request) string`: the last `X-Forwarded-For` entry, else the host of `RemoteAddr`. IPv6 is masked to its /64.
   Caddy's `reverse_proxy` sets that header from the client connection; verify against the Caddy docs at execution.
 - `POST /api/runs` checks a per-key limiter (burst 60, one more every 5 s) and a global one under key `""` (burst 600, one more every 100 ms).
+- `GET /api/leaderboard` and `GET /api/quizzes/{id}` share a per-key limiter (burst 120, one more every 500 ms).
 - A refusal is 429 `rate_limited` with `Retry-After` in whole seconds, rounded up. It runs before the body is read.
 
 ### HTTP (`backend/internal/quiz/httpapi`)
