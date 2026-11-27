@@ -33,6 +33,11 @@ func TestNormalizeName(t *testing.T) {
 		{"mark after a space", "Nico \u0301", "", ErrInvalidName},
 		{"two marks on a letter", "x\u0301\u0302", "x\u0301\u0302", nil},
 		{"three marks on a letter", "x\u0301\u0302\u0303", "", ErrInvalidName},
+		{"repeated mark", "x\u0301\u0301", "", ErrInvalidName},
+		{"Burmese Kyaw with four marks", "ကျော်", "ကျော်", nil},
+		{"pointed Hebrew", "שָּׁ", "שָּׁ", nil},
+		{"four Thai marks on a letter", "ก\u0e48\u0e49\u0e4a\u0e4b", "ก\u0e48\u0e49\u0e4a\u0e4b", nil},
+		{"five Thai marks on a letter", "ก\u0e48\u0e49\u0e4a\u0e4b\u0e4c", "", ErrInvalidName},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
