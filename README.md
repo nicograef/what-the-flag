@@ -7,7 +7,7 @@ Enter a name, answer until the first miss, and land on the leaderboard.
 ## Quick start
 
 The repository follows the handbook's [new-project guide](https://github.com/nicograef/handbook/blob/main/guides/new-project.md), Go + React row.
-Copy `.env.example` to `.env`, set a password and uncomment `DB_HOST`.
+Copy `.env.example` to `.env` and set a password.
 
 | Command | Does |
 | --- | --- |

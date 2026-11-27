@@ -30,7 +30,6 @@ if [[ -f docker-compose.local.yml ]]; then
   COMPOSE_FILE+=":docker-compose.local.yml"
 fi
 export COMPOSE_FILE
-export COMPOSE_PROFILES=e2e
 export POSTGRES_USER=e2e POSTGRES_PASSWORD=e2e POSTGRES_DB=whattheflag
 
 # ── Stack ──

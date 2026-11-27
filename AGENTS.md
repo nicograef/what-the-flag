@@ -54,7 +54,7 @@ A Go backend on Postgres serves a React SPA through a Caddy edge.
 - `internal/health` is infrastructure, not a domain: its handler serves `GET /api/health` over a database `Pinger`.
 - Wiring lives in `internal/app/app.go`.
 - Each domain with tables has one sqlc block and `sqlc/queries/<domain>.sql`. Generated code is regenerated, never edited.
-- Stores take `DB` (`DBTX` plus `Begin`). A method taking a `pgx.Tx` rejects nil.
+- A store that opens transactions takes `DB` (`DBTX` plus `Begin`); a read-only store such as Leaderboards takes `db.DBTX`. A method taking a `pgx.Tx` rejects nil.
 - Integration tests carry the `integration` tag, are named `*_integration_test.go` and never truncate.
 - A route lands with `internal/contract/<domain>_integration_test.go`.
 - The error envelope's `message` is English developer text.

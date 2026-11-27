@@ -104,9 +104,9 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | quiz | Quizzes, runs, question generation, the clock, answer checking, the leaderboards |
 
 - `quiz` and `country` are pure domain cores: they import neither HTTP nor database code. A lint rule enforces the boundary.
-- The `quiz` core holds entities, rules and the run state machine. Its ports are a repository, a clock and a random source.
+- The `quiz` core holds entities, rules and the run state machine. Its ports are a repository, the leaderboards, the catalogue, a clock and a random source.
 - A Postgres adapter implements the repository; an HTTP adapter maps routes to the core.
-- An application service runs each use case in one transaction.
+- An application service runs each use case's writes in at most one transaction. Leaderboard reads, such as a run's ranks or a quiz's creator, run outside it.
 - The leaderboards are read queries over runs. They have no tables of their own.
 
 ### Game rules
@@ -184,12 +184,12 @@ No route negotiates language. There is no authentication. State-changing request
 - The domain core is tested without a database: an in-memory repository, a fixed clock and a fixed random source.
 - Question generation tests pin the question rules for every attribute pair over many random draws on the real pool.
 - Name rules are a pure function. A table pins length, characters and collapsing.
-- The importer's test is the gate step that compares its output with the committed files, plus the pool invariants.
+- The importer's test is the gate step that compares its output with the committed files; its validation enforces the pool invariants.
 - The Postgres adapter and the leaderboard queries run against a real Postgres under the `integration` build tag.
 - Leaderboard tests insert their own runs with scores no other test reaches, and assert only those.
 - A contract suite pins the HTTP API with Go black-box HTTP tests on the real handler chain and a real Postgres.
 - Strict decoding pins the wire shape. Every route lands with one happy path plus each route-specific error code.
-- Contract tests may read the database to learn a question's correct option. Timeouts stay at domain level.
+- Contract tests may read and write the database to learn a question's correct option, pin a question, age a serving time or hide a run.
 - Middleware rules and the rate limiter are tested in unit tests.
 - Frontend tests render features with a real query client and a faked API client.
 - A smoke script sends HTTP requests to the production stack behind the real edge.

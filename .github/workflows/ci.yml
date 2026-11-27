@@ -83,6 +83,7 @@ jobs:
             frontend:
               - 'frontend/**'
               - 'backend/internal/contract/testdata/**'
+              - '.node-version'
               - '.github/workflows/ci.yml'
             database:
               - 'database/**'
@@ -97,6 +98,7 @@ jobs:
               - 'docker-compose.e2e.yml'
               - 'scripts/e2e-stack.sh'
               - 'scripts/smoke.sh'
+              - 'Makefile'  # the job runs `make e2e`
               - 'data/**'  # the backend image ships its licences
               - 'LICENSE'
               - 'NOTICE'
@@ -162,7 +164,6 @@ jobs:
         run: go build -v ./...
 
       - name: Test
-        # -race slows a run 2–20×: narrow ./... to the packages that start goroutines.
         run: go test -v -shuffle=on -race ./...
 
   # ── golangci-lint (separate job for caching) ───────────────────────────────

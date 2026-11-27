@@ -3,7 +3,7 @@
 #
 # Usage (as the deploy user, from the project clone under /opt/what-the-flag):
 #   scripts/backup-postgres.sh                        # defaults below
-#   BACKUP_DIR=<dir> RETENTION_DAYS=<days> scripts/backup-postgres.sh
+#   BACKUP_DIR=<dir> RETENTION_DAYS=<days> COMPOSE_FILE=<file> scripts/backup-postgres.sh
 #
 #   Cron runs the clone's own copy, so `git pull` keeps it current (the handbook's guides/backup-restore.md, Daily backup).
 #
@@ -28,6 +28,9 @@ umask 077
 BACKUP_DIR="${BACKUP_DIR:-/opt/backups/postgres}"
 RETENTION_DAYS="${RETENTION_DAYS:-14}"
 BACKUP_RESULT_FILE="${BACKUP_RESULT_FILE:-}"   # set: receives the verified dump's path
+# The environment's COMPOSE_FILE beats the one in .env, so the target never hangs on one .env line.
+COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
+export COMPOSE_FILE
 # The clone root: this script lives in its scripts/ directory.
 COMPOSE_DIR="${COMPOSE_DIR:-$(CDPATH='' cd -- "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
@@ -56,11 +59,10 @@ docker compose version >/dev/null 2>&1 || error "docker compose plugin is not in
 
 mkdir -p "$BACKUP_DIR"
 
-# docker compose reads COMPOSE_FILE from COMPOSE_DIR/.env and the project from that
-# file's `name:`, so `exec` reaches the production stack (see .env.example).
+# COMPOSE_FILE is relative to the clone, and its `name:` selects the production project.
 cd "$COMPOSE_DIR"
 
-timestamp="$(date +%Y%m%d-%H%M)"
+timestamp="$(date +%Y%m%d-%H%M%S)"
 final_file="$BACKUP_DIR/backup-$timestamp.dump"
 temp_file="$BACKUP_DIR/.backup-$timestamp.dump.tmp"
 
@@ -81,6 +83,8 @@ if ! docker compose exec -T postgres pg_restore -f /dev/null < "$temp_file" >/de
 fi
 
 # ── Promote to the final name ──
+# Never overwrite: prod-init.sh may hold an earlier dump as its rollback point.
+[[ ! -e "$final_file" ]] || error "$final_file already exists. Not overwriting it."
 mv "$temp_file" "$final_file"
 log "Verified backup written: $final_file"
 [[ -z "$BACKUP_RESULT_FILE" ]] || printf '%s\n' "$final_file" > "$BACKUP_RESULT_FILE"

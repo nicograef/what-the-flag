@@ -57,6 +57,7 @@ A quiz is a stored sequence of questions with a public id. Every run on it gets 
 - Starting from the home page creates a fresh quiz. Its first run is the quiz's creator.
 - The challenge link `/q/<quizId>` shows the creator's name and score and the quiz's leaderboard.
 - The challenge link opens for play once the creator's run has ended.
+- A hidden creator run does not hold the challenge link closed.
 - A question is drawn when a run first reaches its position, then stored for every later run.
 
 ## Leaderboards

@@ -5,8 +5,9 @@
 -include .env
 export
 
-# One golang-migrate pin: the MIGRATE_VERSION env of ci.yml.
-MIGRATE_VERSION := $(shell sed -n 's/^  MIGRATE_VERSION: //p' .github/workflows/ci.yml)
+# An explicit -f beats the COMPOSE_FILE a server's .env sets for plain `docker compose`.
+COMPOSE_DEV = docker compose -f docker-compose.yml
+COMPOSE_PROD = docker compose -f docker-compose.prod.yml
 
 BACKEND_DIR ?= backend
 FRONTEND_DIR ?= frontend
@@ -17,7 +18,7 @@ FRONTEND_DIR ?= frontend
 .PHONY: db
 
 db:            ## Start database container
-	docker compose up postgres
+	$(COMPOSE_DEV) up postgres
 # <<< stack: database
 
 # >>> stack: go
@@ -99,13 +100,13 @@ e2e:           ## Build the production stack, serve it with local TLS and run sc
 .PHONY: up down logs
 
 up:            ## Start all services locally
-	docker compose up --build
+	$(COMPOSE_DEV) up --build
 
 down:          ## Stop local services
-	docker compose down
+	$(COMPOSE_DEV) down
 
 logs:          ## Follow logs
-	docker compose logs -f
+	$(COMPOSE_DEV) logs -f
 
 # ── Production (docker-compose.prod.yml — HTTPS) ──
 
@@ -117,16 +118,16 @@ prod-deploy:   ## First deploy or update to the pinned tags (cert, backup, downg
 	./scripts/prod-init.sh
 
 prod-down:     ## Stop production stack
-	docker compose -f docker-compose.prod.yml down
+	$(COMPOSE_PROD) down
 
 prod-logs:     ## Follow production logs
-	docker compose -f docker-compose.prod.yml logs -f
+	$(COMPOSE_PROD) logs -f
 
 .PHONY: prod-migrate prod-stats prod-hide
 
 # The `migrate` service's entrypoint holds the database URL, so ARGS replace only `up`.
 prod-migrate:  ## Run golang-migrate on the production database (ARGS="version", default up)
-	docker compose -f docker-compose.prod.yml run --rm migrate $(or $(ARGS),up)
+	$(COMPOSE_PROD) run --rm migrate $(or $(ARGS),up)
 
 prod-stats:    ## Print the owner statistics of database/stats.sql from production
 	$(PSQL_PROD) < database/stats.sql
@@ -158,20 +159,17 @@ prod-release:  ## Push tag v$(VERSION); .github/workflows/release.yml builds the
 .PHONY: db-shell
 
 db-shell:      ## Open psql shell in running PostgreSQL container
-	docker compose exec postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
+	$(COMPOSE_DEV) exec postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
 .PHONY: db-migrate
 
-# A throwaway container on the dev Compose network reaches the database by its service name.
+# The `migrate` service is a one-shot; `run` starts postgres first when `make db` is not running.
 db-migrate:    ## Apply pending migrations to the `make db` database
-	docker run --rm --network what-the-flag-dev_default \
-	  -v "$(CURDIR)/database/migrations:/migrations" \
-	  migrate/migrate:$(MIGRATE_VERSION) -path /migrations \
-	  -database "postgres://$$POSTGRES_USER:$$POSTGRES_PASSWORD@postgres:5432/$$POSTGRES_DB?sslmode=disable" up
+	$(COMPOSE_DEV) run --rm --build migrate
 
 # psql in the `postgres` service of the dev or the production stack; -T reads SQL from stdin.
-PSQL_DEV = docker compose exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
-PSQL_PROD = docker compose -f docker-compose.prod.yml exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
+PSQL_DEV = $(COMPOSE_DEV) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
+PSQL_PROD = $(COMPOSE_PROD) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
 
 # hide-run sets hidden on run RUN through the psql command $(1), and fails on a malformed or unknown id.
 # RUN reaches the shell only as the quoted variable "$$RUN" (the top-level `export`), never as recipe text.

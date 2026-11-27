@@ -8,7 +8,7 @@ Durable architecture decisions the PRD does not state. A replaced line gets `rep
 - D04: The API sends `{de, en}` texts and never negotiates language. A switch re-renders without a request, and query keys carry no locale.
 - D05: Contract tests are Go HTTP tests on the real handler chain; there is no OpenAPI document. The only client ships in the same release, so a document has no reader.
 - D06: Each domain has its own sqlc package inside its internal tree. Go's internal rule stops one module from calling another module's queries.
-- D07: Stores take sqlc's DBTX plus Begin, not a pool; integration tests never truncate. Aggregate tests run in a rolled-back transaction, so parallel packages share one database.
+- D07: A store that opens transactions takes sqlc's DBTX plus Begin, a read-only store only DBTX, never a pool; integration tests never truncate. Aggregate tests run in a rolled-back transaction, so parallel packages share one database.
 - D08: A method that takes a transaction rejects a nil one. A silent second transaction would break the caller's atomicity.
 - D09: Questions are generated when first served and stored per quiz. A shared quiz stays identical, and stored questions show where people fail.
 - D10: The client key is the last `X-Forwarded-For` hop, IPv6 per /64. Caddy sets that hop from the client connection, and one home or school network holds one /64.

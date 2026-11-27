@@ -3,8 +3,8 @@
 name: what-the-flag-dev
 
 services:
-  # Service name matches docker-compose.prod.yml, so the Makefile's `db` and
-  # `db-shell` targets address the same service in both stacks.
+  # Service name matches docker-compose.prod.yml, so the Makefile's dev and prod
+  # psql commands differ only in the Compose file.
   postgres:
     image: postgres:19
     restart: unless-stopped
@@ -30,6 +30,17 @@ services:
       timeout: 3s
       retries: 10
 
+  # One-shot, as in docker-compose.prod.yml; `make db-migrate` runs it against `make db`.
+  migrate:
+    build: ./database
+    restart: "no"
+    # Host `postgres` takes port 5432. The password must be URL-safe (.env.example).
+    entrypoint: ["migrate", "-path", "/migrations", "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}?sslmode=disable"]
+    command: ["up"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   backend:
     build:
       context: ./backend
@@ -46,6 +57,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
 volumes:
   pgdata:
