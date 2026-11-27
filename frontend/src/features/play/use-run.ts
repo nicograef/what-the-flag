@@ -84,7 +84,11 @@ export function useRun(runId: string): UseRun {
     query,
     reveal,
     answering: mutation.isPending,
-    answerError: mutation.error,
+    // An error belongs to the question it answered; a refetch that moves on drops it.
+    answerError:
+      mutation.variables?.position === question?.position
+        ? mutation.error
+        : null,
     answer,
   };
 }

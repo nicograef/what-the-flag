@@ -84,6 +84,24 @@ it("keeps the question under a failed refetch and retries it", async () => {
   });
 });
 
+it("drops a not-current-question error once the next question shows", async () => {
+  const { api, ids, user } = await startPlaying();
+  const answersRoute = `/api/runs/${ids.runId}/answers`;
+  // Another tab answers first.
+  await api.fetch(answersRoute, {
+    method: "POST",
+    body: JSON.stringify({ position: 0, option: 1 }),
+  });
+  api.fail(`POST ${answersRoute}`, 409, "not_current_question");
+
+  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+
+  await screen.findByRole("heading", {
+    name: "Was ist die Hauptstadt dieses Landes?",
+  });
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+
 it("shows the missed question and both ranks after a wrong answer", async () => {
   const { ids, user } = await startPlaying({ quizRank: 3, globalRank: 12 });
 
