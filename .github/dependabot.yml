@@ -64,6 +64,17 @@ updates:
       - dependency-name: "node"
         update-types: ["version-update:semver-major"]
 
+  # ── Docker base image (database/Dockerfile: migrate, the one-shot migration service) ──
+  # MIGRATE_VERSION and MIGRATE_SHA256 in .github/workflows/ci.yml follow in the same PR.
+  - package-ecosystem: "docker"
+    directory: "/database"
+    schedule:
+      interval: "monthly"
+    groups:
+      docker-migrate:
+        patterns:
+          - "*"
+
   # ── Docker Compose service images ──
   # The docker ecosystem parses Dockerfiles only, so compose image tags need this entry.
   - package-ecosystem: "docker-compose"
