@@ -13,3 +13,4 @@ Durable architecture decisions the PRD does not state. A replaced line gets `rep
 - D09: Questions are generated when first served and stored per quiz. A shared quiz stays identical, and stored questions show where people fail.
 - D10: The client key is the last `X-Forwarded-For` hop, IPv6 per /64. Caddy sets that hop from the client connection, and one home or school network holds one /64.
 - D11: The e2e stack runs `docker-compose.prod.yml` with Caddy local certificates, not the dev stack. It tests the real site blocks and the Origin check with a port.
+- D12: The edge's Content-Security-Policy allows only same-origin files plus `data:` images and fonts, without `'unsafe-inline'`. Vite emits no inline script or style, and React `style` props bypass `style-src`.
