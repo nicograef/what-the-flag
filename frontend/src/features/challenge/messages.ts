@@ -1,4 +1,5 @@
 import { ApiError } from "@/lib/api";
+import { playError } from "@/features/play/messages";
 import { errorMessage } from "@/lib/i18n/error-messages";
 import type { Locale } from "@/lib/i18n/locale";
 import { defineMessages } from "@/lib/i18n/messages";
@@ -11,7 +12,7 @@ export const messages = defineMessages<{
   ranking: string;
   loading: string;
   home: string;
-  errors: Record<"quiz_not_found", string>;
+  errors: Record<"quiz_not_found" | "quiz_in_progress", string>;
 }>({
   de: {
     title: "Herausforderung",
@@ -27,6 +28,8 @@ export const messages = defineMessages<{
     errors: {
       quiz_not_found:
         "Dieses Quiz gibt es nicht. Vielleicht ist der Link unvollständig.",
+      quiz_in_progress:
+        "Das Quiz läuft noch. Du kannst spielen, sobald die erste Runde vorbei ist.",
     },
   },
   en: {
@@ -42,6 +45,8 @@ export const messages = defineMessages<{
     home: "Back to the start page",
     errors: {
       quiz_not_found: "This quiz does not exist. The link may be incomplete.",
+      quiz_in_progress:
+        "This quiz is still being played. You can play once the first run has ended.",
     },
   },
 });
@@ -58,4 +63,12 @@ export function challengeError(err: unknown, locale: Locale): string {
     return messages[locale].errors[err.code];
   }
   return errorMessage(err, locale);
+}
+
+/** The text for a failed start on this quiz: this feature's codes first, then the play feature's. */
+export function startError(err: unknown, locale: Locale): string {
+  if (err instanceof ApiError && isErrorCode(err.code)) {
+    return messages[locale].errors[err.code];
+  }
+  return playError(err, locale);
 }

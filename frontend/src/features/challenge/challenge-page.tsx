@@ -4,7 +4,11 @@ import { Link, useParams, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getChallenge, type Challenge } from "@/features/challenge/api";
-import { challengeError, messages } from "@/features/challenge/messages";
+import {
+  challengeError,
+  messages,
+  startError,
+} from "@/features/challenge/messages";
 import { RankingTable } from "@/features/leaderboard/ranking-table";
 import { NameForm } from "@/features/play/name-form";
 import { useApiClient } from "@/lib/api";
@@ -55,20 +59,25 @@ export function ChallengePage(): ReactNode {
     );
   }
 
+  // The server refuses a run on the quiz while its creator run plays.
+  const { creator } = query.data;
+  const playable = !creator || creator.ended;
   return (
     <section className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="font-heading text-3xl font-bold">{t.title}</h1>
-        <CreatorLine creator={query.data.creator} />
+        <CreatorLine creator={creator} />
       </div>
-      <Card>
-        <CardHeader>
-          <h2 className="font-heading text-xl font-semibold">{t.play}</h2>
-        </CardHeader>
-        <CardContent>
-          <NameForm quizId={query.data.id} />
-        </CardContent>
-      </Card>
+      {playable && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-heading text-xl font-semibold">{t.play}</h2>
+          </CardHeader>
+          <CardContent>
+            <NameForm quizId={query.data.id} errorText={startError} />
+          </CardContent>
+        </Card>
+      )}
       <div className="flex flex-col gap-2">
         <h2 className="font-heading text-xl font-semibold">{t.ranking}</h2>
         <RankingTable entries={query.data.top} caption={t.ranking} />

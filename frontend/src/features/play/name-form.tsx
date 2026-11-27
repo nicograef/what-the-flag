@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { startRun } from "@/features/play/api";
 import { messages, playError } from "@/features/play/messages";
 import { ApiError, useApiClient } from "@/lib/api";
-import { useLocale } from "@/lib/i18n/locale";
+import { useLocale, type Locale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
 
 const nameKey = "wtf.name";
@@ -27,8 +27,14 @@ function storeName(name: string): void {
   }
 }
 
-/** Starts a run: on a fresh quiz, or with `quizId` on that quiz. */
-export function NameForm({ quizId }: { quizId?: string }): ReactNode {
+/** Starts a run: on a fresh quiz, or with `quizId` on that quiz. `errorText` words a failed start. */
+export function NameForm({
+  quizId,
+  errorText = playError,
+}: {
+  quizId?: string;
+  errorText?: (err: unknown, locale: Locale) => string;
+}): ReactNode {
   const t = useMessages(messages);
   const { locale } = useLocale();
   const api = useApiClient();
@@ -81,7 +87,7 @@ export function NameForm({ quizId }: { quizId?: string }): ReactNode {
       </div>
       {start.isError && (
         <p id={errorId} role="alert" className="text-sm text-destructive">
-          {playError(start.error, locale)}
+          {errorText(start.error, locale)}
         </p>
       )}
       <p id={hintId} className="text-sm text-muted-foreground">

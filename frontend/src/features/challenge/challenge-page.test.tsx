@@ -15,12 +15,14 @@ it.each([
   {
     creator: { name: "Ada", score: 7, ended: true },
     text: "Ada hat 7 Fragen geschafft. Schaffst du mehr?",
+    form: true,
   },
   {
     creator: { name: "Ada", score: 2, ended: false },
     text: "Ada spielt noch.",
+    form: false,
   },
-])("shows the creator: $text", async ({ creator, text }) => {
+])("shows the creator: $text", async ({ creator, text, form }) => {
   const api = new FakeApi().respond(
     `GET /api/quizzes/${quizId}`,
     challenge(creator),
@@ -29,6 +31,7 @@ it.each([
   renderRoute(`/q/${quizId}`, { api });
 
   expect(await screen.findByText(text)).toBeInTheDocument();
+  expect(screen.queryByLabelText("Dein Name") !== null).toBe(form);
 });
 
 it("highlights the requester's own row in the quiz ranking", async () => {
@@ -77,6 +80,23 @@ it("starts a run on this quiz from the name form", async () => {
   ).toBeInTheDocument();
   const start = api.calls.find((c) => c.route === "POST /api/runs");
   expect(start?.body).toEqual({ name: "Bea", quizId });
+});
+
+it("shows quiz_in_progress when the start is refused", async () => {
+  const api = new FakeApi()
+    .respond(
+      `GET /api/quizzes/${quizId}`,
+      challenge({ name: "Ada", score: 3, ended: true }),
+    )
+    .fail("POST /api/runs", 409, "quiz_in_progress");
+  const { user } = renderRoute(`/q/${quizId}`, { api });
+
+  await user.type(await screen.findByLabelText("Dein Name"), "Bea");
+  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Das Quiz läuft noch. Du kannst spielen, sobald die erste Runde vorbei ist.",
+  );
 });
 
 it("shows quiz_not_found for an unknown quiz", async () => {
