@@ -119,6 +119,14 @@ prod-down:     ## Stop production stack
 prod-logs:     ## Follow production logs
 	docker compose -f docker-compose.prod.yml logs -f
 
+.PHONY: prod-stats prod-hide
+
+prod-stats:    ## Print the owner statistics of database/stats.sql from production
+	$(PSQL_PROD) < database/stats.sql
+
+prod-hide:     ## Hide a production run from every leaderboard (RUN=<uuid>)
+	$(call hide-run,$(PSQL_PROD))
+
 # ── Release ──
 
 .PHONY: prod-release
@@ -153,6 +161,27 @@ db-migrate:    ## Apply pending migrations to the `make db` database
 	  -v "$(CURDIR)/database/migrations:/migrations" \
 	  migrate/migrate:$(MIGRATE_VERSION) -path /migrations \
 	  -database "postgres://$$POSTGRES_USER:$$POSTGRES_PASSWORD@postgres:5432/$$POSTGRES_DB?sslmode=disable" up
+
+# psql in the `postgres` service of the dev or the production stack; -T reads SQL from stdin.
+PSQL_DEV = docker compose exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
+PSQL_PROD = docker compose -f docker-compose.prod.yml exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
+
+# hide-run sets hidden on run $(RUN) through the psql command $(1), and fails on a malformed or unknown id.
+define hide-run
+@echo "$(RUN)" | grep -Eqi '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$$' \
+  || { echo "Error: set RUN=<uuid> (got '$(RUN)')" >&2; exit 1; }
+@echo "UPDATE runs SET hidden = true WHERE id = :'run' RETURNING id;" \
+  | $(1) -qtA -v run=$(RUN) | grep . \
+  || { echo "Error: no run $(RUN)" >&2; exit 1; }
+endef
+
+.PHONY: stats hide
+
+stats:         ## Print the owner statistics of database/stats.sql from the `make db` database
+	$(PSQL_DEV) < database/stats.sql
+
+hide:          ## Hide a run from every leaderboard (RUN=<uuid>)
+	$(call hide-run,$(PSQL_DEV))
 # <<< stack: database
 
 # Enable once the server is provisioned.
@@ -163,8 +192,8 @@ db-migrate:    ## Apply pending migrations to the `make db` database
 
 # Every documented target stands in exactly one CLASS_* list, and `make help` prints the
 # lists as its sections. A target in none prints under UNCLASSIFIED.
-CLASS_developer := db be fe be-check be-integration data data-check fe-check check up down logs db-shell db-migrate help
-CLASS_production := prod-deploy prod-down prod-logs prod-release
+CLASS_developer := db be fe be-check be-integration data data-check fe-check check up down logs db-shell db-migrate stats hide help
+CLASS_production := prod-deploy prod-down prod-logs prod-stats prod-hide prod-release
 
 HELP_WIDTH ?= 96
 
