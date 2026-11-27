@@ -154,7 +154,7 @@ prod-release:  ## Push tag v$(VERSION); .github/workflows/release.yml builds the
 	if [ "$$SHA" != "$$(git rev-parse origin/main)" ]; then echo "Error: main differs from origin/main; push or pull first" >&2; exit 1; fi; \
 	CI=$$(gh run list --workflow ci.yml --branch main --event push --commit "$$SHA" --json conclusion --jq '.[0].conclusion'); \
 	if [ "$$CI" != "success" ]; then echo "Error: CI on $$SHA is '$$CI', not success" >&2; exit 1; fi
-	git tag v$(VERSION) && git push origin v$(VERSION)
+	git tag -a v$(VERSION) -m "v$(VERSION)" && git push origin v$(VERSION)
 
 # ── Utilities ──
 
