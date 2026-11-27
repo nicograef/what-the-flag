@@ -26,6 +26,7 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 - A question that shows a flag never offers a continent, language or currency of the target's look-alike as a wrong option.
 - No two options of a question show the same text.
 - Continents are Africa, Americas, Asia, Europe and Oceania.
+- A country on two continents, such as Russia or Turkey, has a main one, the correct option. Its other continent is never offered.
 
 ## Runs
 

@@ -109,6 +109,9 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 		var blocked []string
 		if !q.Type.Answer.identifiesCountry() {
 			own = values(target, q.Type.Answer)
+			if q.Type.Answer == AttrRegion {
+				blocked = append(blocked, target.OtherRegions...)
+			}
 			if q.Type.Prompt == AttrFlag {
 				for _, code := range target.Lookalikes {
 					blocked = append(blocked, values(byCode[code], q.Type.Answer)...)
@@ -122,7 +125,7 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 				fail("option %d %q: correct %t, true for the target %t", i, o, i == q.Correct, slices.Contains(own, o))
 			}
 			if i != q.Correct && slices.Contains(blocked, o) {
-				fail("option %d %q belongs to a look-alike of the target", i, o)
+				fail("option %d %q is another region of the target or belongs to its look-alike", i, o)
 			}
 			l := text(q.Type, o)
 			if l.De == "" || l.En == "" || des[l.De] || ens[l.En] {

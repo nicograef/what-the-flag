@@ -117,7 +117,7 @@ func clashes(c *country.Country, picked []*country.Country, answer Attr, flag bo
 }
 
 // valueOptions returns one of the target's values and three values it lacks, or nil when fewer than three qualify.
-// In a flag type, a value of the target's look-alike is no distractor: the player cannot tell the two flags apart.
+// A region the target also spans is no distractor, nor, in a flag type, a value of the target's look-alike.
 func valueOptions(cat Catalogue, pool []country.Country, target *country.Country, t QuestionType, rnd Rand) []string {
 	answer := t.Answer
 	own := values(target, answer)
@@ -139,6 +139,9 @@ func valueOptions(cat Catalogue, pool []country.Country, target *country.Country
 		}
 	}
 	block(own)
+	if answer == AttrRegion {
+		block(target.OtherRegions)
+	}
 	if t.Prompt == AttrFlag {
 		for i := range pool {
 			if slices.Contains(target.Lookalikes, pool[i].Code) {

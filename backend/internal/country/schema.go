@@ -19,6 +19,7 @@ type Country struct {
 	Capital       Names    `json:"capital"`
 	OtherCapitals []Names  `json:"otherCapitals"`
 	Region        string   `json:"region"`
+	OtherRegions  []string `json:"otherRegions"` // regions the country also spans, never a wrong option for it
 	Languages     []string `json:"languages"`
 	Currencies    []string `json:"currencies"`
 	Fame          int      `json:"fame"`

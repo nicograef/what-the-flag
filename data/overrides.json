@@ -69,6 +69,17 @@
       "reason": "Blue-yellow-red vertical tricolour; the blues differ only in shade"
     }
   ],
+  "otherRegions": {
+    "AM": {"regions": ["Europe"], "reason": "Lies south of the Caucasus in Asia, yet is often counted as European"},
+    "AZ": {"regions": ["Europe"], "reason": "Its north-east lies north of the Greater Caucasus watershed, in Europe"},
+    "CY": {"regions": ["Asia"], "reason": "Counted as European, yet the island lies off Anatolia, in Asia"},
+    "EG": {"regions": ["Asia"], "reason": "The Sinai Peninsula lies in Asia"},
+    "GE": {"regions": ["Europe"], "reason": "Its north lies beyond the Greater Caucasus watershed, in Europe"},
+    "ID": {"regions": ["Oceania"], "reason": "Western New Guinea lies on the Australian continent, in Oceania"},
+    "KZ": {"regions": ["Europe"], "reason": "Its land west of the Ural River lies in Europe"},
+    "RU": {"regions": ["Asia"], "reason": "Siberia and the Far East, east of the Urals, lie in Asia"},
+    "TR": {"regions": ["Europe"], "reason": "East Thrace, with the west of Istanbul, lies in Europe"}
+  },
   "fameTiers": {
     "AT": {"tier": 1, "reason": "Widely known European country, German-speaking neighbour"},
     "BE": {"tier": 1, "reason": "EU seat, well known in Europe"},

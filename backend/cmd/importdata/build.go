@@ -67,6 +67,7 @@ func build(src sources) (country.Dataset, []string) {
 	names := b.countryNames()
 	capitals := b.capitals()
 	lookalikes := b.lookalikes()
+	otherRegions := b.otherRegions()
 	languages := b.codeLists("languages", b.src.overrides.Languages, src.languageNames, func(c mledozeCountry) []string {
 		var codes []string
 		for _, code := range c.Languages {
@@ -94,6 +95,7 @@ func build(src sources) (country.Dataset, []string) {
 			Capital:       c.primary,
 			OtherCapitals: c.others,
 			Region:        b.byCode[code].Region,
+			OtherRegions:  append([]string{}, otherRegions[code]...),
 			Languages:     languages[code],
 			Currencies:    currencies[code],
 			Fame:          fame[code],
@@ -294,6 +296,37 @@ func (b *builder) lookalikes() map[string][]string {
 		slices.Sort(list)
 	}
 	return partners
+}
+
+// otherRegions validates the curated second regions and returns each code's, sorted.
+func (b *builder) otherRegions() map[string][]string {
+	out := map[string][]string{}
+	ov := b.src.overrides.OtherRegions
+	for _, code := range slices.Sorted(maps.Keys(ov)) {
+		o, name := ov[code], "otherRegions "+code
+		requireReason(&b.p, name, o.Reason)
+		if !b.inPool(code) {
+			b.p.add("%s: not a pool code", name)
+			continue
+		}
+		if len(o.Regions) == 0 {
+			b.p.add("%s: names no region", name)
+		}
+		for i, r := range o.Regions {
+			switch {
+			case regionLabels[r] == country.Names{}:
+				b.p.add("%s: region %q is not one of %v", name, r, slices.Sorted(maps.Keys(regionLabels)))
+			case r == b.byCode[code].Region:
+				b.p.add("%s: %s equals the source region", name, r)
+			case slices.Contains(o.Regions[:i], r):
+				b.p.add("%s: %s listed twice", name, r)
+			default:
+				out[code] = append(out[code], r)
+			}
+		}
+		slices.Sort(out[code])
+	}
+	return out
 }
 
 // codeLists returns each pool entry's sorted attribute codes: the source's, edited by the section's overrides.

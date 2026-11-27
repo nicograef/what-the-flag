@@ -93,6 +93,7 @@ type overrides struct {
 	CapitalLabels   map[string]labelOverride    `json:"capitalLabels"`
 	CountryNames    map[string]labelOverride    `json:"countryNames"`
 	Lookalikes      []lookalike                 `json:"lookalikes"`
+	OtherRegions    map[string]otherRegions     `json:"otherRegions"`
 	FameTiers       map[string]fameTier         `json:"fameTiers"`
 	Languages       map[string]listOverride     `json:"languages"`
 	Currencies      map[string]listOverride     `json:"currencies"`
@@ -135,6 +136,11 @@ type labelOverride struct {
 type lookalike struct {
 	Pair   []string `json:"pair"`
 	Reason string   `json:"reason"`
+}
+
+type otherRegions struct {
+	Regions []string `json:"regions"`
+	Reason  string   `json:"reason"`
 }
 
 func readSources(root *os.Root) (sources, error) {
