@@ -25,6 +25,10 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM alpine:3.24
 RUN adduser -D -H -u 10001 app
 COPY --from=build /out/app /usr/local/bin/app
+# The image ships ODbL data, so it carries its licence and the credits. `root` is the repo root,
+# a named build context that docker-compose.yml and release.yml pass in.
+COPY internal/country/dataset/LICENSE /usr/share/doc/what-the-flag/LICENSE
+COPY --from=root NOTICE /usr/share/doc/what-the-flag/NOTICE
 USER app
 
 EXPOSE 8080

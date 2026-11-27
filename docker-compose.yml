@@ -26,7 +26,11 @@ services:
       retries: 10
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      # backend/Dockerfile copies NOTICE from the repo root through this named context.
+      additional_contexts:
+        root: .
     environment:
       DB_HOST: postgres
       POSTGRES_USER: ${POSTGRES_USER}

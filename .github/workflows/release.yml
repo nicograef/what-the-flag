@@ -28,10 +28,12 @@ jobs:
       matrix:
         # One entry per app image in docker-compose.prod.yml, with its build context and Dockerfile.
         # The edge image reads frontend/ and reverse-proxy/, so it builds from the repo root.
+        # The backend image reads NOTICE through the named context `root`, as docker-compose.yml passes it.
         include:
           - service: backend
             context: ./backend
             file: ./backend/Dockerfile
+            build-contexts: root=.
           - service: edge
             context: .
             file: ./reverse-proxy/Dockerfile
@@ -55,6 +57,7 @@ jobs:
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
+          build-contexts: ${{ matrix.build-contexts }}
           push: true
           tags: ghcr.io/nicograef/what-the-flag-${{ matrix.service }}:${{ github.ref_name }}
           labels: org.opencontainers.image.version=${{ github.ref_name }}
