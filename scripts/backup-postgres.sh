@@ -5,7 +5,7 @@
 #   scripts/backup-postgres.sh                        # defaults below
 #   BACKUP_DIR=<dir> RETENTION_DAYS=<days> scripts/backup-postgres.sh
 #
-#   Cron runs the clone's own copy, so `git pull` keeps it current (guides/backup-restore.md, Daily backup).
+#   Cron runs the clone's own copy, so `git pull` keeps it current (the handbook's guides/backup-restore.md, Daily backup).
 #
 # What it does:
 #   1. Reads BACKUP_PING_URL from the Compose .env in COMPOSE_DIR, without sourcing it.

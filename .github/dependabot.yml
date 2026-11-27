@@ -86,6 +86,6 @@ updates:
         patterns:
           - "*"
     ignore:
-      # A new major cannot read the old data directory: guides/postgres-upgrade.md is the only path.
+      # A new major cannot read the old data directory: the handbook's guides/postgres-upgrade.md is the only path.
       - dependency-name: "postgres"
         update-types: ["version-update:semver-major"]
