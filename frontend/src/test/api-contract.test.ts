@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { z } from "zod";
+import type { z } from "zod/mini";
 import { getChallenge } from "@/features/challenge/api";
 import { getLeaderboard } from "@/features/leaderboard/api";
 import {
@@ -25,9 +25,9 @@ function golden(name: string): unknown {
 
 /** An ApiClient whose every call parses body with the caller's schema. */
 function serving(body: unknown): ApiClient {
-  const parse = <T>(_path: string, schema: z.ZodType<T>): Promise<T> =>
+  const parse = <T>(_path: string, schema: z.ZodMiniType<T>): Promise<T> =>
     Promise.resolve(schema.parse(body));
-  return { get: parse, post: parse, patch: parse, delete: parse };
+  return { get: parse, post: parse };
 }
 
 const calls: [string, (api: ApiClient) => Promise<unknown>][] = [
