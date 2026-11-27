@@ -341,10 +341,10 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 ### Acceptance criteria
 
-- [ ] Component: `pnpm --dir frontend exec vitest run src/features/play`
-- [ ] No tracer remains: `! grep -rnE 'useHealth|getHealth|/api/me' frontend/src`
-- [ ] With `make db`, `make db-migrate`, `make be` and `make fe` running: `curl -fsS -X POST -H 'Content-Type: application/json' -H 'Origin: http://localhost:5173' -d '{"name":"probe"}' localhost:5173/api/runs | jq -e '.runId and .quizId'`
-- [ ] `make check` passes.
+- [x] Component: `pnpm --dir frontend exec vitest run src/features/play`
+- [x] No tracer remains: `! grep -rnE 'useHealth|getHealth|/api/me' frontend/src`
+- [x] With `make db`, `make db-migrate`, `make be` and `make fe` running: `curl -fsS -X POST -H 'Content-Type: application/json' -H 'Origin: http://localhost:5173' -d '{"name":"probe"}' localhost:5173/api/runs | jq -e '.runId and .quizId'`
+- [x] `make check` passes.
 
 ## Phase 5: Challenge page, leaderboard page and link preview
 
