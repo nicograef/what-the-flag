@@ -254,4 +254,3 @@ Later, each after the beta shows the need:
 - After `v0.1.0`, `docs/game-rules.md` holds the rules, and this PRD is pruned.
 - The game rules state that the data comes from open sources and implies no political position.
 - Terms are defined in [UBIQUITOUS_LANGUAGE.md](../UBIQUITOUS_LANGUAGE.md).
-- Implementation is sliced into the plans listed in [programme.md](../plans/programme.md).

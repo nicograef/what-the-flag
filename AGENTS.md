@@ -31,7 +31,7 @@ A Go backend on Postgres serves a React SPA through a Caddy edge.
 | `reverse-proxy/` | The Caddyfile and the edge image, which bakes in the SPA |
 | `data/` | Vendored country sources, overrides and the data licence |
 | `scripts/` | Deploy, backup, e2e stack, smoke and data-fetch scripts |
-| `docs/` | Game rules, glossary, decisions, PRD and plans; `docs/README.md` indexes them |
+| `docs/` | Game rules, glossary, decisions and the PRD; `docs/README.md` indexes them |
 
 ## Rules
 
