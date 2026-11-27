@@ -49,9 +49,11 @@ A Go backend on Postgres serves a React SPA through a Caddy edge.
 
 ### Backend
 
-- A domain is a pure core in `internal/<domain>/`, with adapters in `internal/<domain>/postgres` and `internal/<domain>/httpapi`.
-  A `depguard` rule in `backend/.golangci.yml` keeps HTTP and database imports out of the core. Wiring lives in `internal/app/app.go`.
-- Each domain has one sqlc block and `sqlc/queries/<domain>.sql`. Generated code is regenerated, never edited.
+- A domain (`quiz`, `country`) is a pure core in `internal/<domain>/`; its adapters, where it has any, sit in `internal/<domain>/postgres` and `internal/<domain>/httpapi`.
+  A `depguard` rule in `backend/.golangci.yml` keeps HTTP and database imports out of every domain core; a new domain joins its file list.
+- `internal/health` is infrastructure, not a domain: its handler serves `GET /api/health` over a database `Pinger`.
+- Wiring lives in `internal/app/app.go`.
+- Each domain with tables has one sqlc block and `sqlc/queries/<domain>.sql`. Generated code is regenerated, never edited.
 - Stores take `DB` (`DBTX` plus `Begin`). A method taking a `pgx.Tx` rejects nil.
 - Integration tests carry the `integration` tag, are named `*_integration_test.go` and never truncate.
 - A route lands with `internal/contract/<domain>_integration_test.go`.

@@ -33,20 +33,23 @@ linters:
   settings:
     depguard:
       rules:
-        # The quiz core imports neither HTTP nor database code; its adapters live in subpackages.
-        quiz-domain:
+        # A domain core imports neither HTTP nor database code; its adapters live in subpackages.
+        domain-core:
           files:
             - "**/internal/quiz/*.go"
+            - "**/internal/country/*.go"
           deny:
             - pkg: net/http
-              desc: the quiz core is pure; HTTP belongs in internal/quiz/httpapi
+              desc: a domain core is pure; HTTP belongs in its httpapi adapter
             - pkg: github.com/jackc/pgx
-              desc: the quiz core is pure; Postgres belongs in internal/quiz/postgres
+              desc: a domain core is pure; Postgres belongs in its postgres adapter
             - pkg: github.com/nicograef/what-the-flag/internal/httpx
-              desc: the quiz core is pure; HTTP belongs in internal/quiz/httpapi
+              desc: a domain core is pure; HTTP belongs in its httpapi adapter
             - pkg: github.com/nicograef/what-the-flag/internal/postgres
-              desc: the quiz core is pure; Postgres belongs in internal/quiz/postgres
+              desc: a domain core is pure; Postgres belongs in its postgres adapter
             - pkg: github.com/nicograef/what-the-flag/internal/quiz/postgres
+              desc: the core defines ports; the adapter depends on the core, not the reverse
+            - pkg: github.com/nicograef/what-the-flag/internal/quiz/httpapi
               desc: the core defines ports; the adapter depends on the core, not the reverse
     gosec:
       excludes:

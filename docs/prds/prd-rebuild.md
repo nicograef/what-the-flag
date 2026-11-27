@@ -103,8 +103,8 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | country | The in-memory catalogue: the quiz pool and its attributes in both languages |
 | quiz | Quizzes, runs, question generation, the clock, answer checking, the leaderboards |
 
-- `quiz` has a pure domain core: entities, rules and the run state machine. It imports neither HTTP nor database code.
-- Its ports are a repository, a clock and a random source. A lint rule enforces the boundary.
+- `quiz` and `country` are pure domain cores: they import neither HTTP nor database code. A lint rule enforces the boundary.
+- The `quiz` core holds entities, rules and the run state machine. Its ports are a repository, a clock and a random source.
 - A Postgres adapter implements the repository; an HTTP adapter maps routes to the core.
 - An application service runs each use case in one transaction.
 - The leaderboards are read queries over runs. They have no tables of their own.
