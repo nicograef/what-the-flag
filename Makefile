@@ -36,8 +36,8 @@ fe:            ## Start frontend dev server
 
 # ── Code Quality ──
 
-# Each gate runs its stack's ci.yml checks, so a green `make check` predicts a green CI.
-# Each stack block adds its gate to `check`.
+# `check` runs the steps of ci.yml's backend and frontend gate and scan jobs, test shuffling included.
+# `be-integration` and `e2e` mirror two more CI jobs; upgrade-path, pins and secrets run only in CI.
 
 .PHONY: check
 
@@ -56,7 +56,7 @@ be-check: data-check ## Backend: Go gate (modules, generated code, format, vet, 
 	cd $(BACKEND_DIR) && go vet ./...
 	cd $(BACKEND_DIR) && golangci-lint run
 	cd $(BACKEND_DIR) && go build ./...
-	cd $(BACKEND_DIR) && go test -race ./...
+	cd $(BACKEND_DIR) && go test -shuffle=on -race ./...
 	cd $(BACKEND_DIR) && go tool govulncheck ./...
 
 .PHONY: be-integration

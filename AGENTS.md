@@ -16,9 +16,9 @@ A Go backend on Postgres serves a React SPA through a Caddy edge.
 | `make db-migrate` | Applies pending migrations to the `make db` database |
 | `make be` | Starts the backend on :8080 |
 | `make fe` | Starts the Vite dev server, which proxies `/api` to :8080 |
-| `make check` | Runs the backend and frontend gates, as CI does |
-| `make be-integration` | Runs the integration tests against the `make db` database |
-| `make e2e` | Builds the production stack, serves it with local TLS and runs `scripts/smoke.sh` |
+| `make check` | Runs the steps of CI's backend and frontend jobs |
+| `make be-integration` | Runs CI's integration tests against the `make db` database |
+| `make e2e` | Runs CI's e2e job: builds the production stack, serves it with local TLS and runs `scripts/smoke.sh` |
 | `make help` | Lists every target, the production ones included |
 
 ## Layout

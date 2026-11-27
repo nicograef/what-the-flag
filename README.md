@@ -15,9 +15,9 @@ Copy `.env.example` to `.env`, set a password and uncomment `DB_HOST`.
 | `make db-migrate` | Applies pending migrations to it |
 | `make be` | Starts the backend on :8080 |
 | `make fe` | Starts the Vite dev server, which proxies `/api` to :8080 |
-| `make check` | Runs the gate that CI runs |
-| `make be-integration` | Runs the integration tests against the `make db` database |
-| `make e2e` | Builds the production stack, serves it with local TLS and smoke-tests it |
+| `make check` | Runs the steps of CI's backend and frontend jobs |
+| `make be-integration` | Runs CI's integration tests against the `make db` database |
+| `make e2e` | Runs CI's e2e job: builds the production stack, serves it with local TLS and smoke-tests it |
 
 `make help` lists every target.
 
