@@ -24,7 +24,8 @@ Copy `.env.example` to `.env`, set a password and uncomment `DB_HOST`.
 ## Deploy
 
 The server follows the handbook's [deploy guide](https://github.com/nicograef/handbook/blob/main/guides/deploy.md) and [backup and restore guide](https://github.com/nicograef/handbook/blob/main/guides/backup-restore.md).
-A `vX.Y.Z` tag builds the images; `docker-compose.prod.yml` pins their tag.
+`make prod-release VERSION=X.Y.Z` tags a main commit whose CI passed, and the tag builds the images.
+`docker-compose.prod.yml` pins one tag for all three images.
 
 | Command | Does |
 | --- | --- |

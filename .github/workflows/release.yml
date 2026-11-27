@@ -1,6 +1,6 @@
 # A vX.Y.Z tag (`make prod-release VERSION=X.Y.Z`) builds the app images and pushes them to
-# GHCR under that tag; docker-compose.prod.yml pins the same tag. The tag goes on a main commit
-# CI already checked, so this workflow runs no tests.
+# GHCR under that tag; docker-compose.prod.yml pins the same tag. It runs no tests: it builds only
+# when CI's push run on main passed for the tagged commit, and a main push runs every gate job.
 #
 # Every `uses:` is pinned to a full commit SHA, with its release in the trailing comment (see ci.yml).
 name: Release
@@ -18,9 +18,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  image:
+  ci:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
+    permissions:
+      actions: read
+    steps:
+      - name: Require a passed CI run on main for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CI="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --branch main --event push \
+            --commit "$GITHUB_SHA" --json conclusion --jq '.[0].conclusion')"
+          [ "$CI" = success ] || { echo "CI on main for $GITHUB_SHA is '$CI', not success."; exit 1; }
+
+  image:
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write

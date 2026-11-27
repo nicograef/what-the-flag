@@ -10,9 +10,11 @@
 # repoint it and every run picks that up silently. Dependabot's github-actions group
 # rewrites SHA and comment together, so the pins still get bumped.
 #
-# `timeout-minutes` on every job: GitHub's default is six hours. The values here are
-# placeholders; read the real figure off `gh run view RUN_ID --json jobs` and set each
-# well above it.
+# `timeout-minutes` on every job: GitHub's default is six hours. Each value sits well
+# above the job's longest recent run (`gh run view RUN_ID --json jobs`).
+#
+# A push to main runs every gate job whatever its path filter says: a release tag goes on
+# a main commit, and release.yml builds only when that commit's run passed.
 name: CI
 
 # Every push on any branch, so a feature branch is measured while it is still a branch.
@@ -50,7 +52,7 @@ jobs:
   changes:
     if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     outputs:
       backend: ${{ steps.changes.outputs.backend }}
       frontend: ${{ steps.changes.outputs.frontend }}
@@ -97,7 +99,7 @@ jobs:
   backend-ci:
     needs: changes
     # database: the generated code reads the schema.
-    if: ${{ (needs.changes.outputs.backend == 'true') || (needs.changes.outputs.database == 'true') }}
+    if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.database == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -162,9 +164,9 @@ jobs:
   # ── golangci-lint (separate job for caching) ───────────────────────────────
   backend-golangci:
     needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
+    if: ${{ needs.changes.outputs.backend == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: ./backend
@@ -197,9 +199,9 @@ jobs:
   # ── Node / pnpm Frontend ──────────────────────────────────────────────────
   frontend-ci:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: ./frontend
@@ -239,13 +241,11 @@ jobs:
   # <<< stack: frontend
 
   # ── End to End (production stack with local TLS) ───────────────────────────
-  # Every main push runs it too: a release tag goes on a main commit, and the path
-  # filter alone would let that commit skip the stack that ships.
   e2e:
     needs: changes
     if: ${{ needs.changes.outputs.e2e == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -260,7 +260,7 @@ jobs:
   # weekly run applies new gitleaks rules to the old commits.
   secrets:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -280,13 +280,13 @@ jobs:
         run: gitleaks git --redact --no-banner .
 
   # The stack scans run on the weekly schedule too, when `changes` is skipped;
-  # !cancelled() lets them run past that skip. A push runs one only when its code changed.
+  # !cancelled() lets them run past that skip. A push off main runs one only when its code changed.
   # >>> stack: go
   security-go:
     needs: changes
-    if: ${{ !cancelled() && (github.event_name == 'schedule' || needs.changes.outputs.backend == 'true') }}
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || github.ref == 'refs/heads/main' || needs.changes.outputs.backend == 'true') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
@@ -311,9 +311,9 @@ jobs:
   # >>> stack: frontend
   security-node:
     needs: changes
-    if: ${{ !cancelled() && (github.event_name == 'schedule' || needs.changes.outputs.frontend == 'true') }}
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || github.ref == 'refs/heads/main' || needs.changes.outputs.frontend == 'true') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: ./frontend
@@ -338,10 +338,9 @@ jobs:
 
   # >>> stack: database
   # ── Integration Tests (PostgreSQL) ─────────────────────────────────────────
-  # Go and Python steps share the database and its migrations.
   backend-integration-tests:
     needs: changes
-    if: ${{ (needs.changes.outputs.backend == 'true') || (needs.changes.outputs.database == 'true') }}
+    if: ${{ needs.changes.outputs.backend == 'true' || needs.changes.outputs.database == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     services:
@@ -409,9 +408,9 @@ jobs:
   # current schema through `up` alone. The rollback is a backup restore, drilled below.
   upgrade-path:
     needs: changes
-    if: ${{ needs.changes.outputs.database == 'true' }}
+    if: ${{ needs.changes.outputs.database == 'true' || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     env:
       DB_NAME: whattheflag
       MIGRATIONS: database/migrations  # relative to the repo root

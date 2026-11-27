@@ -142,8 +142,8 @@ prod-hide:     ## Hide a production run from every leaderboard (RUN=<uuid>)
 
 .PHONY: prod-release
 
-# The tag goes only on origin/main's tip with a green CI push run: release.yml runs no tests,
-# and a tag push would otherwise upload unpushed commits CI never saw.
+# The tag goes only on origin/main's tip with a green CI push run, which release.yml checks again
+# before it builds; every gate job runs on a main push, so that run covers the whole tree.
 prod-release:  ## Push tag v$(VERSION); .github/workflows/release.yml builds the images (VERSION=X.Y.Z)
 	@echo "$(VERSION)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$$' \
 	  || { echo "Error: set VERSION=X.Y.Z (got '$(VERSION)')" >&2; exit 1; }
