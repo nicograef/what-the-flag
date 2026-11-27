@@ -1,11 +1,5 @@
 # The edge image (reverse-proxy/Dockerfile) bakes this file in, so a change ships with the next release.
 
-# ── Global options ──
-# {
-# 	# Enable to receive Let's Encrypt expiry notices for this account.
-# 	email <you@what-the-flag.de>
-# }
-
 # ── Redirect www to the apex domain ──
 www.what-the-flag.de {
 	redir https://what-the-flag.de{uri} permanent
