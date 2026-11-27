@@ -6,7 +6,7 @@
 #   ROLLBACK=1 DOMAIN=example.com make prod-deploy   # only after restoring a backup
 #
 # What it does:
-#   1. Checks prerequisites, and that every image carries a pinned tag (the app a vX.Y.Z one).
+#   1. Checks prerequisites, that every image carries a pinned tag, and that the app images share one vX.Y.Z tag.
 #   2. After an earlier deploy: refuses a downgrade unless ROLLBACK=1, then takes a verified backup.
 #   3. Pulls the pinned images, starts the stack and polls every healthcheck.
 #   4. Polls https://DOMAIN, then records the tag as deployed; on a failure, prints the rollback path.
@@ -92,6 +92,11 @@ TARGET_IMAGE="$(jq -r --arg s "$APP_SERVICE" '.services[$s].image' <<<"$CONFIG")
 TARGET_TAG="${TARGET_IMAGE##*:}"
 is_release_tag "$TARGET_TAG" || \
   error "$APP_SERVICE image '$TARGET_IMAGE' is not pinned to a vX.Y.Z tag in $PROD_FILE."
+
+# One release builds the backend, edge and migrate images, so they ship under one tag.
+APP_TAGS="$(jq -r '.services[].image // empty | select(test("/what-the-flag-[a-z]+:")) | sub(".*:"; "")' <<<"$CONFIG" | sort -u)"
+[[ "$APP_TAGS" == "$TARGET_TAG" ]] || \
+  error "The app images in $PROD_FILE carry different tags: $(tr '\n' ' ' <<<"$APP_TAGS")"
 
 log "Domain:  $DOMAIN"
 log "Target:  $TARGET_TAG"

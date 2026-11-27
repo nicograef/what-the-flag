@@ -42,6 +42,7 @@ concurrency:
 # >>> stack: database
 env:
   # The digest is the release's sha256sum.txt entry; update it together with the version.
+  # The `pins` job holds database/Dockerfile's base tag to MIGRATE_VERSION.
   MIGRATE_VERSION: v4.20.1
   MIGRATE_SHA256: b1e13121d4178b7804a9fb29dca62d57b732390f7e5ae33f2cd65e9b192e1bd4
 # <<< stack: database
@@ -254,6 +255,32 @@ jobs:
       - name: Build the stack and run the smoke checks
         run: make e2e
 
+  # ── Release Pins ───────────────────────────────────────────────────────────
+  # One release tag for the three app images, and one golang-migrate version for
+  # database/Dockerfile and the CLI the jobs below install.
+  pins:
+    if: ${{ github.event_name != 'schedule' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check the migrate base tag
+        run: |
+          BASE="$(sed -n 's#^FROM migrate/migrate:##p' database/Dockerfile)"
+          [ "$BASE" = "$MIGRATE_VERSION" ] || {
+            echo "database/Dockerfile is on migrate/migrate:$BASE, ci.yml's MIGRATE_VERSION is $MIGRATE_VERSION."
+            exit 1
+          }
+
+      - name: Check the app image tags
+        run: |
+          IMAGES="$(grep -oE 'what-the-flag-(backend|edge|migrate):[^[:space:]]+' docker-compose.prod.yml)"
+          echo "$IMAGES"
+          [ "$(wc -l <<<"$IMAGES")" -eq 3 ] || { echo "docker-compose.prod.yml must name the backend, edge and migrate images once each."; exit 1; }
+          [ "$(cut -d: -f2 <<<"$IMAGES" | sort -u | wc -l)" -eq 1 ] || { echo "The app images in docker-compose.prod.yml carry different tags."; exit 1; }
 
   # ── Security ───────────────────────────────────────────────────────────────
   # Every push and every scheduled run: a secret can land in any file, and the
