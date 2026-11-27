@@ -14,6 +14,8 @@ export interface FakeRunOptions {
   remainingMs?: number;
   quizRank?: number;
   globalRank?: number | null;
+  /** Every answer arrives within the minimum answer time, so even the correct option is wrong. */
+  tooFast?: boolean;
 }
 
 interface RunRecord {
@@ -42,7 +44,12 @@ export function fakeRun(
   questions: FakeQuestion[],
   options: FakeRunOptions = {},
 ): { runId: string; quizId: string } {
-  const { remainingMs = 15_000, quizRank = 1, globalRank = 1 } = options;
+  const {
+    remainingMs = 15_000,
+    quizRank = 1,
+    globalRank = 1,
+    tooFast = false,
+  } = options;
   const runs: RunRecord[] = [];
   const deadline = new Date(Date.parse(serverNow) + remainingMs).toISOString();
 
@@ -99,7 +106,7 @@ export function fakeRun(
       option: number | null;
     };
     const q = questions[position];
-    const correct = option === q.correctOption;
+    const correct = !tooFast && option === q.correctOption;
     if (correct) {
       run.score += 1;
       if (run.score === questions.length)

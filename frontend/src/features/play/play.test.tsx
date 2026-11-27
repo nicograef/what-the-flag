@@ -112,6 +112,18 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
   );
 });
 
+it("names a correct pick within the minimum answer time as too fast", async () => {
+  const { user } = await startPlaying({ tooFast: true });
+
+  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+
+  expect(
+    await screen.findByText(
+      "Die letzte Antwort kam in weniger als 300 ms und zählt deshalb als falsch.",
+    ),
+  ).toBeInTheDocument();
+});
+
 it("names the run to the global ranking through router state", async () => {
   const { api, ids, user } = await startPlaying();
   api.respond(`GET /api/leaderboard?run=${ids.runId}`, {

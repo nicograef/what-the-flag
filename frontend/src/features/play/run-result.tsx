@@ -29,6 +29,10 @@ export function RunResult({
   const navigate = useNavigate();
   const [best] = useState(() => recordScore(run.id, result.score));
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const tooFast =
+    result.endReason === "wrong" &&
+    result.last !== null &&
+    result.last.chosenOption === result.last.correctOption;
   const again = useMutation({
     mutationFn: () => startRun(api, { name: run.name }),
     onSuccess: async ({ runId }) => {
@@ -58,7 +62,7 @@ export function RunResult({
             {t.resultScore(result.score)}
           </p>
           <p className="text-muted-foreground">
-            {t.endReasons[result.endReason]}
+            {tooFast ? t.tooFastEnd : t.endReasons[result.endReason]}
           </p>
           <ul className="flex flex-col gap-1">
             <li>{t.quizRank(result.quizRank)}</li>

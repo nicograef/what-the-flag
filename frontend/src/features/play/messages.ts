@@ -24,11 +24,13 @@ export const messages = defineMessages<{
   correct: string;
   wrong: string;
   timedOut: string;
+  tooFast: string;
   correctAnswer: string;
   yourAnswer: string;
   resultTitle: string;
   resultScore: (score: number) => string;
   endReasons: Record<"wrong" | "timeout" | "completed", string>;
+  tooFastEnd: string;
   missed: string;
   quizRank: (rank: number) => string;
   globalRank: (rank: number) => string;
@@ -86,6 +88,7 @@ export const messages = defineMessages<{
     correct: "Richtig!",
     wrong: "Leider falsch.",
     timedOut: "Die Zeit ist abgelaufen.",
+    tooFast: "Zu schnell geantwortet.",
     correctAnswer: "richtige Antwort",
     yourAnswer: "deine Antwort",
     resultTitle: "Spiel vorbei",
@@ -96,6 +99,8 @@ export const messages = defineMessages<{
       timeout: "Die Zeit für die letzte Frage ist abgelaufen.",
       completed: "Du hast alle Fragen beantwortet.",
     },
+    tooFastEnd:
+      "Die letzte Antwort kam in weniger als 300 ms und zählt deshalb als falsch.",
     missed: "Diese Frage hat dich erwischt:",
     quizRank: (rank) => `Platz ${rank} in diesem Quiz`,
     globalRank: (rank) => `Platz ${rank} weltweit`,
@@ -157,6 +162,7 @@ export const messages = defineMessages<{
     correct: "Correct!",
     wrong: "Sorry, that's wrong.",
     timedOut: "Time is up.",
+    tooFast: "Answered too fast.",
     correctAnswer: "correct answer",
     yourAnswer: "your answer",
     resultTitle: "Game over",
@@ -167,6 +173,7 @@ export const messages = defineMessages<{
       timeout: "The time for the last question ran out.",
       completed: "You answered every question.",
     },
+    tooFastEnd: "The last answer came within 300 ms, so it counts as wrong.",
     missed: "This question got you:",
     quizRank: (rank) => `Rank ${rank} in this quiz`,
     globalRank: (rank) => `Rank ${rank} worldwide`,

@@ -64,7 +64,10 @@ function Run({ runId }: { runId: string }): ReactNode {
   let feedback = "";
   if (shown) {
     if (shown.correct) feedback = t.correct;
-    else feedback = shown.timedOut ? t.timedOut : t.wrong;
+    else if (shown.timedOut) feedback = t.timedOut;
+    // The server counts a pick within 300 ms as wrong, the correct option included.
+    else if (shown.chosenOption === shown.correctOption) feedback = t.tooFast;
+    else feedback = t.wrong;
   }
 
   return (
