@@ -102,8 +102,10 @@
   },
   "currencies": {
     "BG": {"remove": ["BGN"], "add": ["EUR"], "reason": "Bulgaria has used the euro since 2026-01-01; mledoze lists the lev"},
+    "CU": {"remove": ["CUC"], "reason": "Cuba abolished the convertible peso in 2021; the peso (CUP) remains"},
     "FM": {"add": ["USD"], "reason": "mledoze lists no currency; Micronesia uses the US dollar"},
     "KI": {"remove": ["KID"], "reason": "Kiribati dollar has no ISO 4217 code or CLDR name; AUD remains"},
+    "SL": {"remove": ["SLL"], "add": ["SLE"], "reason": "The new leone (SLE) replaced SLL in 2022; CLDR labels SLL (1964-2022)"},
     "TV": {"remove": ["TVD"], "reason": "Tuvaluan dollar has no ISO 4217 code or CLDR name; AUD remains"},
     "ZW": {"remove": ["ZWB"], "add": ["ZWG"], "reason": "Bond notes (ZWB) have no CLDR name; Zimbabwe Gold (ZWG) is the national currency"}
   }

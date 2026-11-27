@@ -909,7 +909,6 @@
         "es"
       ],
       "currencies": [
-        "CUC",
         "CUP"
       ],
       "fame": 2,
@@ -3610,7 +3609,7 @@
         "en"
       ],
       "currencies": [
-        "SLL"
+        "SLE"
       ],
       "fame": 2,
       "flagKey": "6eabafe4ad",
@@ -5137,10 +5136,6 @@
         "de": "Costa-Rica-Colón",
         "en": "Costa Rican Colón"
       },
-      "CUC": {
-        "de": "Kubanischer Peso (konvertibel)",
-        "en": "Cuban Convertible Peso"
-      },
       "CUP": {
         "de": "Kubanischer Peso",
         "en": "Cuban Peso"
@@ -5473,9 +5468,9 @@
         "de": "Singapur-Dollar",
         "en": "Singapore Dollar"
       },
-      "SLL": {
-        "de": "Sierra-leonischer Leone (1964–2022)",
-        "en": "Sierra Leonean Leone (1964—2022)"
+      "SLE": {
+        "de": "Sierra-leonischer Leone",
+        "en": "Sierra Leonean Leone"
       },
       "SOS": {
         "de": "Somalia-Schilling",

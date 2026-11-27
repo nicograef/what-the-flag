@@ -30,6 +30,8 @@ var (
 	}
 	codeRe    = regexp.MustCompile(`^[A-Z]{2}$`)
 	flagKeyRe = regexp.MustCompile(`^[0-9a-f]{10}$`)
+	// yearRangeRe matches the "(1964–2022)" CLDR appends to the name of a withdrawn code.
+	yearRangeRe = regexp.MustCompile(`\(\d{4}\s*[–—-]\s*\d{4}\)`)
 )
 
 // problems collects every violation, so one run lists them all.
@@ -338,8 +340,12 @@ func (b *builder) codeLists(section string, ov map[string]listOverride, names ma
 			b.p.add("%s: no %s", code, section)
 		}
 		for _, v := range list {
-			if n := names[v]; n.De == "" || n.En == "" {
+			n := names[v]
+			if n.De == "" || n.En == "" {
 				b.p.add("%s: %s code %s lacks a German or English CLDR name %+v", code, section, v, n)
+			}
+			if yearRangeRe.MatchString(n.De) || yearRangeRe.MatchString(n.En) {
+				b.p.add("%s: %s code %s is withdrawn, its CLDR name is %+v", code, section, v, n)
 			}
 		}
 		if list == nil {
