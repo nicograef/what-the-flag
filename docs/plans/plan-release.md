@@ -102,7 +102,7 @@ Migrations apply on deploy through a one-shot service, every image carries its l
 - [x] Manual migrate keeps the DSN: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -e '.services.migrate.entrypoint[3] == "-database" and .services.migrate.command == ["up"]'`
 - [x] `! make help | grep -q UNCLASSIFIED`
 - [x] `grep -q 'directory: "/database"' .github/dependabot.yml`
-- [ ] CI job `e2e` green on the pushed head (lead checks).
+- [x] CI job `e2e` green on the pushed head (lead checks).
 - [x] `make check` passes.
 
 ## Phase 2: Licences, CSP, docs and the v0.1.0 check
@@ -131,17 +131,17 @@ Migrations apply on deploy through a one-shot service, every image carries its l
 
 ### Acceptance criteria
 
-- [ ] Backend image carries both files: `make e2e && test "$(docker run --rm --entrypoint ls what-the-flag-backend:e2e /usr/share/doc/what-the-flag | paste -sd' ')" = 'LICENSE NOTICE'`
-- [ ] Edge image (built by the criterion above): `test "$(docker run --rm --entrypoint ls what-the-flag-edge:e2e /usr/share/doc/what-the-flag | paste -sd' ')" = 'LICENSE NOTICE'`
-- [ ] Dev build keeps working: `docker compose build backend`
-- [ ] Prod pins: `test "$(grep -cE 'what-the-flag-(backend|edge|migrate):v0\.1\.0' docker-compose.prod.yml)" = 3`
-- [ ] One migrate version: `test "$(grep -hoE 'migrate/migrate:v[0-9.]+|MIGRATE_VERSION: v[0-9.]+' database/Dockerfile .github/workflows/ci.yml | grep -oE 'v[0-9.]+' | sort -u | wc -l)" = 1`
-- [ ] Release matrix: `test "$(grep -cE 'service: (backend|edge|migrate)$' .github/workflows/release.yml)" = 3`
-- [ ] No placeholders: `! grep -rnE '<(owner|project|name|domain|database-name)>' docker-compose*.yml database .github reverse-proxy Makefile scripts --exclude=make-help.awk`
-- [ ] No inline-style exception: `! grep -q 'unsafe-inline' reverse-proxy/Caddyfile`
-- [ ] Game rules complete and standalone: `for h in Questions Runs Quizzes Leaderboards; do grep -q "^## $h" docs/game-rules.md || exit 1; done && ! grep -qE 'prds/|plans/' docs/game-rules.md`
-- [ ] Docs index complete: `for f in docs/*.md; do [ "$f" = docs/README.md ] || grep -q "$(basename "$f")" docs/README.md || exit 1; done`
-- [ ] Targets true: `grep -ohE 'make [a-z-]+' README.md AGENTS.md | awk '{print $2}' | sort -u | while read -r t; do grep -qE "^$t:" Makefile || exit 1; done`
-- [ ] Smoke with CSP (local): `make e2e`
-- [ ] `/`, `/q/<quizId>` and `/leaderboard` load in Chromium through the e2e stack with no console error (lead checks with a one-off Playwright script).
-- [ ] `make check` passes.
+- [x] Backend image carries both files: `make e2e && test "$(docker run --rm --entrypoint ls what-the-flag-backend:e2e /usr/share/doc/what-the-flag | paste -sd' ')" = 'LICENSE NOTICE'`
+- [x] Edge image (built by the criterion above): `test "$(docker run --rm --entrypoint ls what-the-flag-edge:e2e /usr/share/doc/what-the-flag | paste -sd' ')" = 'LICENSE NOTICE'`
+- [x] Dev build keeps working: `docker compose build backend`
+- [x] Prod pins: `test "$(grep -cE 'what-the-flag-(backend|edge|migrate):v0\.1\.0' docker-compose.prod.yml)" = 3`
+- [x] One migrate version: `test "$(grep -hoE 'migrate/migrate:v[0-9.]+|MIGRATE_VERSION: v[0-9.]+' database/Dockerfile .github/workflows/ci.yml | grep -oE 'v[0-9.]+' | sort -u | wc -l)" = 1`
+- [x] Release matrix: `test "$(grep -cE 'service: (backend|edge|migrate)$' .github/workflows/release.yml)" = 3`
+- [x] No placeholders: `! grep -rnE '<(owner|project|name|domain|database-name)>' docker-compose*.yml database .github reverse-proxy Makefile scripts --exclude=make-help.awk`
+- [x] No inline-style exception: `! grep -q 'unsafe-inline' reverse-proxy/Caddyfile`
+- [x] Game rules complete and standalone: `for h in Questions Runs Quizzes Leaderboards; do grep -q "^## $h" docs/game-rules.md || exit 1; done && ! grep -qE 'prds/|plans/' docs/game-rules.md`
+- [x] Docs index complete: `for f in docs/*.md; do [ "$f" = docs/README.md ] || grep -q "$(basename "$f")" docs/README.md || exit 1; done`
+- [x] Targets true: `grep -ohE 'make [a-z0-9-]+' README.md AGENTS.md | awk '{print $2}' | sort -u | while read -r t; do grep -qE "^$t:" Makefile || exit 1; done`
+- [x] Smoke with CSP (local): `make e2e`
+- [x] `/`, `/q/<quizId>` and `/leaderboard` load in Chromium through the e2e stack with no console error (lead checks with a one-off Playwright script).
+- [x] `make check` passes.
