@@ -25,3 +25,24 @@ GROUP BY a.run_id, r.name, r.score, r.hidden
 HAVING count(*) >= 5
 ORDER BY mean_seconds
 LIMIT 20;
+
+-- A run's score is the position of the question that ended it; a completed run has none left.
+\echo 'Ended runs by final position, visible runs only'
+SELECT score AS position,
+  count(*) FILTER (WHERE end_reason = 'wrong') AS wrong,
+  count(*) FILTER (WHERE end_reason = 'timeout') AS timeout,
+  count(*) FILTER (WHERE end_reason = 'completed') AS completed
+FROM runs
+WHERE finished_at IS NOT NULL AND NOT hidden
+GROUP BY score
+ORDER BY score;
+
+\echo 'Missed questions by type: misses, answers, and the share that missed, visible runs only'
+SELECT q.type, count(*) FILTER (WHERE NOT a.correct) AS missed, count(*) AS answered,
+  round(avg((NOT a.correct)::int), 3) AS miss_share
+FROM run_answers a
+JOIN runs r ON r.id = a.run_id
+JOIN quiz_questions q ON q.quiz_id = r.quiz_id AND q.position = a.position
+WHERE a.correct IS NOT NULL AND NOT r.hidden
+GROUP BY q.type
+ORDER BY miss_share DESC, q.type;

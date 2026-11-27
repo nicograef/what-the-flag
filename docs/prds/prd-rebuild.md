@@ -172,8 +172,9 @@ Stored questions keep a shared quiz identical forever and show which questions p
 - Leaderboard reads are rate limited per client address as well.
 - IPv6 addresses count per /64 network, and each /48 has four times that limit. A global cap per minute stops floods.
 - Client addresses live only in process memory and are never stored.
-- The owner hides a run with `make hide` and reads anomalies with `make stats`.
-- `make stats` reports runs per day, the replay rate, the share rate, the median score and the fastest runs.
+- The owner hides a live run with `make prod-hide` and reads anomalies with `make prod-stats`.
+- `make prod-stats` reports runs per day, the replay rate, the share rate, the median score and the fastest runs.
+- It also shows where runs end: ended runs by final position, and misses by question type.
 - The PRD accepts that a determined bot with a lookup table can still post a high score.
 
 ### HTTP contract
@@ -251,6 +252,13 @@ Later, each after the beta shows the need:
 - Self-hosted proof of work before a global top-100 entry, if bots show up in the beta.
 - A report button on leaderboard entries, and a Playwright browser test.
 
-- After `v0.1.0`, `docs/game-rules.md` holds the rules, and this PRD is pruned.
+Tuning after the beta, read off `make prod-stats`:
+
+- The positions where harder question and fame tiers unlock, and the fame tiers' area-rank cut-offs, are guesses.
+- Area is a poor fame proxy for small, well-known states. The curated fame list grows with what the beta shows.
+- mledoze does not tell official from widely used languages. The languages override fixes the wrong entries the beta reports.
+
+Other notes:
+
 - The game rules state that the data comes from open sources and implies no political position.
 - Terms are defined in [UBIQUITOUS_LANGUAGE.md](../UBIQUITOUS_LANGUAGE.md).
