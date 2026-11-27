@@ -1,18 +1,20 @@
 import type { ReactNode } from "react";
+import { Flag } from "lucide-react";
 import { Link } from "react-router";
 import { messages } from "@/app/messages";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useMessages } from "@/lib/i18n/messages";
 
 export function NotFoundPage(): ReactNode {
   const t = useMessages(messages);
 
   return (
-    <section className="flex flex-col items-start gap-4">
-      <h1 className="font-heading text-2xl font-bold">{t.notFound}</h1>
-      <Button asChild variant="outline">
+    <EmptyState icon={<Flag />}>
+      <h1 className="text-2xl font-bold tracking-tight">{t.notFound}</h1>
+      <Button asChild size="lg" className="w-full">
         <Link to="/">{t.backHome}</Link>
       </Button>
-    </section>
+    </EmptyState>
   );
 }

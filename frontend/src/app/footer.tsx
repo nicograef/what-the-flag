@@ -8,12 +8,13 @@ export function Footer(): ReactNode {
   const t = useMessages(messages);
 
   return (
-    <footer className="border-t">
-      <div className="mx-auto max-w-3xl px-4 py-4 text-xs text-muted-foreground">
-        <a href={noticeUrl} className="hover:underline">
-          {t.credits}
-        </a>
-      </div>
+    <footer className="mx-auto w-full max-w-md px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground">
+      <a
+        href={noticeUrl}
+        className="inline-block py-2 underline underline-offset-2"
+      >
+        {t.credits}
+      </a>
     </footer>
   );
 }

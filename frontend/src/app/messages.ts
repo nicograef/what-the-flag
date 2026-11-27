@@ -5,6 +5,7 @@ export const messages = defineMessages({
     brand: "What The Flag",
     leaderboard: "Rangliste",
     switchLocale: "English",
+    switchLocaleShort: "EN",
     credits:
       "Länderdaten: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flaggen: flag-icons (MIT)",
     notFound: "Diese Seite gibt es nicht.",
@@ -14,9 +15,10 @@ export const messages = defineMessages({
     brand: "What The Flag",
     leaderboard: "Leaderboard",
     switchLocale: "Deutsch",
+    switchLocaleShort: "DE",
     credits:
       "Country data: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flags: flag-icons (MIT)",
     notFound: "This page does not exist.",
-    backHome: "Back to the start page",
+    backHome: "Back to home",
   },
 });
