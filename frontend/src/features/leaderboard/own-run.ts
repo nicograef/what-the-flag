@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import { z } from "zod";
+import { z } from "zod/mini";
 
 const ownRunState = z.object({ runId: z.string() });
 

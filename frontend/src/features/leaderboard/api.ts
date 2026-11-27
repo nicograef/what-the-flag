@@ -1,12 +1,12 @@
-import { z } from "zod";
+import { z } from "zod/mini";
 import type { ApiClient } from "@/lib/api";
 
 /** A ranked run; `own` arrives only on the row of the run the request names. */
 export const entrySchema = z.object({
-  rank: z.int().min(1),
+  rank: z.int().check(z.minimum(1)),
   name: z.string(),
-  score: z.int().min(0),
-  own: z.boolean().optional(),
+  score: z.int().check(z.minimum(0)),
+  own: z.optional(z.boolean()),
 });
 
 export type Entry = z.infer<typeof entrySchema>;

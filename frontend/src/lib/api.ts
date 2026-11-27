@@ -4,11 +4,15 @@ import {
   useContext,
   type ReactNode,
 } from "react";
-import { z } from "zod";
+import { z } from "zod/mini";
 
 export interface ApiClient {
-  get<T>(path: string, schema: z.ZodType<T>): Promise<T>;
-  post: <T>(path: string, schema: z.ZodType<T>, body?: unknown) => Promise<T>;
+  get<T>(path: string, schema: z.ZodMiniType<T>): Promise<T>;
+  post: <T>(
+    path: string,
+    schema: z.ZodMiniType<T>,
+    body?: unknown,
+  ) => Promise<T>;
 }
 
 /** `code` is the server's envelope code, or `network` / `invalid_response` from the client. */
@@ -35,7 +39,7 @@ const envelopeSchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string(),
-    field: z.string().optional(),
+    field: z.optional(z.string()),
   }),
 });
 
@@ -48,7 +52,7 @@ export function createApiClient(deps: { fetch: typeof fetch }): ApiClient {
   async function request<T>(
     method: Method,
     path: string,
-    schema: z.ZodType<T>,
+    schema: z.ZodMiniType<T>,
     body?: unknown,
   ): Promise<T> {
     const init: RequestInit = { method, credentials: "same-origin" };

@@ -1,13 +1,17 @@
-import { z } from "zod";
+import { z } from "zod/mini";
 import { entrySchema } from "@/features/leaderboard/api";
 import type { ApiClient } from "@/lib/api";
 
 const challengeSchema = z.object({
   id: z.uuid(),
   /** Null when the owner hid the creator's run. */
-  creator: z
-    .object({ name: z.string(), score: z.int().min(0), ended: z.boolean() })
-    .nullable(),
+  creator: z.nullable(
+    z.object({
+      name: z.string(),
+      score: z.int().check(z.minimum(0)),
+      ended: z.boolean(),
+    }),
+  ),
   top: z.array(entrySchema),
 });
 

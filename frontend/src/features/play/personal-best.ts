@@ -1,8 +1,11 @@
-import { z } from "zod";
+import { z } from "zod/mini";
 
 const storageKey = "wtf.best";
 
-const storedSchema = z.object({ score: z.int().min(0), runId: z.string() });
+const storedSchema = z.object({
+  score: z.int().check(z.minimum(0)),
+  runId: z.string(),
+});
 
 type Stored = z.infer<typeof storedSchema>;
 

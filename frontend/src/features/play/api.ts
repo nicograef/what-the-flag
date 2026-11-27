@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/mini";
 import type { ApiClient } from "@/lib/api";
 
 export const questionTypes = [
@@ -31,10 +31,10 @@ const itemSchema = z.discriminatedUnion("kind", [
 
 export type Item = z.infer<typeof itemSchema>;
 
-const optionIndexSchema = z.int().min(0).max(3);
+const optionIndexSchema = z.int().check(z.minimum(0), z.maximum(3));
 
 const questionSchema = z.object({
-  position: z.int().min(0),
+  position: z.int().check(z.minimum(0)),
   type: z.enum(questionTypes),
   prompt: itemSchema,
   options: z.tuple([itemSchema, itemSchema, itemSchema, itemSchema]),
@@ -43,19 +43,19 @@ const questionSchema = z.object({
 
 export type Question = z.infer<typeof questionSchema>;
 
-const missedSchema = questionSchema.omit({ deadline: true }).extend({
+const missedSchema = z.extend(z.omit(questionSchema, { deadline: true }), {
   correctOption: optionIndexSchema,
-  chosenOption: optionIndexSchema.nullable(),
+  chosenOption: z.nullable(optionIndexSchema),
 });
 
 export type Missed = z.infer<typeof missedSchema>;
 
 const resultSchema = z.object({
-  score: z.int().min(0),
+  score: z.int().check(z.minimum(0)),
   endReason: z.enum(["wrong", "timeout", "completed"]),
-  last: missedSchema.nullable(),
-  quizRank: z.int().min(1),
-  globalRank: z.int().min(1).nullable(),
+  last: z.nullable(missedSchema),
+  quizRank: z.int().check(z.minimum(1)),
+  globalRank: z.nullable(z.int().check(z.minimum(1))),
 });
 
 export type RunResultData = z.infer<typeof resultSchema>;
@@ -65,22 +65,22 @@ const runStateSchema = z.object({
   quizId: z.uuid(),
   name: z.string(),
   status: z.enum(["playing", "finished"]),
-  score: z.int().min(0),
+  score: z.int().check(z.minimum(0)),
   serverNow: z.iso.datetime({ offset: true }),
-  question: questionSchema.nullable(),
-  result: resultSchema.nullable(),
+  question: z.nullable(questionSchema),
+  result: z.nullable(resultSchema),
 });
 
 export type RunState = z.infer<typeof runStateSchema>;
 
 const outcomeSchema = z.object({
-  position: z.int().min(0),
+  position: z.int().check(z.minimum(0)),
   correct: z.boolean(),
   timedOut: z.boolean(),
-  chosenOption: optionIndexSchema.nullable(),
+  chosenOption: z.nullable(optionIndexSchema),
   correctOption: optionIndexSchema,
   finished: z.boolean(),
-  score: z.int().min(0),
+  score: z.int().check(z.minimum(0)),
 });
 
 export type Outcome = z.infer<typeof outcomeSchema>;

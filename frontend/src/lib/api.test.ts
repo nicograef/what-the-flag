@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
+import { z } from "zod/mini";
 import { ApiError, createApiClient } from "@/lib/api";
 import { FakeApi } from "@/test/fake-api";
 
