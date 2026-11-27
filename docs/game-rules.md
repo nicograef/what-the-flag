@@ -22,7 +22,8 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 - Questions 1 to 8 target fame tier 1 and questions 9 to 16 tiers 1 and 2. Later ones target any country.
 - No country is the target twice in one quiz.
 - Wrong options come from the target's continent when it holds at least eight countries, else from the whole pool.
-- Two flags a player cannot tell apart never appear in the same flag question.
+- Two flags a player cannot tell apart are a look-alike pair, such as Indonesia and Monaco. They never appear in the same flag question.
+- A question that shows a flag never offers a continent, language or currency of the target's look-alike as a wrong option.
 - No two options of a question show the same text.
 - Continents are Africa, Americas, Asia, Europe and Oceania.
 

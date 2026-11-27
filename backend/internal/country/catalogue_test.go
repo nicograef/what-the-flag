@@ -110,15 +110,13 @@ func TestPoolInvariants(t *testing.T) {
 		{"primary-capital labels are unique per language", func(t *testing.T) {
 			unique(t, func(c Country) Names { return c.Capital })
 		}},
-		{"look-alikes are symmetric same-region pool codes and include NI/SV", func(t *testing.T) {
+		{"look-alikes are symmetric pool codes and include NI/SV", func(t *testing.T) {
 			for _, c := range pool {
 				for _, code := range c.Lookalikes {
 					other, ok := byCode[code]
 					switch {
 					case !ok || code == c.Code:
 						t.Errorf("%s: look-alike %s is not another pool code", c.Code, code)
-					case other.Region != c.Region:
-						t.Errorf("%s (%s): look-alike %s is in %s", c.Code, c.Region, code, other.Region)
 					case !slices.Contains(other.Lookalikes, c.Code):
 						t.Errorf("%s: look-alike %s does not list it back", c.Code, code)
 					}

@@ -57,8 +57,16 @@
   },
   "lookalikes": [
     {
+      "pair": ["ID", "MC"],
+      "reason": "Red-over-white bicolour; the reds differ only in shade"
+    },
+    {
       "pair": ["NI", "SV"],
       "reason": "Blue-white-blue triband; the central emblems are unreadable at card size"
+    },
+    {
+      "pair": ["RO", "TD"],
+      "reason": "Blue-yellow-red vertical tricolour; the blues differ only in shade"
     }
   ],
   "fameTiers": {

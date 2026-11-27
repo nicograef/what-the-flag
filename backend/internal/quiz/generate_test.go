@@ -105,14 +105,24 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 			fail("fame %d above %d", target.Fame, wantFame)
 		}
 		own := []string{q.Target}
+		// blocked holds values the target lacks that a player could still defend; no option may carry one.
+		var blocked []string
 		if !q.Type.Answer.identifiesCountry() {
 			own = values(target, q.Type.Answer)
+			if q.Type.Prompt == AttrFlag {
+				for _, code := range target.Lookalikes {
+					blocked = append(blocked, values(byCode[code], q.Type.Answer)...)
+				}
+			}
 		}
 		flagCountries := (q.Type.Prompt == AttrFlag || q.Type.Answer == AttrFlag) && q.Type.Answer.identifiesCountry()
 		des, ens := map[string]bool{}, map[string]bool{}
 		for i, o := range q.Options {
 			if (i == q.Correct) != slices.Contains(own, o) {
 				fail("option %d %q: correct %t, true for the target %t", i, o, i == q.Correct, slices.Contains(own, o))
+			}
+			if i != q.Correct && slices.Contains(blocked, o) {
+				fail("option %d %q belongs to a look-alike of the target", i, o)
 			}
 			l := text(q.Type, o)
 			if l.De == "" || l.En == "" || des[l.De] || ens[l.En] {

@@ -1716,7 +1716,9 @@
       ],
       "fame": 1,
       "flagKey": "d90da1e7b0",
-      "lookalikes": []
+      "lookalikes": [
+        "MC"
+      ]
     },
     {
       "code": "IE",
@@ -2468,7 +2470,9 @@
       ],
       "fame": 1,
       "flagKey": "c5b988b68f",
-      "lookalikes": []
+      "lookalikes": [
+        "ID"
+      ]
     },
     {
       "code": "MD",
@@ -3341,7 +3345,9 @@
       ],
       "fame": 2,
       "flagKey": "70d1368aa0",
-      "lookalikes": []
+      "lookalikes": [
+        "TD"
+      ]
     },
     {
       "code": "RS",
@@ -3844,7 +3850,9 @@
       ],
       "fame": 1,
       "flagKey": "8ac85ce8ce",
-      "lookalikes": []
+      "lookalikes": [
+        "RO"
+      ]
     },
     {
       "code": "TG",

@@ -282,8 +282,6 @@ func (b *builder) lookalikes() map[string][]string {
 			b.p.add("%s: not two pool codes", name)
 		case x >= y:
 			b.p.add("%s: codes must be distinct and ascending", name)
-		case b.byCode[x].Region != b.byCode[y].Region:
-			b.p.add("%s: regions %s and %s differ", name, b.byCode[x].Region, b.byCode[y].Region)
 		case seen[[2]string{x, y}]:
 			b.p.add("%s: listed twice", name)
 		default:

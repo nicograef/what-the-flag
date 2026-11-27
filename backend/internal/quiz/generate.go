@@ -52,7 +52,7 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 		if t.Answer.identifiesCountry() {
 			options = countryOptions(pool, target, t, rnd)
 		} else {
-			options = valueOptions(cat, pool, target, t.Answer, rnd)
+			options = valueOptions(cat, pool, target, t, rnd)
 		}
 		if options != nil {
 			return shuffled(t, target.Code, options, rnd), nil
@@ -117,7 +117,9 @@ func clashes(c *country.Country, picked []*country.Country, answer Attr, flag bo
 }
 
 // valueOptions returns one of the target's values and three values it lacks, or nil when fewer than three qualify.
-func valueOptions(cat Catalogue, pool []country.Country, target *country.Country, answer Attr, rnd Rand) []string {
+// In a flag type, a value of the target's look-alike is no distractor: the player cannot tell the two flags apart.
+func valueOptions(cat Catalogue, pool []country.Country, target *country.Country, t QuestionType, rnd Rand) []string {
+	answer := t.Answer
 	own := values(target, answer)
 	if len(own) == 0 {
 		return nil
@@ -128,10 +130,20 @@ func valueOptions(cat Catalogue, pool []country.Country, target *country.Country
 	taken := func(l country.Names) bool {
 		return slices.ContainsFunc(seen, func(s country.Names) bool { return s.De == l.De || s.En == l.En })
 	}
-	for _, v := range own {
-		seenCode[v] = true
-		if l, ok := cat.Label(kind, v); ok {
-			seen = append(seen, l)
+	block := func(vs []string) {
+		for _, v := range vs {
+			seenCode[v] = true
+			if l, ok := cat.Label(kind, v); ok {
+				seen = append(seen, l)
+			}
+		}
+	}
+	block(own)
+	if t.Prompt == AttrFlag {
+		for i := range pool {
+			if slices.Contains(target.Lookalikes, pool[i].Code) {
+				block(values(&pool[i], answer))
+			}
 		}
 	}
 	collect := func(inRegion bool) []string {
