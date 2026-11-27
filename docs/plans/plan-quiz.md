@@ -137,7 +137,7 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 | `POST /api/runs` | `{"name": "…", "quizId": "…"?}` | 201 `{"runId", "quizId"}` |
 | `GET /api/runs/{id}` | — | 200 run state |
 | `POST /api/runs/{id}/answers` | `{"position": 0, "option": 2}`; `option` null = no answer | 200 outcome |
-| `GET /api/quizzes/{id}` | optional `run=<id>` | 200 `{"id", "creator": {"name", "score", "ended"}, "top": [...]}` |
+| `GET /api/quizzes/{id}` | optional `run=<id>` | 200 `{"id", "creator": {"name", "score", "ended"} | null, "top": [...]}`; `creator` is null when hidden |
 | `GET /api/leaderboard` | optional `run=<id>` | 200 `{"top": [...]}` |
 
 | Field | Meaning |
@@ -302,12 +302,12 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 ### Acceptance criteria
 
-- [ ] Leaderboards (Postgres): `make db-migrate && cd backend && go test -tags=integration -race ./internal/quiz/postgres -run Leaderboard`
-- [ ] Limiter (unit): `cd backend && go test ./internal/ratelimit`
-- [ ] Contract: `make db-migrate && cd backend && go test -tags=integration ./internal/contract -run 'TestChallenge|TestRateLimit'`
-- [ ] Owner commands run: `make stats >/dev/null && ! make hide RUN=not-a-uuid 2>/dev/null`
-- [ ] `! make help | grep -q UNCLASSIFIED`
-- [ ] `make check` passes.
+- [x] Leaderboards (Postgres): `make db-migrate && cd backend && go test -tags=integration -race ./internal/quiz/postgres -run Leaderboard`
+- [x] Limiter (unit): `cd backend && go test ./internal/ratelimit`
+- [x] Contract: `make db-migrate && cd backend && go test -tags=integration ./internal/contract -run 'TestChallenge|TestRateLimit'`
+- [x] Owner commands run: `make stats >/dev/null && ! make hide RUN=not-a-uuid 2>/dev/null`
+- [x] `! make help | grep -q UNCLASSIFIED`
+- [x] `make check` passes.
 
 ## Phase 4: Play feature
 
