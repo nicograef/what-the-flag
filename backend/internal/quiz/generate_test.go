@@ -61,8 +61,10 @@ func TestGenerate(t *testing.T) {
 func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 	t.Helper()
 	byCode := make(map[string]*country.Country, len(cat.pool))
+	regionSize := map[string]int{}
 	for i := range cat.pool {
 		byCode[cat.pool[i].Code] = &cat.pool[i]
+		regionSize[cat.pool[i].Region]++
 	}
 	// text is what an option displays: a country's answer text or an attribute label.
 	text := func(ty QuestionType, option string) country.Names {
@@ -136,6 +138,26 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 				for _, other := range q.Options {
 					if slices.Contains(byCode[o].Lookalikes, other) {
 						fail("look-alikes %s and %s", o, other)
+					}
+				}
+			}
+		}
+		// A distractor country may leave a region of eight or more only when every other country there clashes with an option.
+		if q.Type.Answer.identifiesCountry() && regionSize[target.Region] >= 8 {
+			clashes := func(c *country.Country) bool {
+				return slices.ContainsFunc(q.Options[:], func(o string) bool {
+					l, ol := answerText(c, q.Type.Answer), text(q.Type, o)
+					return l.De == ol.De || l.En == ol.En || (flagCountries && slices.Contains(byCode[o].Lookalikes, c.Code))
+				})
+			}
+			for _, o := range q.Options {
+				if byCode[o].Region == target.Region {
+					continue
+				}
+				for i := range cat.pool {
+					c := &cat.pool[i]
+					if c.Region == target.Region && !slices.Contains(q.Options[:], c.Code) && !clashes(c) {
+						fail("option %s is outside %s, though %s fits", o, target.Region, c.Code)
 					}
 				}
 			}
