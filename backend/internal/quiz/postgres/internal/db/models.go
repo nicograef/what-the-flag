@@ -10,11 +10,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type AppMetum struct {
-	Key   string
-	Value string
-}
-
 type Quiz struct {
 	ID        uuid.UUID
 	CreatedAt time.Time

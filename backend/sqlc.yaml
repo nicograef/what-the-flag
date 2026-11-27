@@ -1,16 +1,16 @@
 version: "2"
 # One block per domain, each generating into its own internal tree.
-# A domain block: `- <<: *block`, its own `queries`, and `gen: {go: {<<: *go, out: internal/<domain>/internal/db}}`.
+# A domain block: `- <<: *block`, its own `name` and `queries`, and `gen: {go: {<<: *go, out: internal/<domain>/postgres/internal/db}}`.
 sql:
   - &block
-    name: postgres
+    name: quiz
     engine: postgresql
     schema: ../database/migrations
-    queries: sqlc/queries/postgres.sql
+    queries: sqlc/queries/quiz.sql
     gen:
       go: &go
         package: db
-        out: internal/postgres/internal/db
+        out: internal/quiz/postgres/internal/db
         sql_package: pgx/v5
         emit_pointers_for_null_types: true
         emit_empty_slices: true
@@ -31,7 +31,3 @@ sql:
               import: time
               type: Time
               pointer: true
-  - <<: *block
-    name: quiz
-    queries: sqlc/queries/quiz.sql
-    gen: {go: {<<: *go, out: internal/quiz/postgres/internal/db}}
