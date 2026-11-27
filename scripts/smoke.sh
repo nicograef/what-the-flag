@@ -7,7 +7,8 @@
 # What it does:
 #   1. Reaches E2E_BASE_URL (https://<host>:<port>) on 127.0.0.1, trusting any certificate.
 #   2. Checks health, a new run, its first question, the run's quiz, the leaderboard, the SPA route
-#      of the quiz and the CSP header, then the migration version of the stack's database (Compose `postgres` service).
+#      of the quiz and the CSP header, then the migration version of the stack's database (Compose `postgres` service),
+#      and last that a spoofed X-Forwarded-For cannot escape the leaderboard's rate limit.
 #   3. Prints `ok <check>` per passed check; the first failure exits 1.
 set -euo pipefail
 
@@ -28,7 +29,8 @@ ok()   { echo "ok $1"; }
 fail() { echo "FAIL $1: $2" >&2; exit 1; }
 
 # -k: the stack's certificate comes from Caddy's local CA. The stack is on loopback, so no proxy applies.
-req() { curl -fsS -k --noproxy '*' --resolve "$HOST:$PORT:127.0.0.1" "$@"; }
+EDGE=(-sS -k --noproxy '*' --resolve "$HOST:$PORT:127.0.0.1")
+req() { curl -f "${EDGE[@]}" "$@"; }
 
 # expect CHECK JSON FILTER — the jq filter must hold on the body.
 expect() { jq -e "$3" >/dev/null <<<"$2" || fail "$1" "$2"; }
@@ -72,3 +74,15 @@ got="$(docker compose exec -T postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB
   || fail migrations "query failed"
 [[ "$got" == "$LATEST|f" ]] || fail migrations "got '$got', want '$LATEST|f'"
 ok migrations
+
+# The rate limiter keys a client on the last X-Forwarded-For entry, which the edge must set from the connection.
+# The read bucket holds 120 requests, so 200 with distinct spoofed addresses hit 429 only when they share it.
+# One curl process with --next keeps the connection, so the bucket's refill of two a second barely counts.
+args=()
+for i in $(seq 1 200); do
+  args+=("${EDGE[@]}" -o /dev/null -w '%{http_code}\n' -H "X-Forwarded-For: 198.51.100.$i" "$E2E_BASE_URL/api/leaderboard" --next)
+done
+codes="$(curl "${args[@]:0:${#args[@]}-1}")" || fail xff "request failed"
+[[ "$(head -n1 <<<"$codes")" == 200 ]] || fail xff "first read answered $(head -n1 <<<"$codes")"
+grep -qx 429 <<<"$codes" || fail xff "200 reads with spoofed X-Forwarded-For were never limited"
+ok xff
