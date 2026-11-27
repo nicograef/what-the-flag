@@ -68,7 +68,7 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
 
   expect(
     await screen.findByRole("heading", { name: "Spiel vorbei" }),
-  ).toBeInTheDocument();
+  ).toHaveFocus();
   expect(screen.getByText("0 richtige Antworten")).toBeInTheDocument();
   expect(
     screen.getByText("Die letzte Antwort war falsch."),

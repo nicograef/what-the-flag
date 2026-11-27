@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -28,6 +28,7 @@ export function RunResult({
   const api = useApiClient();
   const navigate = useNavigate();
   const [best] = useState(() => recordScore(run.id, result.score));
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const again = useMutation({
     mutationFn: () => startRun(api, { name: run.name }),
     onSuccess: async ({ runId }) => {
@@ -35,11 +36,22 @@ export function RunResult({
     },
   });
 
+  // The run's end unmounts the focused option, so the result takes focus and gets read out.
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
   return (
     <section className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <h1 className="font-heading text-2xl font-bold">{t.resultTitle}</h1>
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="font-heading text-2xl font-bold outline-none"
+          >
+            {t.resultTitle}
+          </h1>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <p className="font-heading text-4xl font-bold tabular-nums">
