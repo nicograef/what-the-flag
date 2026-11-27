@@ -43,3 +43,54 @@ ON CONFLICT (quiz_id, position) DO NOTHING;
 
 -- name: ListTargets :many
 SELECT target FROM quiz_questions WHERE quiz_id = @quiz_id;
+
+-- Leaderboards rank ended, visible runs. A run without an end counts as ended once its open answer is
+-- older than @late_after, at served_at + @late_after; a run without an answer, or with a fresh one, has not ended.
+
+-- name: GlobalTop :many
+WITH ended AS (
+  SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + @late_after::interval) AS ended_at
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE r.creator AND NOT r.hidden
+    AND (r.finished_at IS NOT NULL OR a.served_at + @late_after::interval < @now::timestamptz)
+)
+SELECT id, name, score, rank() OVER (ORDER BY score DESC) AS rank
+FROM ended
+ORDER BY score DESC, ended_at ASC, id ASC
+LIMIT 100;
+
+-- name: QuizTop :many
+WITH ended AS (
+  SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + @late_after::interval) AS ended_at
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE r.quiz_id = @quiz_id AND NOT r.hidden
+    AND (r.finished_at IS NOT NULL OR a.served_at + @late_after::interval < @now::timestamptz)
+)
+SELECT id, name, score, rank() OVER (ORDER BY score DESC) AS rank
+FROM ended
+ORDER BY score DESC, ended_at ASC, id ASC
+LIMIT 100;
+
+-- name: CreatorRun :one
+SELECT r.name, r.score,
+  (r.finished_at IS NOT NULL OR coalesce(a.served_at + @late_after::interval < @now::timestamptz, false))::boolean AS ended
+FROM runs r
+LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+WHERE r.quiz_id = @quiz_id AND r.creator;
+
+-- A run's rank is one more than the ended, visible runs of its list with a higher score.
+-- name: RunRanks :one
+WITH ended AS (
+  SELECT r.quiz_id, r.creator, r.score
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE NOT r.hidden
+    AND (r.finished_at IS NOT NULL OR a.served_at + @late_after::interval < @now::timestamptz)
+)
+SELECT r.creator,
+  1 + (SELECT count(*) FROM ended e WHERE e.quiz_id = r.quiz_id AND e.score > r.score) AS quiz_rank,
+  1 + (SELECT count(*) FROM ended e WHERE e.creator AND e.score > r.score) AS global_rank
+FROM runs r
+WHERE r.id = @id;

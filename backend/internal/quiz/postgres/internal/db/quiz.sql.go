@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createQuiz = `-- name: CreateQuiz :one
@@ -47,6 +48,33 @@ func (q *Queries) CreateRun(ctx context.Context, arg CreateRunParams) error {
 	return err
 }
 
+const creatorRun = `-- name: CreatorRun :one
+SELECT r.name, r.score,
+  (r.finished_at IS NOT NULL OR coalesce(a.served_at + $1::interval < $2::timestamptz, false))::boolean AS ended
+FROM runs r
+LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+WHERE r.quiz_id = $3 AND r.creator
+`
+
+type CreatorRunParams struct {
+	LateAfter pgtype.Interval
+	Now       time.Time
+	QuizID    uuid.UUID
+}
+
+type CreatorRunRow struct {
+	Name  string
+	Score int32
+	Ended bool
+}
+
+func (q *Queries) CreatorRun(ctx context.Context, arg CreatorRunParams) (CreatorRunRow, error) {
+	row := q.db.QueryRow(ctx, creatorRun, arg.LateAfter, arg.Now, arg.QuizID)
+	var i CreatorRunRow
+	err := row.Scan(&i.Name, &i.Score, &i.Ended)
+	return i, err
+}
+
 const getQuestion = `-- name: GetQuestion :one
 SELECT type, target, options, correct_index
 FROM quiz_questions
@@ -75,6 +103,60 @@ func (q *Queries) GetQuestion(ctx context.Context, arg GetQuestionParams) (GetQu
 		&i.CorrectIndex,
 	)
 	return i, err
+}
+
+const globalTop = `-- name: GlobalTop :many
+
+WITH ended AS (
+  SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE r.creator AND NOT r.hidden
+    AND (r.finished_at IS NOT NULL OR a.served_at + $1::interval < $2::timestamptz)
+)
+SELECT id, name, score, rank() OVER (ORDER BY score DESC) AS rank
+FROM ended
+ORDER BY score DESC, ended_at ASC, id ASC
+LIMIT 100
+`
+
+type GlobalTopParams struct {
+	LateAfter pgtype.Interval
+	Now       time.Time
+}
+
+type GlobalTopRow struct {
+	ID    uuid.UUID
+	Name  string
+	Score int32
+	Rank  int64
+}
+
+// Leaderboards rank ended, visible runs. A run without an end counts as ended once its open answer is
+// older than @late_after, at served_at + @late_after; a run without an answer, or with a fresh one, has not ended.
+func (q *Queries) GlobalTop(ctx context.Context, arg GlobalTopParams) ([]GlobalTopRow, error) {
+	rows, err := q.db.Query(ctx, globalTop, arg.LateAfter, arg.Now)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GlobalTopRow{}
+	for rows.Next() {
+		var i GlobalTopRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Score,
+			&i.Rank,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const insertQuestion = `-- name: InsertQuestion :exec
@@ -202,6 +284,93 @@ func (q *Queries) QuizExists(ctx context.Context, id uuid.UUID) (bool, error) {
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err
+}
+
+const quizTop = `-- name: QuizTop :many
+WITH ended AS (
+  SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE r.quiz_id = $2 AND NOT r.hidden
+    AND (r.finished_at IS NOT NULL OR a.served_at + $1::interval < $3::timestamptz)
+)
+SELECT id, name, score, rank() OVER (ORDER BY score DESC) AS rank
+FROM ended
+ORDER BY score DESC, ended_at ASC, id ASC
+LIMIT 100
+`
+
+type QuizTopParams struct {
+	LateAfter pgtype.Interval
+	QuizID    uuid.UUID
+	Now       time.Time
+}
+
+type QuizTopRow struct {
+	ID    uuid.UUID
+	Name  string
+	Score int32
+	Rank  int64
+}
+
+func (q *Queries) QuizTop(ctx context.Context, arg QuizTopParams) ([]QuizTopRow, error) {
+	rows, err := q.db.Query(ctx, quizTop, arg.LateAfter, arg.QuizID, arg.Now)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QuizTopRow{}
+	for rows.Next() {
+		var i QuizTopRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Score,
+			&i.Rank,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const runRanks = `-- name: RunRanks :one
+WITH ended AS (
+  SELECT r.quiz_id, r.creator, r.score
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE NOT r.hidden
+    AND (r.finished_at IS NOT NULL OR a.served_at + $2::interval < $3::timestamptz)
+)
+SELECT r.creator,
+  1 + (SELECT count(*) FROM ended e WHERE e.quiz_id = r.quiz_id AND e.score > r.score) AS quiz_rank,
+  1 + (SELECT count(*) FROM ended e WHERE e.creator AND e.score > r.score) AS global_rank
+FROM runs r
+WHERE r.id = $1
+`
+
+type RunRanksParams struct {
+	ID        uuid.UUID
+	LateAfter pgtype.Interval
+	Now       time.Time
+}
+
+type RunRanksRow struct {
+	Creator    bool
+	QuizRank   int32
+	GlobalRank int32
+}
+
+// A run's rank is one more than the ended, visible runs of its list with a higher score.
+func (q *Queries) RunRanks(ctx context.Context, arg RunRanksParams) (RunRanksRow, error) {
+	row := q.db.QueryRow(ctx, runRanks, arg.ID, arg.LateAfter, arg.Now)
+	var i RunRanksRow
+	err := row.Scan(&i.Creator, &i.QuizRank, &i.GlobalRank)
+	return i, err
 }
 
 const updateRun = `-- name: UpdateRun :exec
