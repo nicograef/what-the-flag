@@ -370,6 +370,6 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 ### Acceptance criteria
 
-- [ ] Component: `pnpm --dir frontend exec vitest run src/features/challenge src/features/leaderboard`
-- [ ] Preview tags: `grep -q 'property="og:image"' frontend/index.html && test -f frontend/public/og.png`
-- [ ] `make check` passes.
+- [x] Component: `pnpm --dir frontend exec vitest run src/features/challenge src/features/leaderboard`
+- [x] Preview tags: `grep -q 'property="og:image"' frontend/index.html && test -f frontend/public/og.png`
+- [x] `make check` passes.
