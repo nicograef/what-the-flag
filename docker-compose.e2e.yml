@@ -1,0 +1,28 @@
+# Override for docker-compose.prod.yml: the stack under test, built from this tree.
+# scripts/e2e-stack.sh selects both files, so the real site blocks serve with Caddy local certificates.
+
+services:
+  migrate:
+    build: ./database
+    image: what-the-flag-migrate:e2e
+
+  backend:
+    build: ./backend
+    image: what-the-flag-backend:e2e
+
+  reverse-proxy:
+    build:
+      context: .
+      dockerfile: reverse-proxy/Dockerfile
+    image: what-the-flag-edge:e2e
+    # Loopback only, on a port a developer machine has free.
+    ports: !override
+      - "127.0.0.1:${E2E_STACK_PORT:-8443}:443"
+    volumes:
+      - ./reverse-proxy/e2e.Caddyfile:/etc/caddy/e2e.Caddyfile:ro
+    command: ["caddy", "run", "--adapter", "caddyfile", "--config", "/etc/caddy/e2e.Caddyfile"]
+
+networks:
+  app-network:
+    # CI runners lack IPv6.
+    enable_ipv6: false

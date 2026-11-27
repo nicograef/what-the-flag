@@ -55,6 +55,7 @@ jobs:
       backend: ${{ steps.changes.outputs.backend }}
       frontend: ${{ steps.changes.outputs.frontend }}
       database: ${{ steps.changes.outputs.database }}
+      e2e: ${{ steps.changes.outputs.e2e }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -79,6 +80,16 @@ jobs:
             database:
               - 'database/**'
               - 'docker-compose.prod.yml'  # the postgres image the restore drill runs
+              - '.github/workflows/ci.yml'
+            e2e:
+              - 'backend/**'
+              - 'frontend/**'
+              - 'database/**'
+              - 'reverse-proxy/**'
+              - 'docker-compose.prod.yml'
+              - 'docker-compose.e2e.yml'
+              - 'scripts/e2e-stack.sh'
+              - 'scripts/smoke.sh'
               - '.github/workflows/ci.yml'
 
   # >>> stack: go
@@ -226,6 +237,22 @@ jobs:
       - name: Build
         run: pnpm run build
   # <<< stack: frontend
+
+  # ── End to End (production stack with local TLS) ───────────────────────────
+  # Every main push runs it too: a release tag goes on a main commit, and the path
+  # filter alone would let that commit skip the stack that ships.
+  e2e:
+    needs: changes
+    if: ${{ needs.changes.outputs.e2e == 'true' || github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build the stack and run the smoke checks
+        run: make e2e
 
 
   # ── Security ───────────────────────────────────────────────────────────────

@@ -21,7 +21,7 @@ indent_size = 4
 indent_style = tab
 
 # Caddyfile – tabs, as caddy fmt writes them
-[Caddyfile*]
+[{Caddyfile*,*.Caddyfile}]
 indent_style = tab
 
 # Markdown – trailing spaces can be intentional (line breaks)

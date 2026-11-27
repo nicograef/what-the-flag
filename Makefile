@@ -91,6 +91,13 @@ fe-check:      ## Frontend: pnpm gate (install, format, lint, types, tests, buil
 	cd $(FRONTEND_DIR) && pnpm audit --audit-level high
 # <<< stack: frontend
 
+# ── End to End (docker-compose.prod.yml with local TLS) ──
+
+.PHONY: e2e
+
+e2e:           ## Build the production stack, serve it with local TLS and run scripts/smoke.sh against it
+	scripts/e2e-stack.sh scripts/smoke.sh
+
 # ── Local Stack (docker-compose.yml — no TLS) ──
 
 .PHONY: up down logs
@@ -197,7 +204,7 @@ hide:          ## Hide a run from every leaderboard (RUN=<uuid>)
 
 # Every documented target stands in exactly one CLASS_* list, and `make help` prints the
 # lists as its sections. A target in none prints under UNCLASSIFIED.
-CLASS_developer := db be fe be-check be-integration data data-check fe-check check up down logs db-shell db-migrate stats hide help
+CLASS_developer := db be fe be-check be-integration data data-check fe-check check e2e up down logs db-shell db-migrate stats hide help
 CLASS_production := prod-deploy prod-down prod-logs prod-migrate prod-stats prod-hide prod-release
 
 HELP_WIDTH ?= 96
