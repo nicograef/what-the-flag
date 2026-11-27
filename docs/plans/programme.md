@@ -64,6 +64,7 @@ Every session that runs this programme checks these before wave 1 and after a co
 | --- | --- |
 | `000001_init` | foundation 1 |
 | `000002_quiz` | quiz 2 |
+| `000003_leaderboard_index` | quiz security review |
 
 ## Spend
 
@@ -94,6 +95,6 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 | quiz 2 | quiz | landed | 8700f48 | migration 000002_quiz |
 | quiz 3 | quiz | landed | a2a378d | |
 | quiz 4 | quiz | landed | aebc00b | |
-| quiz 5 | quiz | landed | 52e6b28 | |
+| quiz 5 | quiz | landed | 2289ca5 | security fixes after review, migration 000003_leaderboard_index |
 | release 1 | rel | waiting | | |
 | release 2 | rel | waiting | | |
