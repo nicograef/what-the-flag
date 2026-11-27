@@ -101,6 +101,7 @@
     "ZW": {"remove": ["bwg", "kck", "khi", "ndc", "toi", "zib"], "reason": "CLDR names none of these minor, family or sign-language codes"}
   },
   "currencies": {
+    "BG": {"remove": ["BGN"], "add": ["EUR"], "reason": "Bulgaria has used the euro since 2026-01-01; mledoze lists the lev"},
     "FM": {"add": ["USD"], "reason": "mledoze lists no currency; Micronesia uses the US dollar"},
     "KI": {"remove": ["KID"], "reason": "Kiribati dollar has no ISO 4217 code or CLDR name; AUD remains"},
     "TV": {"remove": ["TVD"], "reason": "Tuvaluan dollar has no ISO 4217 code or CLDR name; AUD remains"},

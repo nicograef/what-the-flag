@@ -376,7 +376,7 @@
         "bg"
       ],
       "currencies": [
-        "BGN"
+        "EUR"
       ],
       "fame": 2,
       "flagKey": "99fcabf15a",
@@ -5068,10 +5068,6 @@
       "BDT": {
         "de": "Bangladesch-Taka",
         "en": "Bangladeshi Taka"
-      },
-      "BGN": {
-        "de": "Bulgarischer Lew",
-        "en": "Bulgarian Lev"
       },
       "BHD": {
         "de": "Bahrain-Dinar",
