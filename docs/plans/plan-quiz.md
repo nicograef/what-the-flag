@@ -238,10 +238,10 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 ### Acceptance criteria
 
-- [ ] Core (unit): `cd backend && go test ./internal/quiz`
-- [ ] The boundary holds: `cd backend && ! go list -deps ./internal/quiz | grep -qE '^(net/http|github.com/jackc/pgx)'`
-- [ ] depguard catches a violation: `f=backend/internal/quiz/zz_probe.go; printf 'package quiz\n\nimport _ "net/http"\n' > $f; ! (cd backend && golangci-lint run ./internal/quiz/...); rc=$?; rm $f; exit $rc`
-- [ ] `make check` passes.
+- [x] Core (unit): `cd backend && go test ./internal/quiz`
+- [x] The boundary holds: `cd backend && ! go list -deps ./internal/quiz | grep -qE '^(net/http|github.com/jackc/pgx)'`
+- [x] depguard catches a violation: `f=backend/internal/quiz/zz_probe.go; printf 'package quiz\n\nimport _ "net/http"\n' > $f; ! (cd backend && golangci-lint run ./internal/quiz/...); rc=$?; rm $f; exit $rc`
+- [x] `make check` passes.
 
 ## Phase 2: Postgres and HTTP adapters
 
