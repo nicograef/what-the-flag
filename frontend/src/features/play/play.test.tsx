@@ -58,6 +58,8 @@ it("reveals a correct answer, then shows the next question", async () => {
     ),
   ).toHaveFocus();
   expect(screen.getByText("Punkte: 1")).toBeInTheDocument();
+  // The timer and the card share a position; equal sibling keys left old timers mounted.
+  expect(screen.getAllByRole("progressbar")).toHaveLength(1);
   expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
 });
 

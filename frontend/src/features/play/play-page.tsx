@@ -78,7 +78,7 @@ function Run({ runId }: { runId: string }): ReactNode {
         <p className="tabular-nums">{t.score(shown?.score ?? state.score)}</p>
       </div>
       <Countdown
-        key={question.position}
+        key={`timer-${question.position}`}
         deadline={question.deadline}
         limitMs={question.limitMs}
         serverNow={state.serverNow}
@@ -87,7 +87,7 @@ function Run({ runId }: { runId: string }): ReactNode {
         onExpire={() => answer(null)}
       />
       <QuestionCard
-        key={question.position}
+        key={`question-${question.position}`}
         question={question}
         heading={t.question(question.position)}
         marks={
