@@ -117,7 +117,7 @@ func clashes(c *country.Country, picked []*country.Country, answer Attr, flag bo
 }
 
 // valueOptions returns one of the target's values and three values it lacks, or nil when fewer than three qualify.
-// A region the target also spans is no distractor, nor, in a flag type, a value of the target's look-alike.
+// A region the target is also counted in is no distractor, nor, in a flag type, a value of the target's look-alike.
 func valueOptions(cat Catalogue, pool []country.Country, target *country.Country, t QuestionType, rnd Rand) []string {
 	answer := t.Answer
 	own := values(target, answer)
