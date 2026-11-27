@@ -12,7 +12,7 @@ x-logging: &default-logging
     max-file: "3"
 
 # Every service gets a memory and CPU limit, so one runaway container cannot starve
-# the database or the proxy. Size them to the host.
+# the database or the proxy. The host has 2 vCPU and 3.8 GiB, shared with the dev stack.
 services:
   # ── Database ──
   postgres:
@@ -41,8 +41,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
-          cpus: "2.0"
+          memory: 512M
+          cpus: "1.0"
 
   # ── Migrations (one-shot) ──
   # `up --wait` starts it, the backend waits for its exit 0, and a non-zero exit fails the deploy.
@@ -77,6 +77,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      # The soft heap limit makes the Go GC work harder before the container's 512M limit kills it.
+      GOMEMLIMIT: 400MiB
     networks:
       - app-network
       - db-network
