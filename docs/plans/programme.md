@@ -96,5 +96,5 @@ None. No paid provider is called. Wikidata, GitHub clones, npm and the Go proxy 
 | quiz 3 | quiz | landed | a2a378d | |
 | quiz 4 | quiz | landed | aebc00b | |
 | quiz 5 | quiz | landed | 2289ca5 | security fixes after review, migration 000003_leaderboard_index |
-| release 1 | rel | waiting | | |
+| release 1 | rel | landed | 5cc09f9 | no migration; CI e2e pending |
 | release 2 | rel | waiting | | |

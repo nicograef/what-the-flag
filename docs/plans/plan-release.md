@@ -97,13 +97,13 @@ Migrations apply on deploy through a one-shot service, every image carries its l
 
 ### Acceptance criteria
 
-- [ ] Stack, migrate image, `up --wait` with an exited one-shot and every smoke check: `make e2e`
-- [ ] A failing command fails the run and leaves no container: `! E2E_STACK_PROJECT=wtf-e2e-neg scripts/e2e-stack.sh false && test -z "$(docker ps -aq --filter label=com.docker.compose.project=wtf-e2e-neg)"`
-- [ ] Manual migrate keeps the DSN: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -e '.services.migrate.entrypoint[3] == "-database" and .services.migrate.command == ["up"]'`
-- [ ] `! make help | grep -q UNCLASSIFIED`
-- [ ] `grep -q 'directory: "/database"' .github/dependabot.yml`
+- [x] Stack, migrate image, `up --wait` with an exited one-shot and every smoke check: `make e2e`
+- [x] A failing command fails the run and leaves no container: `! E2E_STACK_PROJECT=wtf-e2e-neg scripts/e2e-stack.sh false && test -z "$(docker ps -aq --filter label=com.docker.compose.project=wtf-e2e-neg)"`
+- [x] Manual migrate keeps the DSN: `docker compose -f docker-compose.prod.yml --env-file .env.example config --format json | jq -e '.services.migrate.entrypoint[3] == "-database" and .services.migrate.command == ["up"]'`
+- [x] `! make help | grep -q UNCLASSIFIED`
+- [x] `grep -q 'directory: "/database"' .github/dependabot.yml`
 - [ ] CI job `e2e` green on the pushed head (lead checks).
-- [ ] `make check` passes.
+- [x] `make check` passes.
 
 ## Phase 2: Licences, CSP, docs and the v0.1.0 check
 
