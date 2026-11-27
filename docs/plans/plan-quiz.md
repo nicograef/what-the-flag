@@ -269,9 +269,9 @@ The quiz engine is a pure Go domain core; Postgres and HTTP are adapters around 
 
 ### Acceptance criteria
 
-- [ ] Adapter (Postgres): `make db-migrate && cd backend && go test -tags=integration -race ./internal/quiz/postgres`
-- [ ] Contract: `make db-migrate && cd backend && go test -tags=integration ./internal/contract -run 'TestRun'`
-- [ ] `make check` passes.
+- [x] Adapter (Postgres): `make db-migrate && cd backend && go test -tags=integration -race ./internal/quiz/postgres`
+- [x] Contract: `make db-migrate && cd backend && go test -tags=integration ./internal/contract -run 'TestRun'`
+- [x] `make check` passes.
 
 ## Phase 3: Leaderboards, challenge view, rate limit and owner commands
 
