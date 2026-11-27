@@ -35,7 +35,7 @@ Every session that runs this programme checks these before wave 1 and after a co
 - Sequential run: one plan at a time, its phases in order. No parallel lanes, no worktrees, no file-ownership table, no `flock`.
 - A phase agent works in `/home/user/what-the-flag` on the base branch `main` and commits its phase. It does not push.
 - The lead reviews each phase against its criteria, flips its Status row in a follow-up commit, then pushes. A replaced container then loses at most one phase.
-- Lane results arrive as agent completion notices. One hourly scheduled check-in re-reads this file and `git log`; no 15-minute check-in.
+- Lane results arrive as agent completion notices. No scheduled check-in: after a lost session the owner says "resume", and the lead rebuilds state from this file and `git log`.
 - Phase agents never call `gh`. After the push of a plan's last phase, the lead reads CI through the GitHub MCP tools (`actions_list`, `get_job_logs`). A red job reopens that plan.
 - Foundation phase 1 installs the toolchains: Go through `GOTOOLCHAIN=auto`, Node from a nodejs.org tarball into `~/.local`.
 - Docker runs here after `dockerd &` and a wait for `docker info`. Builds use `--network host` and the session CA from the gitignored `docker-compose.local.yml`, never the committed Dockerfiles. CI is the gate of record.
