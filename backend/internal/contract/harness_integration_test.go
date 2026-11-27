@@ -11,7 +11,6 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -20,10 +19,10 @@ import (
 	"github.com/nicograef/what-the-flag/internal/postgres"
 )
 
-// newServer serves app.New over TLS, since cookiejar sends a Secure cookie only over https.
+// newServer serves app.New on the test database.
 func newServer(t *testing.T) *httptest.Server {
 	t.Helper()
-	srv := httptest.NewTLSServer(app.New(app.Deps{
+	srv := httptest.NewServer(app.New(app.Deps{
 		Pool: postgres.TestPool(t),
 		Log:  slog.New(slog.NewTextHandler(t.Output(), nil)),
 	}))
@@ -31,7 +30,7 @@ func newServer(t *testing.T) *httptest.Server {
 	return srv
 }
 
-// client is one browser: its own cookie jar and its own /64 in 2001:db8::/32.
+// client is one browser behind the edge: its own /64 in 2001:db8::/32, sent as X-Forwarded-For.
 type client struct {
 	t    *testing.T
 	http *http.Client
@@ -41,17 +40,11 @@ type client struct {
 
 func newClient(t *testing.T, srv *httptest.Server) *client {
 	t.Helper()
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		t.Fatalf("cookie jar: %v", err)
-	}
-	hc := *srv.Client()
-	hc.Jar = jar
 	ip := make(net.IP, net.IPv6len)
 	copy(ip, net.ParseIP("2001:db8::"))
 	_, _ = rand.Read(ip[4:8])
 	ip[15] = 1
-	return &client{t: t, http: &hc, base: srv.URL, ip: ip.String()}
+	return &client{t: t, http: srv.Client(), base: srv.URL, ip: ip.String()}
 }
 
 // do sends a request. Unsafe methods carry Origin, Content-Type and a JSON
@@ -87,6 +80,10 @@ func (c *client) do(method, path string, body any) *http.Response {
 }
 
 func (c *client) get(path string) *http.Response { return c.do(http.MethodGet, path, nil) }
+
+func (c *client) post(path string, body any) *http.Response {
+	return c.do(http.MethodPost, path, body)
+}
 
 // decode checks the status and decodes the body strictly, which pins the wire shape.
 func decode[T any](t *testing.T, resp *http.Response, status int) T {

@@ -10,3 +10,4 @@ Durable architecture decisions the PRD does not state. A replaced line gets `rep
 - D06: Each domain has its own sqlc package inside its internal tree. Go's internal rule stops one module from calling another module's queries.
 - D07: Stores take sqlc's DBTX plus Begin, not a pool; integration tests never truncate. Aggregate tests run in a rolled-back transaction, so parallel packages share one database.
 - D08: A method that takes a transaction rejects a nil one. A silent second transaction would break the caller's atomicity.
+- D09: Questions are generated when first served and stored per quiz. A shared quiz stays identical, and stored questions show where people fail.
