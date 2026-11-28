@@ -61,8 +61,11 @@ func (s space) defensible(c Case) map[string]bool {
 		add(target.Code)
 		if c.Type.Prompt == AttrRegionalLanguage {
 			for _, o := range s.cat.pool {
-				if slices.Contains(o.Languages, c.Prompt) || slices.Contains(o.RegionalLanguages, c.Prompt) || slices.Contains(o.BlockedLanguages, c.Prompt) {
-					add(o.Code)
+				family := s.cat.Family(country.LabelLanguage, c.Prompt)
+				for _, l := range slices.Concat(o.Languages, o.RegionalLanguages, o.BlockedLanguages) {
+					if l == c.Prompt || (family != "" && s.cat.Family(country.LabelLanguage, l) == family) {
+						add(o.Code)
+					}
 				}
 			}
 		}
@@ -236,6 +239,7 @@ func TestQuestionSpace(t *testing.T) {
 		{"other region offered", Question{Type: nameRegion, Target: "TR", Options: [4]string{"Asia", "Europe", "Africa", "Oceania"}}, "Europe is defensible"},
 		{"blocked language offered", Question{Type: nameLanguage, Target: "IL", Options: [4]string{"he", "ar", "fr", "ru"}}, "ar is defensible"},
 		{"country speaking the prompt offered", Question{Type: regional, Target: "DE", Prompt: "li", Options: [4]string{"DE", "NL", "FR", "IT"}}, "NL is defensible"},
+		{"country speaking a language of the prompt's family offered", Question{Type: regional, Target: "UG", Prompt: "rw", Options: [4]string{"UG", "BI", "FR", "IT"}}, "BI is defensible"},
 		{"look-alike offered", Question{Type: flagName, Target: "ID", Options: [4]string{"ID", "MC", "FR", "IT"}}, "MC is defensible"},
 		{"two look-alikes", Question{Type: flagName, Target: "DE", Options: [4]string{"DE", "RO", "TD", "IT"}}, "are look-alikes"},
 		{"repeated option", Question{Type: flagName, Target: "DE", Options: [4]string{"DE", "FR", "FR", "IT"}}, "share a text"},

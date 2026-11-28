@@ -140,7 +140,7 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 			for i := range pool {
 				if slices.Contains(pool[i].RegionalLanguages, c.Prompt) {
 					sets.True = append(sets.True, pool[i].Code)
-				} else if holdsLanguage(&pool[i], c.Prompt) {
+				} else if holdsLanguage(cat, &pool[i], c.Prompt) {
 					sets.Contested = append(sets.Contested, pool[i].Code)
 				}
 			}
@@ -224,9 +224,11 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 	return sets
 }
 
-// holdsLanguage reports whether lang is in any of c's language lists.
-func holdsLanguage(c *country.Country, lang string) bool {
-	return slices.Contains(c.Languages, lang) || slices.Contains(c.RegionalLanguages, lang) || slices.Contains(c.BlockedLanguages, lang)
+// holdsLanguage reports whether any of c's language lists holds lang or a language of its family.
+func holdsLanguage(cat Catalogue, c *country.Country, lang string) bool {
+	family := cat.Family(country.LabelLanguage, lang)
+	match := func(l string) bool { return l == lang || (family != "" && cat.Family(country.LabelLanguage, l) == family) }
+	return slices.ContainsFunc(c.Languages, match) || slices.ContainsFunc(c.RegionalLanguages, match) || slices.ContainsFunc(c.BlockedLanguages, match)
 }
 
 // flagType reports whether a type shows a flag as its prompt or its options.
