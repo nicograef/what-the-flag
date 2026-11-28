@@ -172,10 +172,10 @@
     "BG": {"remove": ["BGN"], "add": ["EUR"], "reason": "Bulgaria has used the euro since 2026-01-01; mledoze lists the lev"},
     "CU": {"remove": ["CUC"], "reason": "Cuba abolished the convertible peso in 2021; the peso (CUP) remains"},
     "FM": {"add": ["USD"], "reason": "mledoze lists no currency; Micronesia uses the US dollar"},
-    "KI": {"remove": ["KID"], "reason": "Kiribati dollar has no ISO 4217 code or CLDR name; AUD remains"},
-    "SL": {"remove": ["SLL"], "add": ["SLE"], "reason": "The new leone (SLE) replaced SLL in 2022; CLDR labels SLL (1964-2022)"},
+    "KI": {"remove": ["KID"], "reason": "Kiribati dollar has no ISO 4217 code; AUD remains"},
+    "SL": {"remove": ["SLL"], "add": ["SLE"], "reason": "The new leone (SLE) replaced SLL in 2022"},
     "SV": {"add": ["SVC"], "reason": "The colón remains legal tender beside the US dollar under the 2001 Monetary Integration Law"},
-    "TV": {"remove": ["TVD"], "reason": "Tuvaluan dollar has no ISO 4217 code or CLDR name; AUD remains"},
-    "ZW": {"remove": ["BWP", "CNY", "EUR", "GBP", "INR", "JPY", "ZAR", "ZWB"], "add": ["ZWG"], "reason": "Zimbabwe Gold (ZWG) is the national currency and the US dollar the one in daily use; mledoze adds the legal-tender basket and bond notes (ZWB), which have no CLDR name"}
+    "TV": {"remove": ["TVD"], "reason": "Tuvaluan dollar has no ISO 4217 code; AUD remains"},
+    "ZW": {"remove": ["BWP", "CNY", "EUR", "GBP", "INR", "JPY", "ZAR", "ZWB"], "add": ["ZWG"], "reason": "Zimbabwe Gold (ZWG) is the national currency and the US dollar the one in daily use; mledoze adds the legal-tender basket and bond notes (ZWB)"}
   }
 }
