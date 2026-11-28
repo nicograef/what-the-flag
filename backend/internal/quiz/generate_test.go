@@ -113,13 +113,21 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 		if (q.Type.Prompt == AttrRegionalLanguage) != (q.Prompt != "") || (q.Prompt != "" && !spoken(target)) {
 			fail("prompt %q is not a regional language of the target, or is set for another type", q.Prompt)
 		}
+		if slices.Contains(target.Languages, q.Prompt) {
+			fail("prompt %q is an official language of the target", q.Prompt)
+		}
 		own := []string{q.Target}
 		// blocked holds values the target lacks that a player could still defend; no option may carry one.
 		var blocked []string
 		if !q.Type.Answer.identifiesCountry() {
 			own = values(target, q.Type.Answer)
-			if q.Type.Answer == AttrRegion {
+			switch q.Type.Answer {
+			case AttrRegion:
 				blocked = append(blocked, target.OtherRegions...)
+			case AttrLanguage:
+				blocked = append(blocked, target.RegionalLanguages...)
+				blocked = append(blocked, target.BlockedLanguages...)
+			case AttrName, AttrFlag, AttrCapital, AttrCurrency, AttrRegionalLanguage:
 			}
 			if q.Type.Prompt == AttrFlag {
 				for _, code := range target.Lookalikes {
@@ -128,11 +136,14 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 			}
 		}
 		flagCountries := (q.Type.Prompt == AttrFlag || q.Type.Answer == AttrFlag) && q.Type.Answer.identifiesCountry()
-		// families holds the currency families taken: the target's and each distractor's so far.
+		// families holds the language or currency families taken: the target's and each distractor's so far.
+		// Every currency has a family; most languages have none.
+		kind := labelKind(q.Type.Answer)
+		hasFamily := q.Type.Answer == AttrCurrency || q.Type.Answer == AttrLanguage
 		families := map[string]bool{}
-		if q.Type.Answer == AttrCurrency {
+		if hasFamily {
 			for _, v := range own {
-				families[cat.CurrencyFamily(v)] = true
+				families[cat.Family(kind, v)] = true
 			}
 		}
 		des, ens := map[string]bool{}, map[string]bool{}
@@ -141,7 +152,7 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 				fail("option %d %q: correct %t, true for the target %t", i, o, i == q.Correct, slices.Contains(own, o))
 			}
 			if i != q.Correct && slices.Contains(blocked, o) {
-				fail("option %d %q is another region of the target or belongs to its look-alike", i, o)
+				fail("option %d %q is another region, a regional or blocked language of the target, or belongs to its look-alike", i, o)
 			}
 			if i != q.Correct && q.Type.Answer.identifiesCountry() && spoken(byCode[o]) {
 				fail("option %d %q is a country where %s is spoken", i, o, q.Prompt)
@@ -151,12 +162,12 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 				fail("option %d text %+v is empty or repeats", i, l)
 			}
 			des[l.De], ens[l.En] = true, true
-			if q.Type.Answer == AttrCurrency && i != q.Correct {
-				f := cat.CurrencyFamily(o)
-				if f == "" || families[f] {
-					fail("option %d %q: currency family %q is empty or shared with the target or another option", i, o, f)
+			if hasFamily && i != q.Correct {
+				f := cat.Family(kind, o)
+				if (f == "" && q.Type.Answer == AttrCurrency) || (f != "" && families[f]) {
+					fail("option %d %q: family %q is missing or shared with the target or another option", i, o, f)
 				}
-				families[f] = true
+				families[f] = f != ""
 			}
 			if flagCountries {
 				for _, other := range q.Options {
@@ -190,7 +201,7 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 	}
 }
 
-// fakeCatalogue is a literal pool whose labels and currency families are their codes.
+// fakeCatalogue is a literal pool whose labels and families are their codes.
 type fakeCatalogue []country.Country
 
 func (f fakeCatalogue) Pool() []country.Country { return slices.Clone(f) }
@@ -199,7 +210,7 @@ func (f fakeCatalogue) Label(_ country.LabelKind, code string) (country.Names, b
 	return country.Names{De: code, En: code}, true
 }
 
-func (f fakeCatalogue) CurrencyFamily(code string) string { return code }
+func (f fakeCatalogue) Family(_ country.LabelKind, code string) string { return code }
 
 // fivePool is a catalogue of AA to EE in the given regions; AA's flag looks like every other.
 func fivePool(regions ...string) fakeCatalogue {

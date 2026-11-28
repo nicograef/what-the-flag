@@ -59,10 +59,12 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 		var options []string
 		switch {
 		case t.Prompt == AttrRegionalLanguage:
-			if len(target.RegionalLanguages) == 0 {
+			// An official language of the target would name it, as Mongolian names Mongolia.
+			prompts := slices.DeleteFunc(slices.Clone(target.RegionalLanguages), func(l string) bool { return slices.Contains(target.Languages, l) })
+			if len(prompts) == 0 {
 				continue
 			}
-			prompt = target.RegionalLanguages[rnd.IntN(len(target.RegionalLanguages))]
+			prompt = prompts[rnd.IntN(len(prompts))]
 			spoken := func(c *country.Country) bool { return slices.Contains(c.RegionalLanguages, prompt) }
 			options = countryOptions(pool, target, t, spoken, rnd)
 		case t.Answer.identifiesCountry():
@@ -136,8 +138,8 @@ func clashes(c *country.Country, picked []*country.Country, answer Attr, flag bo
 }
 
 // valueOptions returns one of the target's values and three values it lacks, or nil when fewer than three qualify.
-// A region the target is also counted in is no distractor, nor, in a flag type, a value of the target's look-alike.
-// No two currency options share a family.
+// A region the target is also counted in is no distractor, nor a regional or blocked language of the target,
+// nor, in a flag type, a value of the target's look-alike. No two language or currency options share a family.
 func valueOptions(cat Catalogue, pool []country.Country, target *country.Country, t QuestionType, rnd Rand) []string {
 	answer := t.Answer
 	own := values(target, answer)
@@ -148,12 +150,7 @@ func valueOptions(cat Catalogue, pool []country.Country, target *country.Country
 	seenCode := make(map[string]bool, 2*len(pool))
 	seenFamily := map[string]bool{}
 	var seen []country.Names
-	family := func(v string) string {
-		if answer != AttrCurrency {
-			return ""
-		}
-		return cat.CurrencyFamily(v)
-	}
+	family := func(v string) string { return cat.Family(kind, v) }
 	taken := func(v string, l country.Names) bool {
 		if f := family(v); f != "" && seenFamily[f] {
 			return true
@@ -177,6 +174,10 @@ func valueOptions(cat Catalogue, pool []country.Country, target *country.Country
 	block(own)
 	if answer == AttrRegion {
 		block(target.OtherRegions)
+	}
+	if answer == AttrLanguage {
+		block(target.RegionalLanguages)
+		block(target.BlockedLanguages)
 	}
 	if t.Prompt == AttrFlag {
 		for i := range pool {

@@ -98,16 +98,25 @@ type capitalRow struct {
 }
 
 type overrides struct {
-	UNMember        map[string]unMemberOverride `json:"unMember"`
-	PoolAdditions   poolAdditions               `json:"poolAdditions"`
-	PrimaryCapitals map[string]primaryCapital   `json:"primaryCapitals"`
-	CapitalLabels   map[string]labelOverride    `json:"capitalLabels"`
-	CountryNames    map[string]labelOverride    `json:"countryNames"`
-	Lookalikes      []lookalike                 `json:"lookalikes"`
-	OtherRegions    map[string]otherRegions     `json:"otherRegions"`
-	FameTiers       map[string]fameTier         `json:"fameTiers"`
-	Languages       map[string]listOverride     `json:"languages"`
-	Currencies      map[string]listOverride     `json:"currencies"`
+	UNMember         map[string]unMemberOverride `json:"unMember"`
+	PoolAdditions    poolAdditions               `json:"poolAdditions"`
+	PrimaryCapitals  map[string]primaryCapital   `json:"primaryCapitals"`
+	CapitalLabels    map[string]labelOverride    `json:"capitalLabels"`
+	CountryNames     map[string]labelOverride    `json:"countryNames"`
+	Lookalikes       []lookalike                 `json:"lookalikes"`
+	OtherRegions     map[string]otherRegions     `json:"otherRegions"`
+	FameTiers        map[string]fameTier         `json:"fameTiers"`
+	Languages        map[string]listOverride     `json:"languages"`
+	LanguageLabels   map[string]labelOverride    `json:"languageLabels"`
+	LanguageFamilies map[string]languageList     `json:"languageFamilies"`
+	BlockedLanguages map[string]languageList     `json:"blockedLanguages"`
+	Currencies       map[string]listOverride     `json:"currencies"`
+}
+
+// languageList names language codes: a family's members, or a country's blocked languages.
+type languageList struct {
+	Languages []string `json:"languages"`
+	Reason    string   `json:"reason"`
 }
 
 type fameTier struct {

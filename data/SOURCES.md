@@ -14,6 +14,6 @@ The project curates three files without an upstream source; NOTICE puts them und
 
 | File | Holds |
 | --- | --- |
-| `overrides.json` | Corrections to the sources, each with its reason |
+| `overrides.json` | Corrections to the sources, language families and blocked languages, each with its reason |
 | `currency-units.json` | Each pool currency's unit name without the country, in German and English, and its currency family |
 | `regional-languages.json` | Regional, minority, creole and indigenous languages, each with its kind, the pool countries it is spoken in and its source |

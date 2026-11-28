@@ -44,8 +44,8 @@ func (c *Catalogue) Pool() []Country {
 func (c *Catalogue) Label(kind LabelKind, code string) (Names, bool) {
 	switch kind {
 	case LabelLanguage:
-		n, ok := c.labels.Languages[code]
-		return n, ok
+		l, ok := c.labels.Languages[code]
+		return l.Names, ok
 	case LabelCurrency:
 		l, ok := c.labels.Currencies[code]
 		return l.Names, ok
@@ -56,7 +56,14 @@ func (c *Catalogue) Label(kind LabelKind, code string) (Names, bool) {
 	return Names{}, false
 }
 
-// CurrencyFamily returns the family of an ISO 4217 code, or "" for a code the pool does not use.
-func (c *Catalogue) CurrencyFamily(code string) string {
-	return c.labels.Currencies[code].Family
+// Family returns the family of a language or currency code, or "" for a code without one.
+func (c *Catalogue) Family(kind LabelKind, code string) string {
+	switch kind {
+	case LabelLanguage:
+		return c.labels.Languages[code].Family
+	case LabelCurrency:
+		return c.labels.Currencies[code].Family
+	case LabelRegion:
+	}
+	return ""
 }

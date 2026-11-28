@@ -85,6 +85,7 @@ func build(src sources) (country.Dataset, []string) {
 		return slices.Clone(c.Currencies)
 	})
 	regional := b.regionalLanguages(languages)
+	blocked := b.blockedLanguages(languages, regional)
 	fame := b.fameTiers()
 
 	countries := make([]country.Country, 0, len(b.pool))
@@ -101,13 +102,14 @@ func build(src sources) (country.Dataset, []string) {
 			OtherRegions:      append([]string{}, otherRegions[code]...),
 			Languages:         languages[code],
 			RegionalLanguages: append([]string{}, regional[code]...),
+			BlockedLanguages:  append([]string{}, blocked[code]...),
 			Currencies:        currencies[code],
 			Fame:              fame[code],
 			FlagKey:           country.FlagKey(code),
 			Lookalikes:        append([]string{}, lookalikes[code]...),
 		})
 	}
-	labels := country.Labels{Languages: map[string]country.Names{}, Currencies: map[string]country.CurrencyLabel{}, Regions: map[string]country.Names{}}
+	labels := country.Labels{Languages: map[string]country.LanguageLabel{}, Currencies: map[string]country.CurrencyLabel{}, Regions: map[string]country.Names{}}
 	languageLabel := func(owner, code string) {
 		n := src.languageNames[code]
 		if n.De == "" || n.En == "" {
@@ -116,7 +118,7 @@ func build(src sources) (country.Dataset, []string) {
 		if yearRangeRe.MatchString(n.De) || yearRangeRe.MatchString(n.En) {
 			b.p.add("%s: language code %s is withdrawn, its CLDR name is %+v", owner, code, n)
 		}
-		labels.Languages[code] = n
+		labels.Languages[code] = country.LanguageLabel{Names: n}
 	}
 	for _, code := range slices.Sorted(maps.Keys(src.regional)) {
 		languageLabel(regionalPath, code)
@@ -136,6 +138,8 @@ func build(src sources) (country.Dataset, []string) {
 			labels.Regions[c.Region] = n
 		}
 	}
+	b.languageLabels(labels.Languages)
+	b.languageFamilies(labels.Languages)
 	for _, code := range slices.Sorted(maps.Keys(src.currencyUnits)) {
 		u := src.currencyUnits[code]
 		if u.De == "" || u.En == "" || u.Family == "" {
@@ -471,6 +475,77 @@ func (b *builder) regionalLanguages(official map[string][]string) map[string][]s
 	return out
 }
 
+// blockedLanguages validates the curated blocked languages and returns each code's, sorted.
+// A blocked language is official in another pool country, and neither official nor regional in its own.
+func (b *builder) blockedLanguages(official, regional map[string][]string) map[string][]string {
+	out := map[string][]string{}
+	ov := b.src.overrides.BlockedLanguages
+	for _, code := range slices.Sorted(maps.Keys(ov)) {
+		o, name := ov[code], "blockedLanguages "+code
+		requireReason(&b.p, name, o.Reason)
+		if !b.inPool(code) {
+			b.p.add("%s: not a pool code", name)
+			continue
+		}
+		if len(o.Languages) == 0 {
+			b.p.add("%s: names no language", name)
+		}
+		for i, lang := range o.Languages {
+			officialElsewhere := slices.ContainsFunc(b.pool, func(c string) bool { return c != code && slices.Contains(official[c], lang) })
+			switch {
+			case slices.Contains(o.Languages[:i], lang):
+				b.p.add("%s: %s listed twice", name, lang)
+			case slices.Contains(official[code], lang) || slices.Contains(regional[code], lang):
+				b.p.add("%s: %s is already an official or regional language of it", name, lang)
+			case !officialElsewhere:
+				b.p.add("%s: %s is official in no other pool country, so it is never a wrong option", name, lang)
+			default:
+				out[code] = append(out[code], lang)
+			}
+		}
+		slices.Sort(out[code])
+	}
+	return out
+}
+
+// languageLabels applies the languageLabels overrides to the CLDR names.
+func (b *builder) languageLabels(labels map[string]country.LanguageLabel) {
+	ov := b.src.overrides.LanguageLabels
+	for _, code := range slices.Sorted(maps.Keys(ov)) {
+		l, ok := labels[code]
+		if !ok {
+			b.p.add("languageLabels %s: not a language of the dataset", code)
+			continue
+		}
+		l.Names = applyLabels(&b.p, "languageLabels "+code, l.Names, ov[code])
+		labels[code] = l
+	}
+}
+
+// languageFamilies validates the curated language families and sets each member's family.
+func (b *builder) languageFamilies(labels map[string]country.LanguageLabel) {
+	ov := b.src.overrides.LanguageFamilies
+	for _, family := range slices.Sorted(maps.Keys(ov)) {
+		o, name := ov[family], "languageFamilies "+family
+		requireReason(&b.p, name, o.Reason)
+		if len(o.Languages) < 2 {
+			b.p.add("%s: names %d languages, want at least 2", name, len(o.Languages))
+		}
+		for _, lang := range o.Languages {
+			l, ok := labels[lang]
+			switch {
+			case !ok:
+				b.p.add("%s: %s is not a language of the dataset", name, lang)
+			case l.Family != "":
+				b.p.add("%s: %s is already in family %s", name, lang, l.Family)
+			default:
+				l.Family = family
+				labels[lang] = l
+			}
+		}
+	}
+}
+
 // fameTiers ranks the pool by area, largest first, and applies the fameTiers overrides.
 func (b *builder) fameTiers() map[string]int {
 	ranked := slices.Clone(b.pool)
@@ -581,6 +656,15 @@ func validate(ds country.Dataset, p *problems) {
 		for _, other := range c.Lookalikes {
 			if !slices.Contains(byCode[other].Lookalikes, c.Code) {
 				p.add("%s: lookalike %s does not list it back", c.Code, other)
+			}
+		}
+	}
+	// A language option named like a country reads as that country and gives it away.
+	for _, code := range slices.Sorted(maps.Keys(ds.Labels.Languages)) {
+		l := ds.Labels.Languages[code]
+		for _, k := range []labelKey{{"country de", l.De}, {"country en", l.En}} {
+			if holder, ok := owner[k]; ok {
+				p.add("language %s: label %q is the country name of %s", code, k.label, holder)
 			}
 		}
 	}

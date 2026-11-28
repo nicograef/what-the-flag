@@ -21,6 +21,7 @@ type Country struct {
 	OtherRegions      []string `json:"otherRegions"`      // regions the country is also counted in, never a wrong option for it
 	Languages         []string `json:"languages"`         // official at national level, or the de facto national language
 	RegionalLanguages []string `json:"regionalLanguages"` // regional, minority, creole or indigenous languages spoken there
+	BlockedLanguages  []string `json:"blockedLanguages"`  // other countries' official languages with a status here, never a wrong option for it
 	Currencies        []string `json:"currencies"`
 	Fame              int      `json:"fame"`
 	FlagKey           string   `json:"flagKey"`
@@ -30,9 +31,16 @@ type Country struct {
 // Labels names every attribute code the pool uses, per kind: CLDR language codes,
 // official and regional ones alike, ISO 4217 currency codes and regions.
 type Labels struct {
-	Languages  map[string]Names         `json:"languages"`
+	Languages  map[string]LanguageLabel `json:"languages"`
 	Currencies map[string]CurrencyLabel `json:"currencies"`
 	Regions    map[string]Names         `json:"regions"`
+}
+
+// LanguageLabel names a language and its family, empty for most.
+// A family groups standard varieties of one language, such as Hindi and Urdu.
+type LanguageLabel struct {
+	Names
+	Family string `json:"family,omitempty"`
 }
 
 // CurrencyLabel names a currency by its unit without the country, such as Peso, and its family.

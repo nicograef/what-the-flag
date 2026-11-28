@@ -18,6 +18,7 @@
       "regionalLanguages": [
         "ca"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -41,6 +42,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "AED"
       ],
@@ -67,6 +69,7 @@
       "regionalLanguages": [
         "ps"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "AFN"
       ],
@@ -90,6 +93,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -113,6 +117,7 @@
         "sq"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "ALL"
       ],
@@ -138,9 +143,9 @@
         "hy"
       ],
       "regionalLanguages": [
-        "arc",
         "ku"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "AMD"
       ],
@@ -171,6 +176,7 @@
         "ln",
         "umb"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "AOA"
       ],
@@ -200,6 +206,7 @@
         "gn",
         "qu"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "ARS"
       ],
@@ -223,6 +230,7 @@
         "de"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -246,6 +254,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "AUD"
       ],
@@ -273,6 +282,7 @@
       "regionalLanguages": [
         "av"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "AZN"
       ],
@@ -298,6 +308,7 @@
         "sr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "BAM"
       ],
@@ -321,6 +332,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "BBD"
       ],
@@ -346,6 +358,7 @@
       "regionalLanguages": [
         "bn"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BDT"
       ],
@@ -375,6 +388,7 @@
         "pcd",
         "wa"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -395,9 +409,17 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
+        "dyu",
+        "ff",
+        "mos"
+      ],
+      "regionalLanguages": [
+        "ff",
+        "tmh"
+      ],
+      "blockedLanguages": [
         "fr"
       ],
-      "regionalLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -423,6 +445,7 @@
       "regionalLanguages": [
         "gag"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -446,6 +469,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "BHD"
       ],
@@ -471,6 +495,7 @@
         "rn"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "BIF"
       ],
@@ -498,6 +523,7 @@
         "fon",
         "yo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -521,6 +547,7 @@
         "ms"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "BND",
         "SGD"
@@ -552,6 +579,7 @@
         "gn",
         "qu"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BOB"
       ],
@@ -575,9 +603,9 @@
         "pt"
       ],
       "regionalLanguages": [
-        "gn",
-        "nds"
+        "gn"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BRL"
       ],
@@ -603,6 +631,7 @@
       "regionalLanguages": [
         "ht"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BSD",
         "USD"
@@ -629,6 +658,7 @@
       "regionalLanguages": [
         "ne"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BTN",
         "INR"
@@ -661,6 +691,7 @@
         "tn",
         "xh"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BWP"
       ],
@@ -685,6 +716,7 @@
         "ru"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "BYN"
       ],
@@ -710,6 +742,7 @@
       "regionalLanguages": [
         "pdc"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "BZD"
       ],
@@ -741,6 +774,7 @@
         "oj",
         "pdc"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CAD"
       ],
@@ -769,8 +803,10 @@
         "ln",
         "lua",
         "rw",
-        "sg"
+        "sg",
+        "sw"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CDF"
       ],
@@ -798,6 +834,7 @@
         "ln",
         "sg"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XAF"
       ],
@@ -825,6 +862,7 @@
         "kg",
         "ln"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XAF"
       ],
@@ -854,6 +892,7 @@
         "frp",
         "rm"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CHF"
       ],
@@ -879,6 +918,7 @@
       "regionalLanguages": [
         "kpe"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -905,6 +945,7 @@
         "arn",
         "ay"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CLP"
       ],
@@ -931,9 +972,11 @@
       "regionalLanguages": [
         "ewo",
         "fan",
+        "ha",
         "ig",
         "tiv"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XAF"
       ],
@@ -964,6 +1007,7 @@
         "ug",
         "za"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CNY"
       ],
@@ -990,6 +1034,7 @@
         "guc",
         "qu"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "COP"
       ],
@@ -1012,10 +1057,8 @@
       "languages": [
         "es"
       ],
-      "regionalLanguages": [
-        "ht",
-        "jam"
-      ],
+      "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "CRC"
       ],
@@ -1041,6 +1084,7 @@
       "regionalLanguages": [
         "ht"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CUP"
       ],
@@ -1066,6 +1110,7 @@
       "regionalLanguages": [
         "kea"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CVE"
       ],
@@ -1092,6 +1137,7 @@
         "tr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1117,6 +1163,7 @@
       "regionalLanguages": [
         "szl"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "CZK"
       ],
@@ -1145,6 +1192,7 @@
         "li",
         "nds"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1172,6 +1220,7 @@
         "aa",
         "so"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "DJF"
       ],
@@ -1199,6 +1248,7 @@
         "kl",
         "nds"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "DKK"
       ],
@@ -1222,6 +1272,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -1247,6 +1298,7 @@
       "regionalLanguages": [
         "ht"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "DOP"
       ],
@@ -1267,12 +1319,15 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "ar"
+        "ar",
+        "zgh"
       ],
       "regionalLanguages": [
         "kab",
-        "rif"
+        "rif",
+        "tmh"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "DZD"
       ],
@@ -1299,6 +1354,7 @@
       "regionalLanguages": [
         "qu"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -1324,6 +1380,7 @@
       "regionalLanguages": [
         "vro"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1349,6 +1406,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EGP"
       ],
@@ -1378,6 +1436,7 @@
         "ti",
         "tig"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "ERN"
       ],
@@ -1408,6 +1467,7 @@
         "oc",
         "rif"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1437,6 +1497,7 @@
         "so",
         "ti"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "ETB"
       ],
@@ -1464,6 +1525,7 @@
         "krl",
         "se"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1491,6 +1553,7 @@
       "regionalLanguages": [
         "gil"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "FJD"
       ],
@@ -1514,6 +1577,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -1546,6 +1610,7 @@
         "pcd",
         "wa"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1572,6 +1637,7 @@
         "fan",
         "kg"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XAF"
       ],
@@ -1601,6 +1667,7 @@
         "kw",
         "sco"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "GBP"
       ],
@@ -1624,6 +1691,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -1652,6 +1720,7 @@
         "av",
         "os"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "GEL"
       ],
@@ -1676,8 +1745,10 @@
       ],
       "regionalLanguages": [
         "ee",
-        "gaa"
+        "gaa",
+        "ha"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "GHS"
       ],
@@ -1703,9 +1774,12 @@
       "regionalLanguages": [
         "dyo",
         "kri",
+        "man",
+        "snk",
         "srr",
         "wo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "GMD"
       ],
@@ -1729,10 +1803,13 @@
         "fr"
       ],
       "regionalLanguages": [
+        "ff",
         "kpe",
+        "man",
         "men",
         "sus"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "GNF"
       ],
@@ -1761,6 +1838,7 @@
         "fan",
         "ig"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XAF"
       ],
@@ -1784,6 +1862,7 @@
         "el"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1809,6 +1888,7 @@
       "regionalLanguages": [
         "quc"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "GTQ"
       ],
@@ -1835,6 +1915,7 @@
         "dyo",
         "sus"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -1858,6 +1939,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "GYD"
       ],
@@ -1881,6 +1963,7 @@
         "es"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "HNL"
       ],
@@ -1904,6 +1987,7 @@
         "hr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1930,6 +2014,7 @@
       "regionalLanguages": [
         "ht"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "HTG"
       ],
@@ -1953,6 +2038,7 @@
         "hu"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "HUF"
       ],
@@ -1983,6 +2069,7 @@
         "su",
         "tet"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "IDR"
       ],
@@ -2012,6 +2099,7 @@
         "ga",
         "sco"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2035,6 +2123,9 @@
         "he"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [
+        "ar"
+      ],
       "currencies": [
         "ILS"
       ],
@@ -2068,8 +2159,10 @@
         "pa",
         "sd",
         "ta",
-        "te"
+        "te",
+        "ur"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "INR"
       ],
@@ -2094,9 +2187,9 @@
         "ckb"
       ],
       "regionalLanguages": [
-        "arc",
         "ku"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "IQD"
       ],
@@ -2120,9 +2213,9 @@
         "fa"
       ],
       "regionalLanguages": [
-        "arc",
         "ku"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "IRR"
       ],
@@ -2146,6 +2239,7 @@
         "is"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "ISK"
       ],
@@ -2179,6 +2273,10 @@
         "sc",
         "scn"
       ],
+      "blockedLanguages": [
+        "de",
+        "fr"
+      ],
       "currencies": [
         "EUR"
       ],
@@ -2201,9 +2299,8 @@
       "languages": [
         "en"
       ],
-      "regionalLanguages": [
-        "jam"
-      ],
+      "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "JMD"
       ],
@@ -2227,6 +2324,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "JOD"
       ],
@@ -2250,6 +2348,7 @@
         "ja"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "JPY"
       ],
@@ -2280,8 +2379,10 @@
         "luo",
         "mas",
         "om",
-        "so"
+        "so",
+        "sw"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "KES"
       ],
@@ -2308,6 +2409,7 @@
       "regionalLanguages": [
         "ug"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "KGS"
       ],
@@ -2334,6 +2436,7 @@
         "km",
         "lo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "KHR",
         "USD"
@@ -2361,6 +2464,7 @@
       "regionalLanguages": [
         "gil"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "AUD"
       ],
@@ -2386,6 +2490,7 @@
         "swb"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "KMF"
       ],
@@ -2409,6 +2514,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -2432,6 +2538,7 @@
         "ko"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "KPW"
       ],
@@ -2455,6 +2562,7 @@
         "ko"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "KRW"
       ],
@@ -2478,6 +2586,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "KWD"
       ],
@@ -2506,6 +2615,7 @@
       "regionalLanguages": [
         "ug"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "KZT"
       ],
@@ -2532,6 +2642,7 @@
         "hmn",
         "lo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "LAK"
       ],
@@ -2555,6 +2666,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "LBP"
       ],
@@ -2578,6 +2690,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -2601,6 +2714,7 @@
         "de"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "CHF"
       ],
@@ -2626,6 +2740,9 @@
       ],
       "regionalLanguages": [
         "ta"
+      ],
+      "blockedLanguages": [
+        "en"
       ],
       "currencies": [
         "LKR"
@@ -2654,6 +2771,7 @@
         "men",
         "vai"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "LRD"
       ],
@@ -2681,6 +2799,7 @@
         "st",
         "xh"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "LSL",
         "ZAR"
@@ -2707,6 +2826,7 @@
       "regionalLanguages": [
         "sgs"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2732,6 +2852,7 @@
         "lb"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2757,6 +2878,7 @@
       "regionalLanguages": [
         "ltg"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2780,6 +2902,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "LYD"
       ],
@@ -2807,6 +2930,7 @@
         "rif",
         "shi"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MAD"
       ],
@@ -2832,6 +2956,7 @@
       "regionalLanguages": [
         "oc"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2859,6 +2984,7 @@
       "regionalLanguages": [
         "gag"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MDL"
       ],
@@ -2885,6 +3011,7 @@
         "sr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2909,6 +3036,7 @@
         "mg"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "MGA"
       ],
@@ -2933,6 +3061,7 @@
         "mh"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -2957,6 +3086,7 @@
         "sq"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "MKD"
       ],
@@ -2984,7 +3114,15 @@
         "snk",
         "tmh"
       ],
-      "regionalLanguages": [],
+      "regionalLanguages": [
+        "ff",
+        "man",
+        "snk",
+        "tmh"
+      ],
+      "blockedLanguages": [
+        "fr"
+      ],
       "currencies": [
         "XOF"
       ],
@@ -3011,6 +3149,7 @@
         "hmn",
         "ne"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MMK"
       ],
@@ -3037,6 +3176,7 @@
         "bua",
         "mn"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MNT"
       ],
@@ -3060,9 +3200,11 @@
         "ar"
       ],
       "regionalLanguages": [
+        "snk",
         "srr",
         "wo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MRU"
       ],
@@ -3087,6 +3229,7 @@
         "mt"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -3114,6 +3257,7 @@
       "regionalLanguages": [
         "mfe"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MUR"
       ],
@@ -3137,6 +3281,7 @@
         "dv"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "MVR"
       ],
@@ -3165,6 +3310,7 @@
         "tum",
         "yao"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MWK"
       ],
@@ -3190,6 +3336,7 @@
       "regionalLanguages": [
         "zap"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MXN"
       ],
@@ -3215,6 +3362,9 @@
       "regionalLanguages": [
         "jv",
         "ta"
+      ],
+      "blockedLanguages": [
+        "en"
       ],
       "currencies": [
         "MYR"
@@ -3246,6 +3396,7 @@
         "vmw",
         "yao"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "MZN"
       ],
@@ -3276,6 +3427,7 @@
         "naq",
         "tn"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "NAD",
         "ZAR"
@@ -3299,7 +3451,14 @@
       "languages": [
         "ha"
       ],
-      "regionalLanguages": [],
+      "regionalLanguages": [
+        "ff",
+        "ha",
+        "tmh"
+      ],
+      "blockedLanguages": [
+        "fr"
+      ],
       "currencies": [
         "XOF"
       ],
@@ -3324,11 +3483,12 @@
       ],
       "regionalLanguages": [
         "fon",
+        "ha",
         "ig",
-        "pcm",
         "tiv",
         "yo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "NGN"
       ],
@@ -3352,6 +3512,7 @@
         "es"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "NIO"
       ],
@@ -3381,6 +3542,7 @@
         "li",
         "nds"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -3408,6 +3570,7 @@
       "regionalLanguages": [
         "se"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "NOK"
       ],
@@ -3435,6 +3598,7 @@
         "mai",
         "ne"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "NPR"
       ],
@@ -3459,6 +3623,7 @@
         "na"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "AUD"
       ],
@@ -3485,6 +3650,7 @@
       "regionalLanguages": [
         "mi"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "NZD"
       ],
@@ -3508,6 +3674,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "OMR"
       ],
@@ -3530,9 +3697,8 @@
       "languages": [
         "es"
       ],
-      "regionalLanguages": [
-        "jam"
-      ],
+      "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "PAB",
         "USD"
@@ -3560,6 +3726,7 @@
         "ay",
         "qu"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "PEN"
       ],
@@ -3587,6 +3754,7 @@
       "regionalLanguages": [
         "tpi"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "PGK"
       ],
@@ -3613,6 +3781,7 @@
       "regionalLanguages": [
         "ceb"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "PHP"
       ],
@@ -3640,8 +3809,10 @@
         "ks",
         "pa",
         "ps",
-        "sd"
+        "sd",
+        "ur"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "PKR"
       ],
@@ -3668,6 +3839,7 @@
         "csb",
         "szl"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "PLN"
       ],
@@ -3691,6 +3863,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EGP",
         "ILS",
@@ -3718,6 +3891,7 @@
       "regionalLanguages": [
         "mwl"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -3742,6 +3916,7 @@
         "pau"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -3768,6 +3943,7 @@
       "regionalLanguages": [
         "gn"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "PYG"
       ],
@@ -3791,6 +3967,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "QAR"
       ],
@@ -3814,6 +3991,7 @@
         "ro"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "RON"
       ],
@@ -3839,6 +4017,7 @@
         "sr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "RSD"
       ],
@@ -3873,6 +4052,7 @@
         "os",
         "sah"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "RUB"
       ],
@@ -3899,8 +4079,10 @@
         "sw"
       ],
       "regionalLanguages": [
-        "rw"
+        "rw",
+        "sw"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "RWF"
       ],
@@ -3924,6 +4106,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "SAR"
       ],
@@ -3950,6 +4133,7 @@
         "gil",
         "pis"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SBD"
       ],
@@ -3975,6 +4159,7 @@
         "fr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "SCR"
       ],
@@ -4002,6 +4187,7 @@
         "din",
         "tig"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SDG"
       ],
@@ -4026,6 +4212,9 @@
       ],
       "regionalLanguages": [
         "se"
+      ],
+      "blockedLanguages": [
+        "fi"
       ],
       "currencies": [
         "SEK"
@@ -4055,6 +4244,7 @@
       "regionalLanguages": [
         "ta"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SGD"
       ],
@@ -4078,6 +4268,7 @@
         "sl"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -4101,6 +4292,7 @@
         "sk"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -4130,6 +4322,7 @@
         "tem",
         "vai"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SLE"
       ],
@@ -4153,6 +4346,7 @@
         "it"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -4177,9 +4371,13 @@
       ],
       "regionalLanguages": [
         "dyo",
+        "ff",
+        "man",
+        "snk",
         "srr",
         "wo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -4207,6 +4405,7 @@
         "om",
         "so"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SOS"
       ],
@@ -4233,6 +4432,7 @@
         "jv",
         "srn"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SRD"
       ],
@@ -4259,6 +4459,7 @@
         "din",
         "nus"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SSP"
       ],
@@ -4284,6 +4485,7 @@
       "regionalLanguages": [
         "fan"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "STN"
       ],
@@ -4307,7 +4509,9 @@
         "es"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
+        "SVC",
         "USD"
       ],
       "fame": 3,
@@ -4332,9 +4536,9 @@
         "ar"
       ],
       "regionalLanguages": [
-        "arc",
         "ku"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SYP"
       ],
@@ -4362,6 +4566,7 @@
         "ss",
         "ts"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "SZL",
         "ZAR"
@@ -4387,8 +4592,10 @@
         "fr"
       ],
       "regionalLanguages": [
+        "ha",
         "sg"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XAF"
       ],
@@ -4418,6 +4625,7 @@
         "fon",
         "yo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -4445,6 +4653,7 @@
         "km",
         "lo"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "THB"
       ],
@@ -4470,6 +4679,7 @@
       "regionalLanguages": [
         "ug"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "TJS"
       ],
@@ -4496,6 +4706,7 @@
       "regionalLanguages": [
         "tet"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -4519,6 +4730,7 @@
         "tk"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "TMT"
       ],
@@ -4542,6 +4754,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "TND"
       ],
@@ -4566,6 +4779,7 @@
         "to"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "TOP"
       ],
@@ -4591,11 +4805,11 @@
         "tr"
       ],
       "regionalLanguages": [
-        "arc",
         "gag",
         "ku",
         "zza"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "TRY"
       ],
@@ -4619,6 +4833,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "TTD"
       ],
@@ -4645,6 +4860,7 @@
       "regionalLanguages": [
         "gil"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "AUD"
       ],
@@ -4668,6 +4884,7 @@
         "zh"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "TWD"
       ],
@@ -4697,10 +4914,12 @@
         "luo",
         "mas",
         "suk",
+        "sw",
         "tum",
         "vmw",
         "yao"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "TZS"
       ],
@@ -4726,6 +4945,7 @@
       "regionalLanguages": [
         "gag"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "UAH"
       ],
@@ -4752,8 +4972,10 @@
       "regionalLanguages": [
         "kln",
         "lg",
-        "rw"
+        "rw",
+        "sw"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "UGX"
       ],
@@ -4780,11 +5002,13 @@
         "chr",
         "cr",
         "haw",
+        "ht",
         "lkt",
         "nv",
         "oj",
         "pdc"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -4808,6 +5032,7 @@
         "es"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "UYU"
       ],
@@ -4833,6 +5058,7 @@
       "regionalLanguages": [
         "ug"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "UZS"
       ],
@@ -4857,6 +5083,7 @@
         "la"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -4880,6 +5107,7 @@
         "en"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -4905,6 +5133,7 @@
       "regionalLanguages": [
         "guc"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "VES"
       ],
@@ -4931,6 +5160,7 @@
         "hmn",
         "km"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "VND"
       ],
@@ -4958,6 +5188,7 @@
       "regionalLanguages": [
         "gil"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "VUV"
       ],
@@ -4982,6 +5213,7 @@
         "sm"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "WST"
       ],
@@ -5006,6 +5238,7 @@
         "sr"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -5029,6 +5262,7 @@
         "ar"
       ],
       "regionalLanguages": [],
+      "blockedLanguages": [],
       "currencies": [
         "YER"
       ],
@@ -5072,6 +5306,7 @@
         "ve",
         "xh"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "ZAR"
       ],
@@ -5100,6 +5335,7 @@
         "ny",
         "tum"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "ZMW"
       ],
@@ -5141,6 +5377,7 @@
         "ve",
         "xh"
       ],
+      "blockedLanguages": [],
       "currencies": [
         "USD",
         "ZWG"
@@ -5167,10 +5404,6 @@
       "ar": {
         "de": "Arabisch",
         "en": "Arabic"
-      },
-      "arc": {
-        "de": "Aramäisch",
-        "en": "Aramaic"
       },
       "arn": {
         "de": "Mapudungun",
@@ -5304,6 +5537,10 @@
         "de": "Diola",
         "en": "Jola-Fonyi"
       },
+      "dyu": {
+        "de": "Dyula",
+        "en": "Dyula"
+      },
       "dz": {
         "de": "Dzongkha",
         "en": "Dzongkha"
@@ -5338,11 +5575,13 @@
       },
       "fa": {
         "de": "Persisch",
-        "en": "Persian"
+        "en": "Persian",
+        "family": "persian"
       },
       "fa-AF": {
         "de": "Dari",
-        "en": "Dari"
+        "en": "Dari",
+        "family": "persian"
       },
       "fan": {
         "de": "Pangwe",
@@ -5361,7 +5600,7 @@
         "en": "Filipino"
       },
       "fj": {
-        "de": "Fidschi",
+        "de": "Fidschianisch",
         "en": "Fijian"
       },
       "fon": {
@@ -5434,7 +5673,8 @@
       },
       "hi": {
         "de": "Hindi",
-        "en": "Hindi"
+        "en": "Hindi",
+        "family": "hindustani"
       },
       "hif": {
         "de": "Fidschi-Hindi",
@@ -5474,7 +5714,8 @@
       },
       "id": {
         "de": "Indonesisch",
-        "en": "Indonesian"
+        "en": "Indonesian",
+        "family": "malay"
       },
       "ig": {
         "de": "Igbo",
@@ -5495,10 +5736,6 @@
       "ja": {
         "de": "Japanisch",
         "en": "Japanese"
-      },
-      "jam": {
-        "de": "Jamaikanisch-Kreolisch",
-        "en": "Jamaican Creole English"
       },
       "jv": {
         "de": "Javanisch",
@@ -5680,13 +5917,18 @@
         "de": "Mongolisch",
         "en": "Mongolian"
       },
+      "mos": {
+        "de": "Mossi",
+        "en": "Mossi"
+      },
       "mr": {
         "de": "Marathi",
         "en": "Marathi"
       },
       "ms": {
         "de": "Malaiisch",
-        "en": "Malay"
+        "en": "Malay",
+        "family": "malay"
       },
       "mt": {
         "de": "Maltesisch",
@@ -5702,7 +5944,7 @@
       },
       "na": {
         "de": "Nauruisch",
-        "en": "Nauru"
+        "en": "Nauruan"
       },
       "nap": {
         "de": "Neapolitanisch",
@@ -5777,16 +6019,12 @@
         "en": "Punjabi"
       },
       "pau": {
-        "de": "Palau",
+        "de": "Palauisch",
         "en": "Palauan"
       },
       "pcd": {
         "de": "Picardisch",
         "en": "Picard"
-      },
-      "pcm": {
-        "de": "Nigerianisches Pidgin",
-        "en": "Nigerian Pidgin"
       },
       "pdc": {
         "de": "Pennsylvaniadeutsch",
@@ -5826,7 +6064,8 @@
       },
       "rn": {
         "de": "Rundi",
-        "en": "Rundi"
+        "en": "Rundi",
+        "family": "rwanda-rundi"
       },
       "ro": {
         "de": "Rumänisch",
@@ -5838,7 +6077,8 @@
       },
       "rw": {
         "de": "Kinyarwanda",
-        "en": "Kinyarwanda"
+        "en": "Kinyarwanda",
+        "family": "rwanda-rundi"
       },
       "sah": {
         "de": "Jakutisch",
@@ -5978,7 +6218,8 @@
       },
       "tg": {
         "de": "Tadschikisch",
-        "en": "Tajik"
+        "en": "Tajik",
+        "family": "persian"
       },
       "th": {
         "de": "Thailändisch",
@@ -6030,7 +6271,7 @@
       },
       "tvl": {
         "de": "Tuvaluisch",
-        "en": "Tuvalu"
+        "en": "Tuvaluan"
       },
       "ug": {
         "de": "Uigurisch",
@@ -6046,7 +6287,8 @@
       },
       "ur": {
         "de": "Urdu",
-        "en": "Urdu"
+        "en": "Urdu",
+        "family": "hindustani"
       },
       "uz": {
         "de": "Usbekisch",
@@ -6102,7 +6344,7 @@
       },
       "zgh": {
         "de": "Tamazight",
-        "en": "Standard Moroccan Tamazight"
+        "en": "Tamazight"
       },
       "zh": {
         "de": "Chinesisch",
@@ -6426,7 +6668,7 @@
       "KHR": {
         "de": "Riel",
         "en": "Riel",
-        "family": "riel"
+        "family": "rial"
       },
       "KMF": {
         "de": "Franc",
@@ -6698,6 +6940,11 @@
         "en": "Dobra",
         "family": "dobra"
       },
+      "SVC": {
+        "de": "Colón",
+        "en": "Colón",
+        "family": "colón"
+      },
       "SYP": {
         "de": "Pfund",
         "en": "Pound",
@@ -6781,7 +7028,7 @@
       "VES": {
         "de": "Bolívar",
         "en": "Bolívar",
-        "family": "bolívar"
+        "family": "boliviano"
       },
       "VND": {
         "de": "Dong",

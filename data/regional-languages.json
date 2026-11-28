@@ -17,17 +17,6 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Afrikaans"
   },
-  "arc": {
-    "kind": "minority",
-    "spokenIn": [
-      "AM",
-      "IQ",
-      "IR",
-      "SY",
-      "TR"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Aramaic"
-  },
   "arn": {
     "kind": "indigenous",
     "spokenIn": [
@@ -232,6 +221,15 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Fang_language"
   },
+  "ff": {
+    "kind": "regional",
+    "spokenIn": [
+      "GN",
+      "NE",
+      "SN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Fula_language"
+  },
   "fon": {
     "kind": "indigenous",
     "spokenIn": [
@@ -342,6 +340,16 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Wayuu_language"
   },
+  "ha": {
+    "kind": "regional",
+    "spokenIn": [
+      "CM",
+      "GH",
+      "NG",
+      "TD"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Hausa_language"
+  },
   "haw": {
     "kind": "indigenous",
     "spokenIn": [
@@ -371,10 +379,10 @@
     "kind": "creole",
     "spokenIn": [
       "BS",
-      "CR",
       "CU",
       "DO",
-      "HT"
+      "HT",
+      "US"
     ],
     "source": "https://en.wikipedia.org/wiki/Haitian_Creole"
   },
@@ -402,15 +410,6 @@
       "CA"
     ],
     "source": "https://en.wikipedia.org/wiki/Inuktitut"
-  },
-  "jam": {
-    "kind": "creole",
-    "spokenIn": [
-      "CR",
-      "JM",
-      "PA"
-    ],
-    "source": "regional.json note (no URL)"
   },
   "jv": {
     "kind": "regional",
@@ -641,6 +640,15 @@
     ],
     "source": "regional.json note (no URL)"
   },
+  "man": {
+    "kind": "regional",
+    "spokenIn": [
+      "GM",
+      "GN",
+      "SN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Mandinka_language"
+  },
   "mas": {
     "kind": "indigenous",
     "spokenIn": [
@@ -722,7 +730,6 @@
   "nds": {
     "kind": "regional",
     "spokenIn": [
-      "BR",
       "DE",
       "DK",
       "NL"
@@ -812,13 +819,6 @@
     "spokenIn": [
       "BE",
       "FR"
-    ],
-    "source": "regional.json note (no URL)"
-  },
-  "pcm": {
-    "kind": "creole",
-    "spokenIn": [
-      "NG"
     ],
     "source": "regional.json note (no URL)"
   },
@@ -966,6 +966,15 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Shona_language"
   },
+  "snk": {
+    "kind": "regional",
+    "spokenIn": [
+      "GM",
+      "MR",
+      "SN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Soninke_language"
+  },
   "so": {
     "kind": "regional",
     "spokenIn": [
@@ -1032,6 +1041,13 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Susu_language"
   },
+  "sw": {
+    "kind": "regional",
+    "spokenIn": [
+      "CD"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Swahili_language"
+  },
   "szl": {
     "kind": "regional",
     "spokenIn": [
@@ -1096,6 +1112,15 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Tiv_language"
   },
+  "tmh": {
+    "kind": "regional",
+    "spokenIn": [
+      "BF",
+      "DZ",
+      "NE"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Tuareg_languages"
+  },
   "tn": {
     "kind": "regional",
     "spokenIn": [
@@ -1150,6 +1175,13 @@
       "AO"
     ],
     "source": "regional.json note (no URL)"
+  },
+  "ur": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Urdu"
   },
   "vai": {
     "kind": "indigenous",

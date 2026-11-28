@@ -18,7 +18,7 @@ type RunID uuid.UUID
 type Catalogue interface {
 	Pool() []country.Country
 	Label(kind country.LabelKind, code string) (country.Names, bool)
-	CurrencyFamily(code string) string
+	Family(kind country.LabelKind, code string) string
 }
 
 // Rand is the random source; *rand.Rand of math/rand/v2 meets it.

@@ -111,6 +111,7 @@
     "AR": {"remove": ["gn"], "reason": "Spanish is the de facto national language; Guarani is official only in Corrientes province"},
     "AT": {"remove": ["bar"], "add": ["de"], "reason": "German is the official language; mledoze lists only the Bavarian dialect"},
     "AZ": {"remove": ["ru"], "reason": "Constitution Art. 21 makes Azerbaijani the sole state language; Russian has no official status"},
+    "BF": {"remove": ["fr"], "add": ["dyu", "ff", "mos"], "reason": "The 2023 revision, Art. 35, makes the national languages official and French a working language; CLDR names Mossi, Dyula and Fula"},
     "BI": {"add": ["en"], "reason": "A 2014 law made English official alongside Kirundi and French"},
     "BW": {"remove": ["tn"], "reason": "English is the sole official language; Tswana is only the national language"},
     "BZ": {"remove": ["bjz", "es"], "reason": "English is the sole official language, Spanish is only widely spoken, and CLDR names no Belizean Creole (bjz)"},
@@ -118,6 +119,7 @@
     "CG": {"remove": ["kg", "ln"], "reason": "Constitution Art. 4 makes French the sole official language; Kituba (kg) and Lingala are national languages"},
     "CH": {"remove": ["gsw"], "add": ["de"], "reason": "German is an official language; mledoze lists only the Swiss German dialect"},
     "CZ": {"remove": ["sk"], "reason": "Czech is the sole official language; Slovak is a minority language"},
+    "DZ": {"add": ["zgh"], "reason": "The 2016 constitution, Art. 4, makes Tamazight a national and official language"},
     "EC": {"add": ["qu"], "reason": "Constitution Art. 2 makes Kichwa (qu) official nationwide for intercultural relations; CLDR names no Shuar (jiv)"},
     "GW": {"remove": ["pov"], "reason": "CLDR names no Upper Guinea Creole (pov)"},
     "IL": {"remove": ["ar"], "reason": "Basic Law s.4 makes Hebrew the state language and gives Arabic only a special status"},
@@ -143,12 +145,36 @@
     "UZ": {"remove": ["ru"], "reason": "Constitution Art. 4 makes Uzbek the state language; Russian has no official status"},
     "ZW": {"remove": ["bwg", "kck", "khi", "ndc", "toi", "zib"], "reason": "CLDR names none of these minor, family or sign-language codes"}
   },
+  "languageLabels": {
+    "fj": {"de": "Fidschianisch", "reason": "CLDR de \"Fidschi\" is the country's name"},
+    "na": {"en": "Nauruan", "reason": "CLDR en \"Nauru\" is the country's name"},
+    "pau": {"de": "Palauisch", "reason": "CLDR de \"Palau\" is the country's name"},
+    "tvl": {"en": "Tuvaluan", "reason": "CLDR en \"Tuvalu\" is the country's name"},
+    "zgh": {"en": "Tamazight", "reason": "CLDR en \"Standard Moroccan Tamazight\" names Morocco, though Algeria makes Tamazight official too"}
+  },
+  "languageFamilies": {
+    "hindustani": {"languages": ["hi", "ur"], "reason": "Hindi and Urdu are standard registers of Hindustani"},
+    "malay": {"languages": ["id", "ms"], "reason": "Indonesian and Malay are standard varieties of Malay"},
+    "persian": {"languages": ["fa", "fa-AF", "tg"], "reason": "Dari and Tajik are varieties of Persian"},
+    "rwanda-rundi": {"languages": ["rn", "rw"], "reason": "Kinyarwanda and Kirundi are mutually intelligible varieties of Rwanda-Rundi"}
+  },
+  "blockedLanguages": {
+    "BF": {"languages": ["fr"], "reason": "The 2023 revision, Art. 35, keeps French as a working language"},
+    "IL": {"languages": ["ar"], "reason": "Basic Law s.4 gives Arabic a special status"},
+    "IT": {"languages": ["de", "fr"], "reason": "German is co-official in South Tyrol and French in the Aosta Valley"},
+    "LK": {"languages": ["en"], "reason": "Constitution Art. 18 makes English the link language"},
+    "ML": {"languages": ["fr"], "reason": "The 2023 constitution keeps French as the working language"},
+    "MY": {"languages": ["en"], "reason": "English is official in Sarawak and has a legal role nationwide"},
+    "NE": {"languages": ["fr"], "reason": "Charter of Refoundation Art. 12 keeps French as a working language"},
+    "SE": {"languages": ["fi"], "reason": "The 2009 Language Act makes Finnish a national minority language"}
+  },
   "currencies": {
     "BG": {"remove": ["BGN"], "add": ["EUR"], "reason": "Bulgaria has used the euro since 2026-01-01; mledoze lists the lev"},
     "CU": {"remove": ["CUC"], "reason": "Cuba abolished the convertible peso in 2021; the peso (CUP) remains"},
     "FM": {"add": ["USD"], "reason": "mledoze lists no currency; Micronesia uses the US dollar"},
     "KI": {"remove": ["KID"], "reason": "Kiribati dollar has no ISO 4217 code or CLDR name; AUD remains"},
     "SL": {"remove": ["SLL"], "add": ["SLE"], "reason": "The new leone (SLE) replaced SLL in 2022; CLDR labels SLL (1964-2022)"},
+    "SV": {"add": ["SVC"], "reason": "The colón remains legal tender beside the US dollar under the 2001 Monetary Integration Law"},
     "TV": {"remove": ["TVD"], "reason": "Tuvaluan dollar has no ISO 4217 code or CLDR name; AUD remains"},
     "ZW": {"remove": ["BWP", "CNY", "EUR", "GBP", "INR", "JPY", "ZAR", "ZWB"], "add": ["ZWG"], "reason": "Zimbabwe Gold (ZWG) is the national currency and the US dollar the one in daily use; mledoze adds the legal-tender basket and bond notes (ZWB), which have no CLDR name"}
   }
