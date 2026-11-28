@@ -43,7 +43,7 @@ Owner:
 
 - As the owner, I want no data kept beyond the chosen name, answers and times, so that the site holds no personal data.
 - As the owner, I want rate limits and a minimum answer time, so that floods and naive bots fail.
-- As the owner, I want to hide a run from the leaderboards with one command, so that I can remove abuse.
+- As the owner, I want to hide a player's runs from the leaderboards with one command, so that I can remove abuse.
 - As the owner, I want usage and anomaly statistics from one command, so that the beta shows whether the game works.
 - As the owner, I want all country data checked in with sources and licences, so that nothing loads at runtime.
 - As the owner, I want one command that rebuilds the dataset from the vendored sources, so that fixes are reproducible.
@@ -139,7 +139,7 @@ The PRD adds what those rules leave to the implementation:
 - Leaderboard reads are rate limited per client address as well.
 - IPv6 addresses count per /64 network, and each /48 has four times that limit. A global cap per minute stops floods.
 - Client addresses live only in process memory and are never stored.
-- The owner hides a live run with `make prod-hide` and reads anomalies with `make prod-stats`.
+- The owner hides every run of a live run's player with `make prod-hide` and reads anomalies with `make prod-stats`.
 - `make prod-stats` reports runs per day, the replay rate, the share rate, the median score and the fastest runs.
 - It also shows where runs end: ended runs by final position, and misses by question type.
 - The PRD accepts that a determined bot with a lookup table can still post a high score.
@@ -156,8 +156,8 @@ No route negotiates language. There is no authentication. State-changing request
 | `POST /runs` | Start a run with a name, on a fresh quiz or on a given quiz; rate limited |
 | `GET /runs/{id}` | Run state: the current question without its answer, or the result with ranks |
 | `POST /runs/{id}/answers` | Answer the current question; returns correctness, the correct option and the score |
-| `GET /quizzes/{id}` | Challenge view: the creator's name and score, and the quiz's top 100; rate limited |
-| `GET /leaderboard` | The global top 100; rate limited |
+| `GET /quizzes/{id}` | Challenge view: the creator's name and score, and the quiz's top 100 players; rate limited |
+| `GET /leaderboard` | The global top 100 players; rate limited |
 
 ### Frontend
 

@@ -15,10 +15,10 @@ LEFT JOIN runs r ON r.started_at >= d AND r.started_at < d + interval '1 day'
 GROUP BY d
 ORDER BY d;
 
-\echo 'Runs from challenge links, names with more than one run, median score of ended runs'
+\echo 'Runs from challenge links, players with more than one run, median score of ended runs'
 SELECT
   round(avg((NOT creator)::int), 3) AS challenge_share,
-  (SELECT round(avg((n > 1)::int), 3) FROM (SELECT count(*) AS n FROM runs GROUP BY name) AS names) AS replay_share,
+  (SELECT round(avg((n > 1)::int), 3) FROM (SELECT count(*) AS n FROM runs GROUP BY player_id) AS players) AS replay_share,
   (SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY score) FROM ended) AS median_score
 FROM runs;
 

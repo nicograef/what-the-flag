@@ -133,7 +133,7 @@ prod-migrate:  ## Run golang-migrate on the production database (ARGS="version",
 prod-stats:    ## Print the owner statistics of database/stats.sql from production
 	$(PSQL_PROD) < database/stats.sql
 
-prod-hide:     ## Hide a production run from every leaderboard (RUN=<uuid>)
+prod-hide:     ## Hide every run of a production run's player from every leaderboard (RUN=<uuid>)
 	$(call hide-run,$(PSQL_PROD))
 
 # ── Release ──
@@ -172,12 +172,12 @@ db-migrate:    ## Apply pending migrations to the `make db` database
 PSQL_DEV = $(COMPOSE_DEV) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
 PSQL_PROD = $(COMPOSE_PROD) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB) -v ON_ERROR_STOP=1
 
-# hide-run sets hidden on run RUN through the psql command $(1), and fails on a malformed or unknown id.
+# hide-run sets hidden on every run of run RUN's player through the psql command $(1), and fails on a malformed or unknown id.
 # RUN reaches the shell only as the quoted variable "$$RUN" (the top-level `export`), never as recipe text.
 define hide-run
 @printf '%s' "$$RUN" | tr '\n' ' ' | grep -Eqi '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$$' \
   || { printf "Error: set RUN=<uuid> (got '%s')\n" "$$RUN" >&2; exit 1; }
-@echo "UPDATE runs SET hidden = true WHERE id = :'run' RETURNING id;" \
+@echo "UPDATE runs SET hidden = true WHERE player_id = (SELECT player_id FROM runs WHERE id = :'run') RETURNING id;" \
   | $(1) -qtA -v run="$$RUN" | grep . \
   || { printf 'Error: no run %s\n' "$$RUN" >&2; exit 1; }
 endef
@@ -187,7 +187,7 @@ endef
 stats:         ## Print the owner statistics of database/stats.sql from the `make db` database
 	$(PSQL_DEV) < database/stats.sql
 
-hide:          ## Hide a run from every leaderboard (RUN=<uuid>)
+hide:          ## Hide every run of a run's player from every leaderboard (RUN=<uuid>)
 	$(call hide-run,$(PSQL_DEV))
 # <<< stack: database
 

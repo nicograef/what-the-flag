@@ -74,8 +74,8 @@ A quiz is a stored sequence of questions with a public id. Every run on it gets 
 | Global | Runs that created their quiz; runs from a challenge link do not count here |
 | Quiz | Every run of one quiz |
 
-- Each leaderboard shows the top 100 ended runs: by score descending, then by earlier end.
+- Each leaderboard shows the top 100 players by their best ended run: by score descending, then by earlier end.
 - Equal scores share a rank: 1, 1, 3.
-- A finished run shows its rank on its quiz's leaderboard, and on the global one when it counts there.
-- A name may appear many times, once per run.
-- A hidden run appears on no leaderboard. Only the owner hides runs.
+- A finished run shows its player's rank on its quiz's leaderboard, and on the global one when it counts there.
+- A player appears once per leaderboard, with their best run; the name shown is that run's.
+- A hidden run appears on no leaderboard. Only the owner hides runs, always every run of one player.
