@@ -7,7 +7,8 @@
 #
 # What it does:
 #   1. Checks prerequisites, that every image carries a pinned tag, and that the app images share one vX.Y.Z tag.
-#   2. After an earlier deploy: refuses a downgrade unless ROLLBACK=1, then takes a verified backup.
+#   2. After an earlier deploy: refuses a downgrade unless ROLLBACK=1 and .env credentials the database refuses,
+#      then takes a verified backup.
 #   3. Pulls the pinned images, starts the stack and polls every healthcheck.
 #   4. Polls https://DOMAIN, then records the tag as deployed; on a failure, prints the rollback path.
 #
@@ -136,6 +137,13 @@ else
     log "Starting postgres for the backup…"
     "${COMPOSE_PROD[@]}" up -d --no-recreate --wait postgres
   fi
+  # A one-off container gets the credentials this .env interpolates; the volume keeps those it was created with.
+  # A checkout with another .env would recreate every container with a password the database refuses.
+  log "Checking that .env's credentials open the database…"
+  # shellcheck disable=SC2016 # the container's shell expands its own environment
+  "${COMPOSE_PROD[@]}" run --rm --no-deps -T --entrypoint sh postgres -c \
+    'PGPASSWORD="$POSTGRES_PASSWORD" psql -h postgres -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atqc "select 1"' >/dev/null \
+    || error "The database refuses .env's credentials. Deploy from the checkout whose .env created it. Nothing was changed."
   log "Taking a pre-update backup…"
   # The empty ping URL keeps the heartbeat for the cron run; a failed ping must not abort a deploy.
   BACKUP_RESULT="$(mktemp)"
