@@ -49,11 +49,17 @@ func window(level int) []QuestionType {
 // varietyWindow is the span of positions, the drawn one included, in which no language or currency is the correct answer twice.
 const varietyWindow = 8
 
+// varietyStep is one relaxation of the variety rules: the type to skip and the values a correct answer avoids.
+type varietyStep struct {
+	skip  QuestionType
+	avoid map[string]bool
+}
+
 // Generate draws the question at position len(stored) of a quiz whose questions by position are stored.
 // It shuffles the level's window and takes the first type with an unused target within the fame ceiling,
 // then that target and one of its cases, each uniformly. When nothing fits it retries without the ceiling,
-// then with every type. Each pass first keeps the variety rules: no type twice in a row, and no language or
-// currency the correct answer twice within varietyWindow positions. It returns errQuizExhausted when every
+// then with every type. Each pass relaxes the variety rules in steps: no type twice in a row, and no language
+// or currency the correct answer twice within varietyWindow positions. It returns errQuizExhausted when every
 // pool country was a target.
 func Generate(cat Catalogue, stored []Question, rnd Rand) (Question, error) {
 	pool := cat.Pool()
@@ -90,6 +96,15 @@ func Generate(cat Catalogue, stored []Question, rnd Rand) (Question, error) {
 		{window(level), 3},
 		{Types, 3},
 	}
+	// The variety rules relax in steps: both, then only the value rule, then none. A step that would retry
+	// the one before, because nothing was skipped or avoided, is left out.
+	steps := []varietyStep{{last, recent}}
+	if position > 0 {
+		steps = append(steps, varietyStep{avoid: recent})
+	}
+	if len(recent) > 0 {
+		steps = append(steps, varietyStep{})
+	}
 	targets := make([]*country.Country, 0, len(unused))
 	var tried []QuestionType
 	triedCeiling := 0
@@ -99,20 +114,16 @@ func Generate(cat Catalogue, stored []Question, rnd Rand) (Question, error) {
 			continue
 		}
 		tried, triedCeiling = pass.types, pass.ceiling
-		for _, varied := range []bool{true, false} {
-			avoid := recent
-			if !varied {
-				avoid = nil
-			}
+		for _, step := range steps {
 			types := slices.Clone(pass.types)
 			rnd.Shuffle(len(types), func(i, j int) { types[i], types[j] = types[j], types[i] })
 			for _, t := range types {
-				if varied && t == last {
+				if t == step.skip {
 					continue
 				}
 				targets = targets[:0]
 				for _, c := range unused {
-					if c.Fame <= pass.ceiling && eligible(t, c) && !stale(t, c, avoid) {
+					if c.Fame <= pass.ceiling && eligible(t, c) && !stale(t, c, step.avoid) {
 						targets = append(targets, c)
 					}
 				}
@@ -120,7 +131,7 @@ func Generate(cat Catalogue, stored []Question, rnd Rand) (Question, error) {
 				for len(targets) > 0 {
 					i := rnd.IntN(len(targets))
 					cases := targetCases(t, targets[i])
-					if q, ok := draw(cat, pool, cases[rnd.IntN(len(cases))], level, avoid, rnd); ok {
+					if q, ok := draw(cat, pool, cases[rnd.IntN(len(cases))], level, step.avoid, rnd); ok {
 						return q, nil
 					}
 					targets[i] = targets[len(targets)-1]
