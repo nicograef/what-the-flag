@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Erster Besuch</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFC93C}a:hover{color:#FFE08A}
+input::placeholder{color:#8E93C4}
+input:focus-visible{outline:3px solid #FFC93C;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #12142B; color: #F5F6FF; font-family: 'Baloo 2', system-ui, sans-serif; display: flex; flex-direction: column; padding: 8px 16px 24px; overflow: hidden">
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 56px">
+    <span style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path fill="#A9ADD6" d="M5 3h2v27H5z"></path><path fill="#FFC93C" d="M8 4h19l-4 6 4 6H8z"></path></svg>
+      What The Flag
+    </span>
+    <button type="button" lang="en" aria-label="English" style="height: 44px; min-width: 44px; border: 0; background: transparent; color: #F5F6FF; font: 700 15px 'Baloo 2', sans-serif; cursor: pointer">EN</button>
+  </header>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center">
+    <div aria-hidden="true" style="position: relative; width: 240px; height: 140px">
+      <div style="position: absolute; left: 0; top: 24px; width: 112px; height: 84px; transform: rotate(-12deg); display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.4)"><div style="flex: 1; background: #000"></div><div style="flex: 1; background: #DD0000"></div><div style="flex: 1; background: #FFCE00"></div></div>
+      <div style="position: absolute; right: 0; top: 24px; width: 112px; height: 84px; transform: rotate(12deg); display: flex; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.4)"><div style="flex: 1; background: #002B7F"></div><div style="flex: 1; background: #FCD116"></div><div style="flex: 1; background: #CE1126"></div></div>
+      <div style="position: absolute; left: 54px; top: 0; width: 132px; height: 99px; display: flex; border-radius: 8px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.5); outline: 3px solid #F5F6FF"><div style="flex: 1; background: #169B62"></div><div style="flex: 1; background: #FFFFFF"></div><div style="flex: 1; background: #FF883E"></div></div>
+    </div>
+    <h1 style="margin: 0; font-size: 44px; line-height: 1; font-weight: 800">Wie weit<br>kommst du?</h1>
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 17px; color: #C9CCEA; text-align: left">
+      <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; background: #1E2147; color: #FFC93C; font-weight: 800; display: flex; align-items: center; justify-content: center">1</span>15 Sekunden pro Frage</li>
+      <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; background: #1E2147; color: #FFC93C; font-weight: 800; display: flex; align-items: center; justify-content: center">2</span>Alle 5 Fragen ein Level schwerer</li>
+      <li style="display: flex; gap: 10px; align-items: center"><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; background: #1E2147; color: #FFC93C; font-weight: 800; display: flex; align-items: center; justify-content: center">3</span>Ein Fehler und es ist vorbei</li>
+    </ul>
+  </div>
+
+  <form style="display: flex; flex-direction: column; gap: 8px">
+    <label for="fname" style="font-size: 15px; font-weight: 700">Dein Name</label>
+    <input id="fname" name="name" placeholder="z. B. Kim" maxlength="20" autocomplete="nickname" aria-describedby="fname-hint" style="height: 56px; box-sizing: border-box; padding: 0 16px; border: 2px solid #3A3F78; border-radius: 16px; background: #1E2147; color: #F5F6FF; font: 600 19px 'Baloo 2', sans-serif">
+    <span id="fname-hint" style="font-size: 13px; color: #A9ADD6">Erscheint öffentlich in der Rangliste.</span>
+    <button type="button" aria-describedby="hold-hint" style="position: relative; overflow: hidden; margin-top: 8px; height: 72px; border: 0; border-radius: 20px; background: #FFC93C; color: #2A1B00; font: 800 24px 'Baloo 2', sans-serif; box-shadow: 0 6px 0 #C7901A; cursor: pointer">
+      <span aria-hidden="true" style="position: absolute; left: 0; top: 0; bottom: 0; width: 45%; background: #F0A818"></span>
+      <span style="position: relative; display: inline-flex; align-items: center; gap: 10px">
+        <svg width="22" height="26" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M9 2a2 2 0 0 1 4 0v10l6.2 1.3a3 3 0 0 1 2.3 3.4l-1.2 6.8A3 3 0 0 1 17.3 26H10a3 3 0 0 1-2.4-1.2l-5-6.6 1.4-1.4a2 2 0 0 1 2.6-.2L9 18z"></path></svg>
+        Halten zum Starten
+      </span>
+    </button>
+    <span id="hold-hint" style="text-align: center; font-size: 13px; color: #A9ADD6">So antwortest du auch: kurz halten, bis es voll ist.</span>
+  </form>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

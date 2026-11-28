@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Herausforderung geöffnet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFC93C}a:hover{color:#FFE08A}
+input::placeholder{color:#8E93C4}
+input:focus-visible{outline:3px solid #FFC93C;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #12142B; color: #F5F6FF; font-family: 'Baloo 2', system-ui, sans-serif; display: flex; flex-direction: column; padding: 8px 16px 24px; overflow: hidden">
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 56px">
+    <span style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path fill="#A9ADD6" d="M5 3h2v27H5z"></path><path fill="#FFC93C" d="M8 4h19l-4 6 4 6H8z"></path></svg>
+      What The Flag
+    </span>
+    <button type="button" lang="en" aria-label="English" style="height: 44px; min-width: 44px; border: 0; background: transparent; color: #F5F6FF; font: 700 15px 'Baloo 2', sans-serif; cursor: pointer">EN</button>
+  </header>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center">
+    <h1 style="margin: 0; font-size: 26px; font-weight: 800">Nico fordert dich heraus</h1>
+    <div style="margin: 14px 0; width: 148px; height: 148px; border-radius: 50%; background: #FFC93C; color: #2A1B00; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 0 10px #1E2147, 0 0 0 12px #3A3F78">
+      <span style="font-size: 72px; line-height: .85; font-weight: 800">27</span>
+      <span style="font-size: 15px; font-weight: 700">in Folge</span>
+    </div>
+    <p style="margin: 0; font-size: 17px; color: #C9CCEA">Genau dieselben Fragen. Schaffst du 28?</p>
+    <ol aria-label="Bisher in diesem Quiz" style="list-style: none; margin: 16px 0 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 6px">
+      <li style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-radius: 12px; background: #1E2147; font-size: 17px"><span style="width: 26px; height: 26px; border-radius: 50%; background: #FFD54A; color: #3A2A00; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center">1</span><span style="flex: 1; text-align: left; font-weight: 600">Nico</span><strong>27</strong></li>
+      <li style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-radius: 12px; background: #1E2147; font-size: 17px"><span style="width: 26px; height: 26px; border-radius: 50%; background: #CBD5E1; color: #1E293B; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center">2</span><span style="flex: 1; text-align: left; font-weight: 600">Jonas</span><strong>19</strong></li>
+      <li style="display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-radius: 12px; border: 2px dashed #3A3F78; font-size: 17px; color: #A9ADD6"><span style="width: 26px; text-align: center; font-weight: 800">?</span><span style="flex: 1; text-align: left; font-weight: 600">Du</span></li>
+    </ol>
+  </div>
+
+  <form style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px">
+    <label for="cname" style="font-size: 15px; font-weight: 700">Dein Name</label>
+    <input id="cname" name="name" placeholder="z. B. Kim" maxlength="20" autocomplete="nickname" aria-describedby="cname-hint" style="height: 56px; box-sizing: border-box; padding: 0 16px; border: 2px solid #3A3F78; border-radius: 16px; background: #1E2147; color: #F5F6FF; font: 600 19px 'Baloo 2', sans-serif">
+    <span id="cname-hint" style="font-size: 13px; color: #A9ADD6">Erscheint öffentlich in der Rangliste.</span>
+    <button type="button" style="position: relative; overflow: hidden; margin-top: 8px; height: 72px; border: 0; border-radius: 20px; background: #FFC93C; color: #2A1B00; font: 800 24px 'Baloo 2', sans-serif; box-shadow: 0 6px 0 #C7901A; cursor: pointer">
+      <span style="position: relative; display: inline-flex; align-items: center; gap: 10px">
+        <svg width="22" height="26" viewBox="0 0 24 28" fill="currentColor" aria-hidden="true"><path d="M9 2a2 2 0 0 1 4 0v10l6.2 1.3a3 3 0 0 1 2.3 3.4l-1.2 6.8A3 3 0 0 1 17.3 26H10a3 3 0 0 1-2.4-1.2l-5-6.6 1.4-1.4a2 2 0 0 1 2.6-.2L9 18z"></path></svg>
+        Halten zum Annehmen
+      </span>
+    </button>
+  </form>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

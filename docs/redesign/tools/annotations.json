@@ -1,0 +1,197 @@
+{
+  "screens": {
+    "F-HomeFirst": {
+      "title": "01 · Home, first visit",
+      "w": 390, "h": 844,
+      "summary": "Route /. Shown when the browser has no stored name. The only job: get a name and start. The start button teaches the hold mechanic before the first question.",
+      "notes": [
+        { "at": "text:Wie weit", "text": "One headline, no navbar items besides the language switch. The flag collage is decoration (aria-hidden)." },
+        { "at": "text:15 Sekunden pro Frage", "text": "Three numbered rules replace the old chips: time limit, a level every 5 questions, one miss ends the run." },
+        { "at": "sel:#fname", "text": "Name field: label above, 56 px tall, maxlength 20, autocomplete nickname. The hint says the name is public (PRD requirement)." },
+        { "at": "text:Halten zum Starten", "text": "HoldButton: press and hold 400 ms, the darker fill runs left to right; release early cancels. Enter or Space starts at once. Teaches the answer mechanic." },
+        { "at": "text:So antwortest du auch", "text": "One line connects the start hold to answering." }
+      ]
+    },
+    "F-Home": {
+      "title": "02 · Home, returning player",
+      "w": 390, "h": 844,
+      "summary": "Route /. Shown when a name is stored. Record first, then the three ways in: overtaken challenge, daily quiz, endless play.",
+      "notes": [
+        { "at": "text:Jonas hat dich überholt", "text": "Overtaken card: only when a quiz this browser played has a run above the player's own run that ended after the player's last visit. Links to that challenge. Hidden otherwise." },
+        { "at": "text:Dein Rekord", "text": "Personal best (stored in the browser) as the hero number, with the highest level reached and the last known world rank." },
+        { "at": "text:Tagesquiz", "text": "Daily quiz entry (separate PRD). One quiz per day for everyone, one try per browser. Hidden until that feature ships." },
+        { "at": "text:Spielen", "text": "Primary action, plain tap (a mistaken start costs nothing). 72 px tall, in the thumb zone." },
+        { "at": "text:Name ändern", "text": "The stored name is shown, not asked again. 'Name ändern' swaps the line for the name field." }
+      ]
+    },
+    "F-Question": {
+      "title": "03 · Question (playable)",
+      "w": 390, "h": 844,
+      "summary": "Route /play/:runId. The core screen. No navbar. Header: level and streak; then the timer; then the prompt; answers in the thumb zone. Playable in tools/preview.html.",
+      "notes": [
+        { "at": "text:Level 5", "text": "Level = block of 5 questions (position / 5 + 1). Name per tier: Flaggen, Hauptstädte, Sprachen, Profi (4+). Five pips: done, current (45 % opacity), open." },
+        { "at": "sel:[aria-label$='richtig']", "text": "Streak pill with flame: the current score. '+1' pops on each correct answer." },
+        { "at": "text:Rekord in", "text": "Live gap to the personal best: 'Rekord in N', then 'Rekord eingestellt', then 'Neuer Rekord' in gold." },
+        { "at": "sel:[role=progressbar]", "text": "Timer bar from the server deadline (existing Countdown logic). Gold, orange at 5 s, red at 3 s, plus the number." },
+        { "at": "text:Welches Land hat diese Flagge?", "text": "Prompt: question text, then a flag (232×174) or a word (46 px, gold)." },
+        { "at": "sel:button.opt", "text": "AnswerOption: full width, 64 px, 12 px gap for text; 2×2 grid, 124 px for flags. Press and hold 400 ms to answer; slide off or release early cancels. Enter/Space answers at once. Disabled for the first 400 ms of each question (arming)." },
+        { "at": "text:Antwort kurz gedrückt halten", "text": "Hint line under the answers for the first three questions of a run, then it shows only 'Festhalten …' while a press is held. role=status." }
+      ]
+    },
+    "F-Correct": {
+      "title": "04 · Correct, record passed live",
+      "w": 390, "h": 844,
+      "summary": "The reveal after a correct answer, in the moment the run passes the personal best. Normal correct reveals are the same without the toast and confetti.",
+      "notes": [
+        { "at": "text:24", "text": "The streak pill turns gold once the run beats the record." },
+        { "at": "text:Neuer Rekord!", "text": "Toast (role=status) for two events only: passing the record and reaching a new level ('Level 6 erreicht!'). The reveal holds 1.1 s instead of 0.65 s when a toast shows." },
+        { "at": "text:Złoty", "text": "Correct option green with a check icon; others fade to 35 %. Colour is never the only signal." },
+        { "at": "text:Nächste Frage kommt", "text": "The timer bar dims while the next question loads." }
+      ]
+    },
+    "F-Wrong": {
+      "title": "05 · Wrong, the reveal",
+      "w": 390, "h": 844,
+      "summary": "The 1.3 s reveal after a wrong answer, before the result screen. It only marks; the explanation waits for the result screen (one learning snippet per run).",
+      "notes": [
+        { "at": "text:So knapp!", "text": "Short status. No tip here, so the learning card on the result screen is the only one." },
+        { "at": "sel:[aria-label='Flagge 1, richtige Antwort']", "text": "Correct option green with a check badge." },
+        { "at": "sel:[aria-label='Flagge 3, deine Antwort']", "text": "The player's pick red with a cross badge and a short shake (none with reduced motion)." },
+        { "at": "text:Gleich siehst du", "text": "Tells the player what comes next; the result follows on its own." }
+      ]
+    },
+    "F-GameOver": {
+      "title": "06 · Game over, near miss",
+      "w": 390, "h": 844,
+      "summary": "Route /play/:runId when the run is finished below the record. Order: score, run strip, gap to record, learning card, did-you-know fact, Play again.",
+      "notes": [
+        { "at": "text:So knapp!", "text": "Headline by context: 'So knapp!' near the record, 'Zeit abgelaufen' for a timeout." },
+        { "at": "sel:[role=img][aria-label^='Dein Lauf']", "text": "Run strip: one square per answer in blocks of five (levels). The same pattern goes into the share text." },
+        { "at": "text:bis zum neuen Rekord", "text": "Near miss: the gap to a new record, with a bar. The strongest pull to play again." },
+        { "at": "text:Merk dir das", "text": "Learning card, exactly one per run, about the missed question: the correct answer next to the player's pick, plus one sentence." },
+        { "at": "text:Wusstest du?", "text": "Did-you-know fact (separate PRD): about the context of the missed question (its country, capital or language), never its answer. Shows its source." },
+        { "at": "text:Nochmal", "text": "After a near miss, Play again leads and Share follows. Both arm 1 s after the screen appears, so a late tap from the last question does nothing." }
+      ]
+    },
+    "F-GameOverPhrases": {
+      "title": "06b · Game over, fact as basic phrases",
+      "w": 390, "h": 844,
+      "summary": "The same result screen with the other kind of fact: five basic words in an official language of the missed question's country.",
+      "notes": [
+        { "at": "text:Merk dir das", "text": "Learning card for a text question: the correct option and the pick as chips, and the sentence names the country the wrong pick belongs to (needs a new field on the missed question)." },
+        { "at": "text:So spricht man in Ungarn", "text": "Phrase card: hello, thank you, goodbye, yes, no. Each word carries lang=\"hu\" so screen readers pronounce it." },
+        { "at": "text:Quelle: Wiktionary", "text": "Source line, required by the CC BY-SA licence of Wiktionary." }
+      ]
+    },
+    "F-Record": {
+      "title": "07 · Game over, new record",
+      "w": 390, "h": 844,
+      "summary": "The result screen when the run beat the personal best. At this peak, Share leads.",
+      "notes": [
+        { "at": "text:Neuer Rekord!", "text": "Crown, gold headline and a soft glow. The old record and the new world rank sit on one line." },
+        { "at": "text:Merk dir das", "text": "The same learning card as on the near-miss screen." },
+        { "at": "text:Wusstest du?", "text": "A fact about the context (here Thimphu), not the answer itself." },
+        { "at": "text:Rekord teilen", "text": "Share leads at a peak (record, challenge won, all done); Play again leads after a near miss." }
+      ]
+    },
+    "F-Share": {
+      "title": "08 · Share sheet",
+      "w": 390, "h": 844,
+      "summary": "Opened from any share button. Shows what friends will receive, then hands off to the system share sheet or the clipboard.",
+      "notes": [
+        { "at": "text:Fordere jemanden heraus", "text": "Bottom sheet over the result; close button 44 px." },
+        { "at": "text:So sieht es im Chat aus", "text": "Preview of the message: per-quiz link preview image, then the share text." },
+        { "at": "text:What The Flag: 27 in Folge", "text": "Share text: score and level, the run strip as emoji (🟩 per correct, 🟥 for the miss, blocks of five), the challenge line and the link. Spoils no question." },
+        { "at": "text:Teilen …", "text": "navigator.share where available (phones), else copy to the clipboard with a 'Kopiert!' confirmation." }
+      ]
+    },
+    "F-LinkPreview": {
+      "title": "09 · Link preview image",
+      "w": 1200, "h": 630,
+      "summary": "The Open Graph image for /q/<quizId> (separate PRD). Rendered per quiz once the creator run has ended; the static og.png stays the fallback.",
+      "notes": [
+        { "at": "text:Nico schafft", "text": "Creator name and score, the call to beat it. Name is escaped and cut at 20 characters (the name limit)." },
+        { "at": "text:Gleiche Fragen", "text": "The rules in one line." },
+        { "at": "text:in Folge", "text": "Score medallion; the flags are decoration and must not be flags of this quiz." }
+      ]
+    },
+    "F-Challenge": {
+      "title": "10 · Challenge link opened",
+      "w": 390, "h": 844,
+      "summary": "Route /q/:quizId once the creator run has ended. Target first, then the quiz leaderboard with an empty 'Du' slot, then name and hold to accept.",
+      "notes": [
+        { "at": "text:Nico fordert dich heraus", "text": "Who challenges and with what score (existing challenge endpoint)." },
+        { "at": "text:Schaffst du 28?", "text": "The concrete target: creator score + 1." },
+        { "at": "text:Du", "text": "Empty slot in the quiz leaderboard: social proof plus a place to land." },
+        { "at": "text:Halten zum Annehmen", "text": "HoldButton. A returning player sees the stored name instead of the field, as on home." }
+      ]
+    },
+    "F-Waiting": {
+      "title": "11 · Challenger still playing",
+      "w": 390, "h": 844,
+      "summary": "Route /q/:quizId while the creator run is open (the server refuses runs then). Polls every 5 s as today.",
+      "notes": [
+        { "at": "text:Nico spielt gerade", "text": "Plain explanation instead of an error; the three dots pulse (static with reduced motion)." },
+        { "at": "sel:#wname", "text": "The name can be entered while waiting, so the start is instant." },
+        { "at": "text:Warte auf Nico", "text": "Disabled until the creator run ends; then it turns into 'Halten zum Annehmen'." },
+        { "at": "text:Solange ein eigenes Spiel starten", "text": "A way out that keeps the visitor playing." }
+      ]
+    },
+    "F-Won": {
+      "title": "12 · Challenge won",
+      "w": 390, "h": 844,
+      "summary": "Result screen of a challenge run that beat the creator. Closes the loop back to the challenger.",
+      "notes": [
+        { "at": "text:geschlagen", "text": "Shown when the run's score is above the creator's. Equal: 'Gleichstand mit Nico'. Below: the normal result screen with 'Noch N bis Nico'." },
+        { "at": "sel:[role=img][aria-label^='Kim']", "text": "Head-to-head bars: player against creator." },
+        { "at": "text:Herausforderungen zählen nur", "text": "Explains why the run is not on the global leaderboard and points to an own game." },
+        { "at": "text:Nico Bescheid geben", "text": "Share leads: the same challenge link with the new score in the text ('Kim schafft 31 in Nicos Quiz')." }
+      ]
+    },
+    "F-Leaderboard": {
+      "title": "13 · Leaderboards",
+      "w": 390, "h": 844,
+      "summary": "Route /leaderboard. Tabs: world (creator runs), today (daily quiz, once shipped), the last quiz played. Tabs work in the prototype.",
+      "notes": [
+        { "at": "sel:[role=tablist]", "text": "Tabs, 44 px, role=tablist. The third tab names the last quiz the browser played." },
+        { "at": "text:Platz 1", "text": "Podium for the top three (2-1-3 order) with fixed medal colours that work in both themes." },
+        { "at": "sel:ol li", "text": "Rows 50 px; ties share a rank (existing rule)." },
+        { "at": "text:(du)", "text": "Own row pinned to the bottom with a Play button when it is not visible in the list; highlighted in place when it is." }
+      ]
+    },
+    "F-Resume": {
+      "title": "14 · Reload mid-run",
+      "w": 390, "h": 844,
+      "summary": "A reload shows the same open question and its clock keeps running (server rule). The screen says so.",
+      "notes": [
+        { "at": "text:Willkommen zurück", "text": "Banner on the first render after a reload when the question was already open, with the seconds left. Hidden on normal question loads." },
+        { "at": "sel:[role=progressbar]", "text": "The timer starts where the server says it is." }
+      ]
+    },
+    "F-Offline": {
+      "title": "15 · Connection lost while answering",
+      "w": 390, "h": 844,
+      "summary": "The answer request failed with a network error. The pick is kept and retried; the UI never counts it as wrong before the server answers.",
+      "notes": [
+        { "at": "text:Keine Verbindung", "text": "Alert banner with an immediate retry button; automatic retries run in the background." },
+        { "at": "text:Ottawa", "text": "The held pick stays marked (gold outline, spinner) and all options are disabled." },
+        { "at": "text:Achtung", "text": "Honest about the clock: the server keeps counting; the 2 s grace covers short drops only." }
+      ]
+    },
+    "F-Completed": {
+      "title": "16 · All 197 countries done",
+      "w": 390, "h": 844,
+      "summary": "End reason 'completed': every country of the quiz pool was a target. Rare, so it gets the biggest celebration.",
+      "notes": [
+        { "at": "text:Du hast die Welt", "text": "Headline and 197 in gold." },
+        { "at": "sel:[role=img][aria-label^='197']", "text": "197 gold squares, one per country." },
+        { "at": "text:Das muss jeder wissen", "text": "Share leads." }
+      ]
+    }
+  },
+  "explorations": [
+    "A-Home", "A-Question", "A-Correct", "A-GameOver", "A-Challenge", "A-Leaderboard",
+    "B-Home", "B-Question", "B-Result", "B-Leaderboard",
+    "C-Home", "C-Question", "C-Result", "C-Challenge"
+  ]
+}

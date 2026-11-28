@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Linkvorschau pro Quiz</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 1200px; height: 630px; box-sizing: border-box; background: #12142B; color: #F5F6FF; font-family: 'Baloo 2', system-ui, sans-serif; display: flex; align-items: center; gap: 64px; padding: 0 80px; overflow: hidden">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+    <span style="display: flex; align-items: center; gap: 12px; font-size: 36px; font-weight: 800; color: #A9ADD6">
+      <svg width="40" height="40" viewBox="0 0 32 32" aria-hidden="true"><path fill="#A9ADD6" d="M5 3h2v27H5z"></path><path fill="#FFC93C" d="M8 4h19l-4 6 4 6H8z"></path></svg>
+      What The Flag
+    </span>
+    <h1 style="margin: 0; font-size: 96px; line-height: .95; font-weight: 800; letter-spacing: -2px">Nico schafft <span style="color: #FFC93C">27</span>.<br>Und du?</h1>
+    <p style="margin: 8px 0 0; font-size: 34px; color: #C9CCEA">Gleiche Fragen. 15 Sekunden. Ein Fehler und vorbei.</p>
+  </div>
+  <div aria-hidden="true" style="position: relative; width: 340px; height: 420px; flex-shrink: 0">
+    <div style="position: absolute; left: 0; top: 40px; width: 220px; height: 165px; transform: rotate(-10deg); display: flex; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.5)"><div style="flex: 1; background: #14B53A"></div><div style="flex: 1; background: #FCD116"></div><div style="flex: 1; background: #CE1126"></div></div>
+    <div style="position: absolute; right: 0; top: 150px; width: 220px; height: 165px; transform: rotate(8deg); display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.5)"><div style="flex: 1; background: #0072CE"></div><div style="flex: 1; background: #000"></div><div style="flex: 1; background: #fff"></div></div>
+    <div style="position: absolute; left: 50px; bottom: 0; width: 200px; height: 200px; border-radius: 50%; background: #FFC93C; color: #2A1B00; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 0 12px #1E2147">
+      <span style="font-size: 104px; line-height: .85; font-weight: 800">27</span>
+      <span style="font-size: 26px; font-weight: 800">in Folge</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":630}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

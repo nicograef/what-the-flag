@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>A Arcade: Frage</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFC93C}a:hover{color:#FFE08A}
+.opt{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:64px;padding:0 18px;border:0;border-radius:16px;background:#2A2E5E;color:#F5F6FF;font:700 20px 'Baloo 2',system-ui,sans-serif;text-align:left;box-shadow:0 5px 0 #1A1D40;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .25s ease,transform .08s ease,background-color .15s ease}
+.opt:active{transform:translateY(3px);box-shadow:0 2px 0 #1A1D40}
+.opt:focus-visible{outline:3px solid #FFC93C;outline-offset:3px}
+.opt.arming{opacity:.3;cursor:default}
+.opt.ok{background:#34D399;color:#062B1D;box-shadow:0 5px 0 #1F9E6E}
+.opt.bad{background:#FF6B7A;color:#3A0009;box-shadow:0 5px 0 #C23A4A;animation:shake .32s}
+.opt.dim{opacity:.35}
+.pip{flex:1;height:8px;border-radius:4px;background:#2A2E5E}
+.pip.done{background:#FFC93C}
+.pip.now{background:#FFC93C;opacity:.45}
+.plus{animation:pop .7s ease-out forwards}
+.sheet{animation:rise .3s ease-out}
+.again{display:flex;align-items:center;justify-content:center;width:100%;height:68px;border:0;border-radius:20px;background:#FFC93C;color:#2A1B00;font:800 24px 'Baloo 2',sans-serif;box-shadow:0 6px 0 #C7901A;cursor:pointer;transition:opacity .3s}
+.again:disabled{opacity:.35;cursor:default}
+.again:focus-visible{outline:3px solid #F5F6FF;outline-offset:3px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:translateY(0) scale(.6);opacity:0}30%{transform:translateY(-10px) scale(1.2);opacity:1}100%{transform:translateY(-34px) scale(1);opacity:0}}
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.opt,.plus,.sheet,.again{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #12142B; color: #F5F6FF; font-family: 'Baloo 2', system-ui, sans-serif; display: flex; flex-direction: column; padding: 16px 16px 28px; overflow: hidden">
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 44px">
+    <div style="display: flex; flex-direction: column; gap: 4px; width: 170px">
+      <span style="font-size: 14px; font-weight: 700; color: #A9ADD6">Level {{level}} · {{levelName}}</span>
+      <div aria-hidden="true" style="display: flex; gap: 4px">
+        <sc-for list="{{pips}}" as="p" hint-placeholder-count="5"><div class="{{p.cls}}"></div></sc-for>
+      </div>
+    </div>
+    <div style="position: relative; display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px 0 12px; border-radius: 22px; background: #1E2147">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#FF9F43" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9.5z"></path></svg>
+      <span style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums" aria-label="Serie {{score}}">{{score}}</span>
+      <sc-if value="{{showPlus}}" hint-placeholder-val="{{ false }}"><span class="plus" aria-hidden="true" style="position: absolute; right: 6px; top: -4px; font-size: 22px; font-weight: 800; color: #34D399">+1</span></sc-if>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 10px; margin-top: 14px">
+    <div role="progressbar" aria-label="Verbleibende Zeit" aria-valuemin="0" aria-valuemax="15" aria-valuenow="{{secs}}" style="flex: 1; height: 12px; border-radius: 6px; background: #1E2147; overflow: hidden">
+      <div style="height: 100%; width: {{pct}}%; background: {{barColor}}; border-radius: 6px"></div>
+    </div>
+    <span aria-hidden="true" style="width: 34px; text-align: right; font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: {{barColor}}">{{secs}}</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px">
+    <h1 style="margin: 0; font-size: 22px; font-weight: 700; text-align: center; line-height: 1.25">Welches Land hat diese Flagge?</h1>
+    <div role="img" aria-label="Flagge" style="width: 264px; height: 198px; display: flex; flex-direction: {{q.dir}}; border-radius: 14px; overflow: hidden; box-shadow: 0 14px 40px rgba(0,0,0,.45)">
+      <sc-for list="{{q.stripes}}" as="s" hint-placeholder-count="3"><div style="flex: 1; background: {{s.c}}"></div></sc-for>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+      <button type="button" class="{{o.cls}}" disabled="{{o.disabled}}" onClick="{{o.pick}}">
+        <span>{{o.label}}</span>
+        <sc-if value="{{o.ok}}" hint-placeholder-val="{{ false }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="richtige Antwort" role="img"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>
+        <sc-if value="{{o.bad}}" hint-placeholder-val="{{ false }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-label="deine Antwort" role="img"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if>
+      </button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{over}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; background: rgba(8,9,22,.72); display: flex; flex-direction: column; justify-content: flex-end">
+      <div class="sheet" role="dialog" aria-label="Spiel vorbei" style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 20px 32px; border-radius: 28px 28px 0 0; background: #1E2147; text-align: center">
+        <span style="font-size: 18px; font-weight: 700; color: #A9ADD6">{{overText}}</span>
+        <span style="font-size: 84px; line-height: .9; font-weight: 800">{{score}}</span>
+        <span style="font-size: 17px; color: #A9ADD6">richtige Antworten in Folge</span>
+        <span style="margin: 4px 0 10px; padding: 4px 14px; border-radius: 999px; background: #2A2E5E; font-size: 15px; font-weight: 700; color: #FFC93C">Noch {{toBest}} bis zu deinem Rekord</span>
+        <button type="button" class="again" disabled="{{againLocked}}" onClick="{{restart}}">{{againLabel}}</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.Q = [
+      { dir: 'row', stripes: ['#169B62', '#FFFFFF', '#FF883E'], opts: ['Irland', 'Elfenbeinküste', 'Italien', 'Mexiko'], c: 0 },
+      { dir: 'row', stripes: ['#002B7F', '#FCD116', '#CE1126'], opts: ['Tschad', 'Andorra', 'Rumänien', 'Moldau'], c: 2 },
+      { dir: 'column', stripes: ['#FDB913', '#006A44', '#C1272D'], opts: ['Ghana', 'Bolivien', 'Litauen', 'Äthiopien'], c: 2 },
+      { dir: 'column', stripes: ['#0072CE', '#000000', '#FFFFFF'], opts: ['Estland', 'Lettland', 'Finnland', 'Botswana'], c: 0 }
+    ];
+    this.state = { i: 0, score: 6, picked: null, phase: 'arming', t: 15000, reason: null, againLocked: true };
+    this.timers = [];
+  }
+  componentDidMount() { this.ask(); }
+  componentWillUnmount() { this.clear(); }
+  clear() { this.timers.forEach((t) => { clearTimeout(t); clearInterval(t); }); this.timers = []; }
+  ask() {
+    this.clear();
+    this.setState({ picked: null, phase: 'arming', t: 15000 });
+    // Answers arm only after 400 ms, so a tap carried over from the last question does nothing.
+    this.timers.push(setTimeout(() => this.setState({ phase: 'ask' }), 400));
+    const tick = setInterval(() => {
+      const t = Math.max(0, this.state.t - 100);
+      this.setState({ t });
+      if (t === 0) this.end('timeout');
+    }, 100);
+    this.timers.push(tick);
+  }
+  end(reason) {
+    this.clear();
+    this.setState({ phase: 'over', reason, againLocked: true });
+    // The restart button arms after a second, so a late tap cannot start a new run by accident.
+    this.timers.push(setTimeout(() => this.setState({ againLocked: false }), 1000));
+  }
+  pick(k) {
+    if (this.state.phase !== 'ask') return;
+    this.clear();
+    const right = k === this.Q[this.state.i].c;
+    this.setState({ picked: k, phase: 'reveal' });
+    this.timers.push(setTimeout(() => {
+      if (right) {
+        this.setState({ i: (this.state.i + 1) % this.Q.length, score: this.state.score + 1 });
+        this.ask();
+      } else {
+        this.end('wrong');
+      }
+    }, right ? 650 : 1100));
+  }
+  renderVals() {
+    const s = this.state;
+    const q = this.Q[s.i];
+    const n = s.score + 1;
+    const level = Math.floor((n - 1) / 5) + 1;
+    const at = (n - 1) % 5;
+    const names = ['Flaggen', 'Hauptstädte', 'Sprachen', 'Profi'];
+    const revealed = s.phase === 'reveal' || (s.phase === 'over');
+    const secs = Math.ceil(s.t / 1000);
+    return {
+      level,
+      levelName: names[Math.min(level, 4) - 1],
+      pips: [0, 1, 2, 3, 4].map((p) => ({ cls: p < at ? 'pip done' : p === at ? 'pip now' : 'pip' })),
+      score: s.score,
+      showPlus: s.phase === 'reveal' && s.picked === q.c,
+      secs,
+      pct: (s.t / 15000) * 100,
+      barColor: secs <= 3 ? '#FF6B7A' : secs <= 5 ? '#FF9F43' : '#FFC93C',
+      q: { dir: q.dir, stripes: q.stripes.map((c) => ({ c })) },
+      opts: q.opts.map((label, k) => {
+        const ok = revealed && k === q.c;
+        const bad = revealed && k === s.picked && k !== q.c;
+        let cls = 'opt';
+        if (s.phase === 'arming') cls += ' arming';
+        else if (ok) cls += ' ok';
+        else if (bad) cls += ' bad';
+        else if (revealed) cls += ' dim';
+        return { label, ok, bad, cls, disabled: s.phase !== 'ask', pick: () => this.pick(k) };
+      }),
+      over: s.phase === 'over',
+      overText: s.reason === 'timeout' ? 'Zeit abgelaufen' : 'Knapp daneben!',
+      toBest: Math.max(1, 23 - s.score),
+      againLocked: s.againLocked,
+      againLabel: s.againLocked ? 'Gleich …' : 'Nochmal',
+      restart: () => { this.setState({ i: 0, score: 6 }); this.ask(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

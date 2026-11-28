@@ -33,3 +33,10 @@
 | Global leaderboard | The top 100 creator runs of all time. | ranking, high-score list |
 | Quiz leaderboard | The top 100 runs of one quiz. | challenge ranking |
 | Hidden run | A run the owner removed from every leaderboard. | banned, deleted |
+| Level | A block of five consecutive questions of a run, shown to the player; level n starts at question 5(n−1)+1 and allows difficulty tiers up to n, at most 4. | stage, round; tier (a tier is a question type's difficulty) |
+| Personal best | The highest score this browser has reached, kept in the browser only. | high score, record (record is fine in UI copy) |
+| Hold to answer | Committing an option by pressing it for 400 ms; a keyboard commits at once. | long press, confirm |
+| Arming | The 400 ms after a question renders (1000 ms after a result renders) in which presses are ignored. | cooldown, debounce |
+| Learning card | The one card on a result that explains the missed question: correct option, the pick and one sentence. | tip, explanation box |
+| Run strip | One square per answer of a run in blocks of five, shown on the result and in the share text. | emoji grid, history |
+| Remembered quiz | A quiz this browser played, kept in the browser with its own run id and last seen rank. | saved quiz, bookmark |

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>B Atlas: Start</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E54E8}a:hover{color:#1F3CB0}
+input:focus-visible{outline:3px solid #2E54E8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F5F7; color: #15171C; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 8px 20px 28px">
+  <header style="display: flex; align-items: center; justify-content: space-between; height: 56px">
+    <a href="B-Leaderboard.dc.html" style="display: flex; align-items: center; height: 44px; font-size: 16px; font-weight: 600; text-decoration: none">Rangliste</a>
+    <button type="button" lang="en" aria-label="English" style="height: 44px; min-width: 44px; border: 0; background: transparent; color: #15171C; font: 600 16px Inter, sans-serif; cursor: pointer">EN</button>
+  </header>
+
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px">
+    <div aria-hidden="true" style="display: flex; gap: 10px">
+      <span style="width: 52px; height: 39px; display: flex; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px rgba(21,23,28,.12)"><span style="flex: 1; background: #009246"></span><span style="flex: 1; background: #fff"></span><span style="flex: 1; background: #CE2B37"></span></span>
+      <span style="width: 52px; height: 39px; display: flex; flex-direction: column; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px rgba(21,23,28,.12)"><span style="flex: 1; background: #fff"></span><span style="flex: 1; background: #DC143C"></span></span>
+      <span style="width: 52px; height: 39px; display: flex; border-radius: 4px; overflow: hidden; box-shadow: 0 0 0 1px rgba(21,23,28,.12)"><span style="flex: 1; background: #F77F00"></span><span style="flex: 1; background: #fff"></span><span style="flex: 1; background: #009E60"></span></span>
+    </div>
+    <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 56px; line-height: .95; font-weight: 700; letter-spacing: -1.5px">What<br>The Flag</h1>
+    <p style="margin: 0; font-size: 19px; line-height: 1.45; color: #4A505E">197 Länder. 15 Sekunden pro Frage. Ein Fehler beendet das Spiel.</p>
+    <p style="margin: 0; font-size: 16px; color: #4A505E">Dein Rekord: <strong style="color: #15171C">23</strong></p>
+  </div>
+
+  <form style="display: flex; flex-direction: column; gap: 8px">
+    <label for="bname" style="font-size: 15px; font-weight: 600">Dein Name</label>
+    <input id="bname" name="name" value="Nico" maxlength="20" autocomplete="nickname" aria-describedby="bname-hint" style="height: 56px; box-sizing: border-box; padding: 0 16px; border: 1.5px solid #C9CDD6; border-radius: 14px; background: #FFFFFF; color: #15171C; font: 500 18px Inter, sans-serif">
+    <span id="bname-hint" style="font-size: 14px; color: #5B6170">Erscheint öffentlich in der Rangliste.</span>
+    <a href="B-Question.dc.html" style="margin-top: 12px; display: flex; align-items: center; justify-content: center; height: 64px; border-radius: 16px; background: #2E54E8; color: #FFFFFF; font: 600 20px 'Space Grotesk', sans-serif; text-decoration: none">Spiel starten</a>
+  </form>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

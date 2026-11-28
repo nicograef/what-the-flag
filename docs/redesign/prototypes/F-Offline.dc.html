@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Verbindung beim Antworten verloren</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFC93C}a:hover{color:#FFE08A}
+.o{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 18px;border:0;border-radius:16px;background:#2A2E5E;color:#F5F6FF;font:700 20px 'Baloo 2',sans-serif;text-align:left;box-shadow:0 5px 0 #1A1D40}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #12142B; color: #F5F6FF; font-family: 'Baloo 2', system-ui, sans-serif; display: flex; flex-direction: column; padding: 16px 16px 20px; overflow: hidden">
+  <div role="alert" style="display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; border-radius: 16px; background: #3A1621; border: 2px solid #FF6B7A">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF8A96" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"></path></svg>
+    <span style="flex: 1; font-size: 15px; line-height: 1.3">Keine Verbindung. Deine Antwort ist gespeichert, wir senden sie gleich nochmal.</span>
+    <button type="button" style="height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: #FF6B7A; color: #3A0009; font: 800 15px 'Baloo 2', sans-serif; cursor: pointer">Jetzt senden</button>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 10px; margin-top: 14px; opacity: .5">
+    <div role="progressbar" aria-label="Verbleibende Zeit, angehalten" aria-valuemin="0" aria-valuemax="15" aria-valuenow="9" style="flex: 1; height: 12px; border-radius: 6px; background: #1E2147; overflow: hidden"><div style="height: 100%; width: 58%; background: #FFC93C; border-radius: 6px"></div></div>
+    <span aria-hidden="true" style="width: 30px; text-align: right; font-size: 20px; font-weight: 800">9</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center">
+    <h1 style="margin: 0; font-size: 21px; font-weight: 700">Was ist die Hauptstadt dieses Landes?</h1>
+    <p style="margin: 0; font-size: 46px; font-weight: 800; line-height: 1; color: #FFC93C">Kanada</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <button type="button" disabled class="o" style="opacity: .35">Washington</button>
+    <button type="button" disabled class="o" style="opacity: .35">Mexiko-Stadt</button>
+    <button type="button" disabled class="o" style="box-shadow: 0 5px 0 #1A1D40, inset 0 0 0 3px #FFC93C; background: #4A4A52">
+      Ottawa
+      <svg class="spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFC93C" stroke-width="3" stroke-linecap="round" role="img" aria-label="wird gesendet"><path d="M12 3a9 9 0 1 1-9 9"></path></svg>
+    </button>
+    <button type="button" disabled class="o" style="opacity: .35">Havanna</button>
+  </div>
+  <p style="margin: 10px 0 0; text-align: center; font-size: 14px; font-weight: 600; color: #A9ADD6">Achtung: Die Uhr auf dem Server läuft weiter.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

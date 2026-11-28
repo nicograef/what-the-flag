@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Teilen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFC93C}a:hover{color:#FFE08A}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #12142B; color: #F5F6FF; font-family: 'Baloo 2', system-ui, sans-serif; overflow: hidden">
+  <div aria-hidden="true" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding-top: 40px; opacity: .35">
+    <span style="font-size: 26px; font-weight: 800; color: #FFC93C">Neuer Rekord!</span>
+    <span style="font-size: 120px; line-height: .9; font-weight: 800">27</span>
+  </div>
+  <div style="position: absolute; inset: 0; background: rgba(8,9,22,.6)"></div>
+
+  <div role="dialog" aria-labelledby="share-title" style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 14px; padding: 12px 16px 24px; border-radius: 28px 28px 0 0; background: #1E2147">
+    <div aria-hidden="true" style="align-self: center; width: 40px; height: 5px; border-radius: 3px; background: #3A3F78"></div>
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <h2 id="share-title" style="margin: 0; font-size: 22px; font-weight: 800">Fordere jemanden heraus</h2>
+      <a href="F-Record.dc.html" aria-label="Schließen" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #F5F6FF">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </a>
+    </div>
+    <p style="margin: -8px 0 0; font-size: 15px; color: #A9ADD6">Wer den Link öffnet, spielt genau deine Fragen. Nichts wird verraten.</p>
+
+    <figure style="margin: 0; align-self: flex-end; width: 300px; border-radius: 18px 18px 4px 18px; background: #2E6B4F; overflow: hidden; color: #F2FFF8">
+      <div aria-hidden="true" style="height: 150px; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 0 18px; background: #12142B">
+        <span style="font-size: 14px; font-weight: 700; color: #A9ADD6">What The Flag</span>
+        <span style="font-size: 26px; font-weight: 800; line-height: 1.05; color: #F5F6FF">Nico: <span style="color: #FFC93C">27</span> in Folge.<br>Schaffst du mehr?</span>
+      </div>
+      <figcaption style="padding: 10px 12px 8px; font-size: 15px; line-height: 1.35; white-space: pre-line">What The Flag: 27 in Folge, Level 6
+🟩🟩🟩🟩🟩 🟩🟩🟩🟩🟩 🟩🟩🟩🟩🟩
+🟩🟩🟩🟩🟩 🟩🟩🟩🟩🟩 🟩🟩🟥
+Gleiche Fragen. Schaffst du mehr?
+<span style="text-decoration: underline">what-the-flag.de/q/k3J9xQ</span></figcaption>
+    </figure>
+    <p style="margin: -6px 0 0; align-self: flex-end; font-size: 12px; color: #A9ADD6">So sieht es im Chat aus</p>
+
+    <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 68px; border: 0; border-radius: 20px; background: #FFC93C; color: #2A1B00; font: 800 22px 'Baloo 2', sans-serif; box-shadow: 0 6px 0 #C7901A; cursor: pointer">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"></path></svg>
+      Teilen …
+    </button>
+    <button type="button" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 52px; border: 2px solid #3A3F78; border-radius: 18px; background: transparent; color: #F5F6FF; font: 700 17px 'Baloo 2', sans-serif; cursor: pointer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+      Text und Link kopieren
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

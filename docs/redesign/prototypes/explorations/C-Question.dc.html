@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>C Daumen: Frage, halten zum Antworten</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4B2FE0}a:hover{color:#3420A8}
+.tile{position:relative;overflow:hidden;width:100%;height:168px;border:0;border-radius:24px;background:#FFFFFF;color:#17182B;box-shadow:inset 0 0 0 2px #E1E4EE,0 3px 0 #D3D6E4;display:flex;align-items:center;justify-content:center;padding:12px;font:700 22px Outfit,system-ui,sans-serif;line-height:1.15;text-align:center;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .25s ease,transform .12s ease,background-color .15s ease}
+.tile:focus-visible{outline:3px solid #5B3DF5;outline-offset:3px}
+.tile .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:#FFB020;transition:height .12s ease-out}
+.tile.holding{transform:scale(.97)}
+.tile.holding .fill{height:100%;transition:height .45s linear}
+.tile .in{position:relative;display:flex;align-items:center;justify-content:center}
+.tile.arming{opacity:.3;cursor:default}
+.tile.ok{background:#1FAE7A;color:#04291B;box-shadow:none}
+.tile.bad{background:#F0506E;color:#3D0412;box-shadow:none;animation:shake .32s}
+.tile.dim{opacity:.35}
+.badge{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center}
+.cagain{width:100%;height:68px;border:0;border-radius:22px;background:#17182B;color:#fff;font:800 22px Outfit,sans-serif;cursor:pointer;transition:opacity .3s}
+.cagain:disabled{opacity:.35;cursor:default}
+.cagain:focus-visible{outline:3px solid #5B3DF5;outline-offset:3px}
+.sheet{animation:rise .3s ease-out}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.tile,.tile .fill,.sheet,.cagain{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #F1F3F9; color: #17182B; font-family: Outfit, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="flex: 1; display: flex; flex-direction: column; background: #5B3DF5; color: #FFFFFF; border-radius: 0 0 36px 36px; padding: 16px 20px 0; overflow: hidden">
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 44px">
+      <span style="display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 18px; background: rgba(255,255,255,.16); font-size: 16px; font-weight: 700">Level {{level}}</span>
+      <span style="font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums" aria-label="{{score}} richtig">{{score}}</span>
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center">
+      <h1 style="margin: 0; font-size: 20px; font-weight: 600; color: #E4DEFF">{{q.text}}</h1>
+      <sc-if value="{{q.flagPrompt}}" hint-placeholder-val="{{ false }}">
+        <div role="img" aria-label="Flagge" style="width: 200px; height: 150px; display: flex; flex-direction: {{q.dir}}; border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 4px rgba(255,255,255,.9)">
+          <sc-for list="{{q.stripes}}" as="s" hint-placeholder-count="3"><div style="flex: 1; background: {{s.c}}"></div></sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{q.textPrompt}}" hint-placeholder-val="{{ true }}">
+        <p style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -1px; line-height: 1">{{q.prompt}}</p>
+      </sc-if>
+    </div>
+    <div role="progressbar" aria-label="Verbleibende Zeit" aria-valuemin="0" aria-valuemax="15" aria-valuenow="{{secs}}" style="height: 10px; margin: 0 -20px; background: #3F26C9">
+      <div style="height: 100%; width: {{pct}}%; background: {{barColor}}"></div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 18px 16px 8px">
+    <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+      <button type="button" class="{{o.cls}}" disabled="{{o.disabled}}" aria-label="{{o.aria}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}" onClick="{{o.click}}" onContextMenu="{{noMenu}}">
+        <span class="fill" aria-hidden="true"></span>
+        <span class="in" aria-hidden="true">
+          <sc-if value="{{o.isFlag}}" hint-placeholder-val="{{ false }}">
+            <span style="width: 124px; height: 93px; display: flex; flex-direction: {{o.dir}}; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px rgba(23,24,43,.15)">
+              <sc-for list="{{o.stripes}}" as="s" hint-placeholder-count="3"><span style="flex: 1; background: {{s.c}}"></span></sc-for>
+            </span>
+          </sc-if>
+          <sc-if value="{{o.isText}}" hint-placeholder-val="{{ true }}"><span>{{o.label}}</span></sc-if>
+        </span>
+        <sc-if value="{{o.ok}}" hint-placeholder-val="{{ false }}"><span class="badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B6B47" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></sc-if>
+        <sc-if value="{{o.bad}}" hint-placeholder-val="{{ false }}"><span class="badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B0112F" stroke-width="3.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span></sc-if>
+      </button>
+    </sc-for>
+  </div>
+  <p role="status" style="margin: 0; padding: 4px 16px 24px; text-align: center; font-size: 15px; font-weight: 600; color: #555A6E; min-height: 20px">{{hint}}</p>
+
+  <sc-if value="{{over}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; background: rgba(23,24,43,.6); display: flex; flex-direction: column; justify-content: flex-end">
+      <div class="sheet" role="dialog" aria-label="Spiel vorbei" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 28px 20px 32px; border-radius: 32px 32px 0 0; background: #FFFFFF; text-align: center">
+        <span style="font-size: 18px; font-weight: 600; color: #555A6E">{{overText}}</span>
+        <span style="font-size: 88px; line-height: .9; font-weight: 800; color: #5B3DF5">{{score}}</span>
+        <span style="font-size: 17px; color: #555A6E; margin-bottom: 12px">richtig in Folge</span>
+        <a href="C-Result.dc.html" style="display: flex; align-items: center; height: 44px; font-size: 17px; font-weight: 700">Ergebnis ansehen</a>
+        <button type="button" class="cagain" disabled="{{againLocked}}" onClick="{{restart}}">{{againLabel}}</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.Q = [
+      { text: 'Welche Flagge hat', prompt: 'Nigeria', flagOpts: [
+        { name: 'Nigeria', dir: 'row', s: ['#008751', '#FFFFFF', '#008751'] },
+        { name: 'Irland', dir: 'row', s: ['#169B62', '#FFFFFF', '#FF883E'] },
+        { name: 'Italien', dir: 'row', s: ['#009246', '#FFFFFF', '#CE2B37'] },
+        { name: 'Elfenbeinküste', dir: 'row', s: ['#F77F00', '#FFFFFF', '#009E60'] }
+      ], c: 0 },
+      { text: 'Welches Land hat diese Flagge?', dir: 'column', stripes: ['#0057B7', '#FFD700'], opts: ['Schweden', 'Ukraine', 'Kolumbien', 'Bosnien'], c: 1 },
+      { text: 'Von welchem Land ist das die Hauptstadt?', prompt: 'Canberra', opts: ['Neuseeland', 'Australien', 'Fidschi', 'Papua-Neuguinea'], c: 1 },
+      { text: 'Welches Land hat diese Flagge?', dir: 'column', stripes: ['#CE1126', '#FFFFFF'], opts: ['Polen', 'Singapur', 'Indonesien', 'Österreich'], c: 2 }
+    ];
+    this.state = { i: 0, score: 5, picked: null, holding: null, phase: 'arming', t: 15000, againLocked: true };
+    this.timers = [];
+    this.holdT = null;
+    this.sawPointer = false;
+  }
+  componentDidMount() { this.ask(); }
+  componentWillUnmount() { this.clear(); }
+  clear() { this.timers.forEach((t) => { clearTimeout(t); clearInterval(t); }); this.timers = []; clearTimeout(this.holdT); }
+  ask() {
+    this.clear();
+    this.setState({ picked: null, holding: null, phase: 'arming', t: 15000 });
+    this.timers.push(setTimeout(() => this.setState({ phase: 'ask' }), 400));
+    this.timers.push(setInterval(() => {
+      const t = Math.max(0, this.state.t - 100);
+      this.setState({ t });
+      if (t === 0) this.end('timeout');
+    }, 100));
+  }
+  end(reason) {
+    this.clear();
+    this.setState({ phase: 'over', reason, holding: null, againLocked: true });
+    this.timers.push(setTimeout(() => this.setState({ againLocked: false }), 1000));
+  }
+  down(k) {
+    this.sawPointer = true;
+    if (this.state.phase !== 'ask') return;
+    clearTimeout(this.holdT);
+    this.setState({ holding: k });
+    // A tap does nothing: the answer counts only once the tile has filled.
+    this.holdT = setTimeout(() => this.commit(k), 450);
+  }
+  up(k) {
+    if (this.state.phase !== 'ask' || this.state.holding !== k) return;
+    clearTimeout(this.holdT);
+    this.setState({ holding: null });
+  }
+  click(k, e) {
+    // Keyboard activation (detail 0) answers at once; so does a device without pointer events.
+    if (!this.sawPointer || (e && e.detail === 0)) this.commit(k);
+  }
+  commit(k) {
+    if (this.state.phase !== 'ask') return;
+    this.clear();
+    const right = k === this.Q[this.state.i].c;
+    this.setState({ picked: k, holding: null, phase: 'reveal' });
+    this.timers.push(setTimeout(() => {
+      if (right) {
+        this.setState({ i: (this.state.i + 1) % this.Q.length, score: this.state.score + 1 });
+        this.ask();
+      } else {
+        this.end('wrong');
+      }
+    }, right ? 700 : 1200));
+  }
+  renderVals() {
+    const s = this.state;
+    const q = this.Q[s.i];
+    const revealed = s.phase === 'reveal' || s.phase === 'over';
+    const secs = Math.ceil(s.t / 1000);
+    const flagOpts = !!q.flagOpts;
+    const items = flagOpts ? q.flagOpts : q.opts.map((name) => ({ name }));
+    let hint = 'Halte eine Kachel gedrückt, bis sie voll ist';
+    if (s.holding !== null) hint = 'Festhalten …';
+    if (s.phase === 'reveal') hint = s.picked === q.c ? 'Richtig!' : 'Leider falsch';
+    return {
+      level: Math.floor(s.score / 5) + 1,
+      score: s.score,
+      secs,
+      pct: (s.t / 15000) * 100,
+      barColor: secs <= 3 ? '#FF8FA3' : secs <= 5 ? '#FFB020' : '#FFFFFF',
+      q: { text: q.text, prompt: q.prompt, flagPrompt: !!q.stripes, textPrompt: !q.stripes, dir: q.dir, stripes: (q.stripes || []).map((c) => ({ c })) },
+      opts: items.map((it, k) => {
+        const ok = revealed && k === q.c;
+        const bad = revealed && k === s.picked && k !== q.c;
+        let cls = 'tile';
+        if (s.phase === 'arming') cls += ' arming';
+        else if (ok) cls += ' ok';
+        else if (bad) cls += ' bad';
+        else if (revealed) cls += ' dim';
+        else if (s.holding === k) cls += ' holding';
+        return {
+          cls, ok, bad,
+          isFlag: flagOpts, isText: !flagOpts,
+          label: it.name,
+          aria: flagOpts ? 'Flagge ' + (k + 1) : it.name,
+          dir: it.dir, stripes: (it.s || []).map((c) => ({ c })),
+          disabled: s.phase !== 'ask',
+          down: () => this.down(k),
+          up: () => this.up(k),
+          click: (e) => this.click(k, e)
+        };
+      }),
+      noMenu: (e) => e.preventDefault(),
+      hint,
+      over: s.phase === 'over',
+      overText: s.reason === 'timeout' ? 'Zeit abgelaufen' : 'Spiel vorbei',
+      againLocked: s.againLocked,
+      againLabel: s.againLocked ? 'Gleich …' : 'Nochmal',
+      restart: () => { this.setState({ i: 0, score: 0 }); this.ask(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

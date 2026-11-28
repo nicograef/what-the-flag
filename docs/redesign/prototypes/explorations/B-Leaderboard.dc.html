@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>B Atlas: Rangliste</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E54E8}a:hover{color:#1F3CB0}
+.seg{flex:1;height:44px;border:0;border-radius:10px;background:transparent;color:#4A505E;font:600 15px Inter,sans-serif;cursor:pointer}
+.seg.on{background:#FFFFFF;color:#15171C;box-shadow:0 1px 3px rgba(21,23,28,.15)}
+.seg:focus-visible{outline:3px solid #2E54E8;outline-offset:1px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F5F7; color: #15171C; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 16px; padding: 8px 20px 0; overflow: hidden">
+  <header style="display: flex; align-items: center; gap: 4px; height: 56px; margin-left: -12px">
+    <a href="B-Home.dc.html" aria-label="Zurück" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #15171C">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+    </a>
+    <h1 style="margin: 0; font: 700 28px 'Space Grotesk', sans-serif; letter-spacing: -.5px">Rangliste</h1>
+  </header>
+
+  <div role="tablist" aria-label="Rangliste wählen" style="display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: #E6E8EE">
+    <button type="button" role="tab" aria-selected="{{globalSel}}" class="{{globalCls}}" onClick="{{showGlobal}}">Weltweit</button>
+    <button type="button" role="tab" aria-selected="{{quizSel}}" class="{{quizCls}}" onClick="{{showQuiz}}">Mein letztes Quiz</button>
+  </div>
+
+  <ol style="list-style: none; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+      <li aria-current="{{r.current}}" style="display: flex; align-items: center; gap: 14px; height: 52px; padding: 0 12px; margin: 0 -12px; border-radius: 12px; background: {{r.bg}}; font-size: 17px">
+        <span style="width: 32px; font: 600 17px 'Space Grotesk', sans-serif; color: {{r.rankColor}}">{{r.rank}}</span>
+        <span style="flex: 1; font-weight: {{r.weight}}">{{r.name}}</span>
+        <span style="font: 700 18px 'Space Grotesk', sans-serif">{{r.score}}</span>
+      </li>
+    </sc-for>
+  </ol>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'global' }; }
+  renderVals() {
+    const g = [[1,'globetrotter',87],[2,'Aylin',74],[3,'Pjotr',69],[4,'marta.k',61],[5,'Felix',58],[5,'Sofía',58],[7,'kartenkind',55],[8,'Ben',52],[9,'Hana',50],[10,'Q.',49],[38,'Nico',24,true]];
+    const q = [[1,'Nico',24,true],[2,'Lena',21],[3,'Jonas',18],[4,'Mo',12],[5,'Kim',9],[5,'Tarek',9],[7,'Ute',4]];
+    const list = this.state.tab === 'global' ? g : q;
+    return {
+      globalSel: this.state.tab === 'global' ? 'true' : 'false',
+      quizSel: this.state.tab === 'quiz' ? 'true' : 'false',
+      globalCls: this.state.tab === 'global' ? 'seg on' : 'seg',
+      quizCls: this.state.tab === 'quiz' ? 'seg on' : 'seg',
+      showGlobal: () => this.setState({ tab: 'global' }),
+      showQuiz: () => this.setState({ tab: 'quiz' }),
+      rows: list.map(([rank, name, score, own]) => ({
+        rank, score, name: own ? name + ' (du)' : name,
+        current: own ? 'true' : 'false',
+        bg: own ? '#DCE4FD' : 'transparent',
+        rankColor: rank <= 3 ? '#2E54E8' : '#5B6170',
+        weight: own ? 700 : 500
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

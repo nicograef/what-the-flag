@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>B Atlas: Frage</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2E54E8}a:hover{color:#1F3CB0}
+.bopt{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:60px;padding:0 18px;border:1.5px solid #D5D9E1;border-radius:14px;background:#FFFFFF;color:#15171C;font:600 18px Inter,system-ui,sans-serif;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .25s ease,background-color .15s ease,border-color .15s ease}
+.bopt:hover{border-color:#9AA2B3}
+.bopt:active{background:#EEF1F6}
+.bopt:focus-visible{outline:3px solid #2E54E8;outline-offset:2px}
+.bopt.arming{opacity:.25;cursor:default}
+.bopt.ok{background:#E3F4EC;border:2.5px solid #12805C;color:#0B4F39}
+.bopt.bad{background:#FBE6E9;border:2.5px solid #C8283C;color:#7A1222}
+.bopt.dim{opacity:.4}
+.bstart{display:flex;align-items:center;justify-content:center;width:100%;height:60px;border:0;border-radius:16px;background:#2E54E8;color:#fff;font:600 19px 'Space Grotesk',sans-serif;cursor:pointer;transition:opacity .3s}
+.bstart:disabled{opacity:.35;cursor:default}
+.bstart:focus-visible{outline:3px solid #15171C;outline-offset:2px}
+.fade{animation:fade .25s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.bopt,.fade,.bstart{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F4F5F7; color: #15171C; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 20px 20px 28px">
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 56px">
+    <div style="display: flex; flex-direction: column">
+      <span style="font-size: 14px; color: #5B6170">Frage {{n}}</span>
+      <span style="font: 700 28px 'Space Grotesk', sans-serif; line-height: 1">{{score}} <span style="font: 500 15px Inter, sans-serif; color: #5B6170">richtig</span></span>
+    </div>
+    <div role="timer" aria-label="Noch {{secs}} Sekunden" style="position: relative; width: 56px; height: 56px">
+      <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true" style="transform: rotate(-90deg)">
+        <circle cx="28" cy="28" r="24" fill="none" stroke="#DDE0E6" stroke-width="5"></circle>
+        <circle cx="28" cy="28" r="24" fill="none" stroke="{{ringColor}}" stroke-width="5" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="{{dash}}"></circle>
+      </svg>
+      <span aria-hidden="true" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 700 19px 'Space Grotesk', sans-serif; color: {{ringColor}}">{{secs}}</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 20px">
+    <h1 style="margin: 0; font-size: 18px; font-weight: 500; color: #4A505E">{{q.text}}</h1>
+    <sc-if value="{{q.isFlag}}" hint-placeholder-val="{{ false }}">
+      <div role="img" aria-label="Flagge" style="width: 220px; height: 165px; display: flex; flex-direction: {{q.dir}}; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px rgba(21,23,28,.12), 0 10px 30px rgba(21,23,28,.1)">
+        <sc-for list="{{q.stripes}}" as="s" hint-placeholder-count="3"><div style="flex: 1; background: {{s.c}}"></div></sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{q.isText}}" hint-placeholder-val="{{ true }}">
+      <p style="margin: 0; font: 700 52px 'Space Grotesk', sans-serif; letter-spacing: -1px; line-height: 1">{{q.prompt}}</p>
+    </sc-if>
+    <p role="status" style="margin: 0; min-height: 24px; font-size: 17px; font-weight: 600; color: {{fbColor}}">{{feedback}}</p>
+  </div>
+
+  <sc-if value="{{playing}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+        <button type="button" class="{{o.cls}}" disabled="{{o.disabled}}" onClick="{{o.pick}}">
+          <span>{{o.label}}</span>
+          <sc-if value="{{o.ok}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="richtige Antwort"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>
+          <sc-if value="{{o.bad}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" role="img" aria-label="deine Antwort"><path d="M6 6l12 12M18 6L6 18"></path></svg></sc-if>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{over}}" hint-placeholder-val="{{ false }}">
+    <div class="fade" style="display: flex; flex-direction: column; gap: 12px">
+      <a href="B-Result.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; font-weight: 600; font-size: 17px">Ergebnis ansehen</a>
+      <button type="button" class="bstart" disabled="{{againLocked}}" onClick="{{restart}}">Neues Spiel</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.Q = [
+      { text: 'Von welchem Land ist das die Hauptstadt?', prompt: 'Ljubljana', opts: ['Slowakei', 'Slowenien', 'Kroatien', 'Serbien'], c: 1 },
+      { text: 'Welches Land hat diese Flagge?', dir: 'column', stripes: ['#ED2939', '#FFFFFF', '#ED2939'], opts: ['Lettland', 'Österreich', 'Peru', 'Libanon'], c: 1 },
+      { text: 'Von welchem Land ist das die Hauptstadt?', prompt: 'Accra', opts: ['Ghana', 'Nigeria', 'Togo', 'Benin'], c: 0 },
+      { text: 'Welches Land hat diese Flagge?', dir: 'column', stripes: ['#CE2939', '#FFFFFF', '#477050'], opts: ['Bulgarien', 'Iran', 'Ungarn', 'Tadschikistan'], c: 2 }
+    ];
+    this.state = { i: 0, score: 7, picked: null, phase: 'arming', t: 15000, againLocked: true };
+    this.timers = [];
+  }
+  componentDidMount() { this.ask(); }
+  componentWillUnmount() { this.clear(); }
+  clear() { this.timers.forEach((t) => { clearTimeout(t); clearInterval(t); }); this.timers = []; }
+  ask() {
+    this.clear();
+    this.setState({ picked: null, phase: 'arming', t: 15000 });
+    this.timers.push(setTimeout(() => this.setState({ phase: 'ask' }), 400));
+    this.timers.push(setInterval(() => {
+      const t = Math.max(0, this.state.t - 100);
+      this.setState({ t });
+      if (t === 0) this.end();
+    }, 100));
+  }
+  end() {
+    this.clear();
+    this.setState({ phase: 'over', againLocked: true });
+    this.timers.push(setTimeout(() => this.setState({ againLocked: false }), 1000));
+  }
+  pick(k) {
+    if (this.state.phase !== 'ask') return;
+    this.clear();
+    const right = k === this.Q[this.state.i].c;
+    this.setState({ picked: k, phase: 'reveal' });
+    this.timers.push(setTimeout(() => {
+      if (right) {
+        this.setState({ i: (this.state.i + 1) % this.Q.length, score: this.state.score + 1 });
+        this.ask();
+      } else {
+        this.end();
+      }
+    }, right ? 700 : 1200));
+  }
+  renderVals() {
+    const s = this.state;
+    const q = this.Q[s.i];
+    const revealed = s.phase === 'reveal' || s.phase === 'over';
+    const secs = Math.ceil(s.t / 1000);
+    const right = s.picked === q.c;
+    let feedback = '';
+    if (s.phase === 'reveal') feedback = right ? 'Richtig.' : 'Leider falsch.';
+    if (s.phase === 'over') feedback = s.picked === null ? 'Die Zeit ist abgelaufen.' : 'Spiel vorbei.';
+    return {
+      n: s.score + 1,
+      score: s.score,
+      secs,
+      dash: 150.8 * (1 - s.t / 15000),
+      ringColor: secs <= 3 ? '#C8283C' : secs <= 5 ? '#B45309' : '#2E54E8',
+      q: { text: q.text, prompt: q.prompt, isFlag: !!q.stripes, isText: !q.stripes, dir: q.dir, stripes: (q.stripes || []).map((c) => ({ c })) },
+      feedback,
+      fbColor: s.phase === 'reveal' && right ? '#12805C' : '#C8283C',
+      playing: true,
+      over: s.phase === 'over',
+      opts: q.opts.map((label, k) => {
+        const ok = revealed && k === q.c;
+        const bad = revealed && k === s.picked && k !== q.c;
+        let cls = 'bopt';
+        if (s.phase === 'arming') cls += ' arming';
+        else if (ok) cls += ' ok';
+        else if (bad) cls += ' bad';
+        else if (revealed) cls += ' dim';
+        return { label, ok, bad, cls, disabled: s.phase !== 'ask', pick: () => this.pick(k) };
+      }),
+      againLocked: s.againLocked,
+      restart: () => { this.setState({ i: 0, score: 0 }); this.ask(); }
+    };
+  }
+}
+</script>
+</body>
+</html>
