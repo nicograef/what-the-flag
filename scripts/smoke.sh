@@ -6,7 +6,7 @@
 #
 # What it does:
 #   1. Reaches E2E_BASE_URL (https://<host>:<port>) on 127.0.0.1, trusting any certificate.
-#   2. Checks health, a new run, its first question, the run's quiz, the leaderboard, the SPA route
+#   2. Checks health, a new run, its first question, the player cookie through /api/me, the run's quiz, the leaderboard, the SPA route
 #      of the quiz and the CSP header, then the migration version of the stack's database (Compose `postgres` service),
 #      and last that a spoofed X-Forwarded-For cannot escape the leaderboard's rate limit.
 #   3. Prints `ok <check>` per passed check; the first failure exits 1.
@@ -32,6 +32,10 @@ fail() { echo "FAIL $1: $2" >&2; exit 1; }
 EDGE=(-sS -k --noproxy '*' --resolve "$HOST:$PORT:127.0.0.1")
 req() { curl -f "${EDGE[@]}" "$@"; }
 
+# The player cookie jar of the smoke run's browser.
+JAR="$(mktemp)"
+trap 'rm -f "$JAR"' EXIT
+
 # expect CHECK JSON FILTER — the jq filter must hold on the body.
 expect() { jq -e "$3" >/dev/null <<<"$2" || fail "$1" "$2"; }
 
@@ -39,7 +43,7 @@ body="$(req "$E2E_BASE_URL/api/health")" || fail health "request failed"
 expect health "$body" '. == {"status": "ok"}'
 ok health
 
-out="$(req -w '\n%{http_code}' -X POST -H 'Content-Type: application/json' -H "Origin: $E2E_BASE_URL" \
+out="$(req -c "$JAR" -w '\n%{http_code}' -X POST -H 'Content-Type: application/json' -H "Origin: $E2E_BASE_URL" \
   --data '{"name":"smoke"}' "$E2E_BASE_URL/api/runs")" || fail run "request failed"
 body="$(sed '$d' <<<"$out")"
 [[ "$(tail -n1 <<<"$out")" == 201 ]] || fail run "status $(tail -n1 <<<"$out"), body $body"
@@ -51,6 +55,10 @@ ok run
 body="$(req "$E2E_BASE_URL/api/runs/$RUN_ID")" || fail question "request failed"
 expect question "$body" '.status == "playing" and .question.position == 0'
 ok question
+
+body="$(req -b "$JAR" "$E2E_BASE_URL/api/me")" || fail me "request failed"
+expect me "$body" '.lastName == "smoke" and .lastQuizId == "'"$QUIZ_ID"'"'
+ok me
 
 body="$(req "$E2E_BASE_URL/api/quizzes/$QUIZ_ID")" || fail challenge "request failed"
 expect challenge "$body" '.creator.name == "smoke"'
