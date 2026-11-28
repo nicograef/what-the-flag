@@ -19,32 +19,33 @@ import (
 
 // Repo-relative paths of the importer's inputs.
 const (
-	mledozePath      = "data/sources/mledoze-countries/countries.json"
-	cldrDir          = "data/sources/cldr"
-	cldrAliasesPath  = "data/sources/cldr/supplemental/aliases.json"
-	capitalsPath     = "data/sources/wikidata/capitals.csv"
-	flagSourceDir    = "data/sources/flag-icons/4x3"
-	flagLicensePath  = "data/sources/flag-icons/LICENSE"
-	dataLicensePath  = "data/LICENSE"
-	overridesPath    = "data/overrides.json"
-	capitalsHeader   = "iso2,capital,capitalEn,capitalDe"
-	cldrAltKeyMarker = "-alt-"
+	mledozePath       = "data/sources/mledoze-countries/countries.json"
+	cldrDir           = "data/sources/cldr"
+	cldrAliasesPath   = "data/sources/cldr/supplemental/aliases.json"
+	capitalsPath      = "data/sources/wikidata/capitals.csv"
+	flagSourceDir     = "data/sources/flag-icons/4x3"
+	flagLicensePath   = "data/sources/flag-icons/LICENSE"
+	dataLicensePath   = "data/LICENSE"
+	overridesPath     = "data/overrides.json"
+	currencyUnitsPath = "data/currency-units.json"
+	capitalsHeader    = "iso2,capital,capitalEn,capitalDe"
+	cldrAltKeyMarker  = "-alt-"
 )
 
 // sources holds every input the build reads, keyed by upper-case alpha-2 code where keyed.
 type sources struct {
 	mledoze     []mledozeCountry
 	germanNames map[string]string
-	// languageNames and currencyNames are keyed by CLDR language and ISO 4217 code.
-	// A code CLDR names in one language only has an empty field.
+	// languageNames is keyed by CLDR language code; a code CLDR names in one language only has an empty field.
 	languageNames   map[string]country.Names
-	currencyNames   map[string]country.Names
 	languageAliases map[string]string
-	capitals        []capitalRow
-	flags           map[string][]byte
-	overrides       overrides
-	dataLicense     []byte
-	flagLicense     []byte
+	// currencyUnits is keyed by ISO 4217 code.
+	currencyUnits map[string]country.CurrencyLabel
+	capitals      []capitalRow
+	flags         map[string][]byte
+	overrides     overrides
+	dataLicense   []byte
+	flagLicense   []byte
 }
 
 type mledozeCountry struct {
@@ -158,7 +159,10 @@ func readSources(root *os.Root) (sources, error) {
 	if src.flags, err = readFlags(root); err != nil {
 		return sources{}, err
 	}
-	if src.overrides, err = readOverrides(root); err != nil {
+	if err := readStrict(root, overridesPath, &src.overrides); err != nil {
+		return sources{}, err
+	}
+	if err := readStrict(root, currencyUnitsPath, &src.currencyUnits); err != nil {
 		return sources{}, err
 	}
 	if src.dataLicense, err = root.ReadFile(dataLicensePath); err != nil {
@@ -188,11 +192,6 @@ type cldrLocale struct {
 		Territories map[string]string `json:"territories"`
 		Languages   map[string]string `json:"languages"`
 	} `json:"localeDisplayNames"`
-	Numbers struct {
-		Currencies map[string]struct {
-			DisplayName string `json:"displayName"`
-		} `json:"currencies"`
-	} `json:"numbers"`
 }
 
 func readCLDRLocale(root *os.Root, lang, file string) (cldrLocale, error) {
@@ -214,7 +213,7 @@ func readCLDRLocale(root *os.Root, lang, file string) (cldrLocale, error) {
 	return loc, nil
 }
 
-// readCLDR fills the German territory names, the language and currency names, and the language aliases.
+// readCLDR fills the German territory names, the language names and the language aliases.
 // Keys with -alt- are variants and are not read.
 func readCLDR(root *os.Root, src *sources) error {
 	territories, err := readCLDRLocale(root, "de", "territories.json")
@@ -229,7 +228,6 @@ func readCLDR(root *os.Root, src *sources) error {
 	}
 
 	src.languageNames = map[string]country.Names{}
-	src.currencyNames = map[string]country.Names{}
 	for _, lang := range []string{"de", "en"} {
 		languages, err := readCLDRLocale(root, lang, "languages.json")
 		if err != nil {
@@ -239,13 +237,6 @@ func readCLDR(root *os.Root, src *sources) error {
 			if !strings.Contains(key, cldrAltKeyMarker) {
 				setLabel(src.languageNames, key, lang, name)
 			}
-		}
-		currencies, err := readCLDRLocale(root, lang, "currencies.json")
-		if err != nil {
-			return err
-		}
-		for key, c := range currencies.Numbers.Currencies {
-			setLabel(src.currencyNames, key, lang, c.DisplayName)
 		}
 	}
 
@@ -336,16 +327,16 @@ func readFlags(root *os.Root) (map[string][]byte, error) {
 	return flags, nil
 }
 
-func readOverrides(root *os.Root) (overrides, error) {
-	raw, err := root.ReadFile(overridesPath)
+// readStrict decodes a curated JSON file into v and rejects unknown fields.
+func readStrict(root *os.Root, name string, v any) error {
+	raw, err := root.ReadFile(name)
 	if err != nil {
-		return overrides{}, err
+		return err
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
-	var o overrides
-	if err := dec.Decode(&o); err != nil {
-		return overrides{}, fmt.Errorf("%s: %w", overridesPath, err)
+	if err := dec.Decode(v); err != nil {
+		return fmt.Errorf("%s: %w", name, err)
 	}
-	return o, nil
+	return nil
 }

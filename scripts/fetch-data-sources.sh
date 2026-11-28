@@ -8,7 +8,7 @@
 # What it does:
 #   1. Fetches each named source, or every source when none is named, into a temporary directory:
 #      mledoze/countries at MLEDOZE_REV, cldr-json at CLDR_TAG (sparse: the de territory names,
-#      the de and en language and currency names, the language aliases), flag-icons at FLAG_ICONS_TAG, and the Wikidata
+#      the de and en language names, the language aliases), flag-icons at FLAG_ICONS_TAG, and the Wikidata
 #      capitals.csv by POSTing data/sources/wikidata/capitals.rq to the SPARQL endpoint
 #   2. Only after every download succeeded, replaces each named data/sources/<source>/ with the
 #      files the importer reads plus the source's LICENSE, and writes capitals.csv as served (CRLF)
@@ -28,7 +28,6 @@ DATA_DIR="${DATA_DIR:-$PROJECT_ROOT/data}"
 SOURCES_DIR="$DATA_DIR/sources"
 QUERY_FILE="$SOURCES_DIR/wikidata/capitals.rq"
 CLDR_NAMES="cldr-json/cldr-localenames-full"
-CLDR_NUMBERS="cldr-json/cldr-numbers-full"
 CLDR_CORE="cldr-json/cldr-core"
 CLDR_LOCALES=(de en)
 ALL_SOURCES=(mledoze cldr wikidata flag-icons)
@@ -79,13 +78,12 @@ if selected cldr; then
     --filter=blob:none --sparse https://github.com/unicode-org/cldr-json.git "$WORK_DIR/cldr"
   sparse_paths=("$CLDR_CORE/supplemental")
   for locale in "${CLDR_LOCALES[@]}"; do
-    sparse_paths+=("$CLDR_NAMES/main/$locale" "$CLDR_NUMBERS/main/$locale")
+    sparse_paths+=("$CLDR_NAMES/main/$locale")
   done
   git -C "$WORK_DIR/cldr" sparse-checkout set "${sparse_paths[@]}"
   for locale in "${CLDR_LOCALES[@]}"; do
     mkdir -p "$STAGE/cldr/$locale"
-    cp "$WORK_DIR/cldr/$CLDR_NAMES/main/$locale/languages.json" \
-      "$WORK_DIR/cldr/$CLDR_NUMBERS/main/$locale/currencies.json" "$STAGE/cldr/$locale/"
+    cp "$WORK_DIR/cldr/$CLDR_NAMES/main/$locale/languages.json" "$STAGE/cldr/$locale/"
   done
   cp "$WORK_DIR/cldr/$CLDR_NAMES/main/de/territories.json" "$STAGE/cldr/de/"
   mkdir -p "$STAGE/cldr/supplemental"

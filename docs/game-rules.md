@@ -28,6 +28,8 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 - Continents are Africa, Americas, Asia, Europe and Oceania.
 - A country that spans or is also counted in a second continent, such as Russia, Turkey or Cyprus, has a main one, the correct option. Its other continent is never offered.
 - A country's languages are those official at national level, or its de facto national language where none is official. Regional and minority languages do not count.
+- A currency option shows the unit name without the country, such as Peso or Dollar.
+- No two options of a currency question share a currency family, such as Rupee and Rupiah.
 
 ## Runs
 

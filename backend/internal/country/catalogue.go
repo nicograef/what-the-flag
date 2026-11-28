@@ -42,15 +42,21 @@ func (c *Catalogue) Pool() []Country {
 
 // Label returns the names of an attribute code, such as a country's language, currency or region.
 func (c *Catalogue) Label(kind LabelKind, code string) (Names, bool) {
-	var labels map[string]Names
 	switch kind {
 	case LabelLanguage:
-		labels = c.labels.Languages
+		n, ok := c.labels.Languages[code]
+		return n, ok
 	case LabelCurrency:
-		labels = c.labels.Currencies
+		l, ok := c.labels.Currencies[code]
+		return l.Names, ok
 	case LabelRegion:
-		labels = c.labels.Regions
+		n, ok := c.labels.Regions[code]
+		return n, ok
 	}
-	n, ok := labels[code]
-	return n, ok
+	return Names{}, false
+}
+
+// CurrencyFamily returns the family of an ISO 4217 code, or "" for a code the pool does not use.
+func (c *Catalogue) CurrencyFamily(code string) string {
+	return c.labels.Currencies[code].Family
 }

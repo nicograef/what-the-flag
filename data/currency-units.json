@@ -1,0 +1,717 @@
+{
+  "AED": {
+    "de": "Dirham",
+    "en": "Dirham",
+    "family": "dirham"
+  },
+  "AFN": {
+    "de": "Afghani",
+    "en": "Afghani",
+    "family": "afghani"
+  },
+  "ALL": {
+    "de": "Lek",
+    "en": "Lek",
+    "family": "lek"
+  },
+  "AMD": {
+    "de": "Dram",
+    "en": "Dram",
+    "family": "dram"
+  },
+  "AOA": {
+    "de": "Kwanza",
+    "en": "Kwanza",
+    "family": "kwanza"
+  },
+  "ARS": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "AUD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "AZN": {
+    "de": "Manat",
+    "en": "Manat",
+    "family": "manat"
+  },
+  "BAM": {
+    "de": "Konvertible Mark",
+    "en": "Convertible mark",
+    "family": "convertible-mark"
+  },
+  "BBD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "BDT": {
+    "de": "Taka",
+    "en": "Taka",
+    "family": "taka"
+  },
+  "BHD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "BIF": {
+    "de": "Franc",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "BND": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "BOB": {
+    "de": "Boliviano",
+    "en": "Boliviano",
+    "family": "boliviano"
+  },
+  "BRL": {
+    "de": "Real",
+    "en": "Real",
+    "family": "real"
+  },
+  "BSD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "BTN": {
+    "de": "Ngultrum",
+    "en": "Ngultrum",
+    "family": "ngultrum"
+  },
+  "BWP": {
+    "de": "Pula",
+    "en": "Pula",
+    "family": "pula"
+  },
+  "BYN": {
+    "de": "Rubel",
+    "en": "Ruble",
+    "family": "ruble"
+  },
+  "BZD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "CAD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "CDF": {
+    "de": "Franc",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "CHF": {
+    "de": "Franken",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "CLP": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "CNY": {
+    "de": "Yuan",
+    "en": "Yuan",
+    "family": "yuan"
+  },
+  "COP": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "CRC": {
+    "de": "Colón",
+    "en": "Colón",
+    "family": "colón"
+  },
+  "CUP": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "CVE": {
+    "de": "Escudo",
+    "en": "Escudo",
+    "family": "escudo"
+  },
+  "CZK": {
+    "de": "Krone",
+    "en": "Koruna",
+    "family": "krone"
+  },
+  "DJF": {
+    "de": "Franc",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "DKK": {
+    "de": "Krone",
+    "en": "Krone",
+    "family": "krone"
+  },
+  "DOP": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "DZD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "EGP": {
+    "de": "Pfund",
+    "en": "Pound",
+    "family": "pound"
+  },
+  "ERN": {
+    "de": "Nakfa",
+    "en": "Nakfa",
+    "family": "nakfa"
+  },
+  "ETB": {
+    "de": "Birr",
+    "en": "Birr",
+    "family": "birr"
+  },
+  "EUR": {
+    "de": "Euro",
+    "en": "Euro",
+    "family": "euro"
+  },
+  "FJD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "GBP": {
+    "de": "Pfund",
+    "en": "Pound",
+    "family": "pound"
+  },
+  "GEL": {
+    "de": "Lari",
+    "en": "Lari",
+    "family": "lari"
+  },
+  "GHS": {
+    "de": "Cedi",
+    "en": "Cedi",
+    "family": "cedi"
+  },
+  "GMD": {
+    "de": "Dalasi",
+    "en": "Dalasi",
+    "family": "dalasi"
+  },
+  "GNF": {
+    "de": "Franc",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "GTQ": {
+    "de": "Quetzal",
+    "en": "Quetzal",
+    "family": "quetzal"
+  },
+  "GYD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "HNL": {
+    "de": "Lempira",
+    "en": "Lempira",
+    "family": "lempira"
+  },
+  "HTG": {
+    "de": "Gourde",
+    "en": "Gourde",
+    "family": "gourde"
+  },
+  "HUF": {
+    "de": "Forint",
+    "en": "Forint",
+    "family": "forint"
+  },
+  "IDR": {
+    "de": "Rupiah",
+    "en": "Rupiah",
+    "family": "rupee"
+  },
+  "ILS": {
+    "de": "Schekel",
+    "en": "Shekel",
+    "family": "shekel"
+  },
+  "INR": {
+    "de": "Rupie",
+    "en": "Rupee",
+    "family": "rupee"
+  },
+  "IQD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "IRR": {
+    "de": "Rial",
+    "en": "Rial",
+    "family": "rial"
+  },
+  "ISK": {
+    "de": "Krone",
+    "en": "Króna",
+    "family": "krone"
+  },
+  "JMD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "JOD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "JPY": {
+    "de": "Yen",
+    "en": "Yen",
+    "family": "yen"
+  },
+  "KES": {
+    "de": "Schilling",
+    "en": "Shilling",
+    "family": "shilling"
+  },
+  "KGS": {
+    "de": "Som",
+    "en": "Som",
+    "family": "som"
+  },
+  "KHR": {
+    "de": "Riel",
+    "en": "Riel",
+    "family": "riel"
+  },
+  "KMF": {
+    "de": "Franc",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "KPW": {
+    "de": "Won",
+    "en": "Won",
+    "family": "won"
+  },
+  "KRW": {
+    "de": "Won",
+    "en": "Won",
+    "family": "won"
+  },
+  "KWD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "KZT": {
+    "de": "Tenge",
+    "en": "Tenge",
+    "family": "tenge"
+  },
+  "LAK": {
+    "de": "Kip",
+    "en": "Kip",
+    "family": "kip"
+  },
+  "LBP": {
+    "de": "Pfund",
+    "en": "Pound",
+    "family": "pound"
+  },
+  "LKR": {
+    "de": "Rupie",
+    "en": "Rupee",
+    "family": "rupee"
+  },
+  "LRD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "LSL": {
+    "de": "Loti",
+    "en": "Loti",
+    "family": "loti"
+  },
+  "LYD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "MAD": {
+    "de": "Dirham",
+    "en": "Dirham",
+    "family": "dirham"
+  },
+  "MDL": {
+    "de": "Leu",
+    "en": "Leu",
+    "family": "leu"
+  },
+  "MGA": {
+    "de": "Ariary",
+    "en": "Ariary",
+    "family": "ariary"
+  },
+  "MKD": {
+    "de": "Denar",
+    "en": "Denar",
+    "family": "dinar"
+  },
+  "MMK": {
+    "de": "Kyat",
+    "en": "Kyat",
+    "family": "kyat"
+  },
+  "MNT": {
+    "de": "Tugrik",
+    "en": "Tögrög",
+    "family": "tögrög"
+  },
+  "MRU": {
+    "de": "Ouguiya",
+    "en": "Ouguiya",
+    "family": "ouguiya"
+  },
+  "MUR": {
+    "de": "Rupie",
+    "en": "Rupee",
+    "family": "rupee"
+  },
+  "MVR": {
+    "de": "Rufiyaa",
+    "en": "Rufiyaa",
+    "family": "rupee"
+  },
+  "MWK": {
+    "de": "Kwacha",
+    "en": "Kwacha",
+    "family": "kwacha"
+  },
+  "MXN": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "MYR": {
+    "de": "Ringgit",
+    "en": "Ringgit",
+    "family": "ringgit"
+  },
+  "MZN": {
+    "de": "Metical",
+    "en": "Metical",
+    "family": "metical"
+  },
+  "NAD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "NGN": {
+    "de": "Naira",
+    "en": "Naira",
+    "family": "naira"
+  },
+  "NIO": {
+    "de": "Córdoba",
+    "en": "Córdoba",
+    "family": "córdoba"
+  },
+  "NOK": {
+    "de": "Krone",
+    "en": "Krone",
+    "family": "krone"
+  },
+  "NPR": {
+    "de": "Rupie",
+    "en": "Rupee",
+    "family": "rupee"
+  },
+  "NZD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "OMR": {
+    "de": "Rial",
+    "en": "Rial",
+    "family": "rial"
+  },
+  "PAB": {
+    "de": "Balboa",
+    "en": "Balboa",
+    "family": "balboa"
+  },
+  "PEN": {
+    "de": "Sol",
+    "en": "Sol",
+    "family": "sol"
+  },
+  "PGK": {
+    "de": "Kina",
+    "en": "Kina",
+    "family": "kina"
+  },
+  "PHP": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "PKR": {
+    "de": "Rupie",
+    "en": "Rupee",
+    "family": "rupee"
+  },
+  "PLN": {
+    "de": "Złoty",
+    "en": "Zloty",
+    "family": "zloty"
+  },
+  "PYG": {
+    "de": "Guaraní",
+    "en": "Guarani",
+    "family": "guarani"
+  },
+  "QAR": {
+    "de": "Rial",
+    "en": "Riyal",
+    "family": "rial"
+  },
+  "RON": {
+    "de": "Leu",
+    "en": "Leu",
+    "family": "leu"
+  },
+  "RSD": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "RUB": {
+    "de": "Rubel",
+    "en": "Ruble",
+    "family": "ruble"
+  },
+  "RWF": {
+    "de": "Franc",
+    "en": "Franc",
+    "family": "franc"
+  },
+  "SAR": {
+    "de": "Rial",
+    "en": "Riyal",
+    "family": "rial"
+  },
+  "SBD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "SCR": {
+    "de": "Rupie",
+    "en": "Rupee",
+    "family": "rupee"
+  },
+  "SDG": {
+    "de": "Pfund",
+    "en": "Pound",
+    "family": "pound"
+  },
+  "SEK": {
+    "de": "Krone",
+    "en": "Krona",
+    "family": "krone"
+  },
+  "SGD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "SLE": {
+    "de": "Leone",
+    "en": "Leone",
+    "family": "leone"
+  },
+  "SOS": {
+    "de": "Schilling",
+    "en": "Shilling",
+    "family": "shilling"
+  },
+  "SRD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "SSP": {
+    "de": "Pfund",
+    "en": "Pound",
+    "family": "pound"
+  },
+  "STN": {
+    "de": "Dobra",
+    "en": "Dobra",
+    "family": "dobra"
+  },
+  "SYP": {
+    "de": "Pfund",
+    "en": "Pound",
+    "family": "pound"
+  },
+  "SZL": {
+    "de": "Lilangeni",
+    "en": "Lilangeni",
+    "family": "lilangeni"
+  },
+  "THB": {
+    "de": "Baht",
+    "en": "Baht",
+    "family": "baht"
+  },
+  "TJS": {
+    "de": "Somoni",
+    "en": "Somoni",
+    "family": "som"
+  },
+  "TMT": {
+    "de": "Manat",
+    "en": "Manat",
+    "family": "manat"
+  },
+  "TND": {
+    "de": "Dinar",
+    "en": "Dinar",
+    "family": "dinar"
+  },
+  "TOP": {
+    "de": "Paʻanga",
+    "en": "Paʻanga",
+    "family": "paʻanga"
+  },
+  "TRY": {
+    "de": "Lira",
+    "en": "Lira",
+    "family": "lira"
+  },
+  "TTD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "TWD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "TZS": {
+    "de": "Schilling",
+    "en": "Shilling",
+    "family": "shilling"
+  },
+  "UAH": {
+    "de": "Hrywnja",
+    "en": "Hryvnia",
+    "family": "hryvnia"
+  },
+  "UGX": {
+    "de": "Schilling",
+    "en": "Shilling",
+    "family": "shilling"
+  },
+  "USD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "UYU": {
+    "de": "Peso",
+    "en": "Peso",
+    "family": "peso"
+  },
+  "UZS": {
+    "de": "Sum",
+    "en": "Som",
+    "family": "som"
+  },
+  "VES": {
+    "de": "Bolívar",
+    "en": "Bolívar",
+    "family": "bolívar"
+  },
+  "VND": {
+    "de": "Dong",
+    "en": "Dong",
+    "family": "dong"
+  },
+  "VUV": {
+    "de": "Vatu",
+    "en": "Vatu",
+    "family": "vatu"
+  },
+  "WST": {
+    "de": "Tala",
+    "en": "Tala",
+    "family": "tala"
+  },
+  "XAF": {
+    "de": "CFA-Franc",
+    "en": "CFA franc",
+    "family": "franc"
+  },
+  "XCD": {
+    "de": "Dollar",
+    "en": "Dollar",
+    "family": "dollar"
+  },
+  "XOF": {
+    "de": "CFA-Franc",
+    "en": "CFA franc",
+    "family": "franc"
+  },
+  "YER": {
+    "de": "Rial",
+    "en": "Rial",
+    "family": "rial"
+  },
+  "ZAR": {
+    "de": "Rand",
+    "en": "Rand",
+    "family": "rand"
+  },
+  "ZMW": {
+    "de": "Kwacha",
+    "en": "Kwacha",
+    "family": "kwacha"
+  },
+  "ZWG": {
+    "de": "ZiG",
+    "en": "ZiG",
+    "family": "zig"
+  }
+}

@@ -29,9 +29,16 @@ type Country struct {
 // Labels names every attribute code the pool uses, per kind: CLDR language codes,
 // ISO 4217 currency codes and regions.
 type Labels struct {
-	Languages  map[string]Names `json:"languages"`
-	Currencies map[string]Names `json:"currencies"`
-	Regions    map[string]Names `json:"regions"`
+	Languages  map[string]Names         `json:"languages"`
+	Currencies map[string]CurrencyLabel `json:"currencies"`
+	Regions    map[string]Names         `json:"regions"`
+}
+
+// CurrencyLabel names a currency by its unit without the country, such as Peso, and its family.
+// A family groups units a player could mistake for one another, such as Rupee and Rupiah.
+type CurrencyLabel struct {
+	Names
+	Family string `json:"family"`
 }
 
 // Dataset is the shape of dataset/countries.json.

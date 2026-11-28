@@ -125,6 +125,7 @@ func clashes(c *country.Country, picked []*country.Country, answer Attr, flag bo
 
 // valueOptions returns one of the target's values and three values it lacks, or nil when fewer than three qualify.
 // A region the target is also counted in is no distractor, nor, in a flag type, a value of the target's look-alike.
+// No two currency options share a family.
 func valueOptions(cat Catalogue, pool []country.Country, target *country.Country, t QuestionType, rnd Rand) []string {
 	answer := t.Answer
 	own := values(target, answer)
@@ -133,15 +134,31 @@ func valueOptions(cat Catalogue, pool []country.Country, target *country.Country
 	}
 	kind := labelKind(answer)
 	seenCode := make(map[string]bool, 2*len(pool))
+	seenFamily := map[string]bool{}
 	var seen []country.Names
-	taken := func(l country.Names) bool {
+	family := func(v string) string {
+		if answer != AttrCurrency {
+			return ""
+		}
+		return cat.CurrencyFamily(v)
+	}
+	taken := func(v string, l country.Names) bool {
+		if f := family(v); f != "" && seenFamily[f] {
+			return true
+		}
 		return slices.ContainsFunc(seen, func(s country.Names) bool { return s.De == l.De || s.En == l.En })
+	}
+	take := func(v string, l country.Names) {
+		seen = append(seen, l)
+		if f := family(v); f != "" {
+			seenFamily[f] = true
+		}
 	}
 	block := func(vs []string) {
 		for _, v := range vs {
 			seenCode[v] = true
 			if l, ok := cat.Label(kind, v); ok {
-				seen = append(seen, l)
+				take(v, l)
 			}
 		}
 	}
@@ -179,10 +196,10 @@ func valueOptions(cat Catalogue, pool []country.Country, target *country.Country
 	options := []string{own[rnd.IntN(len(own))]}
 	for _, v := range candidates {
 		l, ok := cat.Label(kind, v)
-		if !ok || taken(l) {
+		if !ok || taken(v, l) {
 			continue
 		}
-		seen = append(seen, l)
+		take(v, l)
 		options = append(options, v)
 		if len(options) == 4 {
 			return options

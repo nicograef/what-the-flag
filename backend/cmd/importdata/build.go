@@ -68,7 +68,7 @@ func build(src sources) (country.Dataset, []string) {
 	capitals := b.capitals()
 	lookalikes := b.lookalikes()
 	otherRegions := b.otherRegions()
-	languages := b.codeLists("languages", b.src.overrides.Languages, src.languageNames, func(c mledozeCountry) []string {
+	languages := b.codeLists("languages", b.src.overrides.Languages, func(c mledozeCountry) []string {
 		var codes []string
 		for _, code := range c.Languages {
 			if alias, ok := src.languageAliases[code]; ok {
@@ -78,7 +78,7 @@ func build(src sources) (country.Dataset, []string) {
 		}
 		return codes
 	})
-	currencies := b.codeLists("currencies", b.src.overrides.Currencies, src.currencyNames, func(c mledozeCountry) []string {
+	currencies := b.codeLists("currencies", b.src.overrides.Currencies, func(c mledozeCountry) []string {
 		return slices.Clone(c.Currencies)
 	})
 	fame := b.fameTiers()
@@ -102,16 +102,36 @@ func build(src sources) (country.Dataset, []string) {
 			Lookalikes:   append([]string{}, lookalikes[code]...),
 		})
 	}
-	labels := country.Labels{Languages: map[string]country.Names{}, Currencies: map[string]country.Names{}, Regions: map[string]country.Names{}}
+	labels := country.Labels{Languages: map[string]country.Names{}, Currencies: map[string]country.CurrencyLabel{}, Regions: map[string]country.Names{}}
 	for _, c := range countries {
 		for _, code := range c.Languages {
-			labels.Languages[code] = src.languageNames[code]
+			n := src.languageNames[code]
+			if n.De == "" || n.En == "" {
+				b.p.add("%s: language code %s lacks a German or English CLDR name %+v", c.Code, code, n)
+			}
+			if yearRangeRe.MatchString(n.De) || yearRangeRe.MatchString(n.En) {
+				b.p.add("%s: language code %s is withdrawn, its CLDR name is %+v", c.Code, code, n)
+			}
+			labels.Languages[code] = n
 		}
 		for _, code := range c.Currencies {
-			labels.Currencies[code] = src.currencyNames[code]
+			u, ok := src.currencyUnits[code]
+			if !ok {
+				b.p.add("%s: currency code %s has no entry in %s", c.Code, code, currencyUnitsPath)
+			}
+			labels.Currencies[code] = u
 		}
 		if n, ok := regionLabels[c.Region]; ok {
 			labels.Regions[c.Region] = n
+		}
+	}
+	for _, code := range slices.Sorted(maps.Keys(src.currencyUnits)) {
+		u := src.currencyUnits[code]
+		if u.De == "" || u.En == "" || u.Family == "" {
+			b.p.add("%s %s: de, en or family is empty in %+v", currencyUnitsPath, code, u)
+		}
+		if _, used := labels.Currencies[code]; !used {
+			b.p.add("%s %s: no pool country uses it", currencyUnitsPath, code)
 		}
 	}
 	ds := country.Dataset{Countries: countries, Labels: labels}
@@ -348,7 +368,7 @@ func (b *builder) otherRegions() map[string][]string {
 }
 
 // codeLists returns each pool entry's sorted attribute codes: the source's, edited by the section's overrides.
-func (b *builder) codeLists(section string, ov map[string]listOverride, names map[string]country.Names, source func(mledozeCountry) []string) map[string][]string {
+func (b *builder) codeLists(section string, ov map[string]listOverride, source func(mledozeCountry) []string) map[string][]string {
 	lists := make(map[string][]string, len(b.pool))
 	for _, code := range b.pool {
 		lists[code] = source(b.byCode[code])
@@ -387,15 +407,6 @@ func (b *builder) codeLists(section string, ov map[string]listOverride, names ma
 		list = slices.Compact(list)
 		if len(list) == 0 {
 			b.p.add("%s: no %s", code, section)
-		}
-		for _, v := range list {
-			n := names[v]
-			if n.De == "" || n.En == "" {
-				b.p.add("%s: %s code %s lacks a German or English CLDR name %+v", code, section, v, n)
-			}
-			if yearRangeRe.MatchString(n.De) || yearRangeRe.MatchString(n.En) {
-				b.p.add("%s: %s code %s is withdrawn, its CLDR name is %+v", code, section, v, n)
-			}
 		}
 		if list == nil {
 			list = []string{}

@@ -4983,576 +4983,719 @@
     },
     "currencies": {
       "AED": {
-        "de": "VAE-Dirham",
-        "en": "United Arab Emirates Dirham"
+        "de": "Dirham",
+        "en": "Dirham",
+        "family": "dirham"
       },
       "AFN": {
-        "de": "Afghanischer Afghani",
-        "en": "Afghan Afghani"
+        "de": "Afghani",
+        "en": "Afghani",
+        "family": "afghani"
       },
       "ALL": {
-        "de": "Albanischer Lek",
-        "en": "Albanian Lek"
+        "de": "Lek",
+        "en": "Lek",
+        "family": "lek"
       },
       "AMD": {
-        "de": "Armenischer Dram",
-        "en": "Armenian Dram"
+        "de": "Dram",
+        "en": "Dram",
+        "family": "dram"
       },
       "AOA": {
-        "de": "Angolanischer Kwanza",
-        "en": "Angolan Kwanza"
+        "de": "Kwanza",
+        "en": "Kwanza",
+        "family": "kwanza"
       },
       "ARS": {
-        "de": "Argentinischer Peso",
-        "en": "Argentine Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "AUD": {
-        "de": "Australischer Dollar",
-        "en": "Australian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "AZN": {
-        "de": "Aserbaidschan-Manat",
-        "en": "Azerbaijani Manat"
+        "de": "Manat",
+        "en": "Manat",
+        "family": "manat"
       },
       "BAM": {
-        "de": "Konvertible Mark Bosnien und Herzegowina",
-        "en": "Bosnia-Herzegovina Convertible Mark"
+        "de": "Konvertible Mark",
+        "en": "Convertible mark",
+        "family": "convertible-mark"
       },
       "BBD": {
-        "de": "Barbados-Dollar",
-        "en": "Barbadian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "BDT": {
-        "de": "Bangladesch-Taka",
-        "en": "Bangladeshi Taka"
+        "de": "Taka",
+        "en": "Taka",
+        "family": "taka"
       },
       "BHD": {
-        "de": "Bahrain-Dinar",
-        "en": "Bahraini Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "BIF": {
-        "de": "Burundi-Franc",
-        "en": "Burundian Franc"
+        "de": "Franc",
+        "en": "Franc",
+        "family": "franc"
       },
       "BND": {
-        "de": "Brunei-Dollar",
-        "en": "Brunei Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "BOB": {
-        "de": "Bolivianischer Boliviano",
-        "en": "Bolivian Boliviano"
+        "de": "Boliviano",
+        "en": "Boliviano",
+        "family": "boliviano"
       },
       "BRL": {
-        "de": "Brasilianischer Real",
-        "en": "Brazilian Real"
+        "de": "Real",
+        "en": "Real",
+        "family": "real"
       },
       "BSD": {
-        "de": "Bahamas-Dollar",
-        "en": "Bahamian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "BTN": {
-        "de": "Bhutan-Ngultrum",
-        "en": "Bhutanese Ngultrum"
+        "de": "Ngultrum",
+        "en": "Ngultrum",
+        "family": "ngultrum"
       },
       "BWP": {
-        "de": "Botswanischer Pula",
-        "en": "Botswanan Pula"
+        "de": "Pula",
+        "en": "Pula",
+        "family": "pula"
       },
       "BYN": {
-        "de": "Weißrussischer Rubel",
-        "en": "Belarusian Ruble"
+        "de": "Rubel",
+        "en": "Ruble",
+        "family": "ruble"
       },
       "BZD": {
-        "de": "Belize-Dollar",
-        "en": "Belize Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "CAD": {
-        "de": "Kanadischer Dollar",
-        "en": "Canadian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "CDF": {
-        "de": "Kongo-Franc",
-        "en": "Congolese Franc"
+        "de": "Franc",
+        "en": "Franc",
+        "family": "franc"
       },
       "CHF": {
-        "de": "Schweizer Franken",
-        "en": "Swiss Franc"
+        "de": "Franken",
+        "en": "Franc",
+        "family": "franc"
       },
       "CLP": {
-        "de": "Chilenischer Peso",
-        "en": "Chilean Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "CNY": {
-        "de": "Renminbi Yuan",
-        "en": "Chinese Yuan"
+        "de": "Yuan",
+        "en": "Yuan",
+        "family": "yuan"
       },
       "COP": {
-        "de": "Kolumbianischer Peso",
-        "en": "Colombian Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "CRC": {
-        "de": "Costa-Rica-Colón",
-        "en": "Costa Rican Colón"
+        "de": "Colón",
+        "en": "Colón",
+        "family": "colón"
       },
       "CUP": {
-        "de": "Kubanischer Peso",
-        "en": "Cuban Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "CVE": {
-        "de": "Cabo-Verde-Escudo",
-        "en": "Cape Verdean Escudo"
+        "de": "Escudo",
+        "en": "Escudo",
+        "family": "escudo"
       },
       "CZK": {
-        "de": "Tschechische Krone",
-        "en": "Czech Koruna"
+        "de": "Krone",
+        "en": "Koruna",
+        "family": "krone"
       },
       "DJF": {
-        "de": "Dschibuti-Franc",
-        "en": "Djiboutian Franc"
+        "de": "Franc",
+        "en": "Franc",
+        "family": "franc"
       },
       "DKK": {
-        "de": "Dänische Krone",
-        "en": "Danish Krone"
+        "de": "Krone",
+        "en": "Krone",
+        "family": "krone"
       },
       "DOP": {
-        "de": "Dominikanischer Peso",
-        "en": "Dominican Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "DZD": {
-        "de": "Algerischer Dinar",
-        "en": "Algerian Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "EGP": {
-        "de": "Ägyptisches Pfund",
-        "en": "Egyptian Pound"
+        "de": "Pfund",
+        "en": "Pound",
+        "family": "pound"
       },
       "ERN": {
-        "de": "Eritreischer Nakfa",
-        "en": "Eritrean Nakfa"
+        "de": "Nakfa",
+        "en": "Nakfa",
+        "family": "nakfa"
       },
       "ETB": {
-        "de": "Äthiopischer Birr",
-        "en": "Ethiopian Birr"
+        "de": "Birr",
+        "en": "Birr",
+        "family": "birr"
       },
       "EUR": {
         "de": "Euro",
-        "en": "Euro"
+        "en": "Euro",
+        "family": "euro"
       },
       "FJD": {
-        "de": "Fidschi-Dollar",
-        "en": "Fijian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "GBP": {
-        "de": "Britisches Pfund",
-        "en": "British Pound"
+        "de": "Pfund",
+        "en": "Pound",
+        "family": "pound"
       },
       "GEL": {
-        "de": "Georgischer Lari",
-        "en": "Georgian Lari"
+        "de": "Lari",
+        "en": "Lari",
+        "family": "lari"
       },
       "GHS": {
-        "de": "Ghanaischer Cedi",
-        "en": "Ghanaian Cedi"
+        "de": "Cedi",
+        "en": "Cedi",
+        "family": "cedi"
       },
       "GMD": {
-        "de": "Gambia-Dalasi",
-        "en": "Gambian Dalasi"
+        "de": "Dalasi",
+        "en": "Dalasi",
+        "family": "dalasi"
       },
       "GNF": {
-        "de": "Guinea-Franc",
-        "en": "Guinean Franc"
+        "de": "Franc",
+        "en": "Franc",
+        "family": "franc"
       },
       "GTQ": {
-        "de": "Guatemaltekischer Quetzal",
-        "en": "Guatemalan Quetzal"
+        "de": "Quetzal",
+        "en": "Quetzal",
+        "family": "quetzal"
       },
       "GYD": {
-        "de": "Guyana-Dollar",
-        "en": "Guyanaese Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "HNL": {
-        "de": "Honduras-Lempira",
-        "en": "Honduran Lempira"
+        "de": "Lempira",
+        "en": "Lempira",
+        "family": "lempira"
       },
       "HTG": {
-        "de": "Haitianische Gourde",
-        "en": "Haitian Gourde"
+        "de": "Gourde",
+        "en": "Gourde",
+        "family": "gourde"
       },
       "HUF": {
-        "de": "Ungarischer Forint",
-        "en": "Hungarian Forint"
+        "de": "Forint",
+        "en": "Forint",
+        "family": "forint"
       },
       "IDR": {
-        "de": "Indonesische Rupiah",
-        "en": "Indonesian Rupiah"
+        "de": "Rupiah",
+        "en": "Rupiah",
+        "family": "rupee"
       },
       "ILS": {
-        "de": "Israelischer Neuer Schekel",
-        "en": "Israeli New Shekel"
+        "de": "Schekel",
+        "en": "Shekel",
+        "family": "shekel"
       },
       "INR": {
-        "de": "Indische Rupie",
-        "en": "Indian Rupee"
+        "de": "Rupie",
+        "en": "Rupee",
+        "family": "rupee"
       },
       "IQD": {
-        "de": "Irakischer Dinar",
-        "en": "Iraqi Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "IRR": {
-        "de": "Iranischer Rial",
-        "en": "Iranian Rial"
+        "de": "Rial",
+        "en": "Rial",
+        "family": "rial"
       },
       "ISK": {
-        "de": "Isländische Krone",
-        "en": "Icelandic Króna"
+        "de": "Krone",
+        "en": "Króna",
+        "family": "krone"
       },
       "JMD": {
-        "de": "Jamaika-Dollar",
-        "en": "Jamaican Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "JOD": {
-        "de": "Jordanischer Dinar",
-        "en": "Jordanian Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "JPY": {
-        "de": "Japanischer Yen",
-        "en": "Japanese Yen"
+        "de": "Yen",
+        "en": "Yen",
+        "family": "yen"
       },
       "KES": {
-        "de": "Kenia-Schilling",
-        "en": "Kenyan Shilling"
+        "de": "Schilling",
+        "en": "Shilling",
+        "family": "shilling"
       },
       "KGS": {
-        "de": "Kirgisischer Som",
-        "en": "Kyrgyz Som"
+        "de": "Som",
+        "en": "Som",
+        "family": "som"
       },
       "KHR": {
-        "de": "Kambodschanischer Riel",
-        "en": "Cambodian Riel"
+        "de": "Riel",
+        "en": "Riel",
+        "family": "riel"
       },
       "KMF": {
-        "de": "Komoren-Franc",
-        "en": "Comorian Franc"
+        "de": "Franc",
+        "en": "Franc",
+        "family": "franc"
       },
       "KPW": {
-        "de": "Nordkoreanischer Won",
-        "en": "North Korean Won"
+        "de": "Won",
+        "en": "Won",
+        "family": "won"
       },
       "KRW": {
-        "de": "Südkoreanischer Won",
-        "en": "South Korean Won"
+        "de": "Won",
+        "en": "Won",
+        "family": "won"
       },
       "KWD": {
-        "de": "Kuwait-Dinar",
-        "en": "Kuwaiti Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "KZT": {
-        "de": "Kasachischer Tenge",
-        "en": "Kazakhstani Tenge"
+        "de": "Tenge",
+        "en": "Tenge",
+        "family": "tenge"
       },
       "LAK": {
-        "de": "Laotischer Kip",
-        "en": "Laotian Kip"
+        "de": "Kip",
+        "en": "Kip",
+        "family": "kip"
       },
       "LBP": {
-        "de": "Libanesisches Pfund",
-        "en": "Lebanese Pound"
+        "de": "Pfund",
+        "en": "Pound",
+        "family": "pound"
       },
       "LKR": {
-        "de": "Sri-Lanka-Rupie",
-        "en": "Sri Lankan Rupee"
+        "de": "Rupie",
+        "en": "Rupee",
+        "family": "rupee"
       },
       "LRD": {
-        "de": "Liberianischer Dollar",
-        "en": "Liberian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "LSL": {
         "de": "Loti",
-        "en": "Lesotho Loti"
+        "en": "Loti",
+        "family": "loti"
       },
       "LYD": {
-        "de": "Libyscher Dinar",
-        "en": "Libyan Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "MAD": {
-        "de": "Marokkanischer Dirham",
-        "en": "Moroccan Dirham"
+        "de": "Dirham",
+        "en": "Dirham",
+        "family": "dirham"
       },
       "MDL": {
-        "de": "Moldau-Leu",
-        "en": "Moldovan Leu"
+        "de": "Leu",
+        "en": "Leu",
+        "family": "leu"
       },
       "MGA": {
-        "de": "Madagaskar-Ariary",
-        "en": "Malagasy Ariary"
+        "de": "Ariary",
+        "en": "Ariary",
+        "family": "ariary"
       },
       "MKD": {
-        "de": "Mazedonischer Denar",
-        "en": "Macedonian Denar"
+        "de": "Denar",
+        "en": "Denar",
+        "family": "dinar"
       },
       "MMK": {
-        "de": "Myanmarischer Kyat",
-        "en": "Myanmar Kyat"
+        "de": "Kyat",
+        "en": "Kyat",
+        "family": "kyat"
       },
       "MNT": {
-        "de": "Mongolischer Tögrög",
-        "en": "Mongolian Tugrik"
+        "de": "Tugrik",
+        "en": "Tögrög",
+        "family": "tögrög"
       },
       "MRU": {
-        "de": "Mauretanischer Ouguiya",
-        "en": "Mauritanian Ouguiya"
+        "de": "Ouguiya",
+        "en": "Ouguiya",
+        "family": "ouguiya"
       },
       "MUR": {
-        "de": "Mauritius-Rupie",
-        "en": "Mauritian Rupee"
+        "de": "Rupie",
+        "en": "Rupee",
+        "family": "rupee"
       },
       "MVR": {
-        "de": "Malediven-Rufiyaa",
-        "en": "Maldivian Rufiyaa"
+        "de": "Rufiyaa",
+        "en": "Rufiyaa",
+        "family": "rupee"
       },
       "MWK": {
-        "de": "Malawi-Kwacha",
-        "en": "Malawian Kwacha"
+        "de": "Kwacha",
+        "en": "Kwacha",
+        "family": "kwacha"
       },
       "MXN": {
-        "de": "Mexikanischer Peso",
-        "en": "Mexican Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "MYR": {
-        "de": "Malaysischer Ringgit",
-        "en": "Malaysian Ringgit"
+        "de": "Ringgit",
+        "en": "Ringgit",
+        "family": "ringgit"
       },
       "MZN": {
-        "de": "Mosambikanischer Metical",
-        "en": "Mozambican Metical"
+        "de": "Metical",
+        "en": "Metical",
+        "family": "metical"
       },
       "NAD": {
-        "de": "Namibia-Dollar",
-        "en": "Namibian Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "NGN": {
-        "de": "Nigerianischer Naira",
-        "en": "Nigerian Naira"
+        "de": "Naira",
+        "en": "Naira",
+        "family": "naira"
       },
       "NIO": {
-        "de": "Nicaragua-Córdoba",
-        "en": "Nicaraguan Córdoba"
+        "de": "Córdoba",
+        "en": "Córdoba",
+        "family": "córdoba"
       },
       "NOK": {
-        "de": "Norwegische Krone",
-        "en": "Norwegian Krone"
+        "de": "Krone",
+        "en": "Krone",
+        "family": "krone"
       },
       "NPR": {
-        "de": "Nepalesische Rupie",
-        "en": "Nepalese Rupee"
+        "de": "Rupie",
+        "en": "Rupee",
+        "family": "rupee"
       },
       "NZD": {
-        "de": "Neuseeland-Dollar",
-        "en": "New Zealand Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "OMR": {
-        "de": "Omanischer Rial",
-        "en": "Omani Rial"
+        "de": "Rial",
+        "en": "Rial",
+        "family": "rial"
       },
       "PAB": {
-        "de": "Panamaischer Balboa",
-        "en": "Panamanian Balboa"
+        "de": "Balboa",
+        "en": "Balboa",
+        "family": "balboa"
       },
       "PEN": {
-        "de": "Peruanischer Sol",
-        "en": "Peruvian Sol"
+        "de": "Sol",
+        "en": "Sol",
+        "family": "sol"
       },
       "PGK": {
-        "de": "Papua-neuguineischer Kina",
-        "en": "Papua New Guinean Kina"
+        "de": "Kina",
+        "en": "Kina",
+        "family": "kina"
       },
       "PHP": {
-        "de": "Philippinischer Peso",
-        "en": "Philippine Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "PKR": {
-        "de": "Pakistanische Rupie",
-        "en": "Pakistani Rupee"
+        "de": "Rupie",
+        "en": "Rupee",
+        "family": "rupee"
       },
       "PLN": {
-        "de": "Polnischer Złoty",
-        "en": "Polish Zloty"
+        "de": "Złoty",
+        "en": "Zloty",
+        "family": "zloty"
       },
       "PYG": {
-        "de": "Paraguayischer Guaraní",
-        "en": "Paraguayan Guarani"
+        "de": "Guaraní",
+        "en": "Guarani",
+        "family": "guarani"
       },
       "QAR": {
-        "de": "Katar-Riyal",
-        "en": "Qatari Riyal"
+        "de": "Rial",
+        "en": "Riyal",
+        "family": "rial"
       },
       "RON": {
-        "de": "Rumänischer Leu",
-        "en": "Romanian Leu"
+        "de": "Leu",
+        "en": "Leu",
+        "family": "leu"
       },
       "RSD": {
-        "de": "Serbischer Dinar",
-        "en": "Serbian Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "RUB": {
-        "de": "Russischer Rubel",
-        "en": "Russian Ruble"
+        "de": "Rubel",
+        "en": "Ruble",
+        "family": "ruble"
       },
       "RWF": {
-        "de": "Ruanda-Franc",
-        "en": "Rwandan Franc"
+        "de": "Franc",
+        "en": "Franc",
+        "family": "franc"
       },
       "SAR": {
-        "de": "Saudi-Rial",
-        "en": "Saudi Riyal"
+        "de": "Rial",
+        "en": "Riyal",
+        "family": "rial"
       },
       "SBD": {
-        "de": "Salomonen-Dollar",
-        "en": "Solomon Islands Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "SCR": {
-        "de": "Seychellen-Rupie",
-        "en": "Seychellois Rupee"
+        "de": "Rupie",
+        "en": "Rupee",
+        "family": "rupee"
       },
       "SDG": {
-        "de": "Sudanesisches Pfund",
-        "en": "Sudanese Pound"
+        "de": "Pfund",
+        "en": "Pound",
+        "family": "pound"
       },
       "SEK": {
-        "de": "Schwedische Krone",
-        "en": "Swedish Krona"
+        "de": "Krone",
+        "en": "Krona",
+        "family": "krone"
       },
       "SGD": {
-        "de": "Singapur-Dollar",
-        "en": "Singapore Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "SLE": {
-        "de": "Sierra-leonischer Leone",
-        "en": "Sierra Leonean Leone"
+        "de": "Leone",
+        "en": "Leone",
+        "family": "leone"
       },
       "SOS": {
-        "de": "Somalia-Schilling",
-        "en": "Somali Shilling"
+        "de": "Schilling",
+        "en": "Shilling",
+        "family": "shilling"
       },
       "SRD": {
-        "de": "Suriname-Dollar",
-        "en": "Surinamese Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "SSP": {
-        "de": "Südsudanesisches Pfund",
-        "en": "South Sudanese Pound"
+        "de": "Pfund",
+        "en": "Pound",
+        "family": "pound"
       },
       "STN": {
-        "de": "São-toméischer Dobra",
-        "en": "São Tomé \u0026 Príncipe Dobra"
+        "de": "Dobra",
+        "en": "Dobra",
+        "family": "dobra"
       },
       "SYP": {
-        "de": "Syrisches Pfund",
-        "en": "Syrian Pound"
+        "de": "Pfund",
+        "en": "Pound",
+        "family": "pound"
       },
       "SZL": {
-        "de": "Swasiländischer Lilangeni",
-        "en": "Swazi Lilangeni"
+        "de": "Lilangeni",
+        "en": "Lilangeni",
+        "family": "lilangeni"
       },
       "THB": {
-        "de": "Thailändischer Baht",
-        "en": "Thai Baht"
+        "de": "Baht",
+        "en": "Baht",
+        "family": "baht"
       },
       "TJS": {
-        "de": "Tadschikistan-Somoni",
-        "en": "Tajikistani Somoni"
+        "de": "Somoni",
+        "en": "Somoni",
+        "family": "som"
       },
       "TMT": {
-        "de": "Turkmenistan-Manat",
-        "en": "Turkmenistani Manat"
+        "de": "Manat",
+        "en": "Manat",
+        "family": "manat"
       },
       "TND": {
-        "de": "Tunesischer Dinar",
-        "en": "Tunisian Dinar"
+        "de": "Dinar",
+        "en": "Dinar",
+        "family": "dinar"
       },
       "TOP": {
-        "de": "Tongaischer Paʻanga",
-        "en": "Tongan Paʻanga"
+        "de": "Paʻanga",
+        "en": "Paʻanga",
+        "family": "paʻanga"
       },
       "TRY": {
-        "de": "Türkische Lira",
-        "en": "Turkish Lira"
+        "de": "Lira",
+        "en": "Lira",
+        "family": "lira"
       },
       "TTD": {
-        "de": "Trinidad-und-Tobago-Dollar",
-        "en": "Trinidad \u0026 Tobago Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "TWD": {
-        "de": "Neuer Taiwan-Dollar",
-        "en": "New Taiwan Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "TZS": {
-        "de": "Tansania-Schilling",
-        "en": "Tanzanian Shilling"
+        "de": "Schilling",
+        "en": "Shilling",
+        "family": "shilling"
       },
       "UAH": {
-        "de": "Ukrainische Hrywnja",
-        "en": "Ukrainian Hryvnia"
+        "de": "Hrywnja",
+        "en": "Hryvnia",
+        "family": "hryvnia"
       },
       "UGX": {
-        "de": "Uganda-Schilling",
-        "en": "Ugandan Shilling"
+        "de": "Schilling",
+        "en": "Shilling",
+        "family": "shilling"
       },
       "USD": {
-        "de": "US-Dollar",
-        "en": "US Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "UYU": {
-        "de": "Uruguayischer Peso",
-        "en": "Uruguayan Peso"
+        "de": "Peso",
+        "en": "Peso",
+        "family": "peso"
       },
       "UZS": {
-        "de": "Usbekistan-Sum",
-        "en": "Uzbekistani Som"
+        "de": "Sum",
+        "en": "Som",
+        "family": "som"
       },
       "VES": {
-        "de": "Venezolanischer Bolívar",
-        "en": "Venezuelan Bolívar"
+        "de": "Bolívar",
+        "en": "Bolívar",
+        "family": "bolívar"
       },
       "VND": {
-        "de": "Vietnamesischer Dong",
-        "en": "Vietnamese Dong"
+        "de": "Dong",
+        "en": "Dong",
+        "family": "dong"
       },
       "VUV": {
-        "de": "Vanuatu-Vatu",
-        "en": "Vanuatu Vatu"
+        "de": "Vatu",
+        "en": "Vatu",
+        "family": "vatu"
       },
       "WST": {
-        "de": "Samoanischer Tala",
-        "en": "Samoan Tala"
+        "de": "Tala",
+        "en": "Tala",
+        "family": "tala"
       },
       "XAF": {
-        "de": "CFA-Franc (BEAC)",
-        "en": "Central African CFA Franc"
+        "de": "CFA-Franc",
+        "en": "CFA franc",
+        "family": "franc"
       },
       "XCD": {
-        "de": "Ostkaribischer Dollar",
-        "en": "East Caribbean Dollar"
+        "de": "Dollar",
+        "en": "Dollar",
+        "family": "dollar"
       },
       "XOF": {
-        "de": "CFA-Franc (BCEAO)",
-        "en": "West African CFA Franc"
+        "de": "CFA-Franc",
+        "en": "CFA franc",
+        "family": "franc"
       },
       "YER": {
-        "de": "Jemen-Rial",
-        "en": "Yemeni Rial"
+        "de": "Rial",
+        "en": "Rial",
+        "family": "rial"
       },
       "ZAR": {
-        "de": "Südafrikanischer Rand",
-        "en": "South African Rand"
+        "de": "Rand",
+        "en": "Rand",
+        "family": "rand"
       },
       "ZMW": {
         "de": "Kwacha",
-        "en": "Zambian Kwacha"
+        "en": "Kwacha",
+        "family": "kwacha"
       },
       "ZWG": {
-        "de": "Simbabwe-Gold",
-        "en": "Zimbabwean Gold"
+        "de": "ZiG",
+        "en": "ZiG",
+        "family": "zig"
       }
     },
     "regions": {

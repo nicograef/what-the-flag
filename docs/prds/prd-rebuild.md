@@ -82,7 +82,8 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | Need | Source | Licence |
 | --- | --- | --- |
 | Country, language and currency codes, English country names, regions, area | mledoze/countries, pinned commit | ODbL-1.0 |
-| German country names; German and English language and currency names | Unicode CLDR `de` and `en`, pinned release | Unicode-3.0 |
+| German country names; German and English language names | Unicode CLDR `de` and `en`, pinned release | Unicode-3.0 |
+| German and English currency unit names and currency families | Curated in the repository | ODbL-1.0 |
 | Capital names in German and English | Wikidata SPARQL export of capitals only, checked in | CC0 |
 | Flags as 4:3 SVG | lipis/flag-icons v7.6.0 | MIT |
 

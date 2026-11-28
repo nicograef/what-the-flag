@@ -121,6 +121,13 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 			}
 		}
 		flagCountries := (q.Type.Prompt == AttrFlag || q.Type.Answer == AttrFlag) && q.Type.Answer.identifiesCountry()
+		// families holds the currency families taken: the target's and each distractor's so far.
+		families := map[string]bool{}
+		if q.Type.Answer == AttrCurrency {
+			for _, v := range own {
+				families[cat.CurrencyFamily(v)] = true
+			}
+		}
 		des, ens := map[string]bool{}, map[string]bool{}
 		for i, o := range q.Options {
 			if (i == q.Correct) != slices.Contains(own, o) {
@@ -134,6 +141,13 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 				fail("option %d text %+v is empty or repeats", i, l)
 			}
 			des[l.De], ens[l.En] = true, true
+			if q.Type.Answer == AttrCurrency && i != q.Correct {
+				f := cat.CurrencyFamily(o)
+				if f == "" || families[f] {
+					fail("option %d %q: currency family %q is empty or shared with the target or another option", i, o, f)
+				}
+				families[f] = true
+			}
 			if flagCountries {
 				for _, other := range q.Options {
 					if slices.Contains(byCode[o].Lookalikes, other) {
@@ -165,7 +179,7 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 	}
 }
 
-// fakeCatalogue is a literal pool whose labels are their codes.
+// fakeCatalogue is a literal pool whose labels and currency families are their codes.
 type fakeCatalogue []country.Country
 
 func (f fakeCatalogue) Pool() []country.Country { return slices.Clone(f) }
@@ -173,6 +187,8 @@ func (f fakeCatalogue) Pool() []country.Country { return slices.Clone(f) }
 func (f fakeCatalogue) Label(_ country.LabelKind, code string) (country.Names, bool) {
 	return country.Names{De: code, En: code}, true
 }
+
+func (f fakeCatalogue) CurrencyFamily(code string) string { return code }
 
 // fivePool is a catalogue of AA to EE in the given regions; AA's flag looks like every other.
 func fivePool(regions ...string) fakeCatalogue {
