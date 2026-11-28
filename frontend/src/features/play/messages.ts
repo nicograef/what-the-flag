@@ -5,11 +5,20 @@ import type { Locale } from "@/lib/i18n/locale";
 import { defineMessages } from "@/lib/i18n/messages";
 
 export const messages = defineMessages<{
-  title: string;
-  tagline: string;
-  rules: Record<"time" | "miss" | "harder", string>;
+  headline: string;
+  rule1: string;
+  rule2: string;
+  rule3: string;
+  yourRecord: string;
+  worldRankMeta: (rank: number) => string;
+  lastQuiz: string;
+  play: string;
   nameLabel: string;
   namePublic: string;
+  namePlaceholder: string;
+  changeName: string;
+  playingAs: (name: string) => string;
+  holdHintStart: string;
   holdToStart: string;
   start: string;
   holdToAccept: string;
@@ -58,16 +67,20 @@ export const messages = defineMessages<{
   >;
 }>({
   de: {
-    title: "What The Flag",
-    tagline:
-      "Flaggen, Länder und Hauptstädte: Wie viele Fragen schaffst du am Stück?",
-    rules: {
-      time: "15 Sekunden pro Frage",
-      miss: "Ein Fehler beendet das Spiel",
-      harder: "Wird immer schwerer",
-    },
+    headline: "Wie weit kommst du?",
+    rule1: "15 Sekunden pro Frage",
+    rule2: "Alle 5 Fragen ein Level schwerer, bis Level 10",
+    rule3: "Ein Fehler und es ist vorbei",
+    yourRecord: "Dein Rekord",
+    worldRankMeta: (rank) => `Dein bester Platz: ${rank} weltweit`,
+    lastQuiz: "Dein letztes Quiz",
+    play: "Spielen",
     nameLabel: "Dein Name",
-    namePublic: "Dein Name erscheint öffentlich in den Ranglisten.",
+    namePublic: "Erscheint öffentlich in der Rangliste.",
+    namePlaceholder: "z. B. Kim",
+    changeName: "Name ändern",
+    playingAs: (name) => `als ${name}`,
+    holdHintStart: "So antwortest du auch: halten, bis der Balken voll ist.",
     holdToStart: "Halten zum Starten",
     start: "Starten",
     holdToAccept: "Halten zum Annehmen",
@@ -147,16 +160,20 @@ export const messages = defineMessages<{
     },
   },
   en: {
-    title: "What The Flag",
-    tagline:
-      "Flags, countries and capitals: how many questions can you answer in a row?",
-    rules: {
-      time: "15 seconds per question",
-      miss: "One miss ends the run",
-      harder: "Gets harder as you go",
-    },
+    headline: "How far can you get?",
+    rule1: "15 seconds per question",
+    rule2: "One level harder every 5 questions, up to level 10",
+    rule3: "One miss and it's over",
+    yourRecord: "Your record",
+    worldRankMeta: (rank) => `Your best rank: ${rank} worldwide`,
+    lastQuiz: "Your latest quiz",
+    play: "Play",
     nameLabel: "Your name",
-    namePublic: "Your name appears publicly on the leaderboards.",
+    namePublic: "Appears publicly on the leaderboard.",
+    namePlaceholder: "e.g. Kim",
+    changeName: "Change name",
+    playingAs: (name) => `as ${name}`,
+    holdHintStart: "That's how you answer too: hold until the bar fills.",
     holdToStart: "Hold to start",
     start: "Start",
     holdToAccept: "Hold to accept",

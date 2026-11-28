@@ -418,7 +418,7 @@ describe("hold to answer", () => {
     const api = new FakeApi().respond("GET /api/me", unknownPlayer);
     fakeRun(api, sampleQuestions);
     const { user } = renderRoute("/", { api });
-    await user.type(screen.getByLabelText("Dein Name"), "Bea");
+    await user.type(await screen.findByLabelText("Dein Name"), "Bea");
     const start = screen.getByRole("button", { name: "Starten" });
     const starts = (): number =>
       api.calls.filter((c) => c.route === "POST /api/runs").length;

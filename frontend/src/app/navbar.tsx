@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Flag, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { Link, useMatch } from "react-router";
 import { messages } from "@/app/messages";
 import { useLocale } from "@/lib/i18n/locale";
@@ -22,11 +22,10 @@ export function Navbar(): ReactNode {
           to="/"
           className="-ml-1 flex h-11 items-center gap-2 rounded-chip px-1 text-xl font-extrabold whitespace-nowrap"
         >
-          <Flag
-            aria-hidden="true"
-            className="size-6 fill-accent text-accent"
-            strokeWidth={2.4}
-          />
+          <svg aria-hidden="true" viewBox="0 0 32 32" className="size-[26px]">
+            <path className="fill-foreground-muted" d="M5 3h2v27H5z" />
+            <path className="fill-accent" d="M8 4h19l-4 6 4 6H8z" />
+          </svg>
           {t.brand}
         </Link>
         <div className="flex items-center gap-1">

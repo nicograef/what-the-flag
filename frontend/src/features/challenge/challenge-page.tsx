@@ -13,8 +13,8 @@ import {
   startError,
 } from "@/features/challenge/messages";
 import { RankingTable } from "@/features/leaderboard/ranking-table";
+import { meQuery } from "@/features/play/api";
 import { NameForm } from "@/features/play/name-form";
-import { RuleChips } from "@/features/play/rule-chips";
 import { ApiError, useApiClient } from "@/lib/api";
 import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
@@ -63,6 +63,7 @@ export function ChallengePage(): ReactNode {
   const { locale } = useLocale();
   const api = useApiClient();
   const quizId = useParams().quizId ?? "";
+  const me = useQuery(meQuery(api));
   const query = useQuery({
     queryKey: ["quiz", quizId],
     queryFn: () => getChallenge(api, quizId),
@@ -124,10 +125,12 @@ export function ChallengePage(): ReactNode {
         <Creator creator={creator} />
       </div>
       {playable && (
-        <>
-          <RuleChips />
-          <NameForm quizId={query.data.id} errorText={startError} />
-        </>
+        <NameForm
+          quizId={query.data.id}
+          lastName={me.data?.lastName ?? null}
+          action="accept"
+          errorText={startError}
+        />
       )}
       <div className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold">{t.ranking}</h2>

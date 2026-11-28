@@ -12,29 +12,35 @@ function server(): FakeApi {
   return new FakeApi().respond("GET /api/me", unknownPlayer);
 }
 
-it("prefills the name from the server", async () => {
-  const api = new FakeApi().respond("GET /api/me", {
-    lastName: "Ada",
-    best: 4,
-    worldRank: 7,
-    worldBest: 4,
-    lastQuizId: "00000000-0000-4000-8000-0000000000aa",
-  });
+const returning = {
+  lastName: "Ada",
+  best: 24,
+  worldRank: 38,
+  worldBest: 24,
+  lastQuizId: "00000000-0000-4000-8000-0000000000aa",
+};
 
-  renderRoute("/", { api });
-
-  expect(await screen.findByDisplayValue("Ada")).toBe(
-    screen.getByLabelText("Dein Name"),
-  );
+async function expectFirstVisit(): Promise<void> {
   expect(
-    screen.getByText("Dein Name erscheint öffentlich in den Ranglisten."),
+    await screen.findByRole("heading", { name: "Wie weit kommst du?" }),
   ).toBeInTheDocument();
-});
+  expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+    "115 Sekunden pro Frage",
+    "2Alle 5 Fragen ein Level schwerer, bis Level 10",
+    "3Ein Fehler und es ist vorbei",
+  ]);
+  expect(screen.getByLabelText("Dein Name")).toHaveAccessibleDescription(
+    "Erscheint öffentlich in der Rangliste.",
+  );
+  expect(screen.queryByText("Dein Rekord")).not.toBeInTheDocument();
+}
 
-it("starts a run and plays it", async () => {
+it("shows the first-visit layout for an unknown player", async () => {
   const api = server();
   fakeRun(api, sampleQuestions);
   const { user } = renderRoute("/", { api });
+
+  await expectFirstVisit();
 
   await user.type(screen.getByLabelText("Dein Name"), "Bea");
   await user.click(screen.getByRole("button", { name: "Starten" }));
@@ -52,10 +58,12 @@ it("starts a run and plays it", async () => {
   expect(api.calls[1]?.body).toEqual({ name: "Bea" });
 });
 
-it("starts a run while /api/me fails", async () => {
+it("shows the first-visit layout when /api/me fails", async () => {
   const api = new FakeApi().fail("GET /api/me", 503, "database_unavailable");
   fakeRun(api, sampleQuestions);
   const { user } = renderRoute("/", { api });
+
+  await expectFirstVisit();
 
   await user.type(screen.getByLabelText("Dein Name"), "Bea");
   await user.click(screen.getByRole("button", { name: "Starten" }));
@@ -65,6 +73,59 @@ it("starts a run while /api/me fails", async () => {
       name: "Welches Land hat diese Flagge?",
     }),
   ).toBeInTheDocument();
+});
+
+it("shows the record and world rank of a returning player", async () => {
+  renderRoute("/", { api: new FakeApi().respond("GET /api/me", returning) });
+
+  expect(
+    await screen.findByRole("heading", { name: "Dein Rekord" }),
+  ).toBeInTheDocument();
+  expect(screen.getByText("24")).toBeInTheDocument();
+  expect(
+    screen.getByText("Dein bester Platz: 38 weltweit"),
+  ).toBeInTheDocument();
+  expect(screen.getByText("als Ada")).toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "Dein letztes Quiz" }),
+  ).toHaveAttribute("href", "/q/00000000-0000-4000-8000-0000000000aa");
+  expect(screen.queryByLabelText("Dein Name")).not.toBeInTheDocument();
+});
+
+it("starts a returning player's run with one press", async () => {
+  const api = new FakeApi().respond("GET /api/me", returning);
+  fakeRun(api, sampleQuestions);
+  const { user } = renderRoute("/", { api });
+
+  await user.click(await screen.findByRole("button", { name: "Spielen" }));
+
+  expect(
+    await screen.findByRole("heading", {
+      name: "Welches Land hat diese Flagge?",
+    }),
+  ).toBeInTheDocument();
+  const start = api.calls.find((c) => c.route === "POST /api/runs");
+  expect(start?.body).toEqual({ name: "Ada" });
+});
+
+it("swaps the name line for the field on Change name", async () => {
+  const api = new FakeApi().respond("GET /api/me", returning);
+  fakeRun(api, sampleQuestions);
+  const { user } = renderRoute("/", { api });
+
+  await user.click(await screen.findByRole("button", { name: "Name ändern" }));
+  const field = screen.getByLabelText("Dein Name");
+  expect(field).toHaveFocus();
+  expect(field).toHaveValue("Ada");
+  await user.clear(field);
+  await user.type(field, "Ben");
+  await user.click(screen.getByRole("button", { name: "Spielen" }));
+
+  await screen.findByRole("heading", {
+    name: "Welches Land hat diese Flagge?",
+  });
+  const start = api.calls.find((c) => c.route === "POST /api/runs");
+  expect(start?.body).toEqual({ name: "Ben" });
 });
 
 it.each([
@@ -85,7 +146,7 @@ it.each([
 ])("shows $code", async ({ code, status, field, text, invalid }) => {
   const api = server().fail("POST /api/runs", status, code, field);
   const { user } = renderRoute("/", { api });
-  const input = screen.getByLabelText("Dein Name");
+  const input = await screen.findByLabelText("Dein Name");
 
   await user.type(input, "Bea");
   await user.click(screen.getByRole("button", { name: "Starten" }));
