@@ -2,6 +2,7 @@ import { render, type RenderResult } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
+import { vi } from "vitest";
 import { Providers } from "@/app/providers";
 import { routes } from "@/app/router";
 import { createApiClient } from "@/lib/api";
@@ -23,7 +24,12 @@ export function renderRoute(
   const router = createMemoryRouter(routes, { initialEntries: [path] });
 
   return {
-    user: userEvent.setup(),
+    // Under fake timers, user-event's own delays move the fake clock.
+    user: userEvent.setup({
+      advanceTimers: (ms) => {
+        if (vi.isFakeTimers()) vi.advanceTimersByTime(ms);
+      },
+    }),
     ...render(
       <Providers
         api={createApiClient({ fetch: api.fetch })}

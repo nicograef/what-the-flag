@@ -119,7 +119,8 @@ Routes, query keys, the API client and i18n stay. These change:
   - an answer that fails with a network error retries with backoff until the deadline plus the 2 s grace;
   - the answer mutation uses `networkMode: 'always'`, so an offline answer fails and retries instead of pausing;
   - an `isRetrying` flag and an immediate-retry action feed the offline banner;
-  - a 409 `not_current_question` after a lost response means "already answered": the hook refetches the state and shows it;
+  - a retry of an answer whose response was lost gets the stored outcome back, so it reveals as usual;
+  - a 409 `not_current_question` means the server never served that position: the hook refetches the state and shows it;
   - a resume flag holds when the first data fetched after mount has `deadline − serverNow < limitMs`.
 - `renderRoute()` gets a retry-delay override for mutations, as it has for queries.
 
@@ -334,7 +335,7 @@ Frontend feature tests with `FakeApi` and `renderRoute()`:
 - The challenge page's states: waiting to playable, creator hidden, own quiz.
 - The world tab pins the own row from `/api/me` when it is outside the list.
 - The resume banner shows on a reload mid-question. An expired open run shows the timeout result.
-- A network error while answering keeps the pick and retries; a later success continues the run. A 409 after a lost response shows the next state.
+- A network error while answering keeps the pick and retries; a later success continues the run. A retry after a lost response shows the stored outcome; a 409 shows the next state without an alert.
 - The sheet closes on Escape and returns focus.
 - The credit line shows on home, challenge and leaderboard, and never on `/play`.
 - Follow-up features are absent: the daily card, the "Heute" tab and the did-you-know card.

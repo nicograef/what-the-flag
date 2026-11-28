@@ -19,6 +19,11 @@ export class StatusReply {
   }
 }
 
+/** A one-shot trouble: a lost request or response, or an error envelope. */
+type Upset =
+  | { kind: "lost"; delivered: boolean }
+  | { kind: "error"; status: number; code: string };
+
 type Reply = {
   status: number;
   body: Json | ((call: FakeCall) => Json | StatusReply);
@@ -28,7 +33,8 @@ type Reply = {
 export class FakeApi {
   readonly calls: FakeCall[] = [];
   private readonly replies = new Map<string, Reply>();
-  private readonly lost = new Map<string, { delivered: boolean }[]>();
+  /** One-shot replies that take the place of a route's next fetches, in order. */
+  private readonly upsets = new Map<string, Upset[]>();
 
   respond(
     route: string,
@@ -50,7 +56,16 @@ export class FakeApi {
    * request first, so only its response is lost.
    */
   reject(route: string, { delivered = false } = {}): this {
-    this.lost.set(route, [...(this.lost.get(route) ?? []), { delivered }]);
+    return this.upset(route, { kind: "lost", delivered });
+  }
+
+  /** The route's next fetch answers with an error envelope; later ones reply as before. */
+  failOnce(route: string, status: number, code: string): this {
+    return this.upset(route, { kind: "error", status, code });
+  }
+
+  private upset(route: string, upset: Upset): this {
+    this.upsets.set(route, [...(this.upsets.get(route) ?? []), upset]);
     return this;
   }
 
@@ -69,7 +84,19 @@ export class FakeApi {
     };
     this.calls.push(call);
 
-    const lost = this.lost.get(call.route)?.shift();
+    const upset = this.upsets.get(call.route)?.shift();
+    if (upset?.kind === "error") {
+      return new Response(
+        JSON.stringify({
+          error: { code: upset.code, message: `fake ${upset.code}` },
+        }),
+        {
+          status: upset.status,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+    const lost = upset?.kind === "lost" ? upset : undefined;
     if (lost && !lost.delivered) throw new TypeError("Failed to fetch");
 
     const reply = this.replies.get(call.route);

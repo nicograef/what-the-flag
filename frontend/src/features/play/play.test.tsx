@@ -9,7 +9,14 @@ import { FakeApi } from "@/test/fake-api";
 import { answer, press } from "@/test/answer";
 import { renderRoute } from "@/test/render";
 
+// Fake timers make every wait exact: arming, reveals, guards and the clock move only as the test,
+// waitFor, findBy and user-event advance them.
+beforeEach(() => {
+  vi.useFakeTimers();
+});
+
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -92,29 +99,78 @@ it("keeps the question under a failed refetch and retries it", async () => {
   });
 });
 
-it("shows the next state after a 409 for a lost answer", async () => {
+/** Lets the promises a click set off settle without moving the fake clock. */
+async function settle(): Promise<void> {
+  await act(() => vi.advanceTimersByTimeAsync(0));
+}
+
+it("shows the stored outcome after a lost response", async () => {
   const { api, ids, user } = await startPlaying();
-  // The server takes the answer, but its response never arrives; the retry then finds it answered.
+  // The server takes the answer, but its response never arrives; the retry gets the stored outcome.
   api.reject(`POST /api/runs/${ids.runId}/answers`, { delivered: true });
 
   await answer(user, "Deutschland");
-  await user.click(await screen.findByRole("button", { name: "Jetzt senden" }));
+  const retry = await screen.findByRole("button", { name: "Jetzt senden" });
+  expect(answers(api)).toHaveLength(1);
+  await user.click(retry);
+  await settle();
+  expect(answers(api)).toHaveLength(2);
 
+  expect(await screen.findByText("Richtig!")).toBeInTheDocument();
   expect(
     await screen.findByRole("heading", {
       name: "Was ist die Hauptstadt dieses Landes?",
     }),
   ).toBeInTheDocument();
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+
+it("refetches without an alert after a 409 for a position the server never served", async () => {
+  const { api, ids, user } = await startPlaying();
+  api.failOnce(
+    `POST /api/runs/${ids.runId}/answers`,
+    409,
+    "not_current_question",
+  );
+  const reads = (): number =>
+    api.calls.filter((c) => c.route === `GET /api/runs/${ids.runId}`).length;
+
+  await answer(user, "Deutschland");
+  await waitFor(() => {
+    expect(reads()).toBe(2);
+  });
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+
+  await answer(user, "Deutschland");
+  expect(await screen.findByText("Richtig!")).toBeInTheDocument();
+});
+
+it("answers again with the same option after a failed answer", async () => {
+  const { api, ids, user } = await startPlaying();
+  api.failOnce(
+    `POST /api/runs/${ids.runId}/answers`,
+    503,
+    "database_unavailable",
+  );
+
+  await answer(user, "Deutschland");
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Die Datenbank ist gerade nicht erreichbar.",
+  );
+  await answer(user, "Deutschland");
+
+  expect(await screen.findByText("Richtig!")).toBeInTheDocument();
   expect(answers(api)).toEqual([
     { position: 0, option: 1 },
     { position: 0, option: 1 },
   ]);
-  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });
 
 it("keeps the pick and retries after a network error", async () => {
   const { api, ids, user } = await startPlaying();
-  api.reject(`POST /api/runs/${ids.runId}/answers`);
+  api
+    .reject(`POST /api/runs/${ids.runId}/answers`)
+    .reject(`POST /api/runs/${ids.runId}/answers`);
 
   await answer(user, "Deutschland");
 
@@ -133,14 +189,18 @@ it("keeps the pick and retries after a network error", async () => {
   ).toBeInTheDocument();
   expect(screen.queryByText("Leider falsch")).not.toBeInTheDocument();
 
+  // Each press sends at once, before any back-off wait ends.
+  expect(answers(api)).toHaveLength(1);
   await user.click(screen.getByRole("button", { name: "Jetzt senden" }));
+  await settle();
+  expect(answers(api)).toHaveLength(2);
+  expect(screen.getByRole("alert")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Jetzt senden" }));
+  await settle();
+  expect(answers(api)).toHaveLength(3);
 
   expect(await screen.findByText("Richtig!")).toBeInTheDocument();
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  expect(answers(api)).toEqual([
-    { position: 0, option: 1 },
-    { position: 0, option: 1 },
-  ]);
 });
 
 it("shows the result head, run strip and missed question after a wrong answer", async () => {
@@ -422,14 +482,6 @@ async function armed(name: string): Promise<HTMLElement> {
 }
 
 describe("hold to answer", () => {
-  beforeEach(() => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it("a 400 ms touch hold answers", async () => {
     const { api } = await startPlaying();
     const option = await armed("Deutschland");
@@ -575,56 +627,46 @@ describe("hold to answer", () => {
 });
 
 it("sends the timeout when a hold that outlived the clock is released", async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true });
-  try {
-    const setNow = clock();
-    const { api } = await startPlaying();
-    const option = await armed("Deutschland");
+  const setNow = clock();
+  const { api } = await startPlaying();
+  const option = await armed("Deutschland");
 
-    setNow(14_900);
-    await advance(100);
-    fireEvent.pointerDown(option, touch);
-    setNow(15_000);
-    await advance(200);
-    expect(answers(api)).toEqual([]);
-    fireEvent.pointerUp(option, touch);
+  setNow(14_900);
+  await advance(100);
+  fireEvent.pointerDown(option, touch);
+  setNow(15_000);
+  await advance(200);
+  expect(answers(api)).toEqual([]);
+  fireEvent.pointerUp(option, touch);
 
-    await waitFor(() => {
-      expect(answers(api)).toEqual([{ position: 0, option: null }]);
-    });
-  } finally {
-    vi.useRealTimers();
-  }
+  await waitFor(() => {
+    expect(answers(api)).toEqual([{ position: 0, option: null }]);
+  });
 });
 
 it("holds the reveal 650 ms after a correct answer and 1300 ms after a wrong one", async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true });
-  try {
-    const { api, ids } = await startPlaying();
-    const reads = (): number =>
-      api.calls.filter((c) => c.route === `GET /api/runs/${ids.runId}`).length;
+  const { api, ids } = await startPlaying();
+  const reads = (): number =>
+    api.calls.filter((c) => c.route === `GET /api/runs/${ids.runId}`).length;
 
-    fireEvent.click(await armed("Deutschland"));
-    await screen.findByText("Richtig!");
-    const afterCorrect = reads();
-    await advance(500);
-    expect(reads()).toBe(afterCorrect);
-    await advance(200);
-    expect(reads()).toBe(afterCorrect + 1);
+  fireEvent.click(await armed("Deutschland"));
+  await screen.findByText("Richtig!");
+  const afterCorrect = reads();
+  await advance(500);
+  expect(reads()).toBe(afterCorrect);
+  await advance(200);
+  expect(reads()).toBe(afterCorrect + 1);
 
-    await screen.findByRole("heading", {
-      name: "Was ist die Hauptstadt dieses Landes?",
-    });
-    fireEvent.click(await armed("Kyoto"));
-    await screen.findByText("Leider falsch");
-    const afterWrong = reads();
-    await advance(1150);
-    expect(reads()).toBe(afterWrong);
-    await advance(200);
-    expect(reads()).toBe(afterWrong + 1);
-  } finally {
-    vi.useRealTimers();
-  }
+  await screen.findByRole("heading", {
+    name: "Was ist die Hauptstadt dieses Landes?",
+  });
+  fireEvent.click(await armed("Kyoto"));
+  await screen.findByText("Leider falsch");
+  const afterWrong = reads();
+  await advance(1150);
+  expect(reads()).toBe(afterWrong);
+  await advance(200);
+  expect(reads()).toBe(afterWrong + 1);
 });
 
 it("fills the pips by the position in the block of five", async () => {
@@ -660,31 +702,26 @@ it("fills the pips by the position in the block of five", async () => {
 });
 
 it("ignores result buttons for 1000 ms and keeps their labels", async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true });
-  try {
-    const { api } = await startPlaying({ name: "Bea" });
-    fireEvent.click(await armed("Frankreich"));
-    await advance(1300);
-    const again = await screen.findByRole("button", { name: "Nochmal" });
-    const starts = (): number =>
-      api.calls.filter((c) => c.route === "POST /api/runs").length;
+  const { api } = await startPlaying({ name: "Bea" });
+  fireEvent.click(await armed("Frankreich"));
+  await advance(1300);
+  const again = await screen.findByRole("button", { name: "Nochmal" });
+  const starts = (): number =>
+    api.calls.filter((c) => c.route === "POST /api/runs").length;
 
-    expect(again).toHaveAttribute("aria-disabled", "true");
-    fireEvent.click(again);
-    await advance(800);
-    expect(starts()).toBe(0);
-    expect(again).toHaveTextContent("Nochmal");
+  expect(again).toHaveAttribute("aria-disabled", "true");
+  fireEvent.click(again);
+  await advance(800);
+  expect(starts()).toBe(0);
+  expect(again).toHaveTextContent("Nochmal");
 
-    await advance(300);
-    expect(again).not.toHaveAttribute("aria-disabled");
-    expect(again).toHaveTextContent("Nochmal");
-    fireEvent.click(again);
-    await waitFor(() => {
-      expect(starts()).toBe(1);
-    });
-  } finally {
-    vi.useRealTimers();
-  }
+  await advance(300);
+  expect(again).not.toHaveAttribute("aria-disabled");
+  expect(again).toHaveTextContent("Nochmal");
+  fireEvent.click(again);
+  await waitFor(() => {
+    expect(starts()).toBe(1);
+  });
 });
 
 const rival = { name: "Nico", score: 1, ended: true, own: false };
@@ -708,65 +745,60 @@ it("counts the gap pill to the creator in a challenge run", async () => {
   expect(screen.getByText("Du hast Nico überholt!")).toBeInTheDocument();
 });
 
-// Arming, a toasted reveal, a miss reveal and the result guard take about 4 s of real time.
-it(
-  "shows head-to-head after a won challenge",
-  { timeout: 10_000 },
-  async () => {
-    const share = vi.fn<(data: ShareData) => Promise<void>>();
-    share.mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "share", {
-      value: share,
-      configurable: true,
+it("shows head-to-head after a won challenge", async () => {
+  const share = vi.fn<(data: ShareData) => Promise<void>>();
+  share.mockResolvedValue(undefined);
+  Object.defineProperty(navigator, "share", {
+    value: share,
+    configurable: true,
+  });
+  try {
+    const api = new FakeApi();
+    const ids = fakeRun(api, sampleQuestions, {
+      name: "Kim",
+      score: 1,
+      creator: rival,
+      quizRank: 1,
+      globalRank: null,
     });
-    try {
-      const api = new FakeApi();
-      const ids = fakeRun(api, sampleQuestions, {
-        name: "Kim",
-        score: 1,
-        creator: rival,
-        quizRank: 1,
-        globalRank: null,
-      });
-      const { user } = renderRoute(`/play/${ids.runId}`, { api });
-      await answer(user, "Tokio");
+    const { user } = renderRoute(`/play/${ids.runId}`, { api });
+    await answer(user, "Tokio");
+    await screen.findByRole(
+      "heading",
+      { name: "Welche Flagge hat das Land mit dieser Hauptstadt?" },
+      slow,
+    );
+    await answer(user, "Flagge 1");
+
+    expect(
       await screen.findByRole(
         "heading",
-        { name: "Welche Flagge hat das Land mit dieser Hauptstadt?" },
+        { name: "Du hast Nico geschlagen!" },
         slow,
-      );
-      await answer(user, "Flagge 1");
+      ),
+    ).toHaveFocus();
+    expect(
+      screen.getByRole("img", { name: "Du: 2, Nico: 1" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Platz 1 in Nicos Quiz")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Herausforderungen zählen nur in diesem Quiz. Für die Weltrangliste startest du ein eigenes Spiel.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Eigenes Spiel für die Weltrangliste",
+      }),
+    ).toBeInTheDocument();
 
-      expect(
-        await screen.findByRole(
-          "heading",
-          { name: "Du hast Nico geschlagen!" },
-          slow,
-        ),
-      ).toHaveFocus();
-      expect(
-        screen.getByRole("img", { name: "Du: 2, Nico: 1" }),
-      ).toBeInTheDocument();
-      expect(screen.getByText("Platz 1 in Nicos Quiz")).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          "Herausforderungen zählen nur in diesem Quiz. Für die Weltrangliste startest du ein eigenes Spiel.",
-        ),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", {
-          name: "Eigenes Spiel für die Weltrangliste",
-        }),
-      ).toBeInTheDocument();
+    await press(user, "Nico Bescheid geben");
+    await user.click(screen.getByRole("button", { name: "Teilen …" }));
 
-      await press(user, "Nico Bescheid geben");
-      await user.click(screen.getByRole("button", { name: "Teilen …" }));
-
-      expect(share).toHaveBeenCalledWith({
-        text: `Ich habe 2 in Nicos Quiz geschafft. Holst du es dir zurück?\n${window.location.origin}/q/${ids.quizId}`,
-      });
-    } finally {
-      Reflect.deleteProperty(navigator, "share");
-    }
-  },
-);
+    expect(share).toHaveBeenCalledWith({
+      text: `Ich habe 2 in Nicos Quiz geschafft. Holst du es dir zurück?\n${window.location.origin}/q/${ids.quizId}`,
+    });
+  } finally {
+    Reflect.deleteProperty(navigator, "share");
+  }
+});

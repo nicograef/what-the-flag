@@ -34,6 +34,8 @@ interface RunRecord {
     reason: "wrong" | "timeout" | "completed";
     chosen: number | null;
   } | null;
+  /** Each resolved position's outcome, which a repeated answer gets back, as the server does. */
+  outcomes: Map<number, { [key: string]: Json }>;
 }
 
 /** The `GET /api/me` body for a visitor the server does not know. */
@@ -133,6 +135,10 @@ export function fakeRun(
       position: number;
       option: number | null;
     };
+    const stored = run.outcomes.get(position);
+    if (stored) {
+      return { ...stored, finished: run.ended !== null, score: run.score };
+    }
     if (run.ended || position !== run.score) {
       return new StatusReply(409, {
         error: { code: "not_current_question", message: "fake" },
@@ -150,7 +156,7 @@ export function fakeRun(
         chosen: option,
       };
     }
-    return {
+    const outcome = {
       position,
       correct,
       timedOut: option === null,
@@ -159,6 +165,8 @@ export function fakeRun(
       finished: run.ended !== null,
       score: run.score,
     };
+    run.outcomes.set(position, outcome);
+    return outcome;
   }
 
   function create(name: string): RunRecord {
@@ -167,6 +175,7 @@ export function fakeRun(
       name,
       score: 0,
       ended: null,
+      outcomes: new Map(),
     };
     runs.push(run);
     api.respond(`GET /api/runs/${run.id}`, () => state(run));

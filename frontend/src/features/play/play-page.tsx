@@ -178,6 +178,9 @@ function Run({ runId }: { runId: string }): ReactNode {
 
   const { state, receivedAt } = query.data;
   if (state.result) {
+    // The head depends on the creator, so the result waits for the quiz and picks it once.
+    // A failed quiz read leaves the creator unknown: the result then shows the own-run rows.
+    if (quiz.isPending) return <RunLoading />;
     return (
       <RunResult
         run={state}
@@ -252,7 +255,7 @@ function Run({ runId }: { runId: string }): ReactNode {
         </div>
       )}
       <h1 className="sr-only">{state.name}</h1>
-      <div className="flex min-h-12 items-center justify-between gap-3">
+      <div className="flex min-h-12 items-center justify-between gap-3 pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]">
         <LevelPips
           position={question.position}
           answered={shown?.correct ?? false}

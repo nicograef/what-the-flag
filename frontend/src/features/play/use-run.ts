@@ -99,6 +99,15 @@ export function useRun(
   const cutoff = useRef(Infinity);
   /** Ends the running back-off wait early. */
   const wake = useRef<(() => void) | null>(null);
+  /** Set once the run screen unmounts: a lost answer then stops retrying. */
+  const unmounted = useRef(false);
+  useEffect(() => {
+    unmounted.current = false;
+    return () => {
+      unmounted.current = true;
+      wake.current?.();
+    };
+  }, []);
 
   const mutation = useMutation({
     // Offline, an answer fails and retries here instead of pausing until the browser is online.
@@ -109,7 +118,11 @@ export function useRun(
           try {
             return await answerQuestion(api, runId, body);
           } catch (err) {
-            if (!isNetwork(err) || performance.now() >= cutoff.current) {
+            if (
+              !isNetwork(err) ||
+              unmounted.current ||
+              performance.now() >= cutoff.current
+            ) {
               throw err;
             }
           }
@@ -125,6 +138,7 @@ export function useRun(
             };
           });
           wake.current = null;
+          if (unmounted.current) throw new Error("the run screen closed");
         }
       } finally {
         setRetrying(false);
@@ -182,7 +196,10 @@ export function useRun(
     }
   }
 
-  const busy = reveal !== null || mutation.isPending;
+  // A question the server already answered takes nothing more, also when the refetch after its reveal failed.
+  const answered =
+    mutation.isSuccess && mutation.variables.position === question?.position;
+  const busy = reveal !== null || mutation.isPending || answered;
   const { mutate } = mutation;
 
   const send = useCallback(
