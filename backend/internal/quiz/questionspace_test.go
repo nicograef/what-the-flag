@@ -180,6 +180,7 @@ func TestQuestionSpace(t *testing.T) {
 	s := newSpace(cat)
 	cases := Cases(cat)
 	thin := map[string][]string{}
+	var ineligible []string
 	for _, c := range cases {
 		name := fmt.Sprintf("%s %s [%s]", c.Type.ID(), c.Target, c.Prompt)
 		sets := candidates(cat, cat.pool, c)
@@ -212,7 +213,7 @@ func TestQuestionSpace(t *testing.T) {
 		switch {
 		case !ok && n < 3:
 			// Too few false candidates make a case ineligible; Generate then asks another type.
-			t.Logf("%s: ineligible, %d false candidates", name, n)
+			ineligible = append(ineligible, strings.TrimSuffix(name, " []"))
 			continue
 		case !ok:
 			t.Errorf("%s: no question, though %d false candidates remain", name, n)
@@ -223,6 +224,9 @@ func TestQuestionSpace(t *testing.T) {
 		}
 	}
 	t.Logf("%d cases", len(cases))
+	if want := []string{"flag_region ID"}; !slices.Equal(ineligible, want) {
+		t.Errorf("ineligible cases %q, want %q", ineligible, want)
+	}
 	for _, id := range slices.Sorted(maps.Keys(thin)) {
 		t.Logf("%s: %d cases with fewer than 6 candidates: %v", id, len(thin[id]), thin[id])
 	}
