@@ -238,7 +238,9 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 // holdsLanguage reports whether any of c's language lists holds lang or a language of its family.
 func holdsLanguage(cat Catalogue, c *country.Country, lang string) bool {
 	family := cat.Family(country.LabelLanguage, lang)
-	match := func(l string) bool { return l == lang || (family != "" && cat.Family(country.LabelLanguage, l) == family) }
+	match := func(l string) bool {
+		return l == lang || (family != "" && cat.Family(country.LabelLanguage, l) == family)
+	}
 	return slices.ContainsFunc(c.Languages, match) || slices.ContainsFunc(c.RegionalLanguages, match) || slices.ContainsFunc(c.BlockedLanguages, match)
 }
 
