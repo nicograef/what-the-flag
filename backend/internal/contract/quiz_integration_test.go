@@ -460,7 +460,7 @@ func TestChallenge(t *testing.T) {
 
 	// make hide: the creator's name is never served again, and the quiz stays playable.
 	if _, err := postgres.TestPool(t).Exec(context.Background(),
-		`UPDATE runs SET hidden = true WHERE id = $1`, a.RunID); err != nil {
+		`UPDATE runs SET hidden = true WHERE player_id = (SELECT player_id FROM runs WHERE id = $1)`, a.RunID); err != nil {
 		t.Fatalf("hide creator: %v", err)
 	}
 	view = decodeGolden[challenge](t, "challenge-hidden", first.get("/api/quizzes/"+a.QuizID), http.StatusOK, nil)
