@@ -10,6 +10,43 @@
       "score": 2
     },
     "endReason": "wrong",
+    "fact": {
+      "capital": {
+        "de": "Berlin",
+        "en": "Berlin"
+      },
+      "chosenCountry": {
+        "de": "Frankreich",
+        "en": "France"
+      },
+      "currencies": [
+        {
+          "de": "Euro",
+          "en": "Euro"
+        }
+      ],
+      "flag": "0123456789",
+      "languages": [
+        {
+          "de": "Deutsch",
+          "en": "German"
+        }
+      ],
+      "name": {
+        "de": "Deutschland",
+        "en": "Germany"
+      },
+      "region": {
+        "de": "Europa",
+        "en": "Europe"
+      },
+      "spokenIn": [
+        {
+          "de": "Deutschland",
+          "en": "Germany"
+        }
+      ]
+    },
     "globalRank": 1,
     "last": {
       "chosenOption": 1,

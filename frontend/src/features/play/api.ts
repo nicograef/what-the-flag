@@ -65,11 +65,28 @@ const bestSchema = z.object({
   previous: z.nullable(z.int().check(z.minimum(0))),
 });
 
+/**
+ * The learning card's facts about a missed question's target. `chosenCountry` is the country of the
+ * picked option, null when no single country holds it; `spokenIn` comes with a regional-language prompt only.
+ */
+const factSchema = z.object({
+  name: labelSchema,
+  flag: z.string(),
+  capital: labelSchema,
+  region: labelSchema,
+  languages: z.array(labelSchema),
+  currencies: z.array(labelSchema),
+  chosenCountry: z.nullable(labelSchema),
+  spokenIn: z.optional(z.array(labelSchema)),
+});
+
 const resultSchema = z.object({
   score: z.int().check(z.minimum(0)),
   level: levelSchema,
   endReason: z.enum(["wrong", "timeout", "completed"]),
   last: z.nullable(missedSchema),
+  /** Present after a miss only. */
+  fact: z.optional(factSchema),
   quizRank: z.int().check(z.minimum(1)),
   globalRank: z.nullable(z.int().check(z.minimum(1))),
   best: bestSchema,

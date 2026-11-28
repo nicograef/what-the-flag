@@ -23,6 +23,7 @@ var pinned = map[string]any{
 	"deadline":   "2026-01-01T12:00:15.123456Z",
 	// A flag key hashes the flag file, which a data refresh changes.
 	"flagKey": "0123456789",
+	"flag":    "0123456789",
 	// The global ranks depend on every run the database holds.
 	"globalRank": 1,
 	"worldRank":  1,

@@ -10,6 +10,34 @@
       "score": 0
     },
     "endReason": "timeout",
+    "fact": {
+      "capital": {
+        "de": "Berlin",
+        "en": "Berlin"
+      },
+      "chosenCountry": null,
+      "currencies": [
+        {
+          "de": "Euro",
+          "en": "Euro"
+        }
+      ],
+      "flag": "0123456789",
+      "languages": [
+        {
+          "de": "Deutsch",
+          "en": "German"
+        }
+      ],
+      "name": {
+        "de": "Deutschland",
+        "en": "Germany"
+      },
+      "region": {
+        "de": "Europa",
+        "en": "Europe"
+      }
+    },
     "globalRank": 1,
     "last": {
       "chosenOption": null,

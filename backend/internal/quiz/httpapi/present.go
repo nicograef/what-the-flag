@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/google/uuid"
@@ -14,6 +15,7 @@ import (
 // a country travels as its flag key or its name or capital label, an attribute code as its label.
 type presenter struct {
 	cat       quiz.Catalogue
+	pool      []country.Country
 	countries map[string]*country.Country
 }
 
@@ -23,7 +25,7 @@ func newPresenter(cat quiz.Catalogue) *presenter {
 	for i := range pool {
 		countries[pool[i].Code] = &pool[i]
 	}
-	return &presenter{cat: cat, countries: countries}
+	return &presenter{cat: cat, pool: pool, countries: countries}
 }
 
 // item is a prompt or an option: {"kind":"flag","flagKey"} or {"kind":"text","text":{"de","en"}}.
@@ -54,15 +56,30 @@ type question struct {
 	LimitMs  int64     `json:"limitMs"`
 }
 
-// result.Level is the level of the run's last question.
+// result.Level is the level of the run's last question. Fact is present after a miss only.
 type result struct {
 	Score      int     `json:"score"`
 	Level      int     `json:"level"`
 	EndReason  string  `json:"endReason"`
 	Last       *missed `json:"last"`
+	Fact       *fact   `json:"fact,omitempty"`
 	QuizRank   int     `json:"quizRank"`
 	GlobalRank *int    `json:"globalRank"`
 	Best       best    `json:"best"`
+}
+
+// fact is what the learning card shows about a missed question's target. Languages are the official ones and
+// currencies their units. ChosenCountry is the country of the picked option, null where quiz.ChosenCountry finds
+// none. SpokenIn, only for a regional-language prompt, lists the countries where its language is official or regional.
+type fact struct {
+	Name          country.Names   `json:"name"`
+	Flag          string          `json:"flag"`
+	Capital       country.Names   `json:"capital"`
+	Region        country.Names   `json:"region"`
+	Languages     []country.Names `json:"languages"`
+	Currencies    []country.Names `json:"currencies"`
+	ChosenCountry *country.Names  `json:"chosenCountry"`
+	SpokenIn      []country.Names `json:"spokenIn,omitempty"`
 }
 
 type best struct {
@@ -150,9 +167,56 @@ func (p *presenter) state(st quiz.RunState) (runState, error) {
 				CorrectOption: last.Question.Correct,
 				ChosenOption:  last.Chosen,
 			}
+			if out.Result.Fact, err = p.fact(last); err != nil {
+				return runState{}, err
+			}
 		}
 	}
 	return out, nil
+}
+
+// fact presents the learning-card facts of a missed question, all from the catalogue.
+func (p *presenter) fact(last *quiz.Missed) (*fact, error) {
+	q := last.Question
+	target, ok := p.countries[q.Target]
+	if !ok {
+		return nil, fmt.Errorf("unknown target %q", q.Target)
+	}
+	labels := func(kind country.LabelKind, codes []string) ([]country.Names, error) {
+		out := make([]country.Names, len(codes))
+		for i, code := range codes {
+			n, ok := p.cat.Label(kind, code)
+			if !ok {
+				return nil, fmt.Errorf("no %s label for %q", kind, code)
+			}
+			out[i] = n
+		}
+		return out, nil
+	}
+	f := &fact{Name: target.Name, Flag: target.FlagKey, Capital: target.Capital}
+	region, err := labels(country.LabelRegion, []string{target.Region})
+	if err != nil {
+		return nil, err
+	}
+	f.Region = region[0]
+	if f.Languages, err = labels(country.LabelLanguage, target.Languages); err != nil {
+		return nil, err
+	}
+	if f.Currencies, err = labels(country.LabelCurrency, target.Currencies); err != nil {
+		return nil, err
+	}
+	if c := quiz.ChosenCountry(p.pool, q, last.Chosen); c != nil {
+		f.ChosenCountry = &c.Name
+	}
+	if q.Type.Prompt == quiz.AttrRegionalLanguage {
+		f.SpokenIn = []country.Names{}
+		for i := range p.pool {
+			if c := &p.pool[i]; slices.Contains(c.Languages, q.Prompt) || slices.Contains(c.RegionalLanguages, q.Prompt) {
+				f.SpokenIn = append(f.SpokenIn, c.Name)
+			}
+		}
+	}
+	return f, nil
 }
 
 // question presents a question's prompt and options; the target and the correct index stay out.
