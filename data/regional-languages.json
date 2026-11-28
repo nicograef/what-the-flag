@@ -418,14 +418,14 @@
       "MY",
       "SR"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Javanese_language"
   },
   "kab": {
     "kind": "minority",
     "spokenIn": [
       "DZ"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Kabyle_language"
   },
   "kde": {
     "kind": "indigenous",
@@ -442,7 +442,7 @@
     "spokenIn": [
       "CV"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Cape_Verdean_Creole"
   },
   "kg": {
     "kind": "regional",
@@ -459,7 +459,7 @@
     "spokenIn": [
       "KE"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Kikuyu_language"
   },
   "kj": {
     "kind": "minority",
@@ -474,7 +474,7 @@
     "spokenIn": [
       "DK"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Greenlandic_language"
   },
   "kln": {
     "kind": "indigenous",
@@ -482,7 +482,7 @@
       "KE",
       "UG"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Kalenjin_languages"
   },
   "km": {
     "kind": "regional",
@@ -491,7 +491,7 @@
       "TH",
       "VN"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Khmer_language"
   },
   "kmb": {
     "kind": "indigenous",
@@ -523,7 +523,7 @@
       "FI",
       "RU"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Karelian_language"
   },
   "ks": {
     "kind": "regional",
@@ -531,7 +531,7 @@
       "IN",
       "PK"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Kashmiri_language"
   },
   "ku": {
     "kind": "minority",
@@ -549,14 +549,14 @@
     "spokenIn": [
       "GB"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Cornish_language"
   },
   "lg": {
     "kind": "indigenous",
     "spokenIn": [
       "UG"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Luganda"
   },
   "li": {
     "kind": "regional",
@@ -565,7 +565,7 @@
       "DE",
       "NL"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Limburgish"
   },
   "lkt": {
     "kind": "indigenous",
@@ -573,14 +573,14 @@
       "CA",
       "US"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Lakota_language"
   },
   "lld": {
     "kind": "minority",
     "spokenIn": [
       "IT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Ladin_language"
   },
   "ln": {
     "kind": "regional",
@@ -599,7 +599,7 @@
       "LA",
       "TH"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Lao_language"
   },
   "loz": {
     "kind": "minority",
@@ -615,14 +615,14 @@
     "spokenIn": [
       "LV"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Latgalian_language"
   },
   "lua": {
     "kind": "regional",
     "spokenIn": [
       "CD"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Tshiluba_language"
   },
   "luo": {
     "kind": "indigenous",
@@ -630,7 +630,7 @@
       "KE",
       "TZ"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Dholuo"
   },
   "mai": {
     "kind": "regional",
@@ -638,7 +638,7 @@
       "IN",
       "NP"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Maithili_language"
   },
   "man": {
     "kind": "regional",
@@ -655,7 +655,7 @@
       "KE",
       "TZ"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Maasai_language"
   },
   "men": {
     "kind": "indigenous",
@@ -671,14 +671,14 @@
     "spokenIn": [
       "MU"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Mauritian_Creole"
   },
   "mi": {
     "kind": "indigenous",
     "spokenIn": [
       "NZ"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/M%C4%81ori_language"
   },
   "mn": {
     "kind": "regional",
@@ -686,28 +686,28 @@
       "CN",
       "MN"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Mongolian_language"
   },
   "mr": {
     "kind": "regional",
     "spokenIn": [
       "IN"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Marathi_language"
   },
   "mwl": {
     "kind": "regional",
     "spokenIn": [
       "PT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Mirandese_language"
   },
   "nap": {
     "kind": "regional",
     "spokenIn": [
       "IT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Neapolitan_language"
   },
   "naq": {
     "kind": "minority",
@@ -744,7 +744,7 @@
       "MM",
       "NP"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Nepali_language"
   },
   "nus": {
     "kind": "indigenous",
@@ -759,7 +759,7 @@
     "spokenIn": [
       "US"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Navajo_language"
   },
   "ny": {
     "kind": "regional",
@@ -779,7 +779,7 @@
       "IT",
       "MC"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Occitan_language"
   },
   "oj": {
     "kind": "indigenous",
@@ -787,7 +787,7 @@
       "CA",
       "US"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Ojibwe_language"
   },
   "om": {
     "kind": "regional",
@@ -804,7 +804,7 @@
       "GE",
       "RU"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Ossetian_language"
   },
   "pa": {
     "kind": "regional",
@@ -812,7 +812,7 @@
       "IN",
       "PK"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Punjabi_language"
   },
   "pcd": {
     "kind": "regional",
@@ -820,7 +820,7 @@
       "BE",
       "FR"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Picard_language"
   },
   "pdc": {
     "kind": "minority",
@@ -836,7 +836,7 @@
     "spokenIn": [
       "SB"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Pijin"
   },
   "ps": {
     "kind": "regional",
@@ -844,7 +844,7 @@
       "AF",
       "PK"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Pashto"
   },
   "qu": {
     "kind": "indigenous",
@@ -862,7 +862,7 @@
     "spokenIn": [
       "GT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/K%CA%BCiche%CA%BC_language"
   },
   "rif": {
     "kind": "minority",
@@ -878,7 +878,7 @@
     "spokenIn": [
       "CH"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Romansh_language"
   },
   "rw": {
     "kind": "regional",
@@ -894,21 +894,21 @@
     "spokenIn": [
       "RU"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Yakut_language"
   },
   "sc": {
     "kind": "minority",
     "spokenIn": [
       "IT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sardinian_language"
   },
   "scn": {
     "kind": "regional",
     "spokenIn": [
       "IT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sicilian_language"
   },
   "sco": {
     "kind": "regional",
@@ -916,7 +916,7 @@
       "GB",
       "IE"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Scots_language"
   },
   "sd": {
     "kind": "regional",
@@ -924,7 +924,7 @@
       "IN",
       "PK"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sindhi_language"
   },
   "se": {
     "kind": "indigenous",
@@ -933,7 +933,7 @@
       "NO",
       "SE"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Northern_S%C3%A1mi"
   },
   "sg": {
     "kind": "regional",
@@ -949,14 +949,14 @@
     "spokenIn": [
       "LT"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Samogitian_language"
   },
   "shi": {
     "kind": "minority",
     "spokenIn": [
       "MA"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Shilha_language"
   },
   "sn": {
     "kind": "regional",
@@ -983,14 +983,14 @@
       "KE",
       "SO"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Somali_language"
   },
   "srn": {
     "kind": "creole",
     "spokenIn": [
       "SR"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sranan_Tongo"
   },
   "srr": {
     "kind": "indigenous",
@@ -1007,7 +1007,7 @@
       "SZ",
       "ZA"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Swazi_language"
   },
   "st": {
     "kind": "regional",
@@ -1016,21 +1016,21 @@
       "ZA",
       "ZW"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sotho_language"
   },
   "su": {
     "kind": "regional",
     "spokenIn": [
       "ID"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sundanese_language"
   },
   "suk": {
     "kind": "indigenous",
     "spokenIn": [
       "TZ"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Sukuma_language"
   },
   "sus": {
     "kind": "indigenous",
@@ -1054,7 +1054,7 @@
       "CZ",
       "PL"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Silesian_language"
   },
   "ta": {
     "kind": "regional",
@@ -1064,21 +1064,21 @@
       "MY",
       "SG"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Tamil_language"
   },
   "te": {
     "kind": "regional",
     "spokenIn": [
       "IN"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Telugu_language"
   },
   "tem": {
     "kind": "indigenous",
     "spokenIn": [
       "SL"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Temne_language"
   },
   "tet": {
     "kind": "regional",
@@ -1086,7 +1086,7 @@
       "ID",
       "TL"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Tetun_language"
   },
   "ti": {
     "kind": "regional",
@@ -1094,7 +1094,7 @@
       "ER",
       "ET"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Tigrinya_language"
   },
   "tig": {
     "kind": "minority",
@@ -1136,7 +1136,7 @@
     "spokenIn": [
       "PG"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Tok_Pisin"
   },
   "ts": {
     "kind": "regional",
@@ -1174,7 +1174,7 @@
     "spokenIn": [
       "AO"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Umbundu"
   },
   "ur": {
     "kind": "regional",
@@ -1197,7 +1197,7 @@
       "ZA",
       "ZW"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Venda_language"
   },
   "vmw": {
     "kind": "indigenous",
@@ -1212,7 +1212,7 @@
     "spokenIn": [
       "EE"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/V%C3%B5ro_language"
   },
   "wa": {
     "kind": "regional",
@@ -1220,7 +1220,7 @@
       "BE",
       "FR"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Walloon_language"
   },
   "wo": {
     "kind": "indigenous",
@@ -1264,20 +1264,20 @@
     "spokenIn": [
       "CN"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Zhuang_languages"
   },
   "zap": {
     "kind": "indigenous",
     "spokenIn": [
       "MX"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Zapotec_languages"
   },
   "zza": {
     "kind": "minority",
     "spokenIn": [
       "TR"
     ],
-    "source": "regional.json note (no URL)"
+    "source": "https://en.wikipedia.org/wiki/Zaza_language"
   }
 }
