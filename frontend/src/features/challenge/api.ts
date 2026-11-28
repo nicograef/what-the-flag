@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod/mini";
 import { entrySchema } from "@/features/leaderboard/api";
 import type { ApiClient } from "@/lib/api";
@@ -25,4 +26,12 @@ export function getChallenge(
   quizId: string,
 ): Promise<Challenge> {
   return api.get(`/api/quizzes/${encodeURIComponent(quizId)}`, challengeSchema);
+}
+
+/** The quiz behind `/q/:quizId`; the challenge page polls it while its creator plays. */
+export function challengeQuery(api: ApiClient, quizId: string) {
+  return queryOptions({
+    queryKey: ["quiz", quizId],
+    queryFn: () => getChallenge(api, quizId),
+  });
 }

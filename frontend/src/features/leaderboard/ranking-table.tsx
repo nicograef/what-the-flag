@@ -88,7 +88,7 @@ export function RankingTable({
                   <span className="truncate font-medium">{e.name}</span>
                   {e.own && (
                     <span className="shrink-0 text-xs font-semibold text-accent">
-                      ({t.you})
+                      {t.youSuffix}
                     </span>
                   )}
                 </div>

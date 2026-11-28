@@ -56,6 +56,7 @@ it("shows the first-visit layout for an unknown player", async () => {
     // The play screen reads the player afresh: the start changed its last name.
     "GET /api/me",
     "GET /api/runs/00000000-0000-4000-8000-000000000002",
+    "GET /api/quizzes/00000000-0000-4000-8000-0000000000aa",
   ]);
   expect(api.calls[1]?.body).toEqual({ name: "Bea" });
 });

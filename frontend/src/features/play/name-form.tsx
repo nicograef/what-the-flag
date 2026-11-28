@@ -29,12 +29,18 @@ export function NameForm({
   quizId,
   lastName,
   action,
+  label,
+  blockedLabel,
   errorText = playError,
 }: {
   quizId?: string;
   /** The player's last name from `/api/me`; null asks for one. */
   lastName: string | null;
   action: StartAction;
+  /** The field's label in place of "Dein Name". */
+  label?: string;
+  /** Set while no run can start: the start button reads it, `aria-disabled`. */
+  blockedLabel?: string;
   errorText?: (err: unknown, locale: Locale) => string;
 }): ReactNode {
   const t = useMessages(messages);
@@ -79,7 +85,7 @@ export function NameForm({
 
   function submit(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    if (start.isPending) return;
+    if (start.isPending || blockedLabel !== undefined) return;
     start.mutate(quizId ? { name, quizId } : { name });
   }
 
@@ -94,7 +100,7 @@ export function NameForm({
       {asking && (
         <>
           <label htmlFor={inputId} className="text-[15px] font-bold">
-            {t.nameLabel}
+            {label ?? t.nameLabel}
           </label>
           <input
             ref={inputRef}
@@ -125,7 +131,7 @@ export function NameForm({
       {action === "play" ? (
         <Button
           type="submit"
-          guarded={start.isPending}
+          guarded={start.isPending || blockedLabel !== undefined}
           className="mt-2 min-h-[72px] w-full text-[26px]"
         >
           <Play aria-hidden="true" className="fill-current" />
@@ -133,9 +139,12 @@ export function NameForm({
         </Button>
       ) : (
         <HoldButton
-          label={action === "accept" ? t.accept : t.start}
-          holdLabel={action === "accept" ? t.holdToAccept : t.holdToStart}
-          guarded={start.isPending}
+          label={blockedLabel ?? (action === "accept" ? t.accept : t.start)}
+          holdLabel={
+            blockedLabel ??
+            (action === "accept" ? t.holdToAccept : t.holdToStart)
+          }
+          guarded={start.isPending || blockedLabel !== undefined}
           aria-describedby={holdHint ? holdHintId : undefined}
           className="mt-2 min-h-[72px] w-full"
           onCommit={(button) => button.form?.requestSubmit()}

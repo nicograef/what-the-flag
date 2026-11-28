@@ -6,7 +6,7 @@ export const messages = defineMessages<{
   rank: string;
   name: string;
   score: string;
-  you: string;
+  youSuffix: string;
   empty: string;
   loading: string;
   retry: string;
@@ -18,7 +18,7 @@ export const messages = defineMessages<{
     rank: "Platz",
     name: "Name",
     score: "Punkte",
-    you: "du",
+    youSuffix: "(du)",
     empty: "Noch niemand auf der Liste. Spiel eine Runde und steh ganz oben.",
     loading: "Wird geladen …",
     retry: "Erneut versuchen",
@@ -30,7 +30,7 @@ export const messages = defineMessages<{
     rank: "Rank",
     name: "Name",
     score: "Score",
-    you: "you",
+    youSuffix: "(you)",
     empty:
       "Nobody is on the leaderboard yet. Start a quiz and take the top spot.",
     loading: "Loading …",

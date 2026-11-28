@@ -648,3 +648,87 @@ it("ignores result buttons for 1000 ms and keeps their labels", async () => {
     vi.useRealTimers();
   }
 });
+
+const rival = { name: "Nico", score: 1, ended: true, own: false };
+
+it("counts the gap pill to the creator in a challenge run", async () => {
+  const { user } = await startPlaying({
+    creator: rival,
+    me: { ...unknownPlayer, best: 9 },
+  });
+
+  expect(await screen.findByText("Nico in 2")).toBeInTheDocument();
+  await answer(user, "Deutschland");
+  expect(await screen.findByText("Nico eingeholt")).toBeInTheDocument();
+  await screen.findByRole(
+    "heading",
+    { name: "Was ist die Hauptstadt dieses Landes?" },
+    slow,
+  );
+  await answer(user, "Tokio");
+  expect(await screen.findByText("Nico geschlagen")).toBeInTheDocument();
+  expect(screen.getByText("Du hast Nico überholt!")).toBeInTheDocument();
+});
+
+// Arming, a toasted reveal, a miss reveal and the result guard take about 4 s of real time.
+it(
+  "shows head-to-head after a won challenge",
+  { timeout: 10_000 },
+  async () => {
+    const share = vi.fn<(data: ShareData) => Promise<void>>();
+    share.mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "share", {
+      value: share,
+      configurable: true,
+    });
+    try {
+      const api = new FakeApi();
+      const ids = fakeRun(api, sampleQuestions, {
+        name: "Kim",
+        score: 1,
+        creator: rival,
+        quizRank: 1,
+        globalRank: null,
+      });
+      const { user } = renderRoute(`/play/${ids.runId}`, { api });
+      await answer(user, "Tokio");
+      await screen.findByRole(
+        "heading",
+        { name: "Welche Flagge hat das Land mit dieser Hauptstadt?" },
+        slow,
+      );
+      await answer(user, "Flagge 1");
+
+      expect(
+        await screen.findByRole(
+          "heading",
+          { name: "Du hast Nico geschlagen!" },
+          slow,
+        ),
+      ).toHaveFocus();
+      expect(
+        screen.getByRole("img", { name: "Du: 2, Nico: 1" }),
+      ).toBeInTheDocument();
+      expect(screen.getByText("Platz 1 in Nicos Quiz")).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "Herausforderungen zählen nur in diesem Quiz. Für die Weltrangliste startest du ein eigenes Spiel.",
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", {
+          name: "Eigenes Spiel für die Weltrangliste",
+        }),
+      ).toBeInTheDocument();
+
+      await press(user, "Nico Bescheid geben");
+      await user.click(screen.getByRole("button", { name: "Teilen …" }));
+
+      expect(share).toHaveBeenCalledWith({
+        text: `Ich habe 2 in Nicos Quiz geschafft. Holst du es dir zurück?\n${window.location.origin}/q/${ids.quizId}`,
+      });
+    } finally {
+      Reflect.deleteProperty(navigator, "share");
+    }
+  },
+);

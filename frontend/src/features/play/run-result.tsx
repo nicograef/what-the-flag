@@ -166,6 +166,59 @@ function GapBar({
   );
 }
 
+/** The player's score against the creator's, as two bars; the higher one wears the crown. */
+function HeadToHead({
+  name,
+  score,
+  creator,
+}: {
+  name: string;
+  score: number;
+  creator: Creator;
+}): ReactNode {
+  const t = useMessages(messages);
+  const bar =
+    "flex w-full flex-col items-center justify-center rounded-[22px_22px_8px_8px]";
+  return (
+    <div
+      role="img"
+      aria-label={t.headToHead(score, creator.name, creator.score)}
+      className="grid grid-cols-2 items-end gap-2.5"
+    >
+      <div className="flex flex-col items-center gap-1.5">
+        {score > creator.score && (
+          <Crown
+            aria-hidden="true"
+            className="size-[34px] fill-accent text-accent"
+          />
+        )}
+        <div className={cn(bar, "h-[190px] bg-accent text-accent-ink")}>
+          <span className="text-[84px] leading-[0.85] font-extrabold tabular-nums">
+            {score}
+          </span>
+          <span className="max-w-full truncate px-2 text-lg font-extrabold">
+            {name}
+          </span>
+        </div>
+      </div>
+      <div
+        className={cn(
+          bar,
+          score > creator.score ? "h-[160px]" : "h-[190px]",
+          "bg-surface shadow-[inset_0_0_0_2px_var(--color-border)]",
+        )}
+      >
+        <span className="text-[64px] leading-[0.85] font-extrabold text-foreground-soft tabular-nums">
+          {creator.score}
+        </span>
+        <span className="max-w-full truncate px-2 text-lg font-bold text-foreground-muted">
+          {creator.name}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 const confettiColours = ["#FFC93C", "#34D399", "#FF6B7A", "#7DD3FC", "#FF9F43"];
 
 /** Pieces that fall once over a record; none under reduced motion. */
@@ -213,7 +266,8 @@ export function RunResult({
   const queryClient = useQueryClient();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [guarded, setGuarded] = useState(true);
-  const [sharing, setSharing] = useState(false);
+  /** The open share sheet's message: the run, or the news for a caught or beaten creator. */
+  const [sharing, setSharing] = useState<"run" | "won" | null>(null);
   const { best, score } = result;
   const layout = selectHead(result, creator);
   const record = layout.head === "headFirst" || layout.head === "headRecord";
@@ -324,7 +378,7 @@ export function RunResult({
             variant={variant}
             guarded={guarded}
             className={size}
-            onClick={() => setSharing(true)}
+            onClick={() => setSharing(kind === "tellCreator" ? "won" : "run")}
           >
             <Share2 aria-hidden="true" />
             {labels[kind]}
@@ -422,7 +476,16 @@ export function RunResult({
               </p>
             );
           case "headToHead":
-            return null;
+            return (
+              creator && (
+                <HeadToHead
+                  key={section}
+                  name={run.name}
+                  score={score}
+                  creator={creator}
+                />
+              )
+            );
         }
       })}
       <div className="sticky bottom-0 -mx-4 mt-auto flex flex-col gap-3 bg-background/90 px-4 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] backdrop-blur-md">
@@ -435,13 +498,14 @@ export function RunResult({
         {layout.secondary && action(layout.secondary, false)}
       </div>
       <ShareSheet
-        open={sharing}
+        open={sharing !== null}
         text={buildShareText(locale, {
           score,
           cells,
           url: `${window.location.origin}/q/${run.quizId}`,
+          wonOver: sharing === "won" ? creatorName : undefined,
         })}
-        onClose={() => setSharing(false)}
+        onClose={() => setSharing(null)}
       />
     </section>
   );

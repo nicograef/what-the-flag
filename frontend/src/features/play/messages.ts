@@ -91,6 +91,8 @@ export const messages = defineMessages<{
   copied: string;
   close: string;
   shareText: (n: number, strip: string, url: string) => string;
+  shareTextWon: (n: number, creator: string, url: string) => string;
+  headToHead: (a: number, name: string, b: number) => string;
   errors: Record<
     "invalid_name" | "run_not_found" | "not_current_question",
     string
@@ -205,10 +207,10 @@ export const messages = defineMessages<{
     copied: "Kopiert!",
     close: "Schließen",
     shareText: (n, strip, url) =>
-      `What The Flag: ${n} in Folge
-${strip}
-Gleiche Fragen. Schaffst du mehr?
-${url}`,
+      `What The Flag: ${n} in Folge\n${strip}\nGleiche Fragen. Schaffst du mehr?\n${url}`,
+    shareTextWon: (n, creator, url) =>
+      `Ich habe ${n} in ${genitive(creator)} Quiz geschafft. Holst du es dir zurück?\n${url}`,
+    headToHead: (a, name, b) => `Du: ${a}, ${name}: ${b}`,
     errors: {
       invalid_name:
         "Erlaubt sind 1 bis 20 Zeichen mit mindestens einem Buchstaben oder einer Ziffer: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
@@ -325,10 +327,10 @@ ${url}`,
     copied: "Copied!",
     close: "Close",
     shareText: (n, strip, url) =>
-      `What The Flag: ${n} in a row
-${strip}
-Same questions. Can you beat it?
-${url}`,
+      `What The Flag: ${n} in a row\n${strip}\nSame questions. Can you beat it?\n${url}`,
+    shareTextWon: (n, creator, url) =>
+      `I got ${n} in ${creator}'s quiz. Want it back?\n${url}`,
+    headToHead: (a, name, b) => `You: ${a}, ${name}: ${b}`,
     errors: {
       invalid_name:
         "Use 1 to 20 characters with at least one letter or digit: letters, digits, spaces, _, - and full stops.",

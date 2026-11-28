@@ -1,5 +1,5 @@
-import { screen, within } from "@testing-library/react";
-import { expect, it } from "vitest";
+import { act, screen, within } from "@testing-library/react";
+import { expect, it, vi } from "vitest";
 import {
   fakeRun,
   sampleQuestions,
@@ -18,27 +18,70 @@ function challenge(creator: Json, top: Json[] = []): Json {
   return { id: quizId, creator, top };
 }
 
-it.each([
-  {
-    creator: { name: "Ada", score: 7, ended: true, own: false },
-    text: "Ada hat 7 Fragen richtig beantwortet. Schaffst du mehr?",
-    form: true,
-  },
-  {
-    creator: { name: "Ada", score: 2, ended: false, own: false },
-    text: "Ada spielt noch.",
-    form: false,
-  },
-])("shows the creator: $text", async ({ creator, text, form }) => {
+const ended = { name: "Ada", score: 7, ended: true, own: false };
+
+it("shows the creator, the target and a slot on the board", async () => {
   const api = server().respond(
     `GET /api/quizzes/${quizId}`,
-    challenge(creator),
+    challenge(ended, [{ rank: 1, name: "Ada", score: 7 }]),
   );
 
   renderRoute(`/q/${quizId}`, { api });
 
-  expect(await screen.findByText(text)).toBeInTheDocument();
-  expect(screen.queryByLabelText("Dein Name") !== null).toBe(form);
+  expect(
+    await screen.findByRole("heading", { name: "Ada fordert dich heraus" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText("Genau dieselben Fragen. Schaffst du 8?"),
+  ).toBeInTheDocument();
+  expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+    "1Ada7",
+    "?Du",
+  ]);
+  expect(screen.getByLabelText("Dein Name")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Annehmen" })).not.toHaveAttribute(
+    "aria-disabled",
+  );
+});
+
+it("opens the quiz when the creator run ends", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    let creator: Json = { name: "Ada", score: 2, ended: false, own: false };
+    const api = server().respond(`GET /api/quizzes/${quizId}`, () =>
+      challenge(creator),
+    );
+    const { user } = renderRoute(`/q/${quizId}`, { api });
+
+    expect(
+      await screen.findByRole("heading", { name: "Ada spielt gerade" }),
+    ).toBeInTheDocument();
+    await user.type(
+      screen.getByLabelText("Trag schon mal deinen Namen ein"),
+      "Bea",
+    );
+    expect(
+      screen.getByRole("button", { name: "Warte auf Ada …" }),
+    ).toHaveAttribute("aria-disabled", "true");
+    expect(
+      screen.getByRole("link", { name: "Solange ein eigenes Spiel starten" }),
+    ).toHaveAttribute("href", "/");
+
+    creator = { name: "Ada", score: 3, ended: true, own: false };
+    await act(() => vi.advanceTimersByTimeAsync(5000));
+
+    expect(
+      await screen.findByRole("heading", { name: "Ada fordert dich heraus" }),
+    ).toBeInTheDocument();
+    const statuses = screen.getAllByRole("status").map((s) => s.textContent);
+    expect(statuses).toContain("Das Quiz ist jetzt offen.");
+    expect(screen.getByLabelText("Dein Name")).toHaveValue("Bea");
+    expect(
+      screen.getByRole("button", { name: "Annehmen" }),
+    ).not.toHaveAttribute("aria-disabled");
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
 it("highlights the requester's own row in the quiz ranking", async () => {
@@ -53,28 +96,25 @@ it("highlights the requester's own row in the quiz ranking", async () => {
 
   renderRoute(`/q/${quizId}`, { api });
 
-  const table = await screen.findByRole("table", {
-    name: "Rangliste dieses Quiz",
-  });
-  const rows = within(table).getAllByRole("row").slice(1);
+  const board = (await screen.findAllByRole("list"))[0];
+  const rows = within(board).getAllByRole("listitem");
   expect(rows.map((r) => r.textContent)).toEqual([
     "1Ada3",
     "2Bea(du)1",
     "2Cem1",
+    "?Du",
   ]);
   expect(rows.map((r) => r.getAttribute("aria-current"))).toEqual([
     null,
     "true",
     null,
+    null,
   ]);
 });
 
 it("starts a run on this quiz from the name form", async () => {
-  const api = server().respond(
-    `GET /api/quizzes/${quizId}`,
-    challenge({ name: "Ada", score: 3, ended: true, own: false }),
-  );
-  fakeRun(api, sampleQuestions);
+  const api = server();
+  fakeRun(api, sampleQuestions, { creator: ended });
   const { user } = renderRoute(`/q/${quizId}`, { api });
 
   await user.type(await screen.findByLabelText("Dein Name"), "Bea");
@@ -89,12 +129,52 @@ it("starts a run on this quiz from the name form", async () => {
   expect(start?.body).toEqual({ name: "Bea", quizId });
 });
 
+it("shows a hidden creator's quiz without a head", async () => {
+  const api = server().respond(
+    `GET /api/quizzes/${quizId}`,
+    challenge(null, [{ rank: 1, name: "Ada", score: 3 }]),
+  );
+
+  renderRoute(`/q/${quizId}`, { api });
+
+  expect(
+    await screen.findByRole("button", { name: "Annehmen" }),
+  ).toBeInTheDocument();
+  expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+  expect(screen.getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+    "1Ada3",
+    "?Du",
+  ]);
+});
+
+it("shows the own quiz with a plain play button", async () => {
+  const api = new FakeApi();
+  fakeRun(api, sampleQuestions, {
+    me: { ...unknownPlayer, lastName: "Ada" },
+    creator: { name: "Ada", score: 3, ended: true, own: true },
+  });
+  const { user } = renderRoute(`/q/${quizId}`, { api });
+
+  expect(
+    await screen.findByRole("heading", { name: "Dein Quiz" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText("Du hast 3 geschafft. Gleiche Fragen, neuer Versuch?"),
+  ).toBeInTheDocument();
+  expect(await screen.findByText("als Ada")).toBeInTheDocument();
+  expect(screen.queryByText("Du")).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Spielen" }));
+
+  await screen.findByRole("heading", {
+    name: "Welches Land hat diese Flagge?",
+  });
+  const start = api.calls.find((c) => c.route === "POST /api/runs");
+  expect(start?.body).toEqual({ name: "Ada", quizId });
+});
+
 it("shows quiz_in_progress when the start is refused", async () => {
   const api = server()
-    .respond(
-      `GET /api/quizzes/${quizId}`,
-      challenge({ name: "Ada", score: 3, ended: true, own: false }),
-    )
+    .respond(`GET /api/quizzes/${quizId}`, challenge(ended))
     .fail("POST /api/runs", 409, "quiz_in_progress");
   const { user } = renderRoute(`/q/${quizId}`, { api });
 

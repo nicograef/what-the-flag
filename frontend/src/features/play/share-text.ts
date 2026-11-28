@@ -26,11 +26,15 @@ export function shareStrip(cells: Cell[]): string {
 
 /**
  * The message a share sends: score, run strip, challenge line and the quiz link. It names no
- * question, option or country.
+ * question, option or country. `wonOver` names the creator a challenge run caught or beat.
  */
 export function buildShareText(
   locale: Locale,
-  run: { score: number; cells: Cell[]; url: string },
+  run: { score: number; cells: Cell[]; url: string; wonOver?: string },
 ): string {
-  return messages[locale].shareText(run.score, shareStrip(run.cells), run.url);
+  const t = messages[locale];
+  if (run.wonOver !== undefined) {
+    return t.shareTextWon(run.score, run.wonOver, run.url);
+  }
+  return t.shareText(run.score, shareStrip(run.cells), run.url);
 }

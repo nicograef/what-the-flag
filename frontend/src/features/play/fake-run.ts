@@ -22,6 +22,8 @@ interface FakeRunOptions {
   tooFast?: boolean;
   /** The `GET /api/me` body; an unknown player by default. */
   me?: Json;
+  /** The quiz's creator from `GET /api/quizzes/:quizId`; by default the first run, the player's own. */
+  creator?: Json;
 }
 
 interface RunRecord {
@@ -52,7 +54,8 @@ function runId(n: number): string {
 
 /**
  * A stateful run server on `FakeApi`: the first run exists at once, and each
- * `POST /api/runs` creates the next one over the same questions. It also answers `GET /api/me`.
+ * `POST /api/runs` creates the next one over the same questions. It also answers `GET /api/me`
+ * and the quiz's `GET /api/quizzes/:quizId`.
  */
 export function fakeRun(
   api: FakeApi,
@@ -170,6 +173,16 @@ export function fakeRun(
 
   api.respond("GET /api/me", options.me ?? unknownPlayer);
   const first = create(options.name ?? "Ada");
+  api.respond(`GET /api/quizzes/${fakeQuizId}`, () => ({
+    id: fakeQuizId,
+    creator: options.creator ?? {
+      name: first.name,
+      score: first.score,
+      ended: first.ended !== null,
+      own: true,
+    },
+    top: [],
+  }));
   first.score = options.score ?? 0;
   api.respond(
     "POST /api/runs",

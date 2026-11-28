@@ -5,30 +5,36 @@ import type { Locale } from "@/lib/i18n/locale";
 import { defineMessages } from "@/lib/i18n/messages";
 
 export const messages = defineMessages<{
-  title: string;
-  creatorScore: (name: string, score: number) => string;
-  scoreLabel: (score: number) => string;
-  beatIt: string;
-  stillPlaying: (name: string) => string;
-  autoRefresh: string;
-  ranking: string;
+  challengedBy: (name: string) => string;
+  target: (n: number) => string;
+  you: string;
+  waitingTitle: (name: string) => string;
+  waitingBody: (name: string) => string;
+  waitingName: string;
+  waitingButton: (name: string) => string;
+  waitingOwnGame: string;
+  unlocked: string;
+  ownQuizTitle: string;
+  ownQuizBody: (n: number) => string;
   loading: string;
   home: string;
   retry: string;
   errors: Record<"quiz_not_found" | "quiz_in_progress", string>;
 }>({
   de: {
-    title: "Herausforderung",
-    creatorScore: (name, score) =>
-      score === 1
-        ? `${name} hat 1 Frage richtig beantwortet. Schaffst du mehr?`
-        : `${name} hat ${score} Fragen richtig beantwortet. Schaffst du mehr?`,
-    scoreLabel: (score) =>
-      score === 1 ? "richtige Antwort" : "richtige Antworten",
-    beatIt: "Schaffst du mehr?",
-    stillPlaying: (name) => `${name} spielt noch.`,
-    autoRefresh: "Die Seite aktualisiert sich von selbst.",
-    ranking: "Rangliste dieses Quiz",
+    challengedBy: (name) => `${name} fordert dich heraus`,
+    target: (n) => `Genau dieselben Fragen. Schaffst du ${n}?`,
+    you: "Du",
+    waitingTitle: (name) => `${name} spielt gerade`,
+    waitingBody: (name) =>
+      `Sobald ${name} fertig ist, siehst du das Ergebnis hier und kannst sofort loslegen. Die Seite aktualisiert sich von selbst.`,
+    waitingName: "Trag schon mal deinen Namen ein",
+    waitingButton: (name) => `Warte auf ${name} …`,
+    waitingOwnGame: "Solange ein eigenes Spiel starten",
+    unlocked: "Das Quiz ist jetzt offen.",
+    ownQuizTitle: "Dein Quiz",
+    ownQuizBody: (n) =>
+      `Du hast ${n} geschafft. Gleiche Fragen, neuer Versuch?`,
     loading: "Wird geladen …",
     home: "Zur Startseite",
     retry: "Erneut versuchen",
@@ -40,16 +46,18 @@ export const messages = defineMessages<{
     },
   },
   en: {
-    title: "Challenge",
-    creatorScore: (name, score) =>
-      score === 1
-        ? `${name} got 1 question right. Can you beat it?`
-        : `${name} got ${score} questions right. Can you beat it?`,
-    scoreLabel: (score) => (score === 1 ? "correct answer" : "correct answers"),
-    beatIt: "Can you beat it?",
-    stillPlaying: (name) => `${name} is still playing.`,
-    autoRefresh: "This page updates by itself.",
-    ranking: "This quiz's leaderboard",
+    challengedBy: (name) => `${name} challenges you`,
+    target: (n) => `Exactly the same questions. Can you get ${n}?`,
+    you: "You",
+    waitingTitle: (name) => `${name} is still playing`,
+    waitingBody: (name) =>
+      `As soon as ${name} finishes, you'll see the score here and can start right away. This page updates by itself.`,
+    waitingName: "Enter your name while you wait",
+    waitingButton: (name) => `Waiting for ${name} …`,
+    waitingOwnGame: "Start your own game meanwhile",
+    unlocked: "The quiz is open now.",
+    ownQuizTitle: "Your quiz",
+    ownQuizBody: (n) => `You got ${n}. Same questions, another go?`,
     loading: "Loading …",
     home: "Back to home",
     retry: "Try again",

@@ -1,10 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlert } from "lucide-react";
-import { useCallback, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useCoarsePointer } from "@/components/ui/hold-button";
+import { challengeQuery } from "@/features/challenge/api";
 import { isTooFast, meQuery } from "@/features/play/api";
 import { passedTarget, type GapTarget } from "@/features/play/gap";
 import { GapPill } from "@/features/play/gap-pill";
@@ -109,14 +116,34 @@ function Run({ runId }: { runId: string }): ReactNode {
     refetchOnWindowFocus: false,
   });
   const best = me.data?.best ?? null;
-  const target: GapTarget | null =
-    best === null ? null : { kind: "record", score: best };
   const [holding, setHolding] = useState(false);
+  /** The gap pill's target as the last render saw it; the reveal delay reads it. */
+  const targetRef = useRef<GapTarget | null>(null);
   const { query, reveal, busy, answerError, answer, expire, holdChange } =
     useRun(runId, (outcome) => {
       if (!outcome.correct) return missRevealMs;
-      return passedTarget(target, outcome.score) ? toastRevealMs : revealMs;
+      return passedTarget(targetRef.current, outcome.score)
+        ? toastRevealMs
+        : revealMs;
     });
+  // Read once the run names its quiz, under the challenge page's key: a challenge run counts to its creator.
+  const quizId = query.data?.state.quizId;
+  const quiz = useQuery({
+    ...challengeQuery(api, quizId ?? ""),
+    enabled: quizId !== undefined,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+  const creator = quiz.data?.creator ?? null;
+  const rival = creator && !creator.own ? creator : null;
+  const target: GapTarget | null = rival
+    ? { kind: "creator", name: rival.name, score: rival.score }
+    : best === null
+      ? null
+      : { kind: "record", score: best };
+  useLayoutEffect(() => {
+    targetRef.current = target;
+  });
   const onHoldChange = useCallback(
     (active: boolean) => {
       setHolding(active);
@@ -139,7 +166,19 @@ function Run({ runId }: { runId: string }): ReactNode {
 
   const { state, receivedAt } = query.data;
   if (state.result) {
-    return <RunResult run={state} result={state.result} creator={null} />;
+    return (
+      <RunResult
+        run={state}
+        result={state.result}
+        creator={
+          creator && {
+            name: creator.name,
+            score: creator.score,
+            own: creator.own,
+          }
+        }
+      />
+    );
   }
   const question = state.question;
   if (!question) return null;
@@ -156,9 +195,14 @@ function Run({ runId }: { runId: string }): ReactNode {
     outcome = (
       <>
         <span className="sr-only">{t.correct}</span>
-        {passedTarget(target, shown.score) && best !== null && (
-          <Toast title={t.toastRecord} body={t.toastRecordBody(best)} />
-        )}
+        {passedTarget(target, shown.score) &&
+          (target?.kind === "creator" ? (
+            <Toast title={t.toastCreator(target.name)} />
+          ) : (
+            best !== null && (
+              <Toast title={t.toastRecord} body={t.toastRecordBody(best)} />
+            )
+          ))}
       </>
     );
     hint = shown.finished ? t.resultSoon : t.nextSoon;
