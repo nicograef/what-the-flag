@@ -237,12 +237,27 @@ type capitalSet struct {
 	others  []country.Names
 }
 
-// capitals picks each pool entry's primary capital from its Wikidata rows and primaryCapitals.
+// capitals picks each pool entry's primary capital from its Wikidata rows, the extraCapitals and primaryCapitals.
 func (b *builder) capitals() map[string]capitalSet {
 	o := b.src.overrides
 	qidsOf := map[string][]string{}
 	label := map[string]country.Names{}
-	for _, r := range b.src.capitals {
+	rows := slices.Clone(b.src.capitals)
+	for _, code := range slices.Sorted(maps.Keys(o.ExtraCapitals)) {
+		e, name := o.ExtraCapitals[code], "extraCapitals "+code
+		requireReason(&b.p, name, e.Reason)
+		switch {
+		case !b.inPool(code):
+			b.p.add("%s: not a pool code", name)
+		case e.QID == "" || e.De == "" || e.En == "":
+			b.p.add("%s: qid, de or en is empty", name)
+		case slices.ContainsFunc(b.src.capitals, func(r capitalRow) bool { return r.Code == code && r.QID == e.QID }):
+			b.p.add("%s: %s is already a capital in %s", name, e.QID, capitalsPath)
+		default:
+			rows = append(rows, capitalRow{Code: code, QID: e.QID, Names: country.Names{De: e.De, En: e.En}})
+		}
+	}
+	for _, r := range rows {
 		if !b.inPool(r.Code) || r.QID == "" {
 			continue
 		}

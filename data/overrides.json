@@ -14,9 +14,17 @@
       "qid": "Q2907",
       "reason": "Constitutional capital; La Paz (Q1491) is the seat of government"
     },
+    "GQ": {
+      "qid": "Q3818",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names Malabo; Ciudad de la Paz (Q1140136) is the planned capital"
+    },
+    "KI": {
+      "qid": "Q999487",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names Bairiki (Tarawa); South Tarawa (Q131233) is the atoll's urban area"
+    },
     "LK": {
-      "qid": "Q41963",
-      "reason": "Official capital; Colombo (Q35381) is the commercial one"
+      "qid": "Q35381",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names Colombo; Sri Jayawardenepura Kotte (Q41963) is the official capital"
     },
     "PS": {
       "qid": "Q158119",
@@ -33,6 +41,20 @@
     "ZA": {
       "qid": "Q3926",
       "reason": "Executive capital; Bloemfontein (Q37701), Cape Town (Q5465) are others"
+    }
+  },
+  "extraCapitals": {
+    "GQ": {
+      "qid": "Q3818",
+      "de": "Malabo",
+      "en": "Malabo",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names Malabo the capital; Wikidata lists only Ciudad de la Paz"
+    },
+    "KI": {
+      "qid": "Q999487",
+      "de": "Bairiki",
+      "en": "Bairiki",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names Bairiki (Tarawa) the capital; Wikidata lists only South Tarawa"
     }
   },
   "capitalLabels": {

@@ -172,8 +172,8 @@ Examples (inference, after K3):
 ### Giveaway rule
 
 - name → capital and capital → name skip a target whose name and capital share a word, split at spaces and hyphens, in de or en.
-  This hits 18 targets (fact, from the dataset): AD, CD, CG, CL, DJ, GT, GW, KW, LK, LU, MC, MX, PA, SG, SM, ST, SV, VA.
-- SV (El Salvador, San Salvador) and LK (Sri Lanka, Sri Jayawardenepura Kotte) share a word without one containing the other. So the rule compares words, not containment.
+  This hits 17 targets (fact, from the dataset): AD, CD, CG, CL, DJ, GT, GW, KW, LU, MC, MX, PA, SG, SM, ST, SV, VA.
+- SV (El Salvador, San Salvador) shares a word without one name containing the other. So the rule compares words, not containment.
 - CD, CG and CL leak only in German. One quiz serves both locales, so one language is enough to skip.
 - A regional-language label that names a country is already rejected by the importer.
 - There is no generic stem detector. It would also drop fair easy items, such as France → French.

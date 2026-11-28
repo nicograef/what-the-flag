@@ -278,9 +278,10 @@ Until K5, a data edit that removes a code also resets the staging database.
 ### Editorial rules
 
 - A fact needs a source URL; a judgement, such as fame or a look-alike, needs a reason.
+- Where the Auswärtiges Amt Länderverzeichnis names a different capital city, it wins (owner ruling, K9): GQ Malabo, KI Bairiki, LK Colombo. Israel keeps Jerusalem, which the list leaves out.
 - The capital rule goes into game-rules.md: "The primary capital is the city the country's constitution or law names. Where law names several, it is the seat of the executive. Where the state has never controlled the named city, it is the seat of government."
-  Inference: this rule reproduces all six `primaryCapitals` choices and NL Amsterdam:
-  - BO Sucre, LK Sri Jayawardenepura Kotte, NL Amsterdam: the named capital.
+  Inference: this rule reproduces the other five `primaryCapitals` choices and NL Amsterdam:
+  - BO Sucre, NL Amsterdam: the named capital.
   - SZ Mbabane, ZA Pretoria: law names several; the seat of the executive.
   - PS Ramallah: the state has never controlled East Jerusalem.
   - YE Sanaa: the state controlled it before 2014, so Aden's temporary seat does not count.

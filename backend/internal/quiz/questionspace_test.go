@@ -280,7 +280,7 @@ func TestQuestionSpace(t *testing.T) {
 			giveaways = append(giveaways, cat.pool[i].Code)
 		}
 	}
-	wantGiveaways := []string{"AD", "CD", "CG", "CL", "DJ", "GT", "GW", "KW", "LK", "LU", "MC", "MX", "PA", "SG", "SM", "ST", "SV", "VA"}
+	wantGiveaways := []string{"AD", "CD", "CG", "CL", "DJ", "GT", "GW", "KW", "LU", "MC", "MX", "PA", "SG", "SM", "ST", "SV", "VA"}
 	if !slices.Equal(giveaways, wantGiveaways) {
 		t.Errorf("giveaway targets %q, want %q", giveaways, wantGiveaways)
 	}

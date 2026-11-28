@@ -111,6 +111,7 @@ type overrides struct {
 	UNMember         map[string]unMemberOverride `json:"unMember"`
 	PoolAdditions    poolAdditions               `json:"poolAdditions"`
 	PrimaryCapitals  map[string]primaryCapital   `json:"primaryCapitals"`
+	ExtraCapitals    map[string]extraCapital     `json:"extraCapitals"`
 	CapitalLabels    map[string]labelOverride    `json:"capitalLabels"`
 	CountryNames     map[string]labelOverride    `json:"countryNames"`
 	NameExceptions   nameExceptions              `json:"nameExceptions"`
@@ -160,6 +161,14 @@ type nameExceptions struct {
 }
 
 type reasonOnly struct {
+	Reason string `json:"reason"`
+}
+
+// extraCapital adds a capital city that Wikidata does not list for a country.
+type extraCapital struct {
+	QID    string `json:"qid"`
+	De     string `json:"de"`
+	En     string `json:"en"`
 	Reason string `json:"reason"`
 }
 
