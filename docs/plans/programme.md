@@ -12,8 +12,9 @@ Lead: the orchestrating session. Lanes live under `../what-the-flag-wt/w<wave>/<
 
 | Wave | Lane | Plan phases | Starts when |
 | --- | --- | --- | --- |
-| 1 | player | anonymous-player 1–3 | its plan critique is applied |
-| 1 | domain-data | quiz-domain-now 1–5 | the question-kinds design has amended this plan |
+| 1 | player | anonymous-player 1–3 | now |
+| 1 | domain-data | quiz-domain-now 1–4 | now |
+| 1 | domain-data | quiz-domain-now 5 | player has landed; the lead rebases the lane first, because phase 5 edits player-owned `present.go`, goldens and `features/play/api.ts` |
 | 2 | redesign | redesign 1–9; frontend only | player has landed |
 | 2 | domain-engine | quiz-domain-now 6, 7 (backend only) and 8 | player and domain-data have landed |
 | 2 | redesign | redesign 10–12 | domain-engine has landed; the lead rebases the lane first |
@@ -73,22 +74,22 @@ None. Wikimedia, Wikidata, CLDR and auswaertiges-amt.de fetches are free.
 
 | Phase | Lane | Status | Note |
 | --- | --- | --- | --- |
-| anonymous-player 1 | player | waiting | plan critique |
-| anonymous-player 2 | player | waiting | plan critique |
-| anonymous-player 3 | player | waiting | plan critique |
-| quiz-domain-now 1 | domain-data | waiting | question-kinds design |
-| quiz-domain-now 2 | domain-data | waiting | question-kinds design |
-| quiz-domain-now 3 | domain-data | waiting | question-kinds design |
-| quiz-domain-now 4 | domain-data | waiting | question-kinds design |
-| quiz-domain-now 5 | domain-data | waiting | question-kinds design |
-| quiz-domain-now 6 | domain-engine | waiting | wave 1 |
-| quiz-domain-now 7 | domain-engine | waiting | wave 1; backend only |
-| quiz-domain-now 8 | domain-engine | waiting | wave 1 |
+| anonymous-player 1 | player | running | |
+| anonymous-player 2 | player | running | |
+| anonymous-player 3 | player | running | |
+| quiz-domain-now 1 | domain-data | running | |
+| quiz-domain-now 2 | domain-data | running | |
+| quiz-domain-now 3 | domain-data | running | |
+| quiz-domain-now 4 | domain-data | running | |
+| quiz-domain-now 5 | domain-data | waiting | player lands |
+| quiz-domain-now 6 | domain-engine | waiting | player and domain-data land |
+| quiz-domain-now 7 | domain-engine | waiting | player and domain-data land |
+| quiz-domain-now 8 | domain-engine | waiting | player and domain-data land |
 | redesign 1–9 | redesign | waiting | player lands |
 | redesign 10–12 | redesign | waiting | domain-engine lands |
-| question-kinds 1 | kinds | waiting | wave 2 |
-| question-kinds 2 | kinds | waiting | wave 2 |
-| question-kinds 3 | kinds | waiting | wave 2 |
-| question-kinds 4 | kinds | waiting | wave 2 |
-| question-kinds 5 | kinds | waiting | wave 2 |
-| question-kinds 6 | kinds | waiting | wave 2 |
+| question-kinds 1 | kinds | waiting | domain-engine and redesign land |
+| question-kinds 2 | kinds | waiting | domain-engine and redesign land |
+| question-kinds 3 | kinds | waiting | domain-engine and redesign land |
+| question-kinds 4 | kinds | waiting | domain-engine and redesign land |
+| question-kinds 5 | kinds | waiting | domain-engine and redesign land |
+| question-kinds 6 | kinds | waiting | domain-engine and redesign land |
