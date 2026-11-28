@@ -35,8 +35,12 @@ export type Item = z.infer<typeof itemSchema>;
 
 const optionIndexSchema = z.int().check(z.minimum(0), z.maximum(3));
 
+/** The difficulty level the server derives from the position; the client never computes it. */
+const levelSchema = z.int().check(z.minimum(1), z.maximum(10));
+
 const questionSchema = z.object({
   position: z.int().check(z.minimum(0)),
+  level: levelSchema,
   type: z.enum(questionTypes),
   prompt: itemSchema,
   options: z.tuple([itemSchema, itemSchema, itemSchema, itemSchema]),
@@ -47,7 +51,7 @@ const questionSchema = z.object({
 export type Question = z.infer<typeof questionSchema>;
 
 const missedSchema = z.extend(
-  z.omit(questionSchema, { deadline: true, limitMs: true }),
+  z.omit(questionSchema, { deadline: true, limitMs: true, level: true }),
   {
     correctOption: optionIndexSchema,
     chosenOption: z.nullable(optionIndexSchema),
@@ -63,6 +67,7 @@ const bestSchema = z.object({
 
 const resultSchema = z.object({
   score: z.int().check(z.minimum(0)),
+  level: levelSchema,
   endReason: z.enum(["wrong", "timeout", "completed"]),
   last: z.nullable(missedSchema),
   quizRank: z.int().check(z.minimum(1)),

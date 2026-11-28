@@ -46,6 +46,7 @@ type runState struct {
 
 type question struct {
 	Position int       `json:"position"`
+	Level    int       `json:"level"`
 	Type     string    `json:"type"`
 	Prompt   item      `json:"prompt"`
 	Options  [4]item   `json:"options"`
@@ -53,8 +54,10 @@ type question struct {
 	LimitMs  int64     `json:"limitMs"`
 }
 
+// result.Level is the level of the run's last question.
 type result struct {
 	Score      int     `json:"score"`
+	Level      int     `json:"level"`
 	EndReason  string  `json:"endReason"`
 	Last       *missed `json:"last"`
 	QuizRank   int     `json:"quizRank"`
@@ -111,6 +114,7 @@ func (p *presenter) state(st quiz.RunState) (runState, error) {
 		}
 		out.Question = &question{
 			Position: st.Question.Position,
+			Level:    quiz.Level(st.Question.Position),
 			Type:     st.Question.Question.Type.ID(),
 			Prompt:   prompt,
 			Options:  options,
@@ -120,8 +124,14 @@ func (p *presenter) state(st quiz.RunState) (runState, error) {
 	}
 	if st.Result != nil {
 		out.Status = "finished"
+		// A completed run's last question earned its last point; a missed run's last question is the miss.
+		lastPosition := max(0, st.Result.Score-1)
+		if st.Result.Last != nil {
+			lastPosition = st.Result.Last.Position
+		}
 		out.Result = &result{
 			Score:      st.Result.Score,
+			Level:      quiz.Level(lastPosition),
 			EndReason:  string(st.Result.EndReason),
 			QuizRank:   st.Result.QuizRank,
 			GlobalRank: st.Result.GlobalRank,
