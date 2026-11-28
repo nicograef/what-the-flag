@@ -38,7 +38,7 @@ func newSpace(cat sharedPool) space {
 func (s space) holds(c Case, option string) bool {
 	if c.Type.Prompt == AttrRegionalLanguage {
 		o := s.byCode[option]
-		return o != nil && slices.Contains(o.RegionalLanguages, c.Prompt) && !slices.Contains(o.Languages, c.Prompt)
+		return o != nil && slices.Contains(o.RegionalLanguages, c.Prompt)
 	}
 	if c.Type.Answer.identifiesCountry() {
 		return option == c.Target

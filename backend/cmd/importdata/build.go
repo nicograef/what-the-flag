@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"fmt"
 	"maps"
+	"net/url"
 	"regexp"
 	"slices"
 	"strings"
@@ -17,8 +18,6 @@ const (
 	// Fame tiers by area rank in the pool, largest first: ranks up to tier1MaxRank are tier 1.
 	tier1MaxRank = 50
 	tier2MaxRank = 120
-	// maxSpokenIn caps the countries a regional language is spoken in, so a question has three countries without it.
-	maxSpokenIn = 5
 )
 
 var (
@@ -30,9 +29,8 @@ var (
 		"Europe":   {De: "Europa", En: "Europe"},
 		"Oceania":  {De: "Ozeanien", En: "Oceania"},
 	}
-	regionalKinds = []string{"creole", "indigenous", "minority", "regional"}
-	codeRe        = regexp.MustCompile(`^[A-Z]{2}$`)
-	flagKeyRe     = regexp.MustCompile(`^[0-9a-f]{10}$`)
+	codeRe    = regexp.MustCompile(`^[A-Z]{2}$`)
+	flagKeyRe = regexp.MustCompile(`^[0-9a-f]{10}$`)
 	// yearRangeRe matches the "(1964–2022)" CLDR appends to the name of a withdrawn code.
 	yearRangeRe = regexp.MustCompile(`\(\d{4}\s*[–—-]\s*\d{4}\)`)
 )
@@ -84,8 +82,8 @@ func build(src sources) (country.Dataset, []string) {
 	currencies := b.codeLists("currencies", b.src.overrides.Currencies, func(c mledozeCountry) []string {
 		return slices.Clone(c.Currencies)
 	})
-	regional := b.regionalLanguages(languages)
-	blocked := b.blockedLanguages(languages, regional)
+	regional, community := b.regionalLanguages(languages)
+	blocked := b.blockedLanguages(languages, regional, community)
 	fame := b.fameTiers()
 
 	countries := make([]country.Country, 0, len(b.pool))
@@ -431,54 +429,49 @@ func (b *builder) codeLists(section string, ov map[string]listOverride, source f
 	return lists
 }
 
-// regionalLanguages validates regional-languages.json and returns each pool code's regional languages, sorted.
-// A language counts as spoken in every country of its spokenIn list and every country it is official in.
-func (b *builder) regionalLanguages(official map[string][]string) map[string][]string {
-	out := map[string][]string{}
+// regionalLanguages validates regional-languages.json and returns, per pool code and sorted, the languages
+// regional there (spokenIn) and those blocked there for a community (blockedIn).
+func (b *builder) regionalLanguages(official map[string][]string) (regional, community map[string][]string) {
+	regional, community = map[string][]string{}, map[string][]string{}
 	for _, lang := range slices.Sorted(maps.Keys(b.src.regional)) {
 		r, name := b.src.regional[lang], regionalPath+" "+lang
-		if !slices.Contains(regionalKinds, r.Kind) {
-			b.p.add("%s: kind %q is not one of %v", name, r.Kind, regionalKinds)
+		if u, err := url.Parse(r.Source); err != nil || u.Scheme != "https" || u.Host == "" {
+			b.p.add("%s: source %q is not an https URL", name, r.Source)
 		}
-		if strings.TrimSpace(r.Source) == "" {
-			b.p.add("%s: no source", name)
+		if len(r.SpokenIn) == 0 {
+			b.p.add("%s: spokenIn names no country", name)
 		}
-		if len(r.SpokenIn) == 0 || len(r.SpokenIn) > maxSpokenIn {
-			b.p.add("%s: spokenIn %v holds %d countries, want 1-%d", name, r.SpokenIn, len(r.SpokenIn), maxSpokenIn)
-		}
-		spoken := map[string]bool{}
-		for i, code := range r.SpokenIn {
-			switch {
-			case !b.inPool(code):
-				b.p.add("%s: spokenIn %s is not a pool code", name, code)
-			case i > 0 && code <= r.SpokenIn[i-1]:
-				b.p.add("%s: spokenIn %v is not distinct and ascending", name, r.SpokenIn)
-			default:
-				spoken[code] = true
+		for _, l := range []struct {
+			field string
+			codes []string
+			out   map[string][]string
+		}{{"spokenIn", r.SpokenIn, regional}, {"blockedIn", r.BlockedIn, community}} {
+			for i, code := range l.codes {
+				switch {
+				case !b.inPool(code):
+					b.p.add("%s: %s %s is not a pool code", name, l.field, code)
+				case i > 0 && code <= l.codes[i-1]:
+					b.p.add("%s: %s %v is not distinct and ascending", name, l.field, l.codes)
+				case slices.Contains(official[code], lang):
+					b.p.add("%s: %s %s is a country it is official in", name, l.field, code)
+				case l.field == "blockedIn" && slices.Contains(r.SpokenIn, code):
+					b.p.add("%s: %s is in spokenIn and blockedIn", name, code)
+				default:
+					l.out[code] = append(l.out[code], lang)
+				}
 			}
 		}
-		for _, code := range b.pool {
-			if slices.Contains(official[code], lang) {
-				spoken[code] = true
-			}
-		}
-		if len(spoken) > maxSpokenIn {
-			b.p.add("%s: spoken in %v with the countries it is official in, more than %d", name, slices.Sorted(maps.Keys(spoken)), maxSpokenIn)
-		}
-		for code := range spoken {
-			out[code] = append(out[code], lang)
-		}
 	}
-	for _, list := range out {
-		slices.Sort(list)
-	}
-	return out
+	return regional, community
 }
 
-// blockedLanguages validates the curated blocked languages and returns each code's, sorted.
-// A blocked language is official in another pool country, and neither official nor regional in its own.
-func (b *builder) blockedLanguages(official, regional map[string][]string) map[string][]string {
+// blockedLanguages validates the curated blocked languages and returns each code's, sorted, with its community languages.
+// A curated blocked language is official in another pool country, and neither official nor regional in its own.
+func (b *builder) blockedLanguages(official, regional, community map[string][]string) map[string][]string {
 	out := map[string][]string{}
+	for code, langs := range community {
+		out[code] = slices.Clone(langs)
+	}
 	ov := b.src.overrides.BlockedLanguages
 	for _, code := range slices.Sorted(maps.Keys(ov)) {
 		o, name := ov[code], "blockedLanguages "+code
@@ -497,15 +490,35 @@ func (b *builder) blockedLanguages(official, regional map[string][]string) map[s
 				b.p.add("%s: %s listed twice", name, lang)
 			case slices.Contains(official[code], lang) || slices.Contains(regional[code], lang):
 				b.p.add("%s: %s is already an official or regional language of it", name, lang)
+			case slices.Contains(community[code], lang):
+				b.p.add("%s: %s is already in the blockedIn list of %s", name, lang, regionalPath)
 			case !officialElsewhere:
 				b.p.add("%s: %s is official in no other pool country, so it is never a wrong option", name, lang)
 			default:
 				out[code] = append(out[code], lang)
 			}
 		}
-		slices.Sort(out[code])
+	}
+	for _, list := range out {
+		slices.Sort(list)
 	}
 	return out
+}
+
+// cldrGaps lists, per curated regional language, the pool countries where CLDR's territoryInfo records it
+// and neither its spokenIn nor its blockedIn list nor its official status covers them.
+func cldrGaps(src sources, ds country.Dataset) []string {
+	var gaps []string
+	for _, lang := range slices.Sorted(maps.Keys(src.regional)) {
+		r := src.regional[lang]
+		for _, c := range ds.Countries {
+			share, ok := src.territoryLanguages[c.Code][lang]
+			if ok && !slices.Contains(r.SpokenIn, c.Code) && !slices.Contains(r.BlockedIn, c.Code) && !slices.Contains(c.Languages, lang) {
+				gaps = append(gaps, fmt.Sprintf("%s %s: CLDR records it in %s (%g %%); neither spokenIn nor blockedIn names it", regionalPath, lang, c.Code, share))
+			}
+		}
+	}
+	return gaps
 }
 
 // languageLabels applies the languageLabels overrides to the CLDR names.
@@ -656,6 +669,19 @@ func validate(ds country.Dataset, p *problems) {
 		for _, other := range c.Lookalikes {
 			if !slices.Contains(byCode[other].Lookalikes, c.Code) {
 				p.add("%s: lookalike %s does not list it back", c.Code, other)
+			}
+		}
+		// Each language has one status per country: official, regional or blocked.
+		status := map[string]string{}
+		for _, l := range []struct {
+			name  string
+			codes []string
+		}{{"languages", c.Languages}, {"regionalLanguages", c.RegionalLanguages}, {"blockedLanguages", c.BlockedLanguages}} {
+			for _, lang := range l.codes {
+				if prev, ok := status[lang]; ok {
+					p.add("%s: language %s is in both %s and %s", c.Code, lang, prev, l.name)
+				}
+				status[lang] = l.name
 			}
 		}
 	}

@@ -8,8 +8,9 @@
 # What it does:
 #   1. Fetches each named source, or every source when none is named, into a temporary directory:
 #      mledoze/countries at MLEDOZE_REV, cldr-json at CLDR_TAG (sparse: the de territory names,
-#      the de and en language names, the language aliases), flag-icons at FLAG_ICONS_TAG, and the Wikidata
-#      capitals.csv by POSTing data/sources/wikidata/capitals.rq to the SPARQL endpoint
+#      the de and en language names, the language aliases, the territory languages), flag-icons at
+#      FLAG_ICONS_TAG, and the Wikidata capitals.csv by POSTing data/sources/wikidata/capitals.rq
+#      to the SPARQL endpoint
 #   2. Only after every download succeeded, replaces each named data/sources/<source>/ with the
 #      files the importer reads plus the source's LICENSE, and writes capitals.csv as served (CRLF)
 #
@@ -87,7 +88,8 @@ if selected cldr; then
   done
   cp "$WORK_DIR/cldr/$CLDR_NAMES/main/de/territories.json" "$STAGE/cldr/de/"
   mkdir -p "$STAGE/cldr/supplemental"
-  cp "$WORK_DIR/cldr/$CLDR_CORE/supplemental/aliases.json" "$STAGE/cldr/supplemental/"
+  cp "$WORK_DIR/cldr/$CLDR_CORE/supplemental/aliases.json" "$WORK_DIR/cldr/$CLDR_CORE/supplemental/territoryInfo.json" \
+    "$STAGE/cldr/supplemental/"
   # The packages share one LICENSE, which governs their data files; the repository root's covers the scripts.
   cp "$WORK_DIR/cldr/$CLDR_NAMES/LICENSE" "$STAGE/cldr/"
 fi

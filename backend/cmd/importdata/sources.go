@@ -12,6 +12,7 @@ import (
 	"os"
 	"path"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/nicograef/what-the-flag/internal/country"
@@ -22,6 +23,7 @@ const (
 	mledozePath       = "data/sources/mledoze-countries/countries.json"
 	cldrDir           = "data/sources/cldr"
 	cldrAliasesPath   = "data/sources/cldr/supplemental/aliases.json"
+	territoryInfoPath = "data/sources/cldr/supplemental/territoryInfo.json"
 	capitalsPath      = "data/sources/wikidata/capitals.csv"
 	flagSourceDir     = "data/sources/flag-icons/4x3"
 	flagLicensePath   = "data/sources/flag-icons/LICENSE"
@@ -40,6 +42,9 @@ type sources struct {
 	// languageNames is keyed by CLDR language code; a code CLDR names in one language only has an empty field.
 	languageNames   map[string]country.Names
 	languageAliases map[string]string
+	// territoryLanguages is keyed by CLDR territory code, then by language code without its script,
+	// and holds the population percentage CLDR gives.
+	territoryLanguages map[string]map[string]float64
 	// currencyUnits is keyed by ISO 4217 code.
 	currencyUnits map[string]country.CurrencyLabel
 	// regional is keyed by CLDR language code.
@@ -52,10 +57,11 @@ type sources struct {
 }
 
 // regionalLanguage is one entry of regional-languages.json: a regional, minority, creole or indigenous language.
+// SpokenIn names the countries where it is established and not official, BlockedIn those with a diaspora or a small community.
 type regionalLanguage struct {
-	Kind     string   `json:"kind"`
-	SpokenIn []string `json:"spokenIn"`
-	Source   string   `json:"source"`
+	SpokenIn  []string `json:"spokenIn"`
+	BlockedIn []string `json:"blockedIn"`
+	Source    string   `json:"source"`
 }
 
 type mledozeCountry struct {
@@ -283,6 +289,36 @@ func readCLDR(root *os.Root, src *sources) error {
 	src.languageAliases = map[string]string{}
 	for code, a := range aliases.Supplemental.Metadata.Alias.LanguageAlias {
 		src.languageAliases[code] = a.Replacement
+	}
+
+	if raw, err = root.ReadFile(territoryInfoPath); err != nil {
+		return err
+	}
+	var info struct {
+		Supplemental struct {
+			TerritoryInfo map[string]struct {
+				LanguagePopulation map[string]struct {
+					PopulationPercent string `json:"_populationPercent"`
+				} `json:"languagePopulation"`
+			} `json:"territoryInfo"`
+		} `json:"supplemental"`
+	}
+	if err := json.Unmarshal(raw, &info); err != nil {
+		return fmt.Errorf("%s: %w", territoryInfoPath, err)
+	}
+	src.territoryLanguages = map[string]map[string]float64{}
+	for territory, t := range info.Supplemental.TerritoryInfo {
+		langs := map[string]float64{}
+		for code, l := range t.LanguagePopulation {
+			share, err := strconv.ParseFloat(l.PopulationPercent, 64)
+			if err != nil {
+				return fmt.Errorf("%s: %s %s: %w", territoryInfoPath, territory, code, err)
+			}
+			// CLDR splits some languages by script, as ff_Adlm and ff_Latn; the language keeps its largest share.
+			base, _, _ := strings.Cut(code, "_")
+			langs[base] = max(langs[base], share)
+		}
+		src.territoryLanguages[territory] = langs
 	}
 	return nil
 }

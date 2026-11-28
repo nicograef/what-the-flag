@@ -47,6 +47,9 @@ func run(rootDir string, check bool, stderr io.Writer) int {
 		if err := write(root, files); err != nil {
 			return fail(err.Error())
 		}
+		for _, gap := range cldrGaps(src, ds) {
+			_, _ = fmt.Fprintln(stderr, "warn: "+gap)
+		}
 		return 0
 	}
 	diffs, err := compare(root, files)

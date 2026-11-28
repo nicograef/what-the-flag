@@ -146,9 +146,13 @@
     "ZW": {"remove": ["bwg", "kck", "khi", "ndc", "toi", "zib"], "reason": "CLDR names none of these minor, family or sign-language codes"}
   },
   "languageLabels": {
+    "fan": {"de": "Fang", "reason": "CLDR de \"Pangwe\" is an archaic colonial exonym"},
     "fj": {"de": "Fidschianisch", "reason": "CLDR de \"Fidschi\" is the country's name"},
+    "hmn": {"de": "Hmong", "reason": "CLDR de \"Miao\" is the Chinese umbrella term, which many Hmong reject"},
     "na": {"en": "Nauruan", "reason": "CLDR en \"Nauru\" is the country's name"},
     "pau": {"de": "Palauisch", "reason": "CLDR de \"Palau\" is the country's name"},
+    "szl": {"de": "Schlesisch", "reason": "CLDR de \"Wasserpolnisch\" is a pejorative term"},
+    "tpi": {"de": "Tok Pisin", "reason": "CLDR de \"Neumelanesisch\" is archaic; German texts use the language's own name"},
     "tvl": {"en": "Tuvaluan", "reason": "CLDR en \"Tuvalu\" is the country's name"},
     "zgh": {"en": "Tamazight", "reason": "CLDR en \"Standard Moroccan Tamazight\" names Morocco, though Algeria makes Tamazight official too"}
   },

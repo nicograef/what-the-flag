@@ -1,6 +1,5 @@
 {
   "aa": {
-    "kind": "regional",
     "spokenIn": [
       "DJ",
       "ER",
@@ -9,16 +8,13 @@
     "source": "https://en.wikipedia.org/wiki/Afar_language"
   },
   "af": {
-    "kind": "regional",
     "spokenIn": [
       "BW",
-      "NA",
-      "ZA"
+      "NA"
     ],
     "source": "https://en.wikipedia.org/wiki/Afrikaans"
   },
   "arn": {
-    "kind": "indigenous",
     "spokenIn": [
       "AR",
       "CL"
@@ -26,14 +22,12 @@
     "source": "https://en.wikipedia.org/wiki/Mapuche_language"
   },
   "ast": {
-    "kind": "regional",
     "spokenIn": [
       "ES"
     ],
     "source": "https://en.wikipedia.org/wiki/Asturian_language"
   },
   "av": {
-    "kind": "regional",
     "spokenIn": [
       "AZ",
       "GE",
@@ -42,31 +36,26 @@
     "source": "https://en.wikipedia.org/wiki/Avar_language"
   },
   "ay": {
-    "kind": "indigenous",
     "spokenIn": [
       "AR",
-      "BO",
       "CL",
       "PE"
     ],
     "source": "https://en.wikipedia.org/wiki/Aymara_language"
   },
   "ba": {
-    "kind": "regional",
     "spokenIn": [
       "RU"
     ],
     "source": "https://en.wikipedia.org/wiki/Bashkir_language"
   },
   "ban": {
-    "kind": "regional",
     "spokenIn": [
       "ID"
     ],
     "source": "https://en.wikipedia.org/wiki/Balinese_language"
   },
   "bem": {
-    "kind": "indigenous",
     "spokenIn": [
       "CD",
       "TZ",
@@ -75,15 +64,12 @@
     "source": "https://en.wikipedia.org/wiki/Bemba_language"
   },
   "bn": {
-    "kind": "regional",
     "spokenIn": [
-      "BD",
       "IN"
     ],
     "source": "https://en.wikipedia.org/wiki/Bengali_language"
   },
   "bo": {
-    "kind": "regional",
     "spokenIn": [
       "CN",
       "IN",
@@ -92,14 +78,12 @@
     "source": "https://en.wikipedia.org/wiki/Standard_Tibetan"
   },
   "br": {
-    "kind": "regional",
     "spokenIn": [
       "FR"
     ],
     "source": "https://en.wikipedia.org/wiki/Breton_language"
   },
   "bua": {
-    "kind": "minority",
     "spokenIn": [
       "CN",
       "MN",
@@ -108,9 +92,7 @@
     "source": "https://en.wikipedia.org/wiki/Buryat_language"
   },
   "ca": {
-    "kind": "regional",
     "spokenIn": [
-      "AD",
       "ES",
       "FR",
       "IT"
@@ -118,21 +100,18 @@
     "source": "https://en.wikipedia.org/wiki/Catalan_language"
   },
   "ceb": {
-    "kind": "regional",
     "spokenIn": [
       "PH"
     ],
     "source": "https://en.wikipedia.org/wiki/Cebuano_language"
   },
   "chr": {
-    "kind": "indigenous",
     "spokenIn": [
       "US"
     ],
     "source": "https://en.wikipedia.org/wiki/Cherokee_language"
   },
   "co": {
-    "kind": "regional",
     "spokenIn": [
       "FR",
       "IT"
@@ -140,7 +119,6 @@
     "source": "https://en.wikipedia.org/wiki/Corsican_language"
   },
   "cr": {
-    "kind": "indigenous",
     "spokenIn": [
       "CA",
       "US"
@@ -148,21 +126,18 @@
     "source": "https://en.wikipedia.org/wiki/Cree"
   },
   "csb": {
-    "kind": "regional",
     "spokenIn": [
       "PL"
     ],
     "source": "https://en.wikipedia.org/wiki/Kashubian_language"
   },
   "cv": {
-    "kind": "regional",
     "spokenIn": [
       "RU"
     ],
     "source": "https://en.wikipedia.org/wiki/Chuvash_language"
   },
   "cy": {
-    "kind": "regional",
     "spokenIn": [
       "AR",
       "GB"
@@ -170,7 +145,6 @@
     "source": "https://en.wikipedia.org/wiki/Welsh_language"
   },
   "din": {
-    "kind": "indigenous",
     "spokenIn": [
       "SD",
       "SS"
@@ -178,7 +152,6 @@
     "source": "https://en.wikipedia.org/wiki/Dinka_language"
   },
   "dyo": {
-    "kind": "indigenous",
     "spokenIn": [
       "GM",
       "GW",
@@ -187,7 +160,6 @@
     "source": "https://en.wikipedia.org/wiki/Jola-Fonyi_language"
   },
   "ee": {
-    "kind": "indigenous",
     "spokenIn": [
       "BJ",
       "GH",
@@ -196,7 +168,6 @@
     "source": "https://en.wikipedia.org/wiki/Ewe_language"
   },
   "eu": {
-    "kind": "regional",
     "spokenIn": [
       "ES",
       "FR"
@@ -204,14 +175,12 @@
     "source": "https://en.wikipedia.org/wiki/Basque_language"
   },
   "ewo": {
-    "kind": "indigenous",
     "spokenIn": [
       "CM"
     ],
     "source": "https://en.wikipedia.org/wiki/Ewondo_language"
   },
   "fan": {
-    "kind": "indigenous",
     "spokenIn": [
       "CG",
       "CM",
@@ -222,7 +191,6 @@
     "source": "https://en.wikipedia.org/wiki/Fang_language"
   },
   "ff": {
-    "kind": "regional",
     "spokenIn": [
       "GN",
       "NE",
@@ -231,7 +199,6 @@
     "source": "https://en.wikipedia.org/wiki/Fula_language"
   },
   "fon": {
-    "kind": "indigenous",
     "spokenIn": [
       "BJ",
       "NG",
@@ -240,7 +207,6 @@
     "source": "https://en.wikipedia.org/wiki/Fon_language"
   },
   "frp": {
-    "kind": "regional",
     "spokenIn": [
       "CH",
       "FR",
@@ -249,7 +215,6 @@
     "source": "https://en.wikipedia.org/wiki/Arpitan_language"
   },
   "frr": {
-    "kind": "minority",
     "spokenIn": [
       "DE",
       "DK"
@@ -257,36 +222,30 @@
     "source": "https://en.wikipedia.org/wiki/North_Frisian_language"
   },
   "fur": {
-    "kind": "minority",
     "spokenIn": [
       "IT"
     ],
     "source": "https://en.wikipedia.org/wiki/Friulian_language"
   },
   "fy": {
-    "kind": "regional",
     "spokenIn": [
       "NL"
     ],
     "source": "https://en.wikipedia.org/wiki/West_Frisian_language"
   },
   "ga": {
-    "kind": "minority",
     "spokenIn": [
-      "GB",
-      "IE"
+      "GB"
     ],
     "source": "https://en.wikipedia.org/wiki/Irish_language"
   },
   "gaa": {
-    "kind": "indigenous",
     "spokenIn": [
       "GH"
     ],
     "source": "https://en.wikipedia.org/wiki/Ga_language"
   },
   "gag": {
-    "kind": "regional",
     "spokenIn": [
       "BG",
       "MD",
@@ -297,7 +256,6 @@
     "source": "https://en.wikipedia.org/wiki/Gagauz_language"
   },
   "gd": {
-    "kind": "regional",
     "spokenIn": [
       "CA",
       "GB"
@@ -305,10 +263,8 @@
     "source": "https://en.wikipedia.org/wiki/Scottish_Gaelic"
   },
   "gil": {
-    "kind": "regional",
     "spokenIn": [
       "FJ",
-      "KI",
       "SB",
       "TV",
       "VU"
@@ -316,24 +272,19 @@
     "source": "https://en.wikipedia.org/wiki/Gilbertese"
   },
   "gl": {
-    "kind": "regional",
     "spokenIn": [
       "ES"
     ],
     "source": "https://en.wikipedia.org/wiki/Galician_language"
   },
   "gn": {
-    "kind": "indigenous",
     "spokenIn": [
       "AR",
-      "BO",
-      "BR",
-      "PY"
+      "BR"
     ],
     "source": "https://en.wikipedia.org/wiki/Guarani_language"
   },
   "guc": {
-    "kind": "indigenous",
     "spokenIn": [
       "CO",
       "VE"
@@ -341,7 +292,6 @@
     "source": "https://en.wikipedia.org/wiki/Wayuu_language"
   },
   "ha": {
-    "kind": "regional",
     "spokenIn": [
       "CM",
       "GH",
@@ -351,14 +301,12 @@
     "source": "https://en.wikipedia.org/wiki/Hausa_language"
   },
   "haw": {
-    "kind": "indigenous",
     "spokenIn": [
       "US"
     ],
     "source": "https://en.wikipedia.org/wiki/Hawaiian_language"
   },
   "hmn": {
-    "kind": "minority",
     "spokenIn": [
       "CN",
       "LA",
@@ -369,25 +317,21 @@
     "source": "https://en.wikipedia.org/wiki/Hmong_language"
   },
   "hsb": {
-    "kind": "minority",
     "spokenIn": [
       "DE"
     ],
     "source": "https://en.wikipedia.org/wiki/Upper_Sorbian_language"
   },
   "ht": {
-    "kind": "creole",
     "spokenIn": [
       "BS",
       "CU",
       "DO",
-      "HT",
       "US"
     ],
     "source": "https://en.wikipedia.org/wiki/Haitian_Creole"
   },
   "hz": {
-    "kind": "minority",
     "spokenIn": [
       "AO",
       "BW",
@@ -396,7 +340,6 @@
     "source": "https://en.wikipedia.org/wiki/Herero_language"
   },
   "ig": {
-    "kind": "indigenous",
     "spokenIn": [
       "CM",
       "GQ",
@@ -405,14 +348,12 @@
     "source": "https://en.wikipedia.org/wiki/Igbo_language"
   },
   "iu": {
-    "kind": "indigenous",
     "spokenIn": [
       "CA"
     ],
     "source": "https://en.wikipedia.org/wiki/Inuktitut"
   },
   "jv": {
-    "kind": "regional",
     "spokenIn": [
       "ID",
       "MY",
@@ -421,14 +362,12 @@
     "source": "https://en.wikipedia.org/wiki/Javanese_language"
   },
   "kab": {
-    "kind": "minority",
     "spokenIn": [
       "DZ"
     ],
     "source": "https://en.wikipedia.org/wiki/Kabyle_language"
   },
   "kde": {
-    "kind": "indigenous",
     "spokenIn": [
       "KE",
       "MW",
@@ -438,14 +377,12 @@
     "source": "https://en.wikipedia.org/wiki/Makonde_language"
   },
   "kea": {
-    "kind": "creole",
     "spokenIn": [
       "CV"
     ],
     "source": "https://en.wikipedia.org/wiki/Cape_Verdean_Creole"
   },
   "kg": {
-    "kind": "regional",
     "spokenIn": [
       "AO",
       "CD",
@@ -455,14 +392,12 @@
     "source": "https://en.wikipedia.org/wiki/Kongo_language"
   },
   "ki": {
-    "kind": "indigenous",
     "spokenIn": [
       "KE"
     ],
     "source": "https://en.wikipedia.org/wiki/Kikuyu_language"
   },
   "kj": {
-    "kind": "minority",
     "spokenIn": [
       "AO",
       "NA"
@@ -470,14 +405,12 @@
     "source": "https://en.wikipedia.org/wiki/Kwanyama_dialect"
   },
   "kl": {
-    "kind": "indigenous",
     "spokenIn": [
       "DK"
     ],
     "source": "https://en.wikipedia.org/wiki/Greenlandic_language"
   },
   "kln": {
-    "kind": "indigenous",
     "spokenIn": [
       "KE",
       "UG"
@@ -485,23 +418,19 @@
     "source": "https://en.wikipedia.org/wiki/Kalenjin_languages"
   },
   "km": {
-    "kind": "regional",
     "spokenIn": [
-      "KH",
       "TH",
       "VN"
     ],
     "source": "https://en.wikipedia.org/wiki/Khmer_language"
   },
   "kmb": {
-    "kind": "indigenous",
     "spokenIn": [
       "AO"
     ],
     "source": "https://en.wikipedia.org/wiki/Kimbundu_language"
   },
   "kpe": {
-    "kind": "indigenous",
     "spokenIn": [
       "CI",
       "GN",
@@ -510,7 +439,6 @@
     "source": "https://en.wikipedia.org/wiki/Kpelle_language"
   },
   "kri": {
-    "kind": "creole",
     "spokenIn": [
       "GM",
       "SL"
@@ -518,7 +446,6 @@
     "source": "https://en.wikipedia.org/wiki/Krio_language"
   },
   "krl": {
-    "kind": "regional",
     "spokenIn": [
       "FI",
       "RU"
@@ -526,7 +453,6 @@
     "source": "https://en.wikipedia.org/wiki/Karelian_language"
   },
   "ks": {
-    "kind": "regional",
     "spokenIn": [
       "IN",
       "PK"
@@ -534,7 +460,6 @@
     "source": "https://en.wikipedia.org/wiki/Kashmiri_language"
   },
   "ku": {
-    "kind": "minority",
     "spokenIn": [
       "AM",
       "IQ",
@@ -545,21 +470,18 @@
     "source": "https://rm.coe.int/armeniaecrml6-en/4880287d2c"
   },
   "kw": {
-    "kind": "minority",
     "spokenIn": [
       "GB"
     ],
     "source": "https://en.wikipedia.org/wiki/Cornish_language"
   },
   "lg": {
-    "kind": "indigenous",
     "spokenIn": [
       "UG"
     ],
     "source": "https://en.wikipedia.org/wiki/Luganda"
   },
   "li": {
-    "kind": "regional",
     "spokenIn": [
       "BE",
       "DE",
@@ -568,7 +490,6 @@
     "source": "https://en.wikipedia.org/wiki/Limburgish"
   },
   "lkt": {
-    "kind": "indigenous",
     "spokenIn": [
       "CA",
       "US"
@@ -576,14 +497,12 @@
     "source": "https://en.wikipedia.org/wiki/Lakota_language"
   },
   "lld": {
-    "kind": "minority",
     "spokenIn": [
       "IT"
     ],
     "source": "https://en.wikipedia.org/wiki/Ladin_language"
   },
   "ln": {
-    "kind": "regional",
     "spokenIn": [
       "AO",
       "CD",
@@ -593,16 +512,13 @@
     "source": "https://en.wikipedia.org/wiki/Lingala"
   },
   "lo": {
-    "kind": "regional",
     "spokenIn": [
       "KH",
-      "LA",
       "TH"
     ],
     "source": "https://en.wikipedia.org/wiki/Lao_language"
   },
   "loz": {
-    "kind": "minority",
     "spokenIn": [
       "BW",
       "NA",
@@ -611,21 +527,18 @@
     "source": "https://en.wikipedia.org/wiki/Lozi_language"
   },
   "ltg": {
-    "kind": "regional",
     "spokenIn": [
       "LV"
     ],
     "source": "https://en.wikipedia.org/wiki/Latgalian_language"
   },
   "lua": {
-    "kind": "regional",
     "spokenIn": [
       "CD"
     ],
     "source": "https://en.wikipedia.org/wiki/Tshiluba_language"
   },
   "luo": {
-    "kind": "indigenous",
     "spokenIn": [
       "KE",
       "TZ"
@@ -633,7 +546,6 @@
     "source": "https://en.wikipedia.org/wiki/Dholuo"
   },
   "mai": {
-    "kind": "regional",
     "spokenIn": [
       "IN",
       "NP"
@@ -641,7 +553,6 @@
     "source": "https://en.wikipedia.org/wiki/Maithili_language"
   },
   "man": {
-    "kind": "regional",
     "spokenIn": [
       "GM",
       "GN",
@@ -650,7 +561,6 @@
     "source": "https://en.wikipedia.org/wiki/Mandinka_language"
   },
   "mas": {
-    "kind": "indigenous",
     "spokenIn": [
       "KE",
       "TZ"
@@ -658,7 +568,6 @@
     "source": "https://en.wikipedia.org/wiki/Maasai_language"
   },
   "men": {
-    "kind": "indigenous",
     "spokenIn": [
       "GN",
       "LR",
@@ -666,51 +575,31 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Mende_language"
   },
-  "mfe": {
-    "kind": "creole",
-    "spokenIn": [
-      "MU"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Mauritian_Creole"
-  },
-  "mi": {
-    "kind": "indigenous",
-    "spokenIn": [
-      "NZ"
-    ],
-    "source": "https://en.wikipedia.org/wiki/M%C4%81ori_language"
-  },
   "mn": {
-    "kind": "regional",
     "spokenIn": [
-      "CN",
-      "MN"
+      "CN"
     ],
     "source": "https://en.wikipedia.org/wiki/Mongolian_language"
   },
   "mr": {
-    "kind": "regional",
     "spokenIn": [
       "IN"
     ],
     "source": "https://en.wikipedia.org/wiki/Marathi_language"
   },
   "mwl": {
-    "kind": "regional",
     "spokenIn": [
       "PT"
     ],
     "source": "https://en.wikipedia.org/wiki/Mirandese_language"
   },
   "nap": {
-    "kind": "regional",
     "spokenIn": [
       "IT"
     ],
     "source": "https://en.wikipedia.org/wiki/Neapolitan_language"
   },
   "naq": {
-    "kind": "minority",
     "spokenIn": [
       "BW",
       "NA",
@@ -719,16 +608,13 @@
     "source": "https://en.wikipedia.org/wiki/Khoekhoe_language"
   },
   "nd": {
-    "kind": "regional",
     "spokenIn": [
       "BW",
-      "ZA",
-      "ZW"
+      "ZA"
     ],
     "source": "https://en.wikipedia.org/wiki/Northern_Ndebele_language"
   },
   "nds": {
-    "kind": "regional",
     "spokenIn": [
       "DE",
       "DK",
@@ -737,17 +623,14 @@
     "source": "https://en.wikipedia.org/wiki/Low_German"
   },
   "ne": {
-    "kind": "regional",
     "spokenIn": [
       "BT",
       "IN",
-      "MM",
-      "NP"
+      "MM"
     ],
     "source": "https://en.wikipedia.org/wiki/Nepali_language"
   },
   "nus": {
-    "kind": "indigenous",
     "spokenIn": [
       "ET",
       "SS"
@@ -755,24 +638,20 @@
     "source": "https://en.wikipedia.org/wiki/Nuer_language"
   },
   "nv": {
-    "kind": "indigenous",
     "spokenIn": [
       "US"
     ],
     "source": "https://en.wikipedia.org/wiki/Navajo_language"
   },
   "ny": {
-    "kind": "regional",
     "spokenIn": [
       "MW",
       "MZ",
-      "ZM",
-      "ZW"
+      "ZM"
     ],
     "source": "https://en.wikipedia.org/wiki/Chewa_language"
   },
   "oc": {
-    "kind": "regional",
     "spokenIn": [
       "ES",
       "FR",
@@ -782,7 +661,6 @@
     "source": "https://en.wikipedia.org/wiki/Occitan_language"
   },
   "oj": {
-    "kind": "indigenous",
     "spokenIn": [
       "CA",
       "US"
@@ -790,7 +668,6 @@
     "source": "https://en.wikipedia.org/wiki/Ojibwe_language"
   },
   "om": {
-    "kind": "regional",
     "spokenIn": [
       "ET",
       "KE",
@@ -799,7 +676,6 @@
     "source": "https://en.wikipedia.org/wiki/Oromo_language"
   },
   "os": {
-    "kind": "regional",
     "spokenIn": [
       "GE",
       "RU"
@@ -807,7 +683,6 @@
     "source": "https://en.wikipedia.org/wiki/Ossetian_language"
   },
   "pa": {
-    "kind": "regional",
     "spokenIn": [
       "IN",
       "PK"
@@ -815,7 +690,6 @@
     "source": "https://en.wikipedia.org/wiki/Punjabi_language"
   },
   "pcd": {
-    "kind": "regional",
     "spokenIn": [
       "BE",
       "FR"
@@ -823,7 +697,6 @@
     "source": "https://en.wikipedia.org/wiki/Picard_language"
   },
   "pdc": {
-    "kind": "minority",
     "spokenIn": [
       "BZ",
       "CA",
@@ -832,40 +705,32 @@
     "source": "https://en.wikipedia.org/wiki/Pennsylvania_Dutch_language"
   },
   "pis": {
-    "kind": "creole",
     "spokenIn": [
       "SB"
     ],
     "source": "https://en.wikipedia.org/wiki/Pijin"
   },
   "ps": {
-    "kind": "regional",
     "spokenIn": [
-      "AF",
       "PK"
     ],
     "source": "https://en.wikipedia.org/wiki/Pashto"
   },
   "qu": {
-    "kind": "indigenous",
     "spokenIn": [
       "AR",
-      "BO",
       "CO",
-      "EC",
       "PE"
     ],
     "source": "https://en.wikipedia.org/wiki/Quechuan_languages"
   },
   "quc": {
-    "kind": "indigenous",
     "spokenIn": [
       "GT"
     ],
     "source": "https://en.wikipedia.org/wiki/K%CA%BCiche%CA%BC_language"
   },
   "rif": {
-    "kind": "minority",
     "spokenIn": [
       "DZ",
       "ES",
@@ -873,45 +738,32 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Riffian_language"
   },
-  "rm": {
-    "kind": "minority",
-    "spokenIn": [
-      "CH"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Romansh_language"
-  },
   "rw": {
-    "kind": "regional",
     "spokenIn": [
       "CD",
-      "RW",
       "UG"
     ],
     "source": "https://en.wikipedia.org/wiki/Kinyarwanda"
   },
   "sah": {
-    "kind": "regional",
     "spokenIn": [
       "RU"
     ],
     "source": "https://en.wikipedia.org/wiki/Yakut_language"
   },
   "sc": {
-    "kind": "minority",
     "spokenIn": [
       "IT"
     ],
     "source": "https://en.wikipedia.org/wiki/Sardinian_language"
   },
   "scn": {
-    "kind": "regional",
     "spokenIn": [
       "IT"
     ],
     "source": "https://en.wikipedia.org/wiki/Sicilian_language"
   },
   "sco": {
-    "kind": "regional",
     "spokenIn": [
       "GB",
       "IE"
@@ -919,7 +771,6 @@
     "source": "https://en.wikipedia.org/wiki/Scots_language"
   },
   "sd": {
-    "kind": "regional",
     "spokenIn": [
       "IN",
       "PK"
@@ -927,47 +778,38 @@
     "source": "https://en.wikipedia.org/wiki/Sindhi_language"
   },
   "se": {
-    "kind": "indigenous",
     "spokenIn": [
       "FI",
-      "NO",
       "SE"
     ],
     "source": "https://en.wikipedia.org/wiki/Northern_S%C3%A1mi"
   },
   "sg": {
-    "kind": "regional",
     "spokenIn": [
       "CD",
-      "CF",
       "TD"
     ],
     "source": "https://en.wikipedia.org/wiki/Sango_language"
   },
   "sgs": {
-    "kind": "regional",
     "spokenIn": [
       "LT"
     ],
     "source": "https://en.wikipedia.org/wiki/Samogitian_language"
   },
   "shi": {
-    "kind": "minority",
     "spokenIn": [
       "MA"
     ],
     "source": "https://en.wikipedia.org/wiki/Shilha_language"
   },
   "sn": {
-    "kind": "regional",
     "spokenIn": [
-      "MZ",
-      "ZW"
+      "MZ"
     ],
     "source": "https://en.wikipedia.org/wiki/Shona_language"
   },
   "snk": {
-    "kind": "regional",
     "spokenIn": [
       "GM",
       "MR",
@@ -976,24 +818,20 @@
     "source": "https://en.wikipedia.org/wiki/Soninke_language"
   },
   "so": {
-    "kind": "regional",
     "spokenIn": [
       "DJ",
       "ET",
-      "KE",
-      "SO"
+      "KE"
     ],
     "source": "https://en.wikipedia.org/wiki/Somali_language"
   },
   "srn": {
-    "kind": "creole",
     "spokenIn": [
       "SR"
     ],
     "source": "https://en.wikipedia.org/wiki/Sranan_Tongo"
   },
   "srr": {
-    "kind": "indigenous",
     "spokenIn": [
       "GM",
       "MR",
@@ -1001,39 +839,19 @@
     ],
     "source": "https://en.wikipedia.org/wiki/Serer_language"
   },
-  "ss": {
-    "kind": "regional",
-    "spokenIn": [
-      "SZ",
-      "ZA"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Swazi_language"
-  },
-  "st": {
-    "kind": "regional",
-    "spokenIn": [
-      "LS",
-      "ZA",
-      "ZW"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Sotho_language"
-  },
   "su": {
-    "kind": "regional",
     "spokenIn": [
       "ID"
     ],
     "source": "https://en.wikipedia.org/wiki/Sundanese_language"
   },
   "suk": {
-    "kind": "indigenous",
     "spokenIn": [
       "TZ"
     ],
     "source": "https://en.wikipedia.org/wiki/Sukuma_language"
   },
   "sus": {
-    "kind": "indigenous",
     "spokenIn": [
       "GN",
       "GW",
@@ -1042,14 +860,12 @@
     "source": "https://en.wikipedia.org/wiki/Susu_language"
   },
   "sw": {
-    "kind": "regional",
     "spokenIn": [
       "CD"
     ],
     "source": "https://en.wikipedia.org/wiki/Swahili_language"
   },
   "szl": {
-    "kind": "regional",
     "spokenIn": [
       "CZ",
       "PL"
@@ -1057,47 +873,37 @@
     "source": "https://en.wikipedia.org/wiki/Silesian_language"
   },
   "ta": {
-    "kind": "regional",
     "spokenIn": [
       "IN",
-      "LK",
-      "MY",
-      "SG"
+      "MY"
     ],
     "source": "https://en.wikipedia.org/wiki/Tamil_language"
   },
   "te": {
-    "kind": "regional",
     "spokenIn": [
       "IN"
     ],
     "source": "https://en.wikipedia.org/wiki/Telugu_language"
   },
   "tem": {
-    "kind": "indigenous",
     "spokenIn": [
       "SL"
     ],
     "source": "https://en.wikipedia.org/wiki/Temne_language"
   },
   "tet": {
-    "kind": "regional",
     "spokenIn": [
-      "ID",
-      "TL"
+      "ID"
     ],
     "source": "https://en.wikipedia.org/wiki/Tetun_language"
   },
   "ti": {
-    "kind": "regional",
     "spokenIn": [
-      "ER",
       "ET"
     ],
     "source": "https://en.wikipedia.org/wiki/Tigrinya_language"
   },
   "tig": {
-    "kind": "minority",
     "spokenIn": [
       "ER",
       "SD"
@@ -1105,7 +911,6 @@
     "source": "https://en.wikipedia.org/wiki/Tigre_language"
   },
   "tiv": {
-    "kind": "indigenous",
     "spokenIn": [
       "CM",
       "NG"
@@ -1113,7 +918,6 @@
     "source": "https://en.wikipedia.org/wiki/Tiv_language"
   },
   "tmh": {
-    "kind": "regional",
     "spokenIn": [
       "BF",
       "DZ",
@@ -1122,34 +926,20 @@
     "source": "https://en.wikipedia.org/wiki/Tuareg_languages"
   },
   "tn": {
-    "kind": "regional",
     "spokenIn": [
       "BW",
-      "NA",
-      "ZA",
-      "ZW"
+      "NA"
     ],
     "source": "https://en.wikipedia.org/wiki/Tswana_language"
   },
-  "tpi": {
-    "kind": "creole",
-    "spokenIn": [
-      "PG"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Tok_Pisin"
-  },
   "ts": {
-    "kind": "regional",
     "spokenIn": [
       "MZ",
-      "SZ",
-      "ZA",
-      "ZW"
+      "SZ"
     ],
     "source": "https://en.wikipedia.org/wiki/Tsonga_language"
   },
   "tum": {
-    "kind": "indigenous",
     "spokenIn": [
       "MW",
       "TZ",
@@ -1159,7 +949,6 @@
     "source": "https://en.wikipedia.org/wiki/Tumbuka_language"
   },
   "ug": {
-    "kind": "regional",
     "spokenIn": [
       "CN",
       "KG",
@@ -1170,37 +959,25 @@
     "source": "https://en.wikipedia.org/wiki/Uyghur_language"
   },
   "umb": {
-    "kind": "indigenous",
     "spokenIn": [
       "AO"
     ],
     "source": "https://en.wikipedia.org/wiki/Umbundu"
   },
   "ur": {
-    "kind": "regional",
     "spokenIn": [
       "IN"
     ],
     "source": "https://en.wikipedia.org/wiki/Urdu"
   },
   "vai": {
-    "kind": "indigenous",
     "spokenIn": [
       "LR",
       "SL"
     ],
     "source": "https://en.wikipedia.org/wiki/Vai_language"
   },
-  "ve": {
-    "kind": "regional",
-    "spokenIn": [
-      "ZA",
-      "ZW"
-    ],
-    "source": "https://en.wikipedia.org/wiki/Venda_language"
-  },
   "vmw": {
-    "kind": "indigenous",
     "spokenIn": [
       "MZ",
       "TZ"
@@ -1208,14 +985,12 @@
     "source": "https://en.wikipedia.org/wiki/Makhuwa_language"
   },
   "vro": {
-    "kind": "regional",
     "spokenIn": [
       "EE"
     ],
     "source": "https://en.wikipedia.org/wiki/V%C3%B5ro_language"
   },
   "wa": {
-    "kind": "regional",
     "spokenIn": [
       "BE",
       "FR"
@@ -1223,7 +998,6 @@
     "source": "https://en.wikipedia.org/wiki/Walloon_language"
   },
   "wo": {
-    "kind": "indigenous",
     "spokenIn": [
       "GM",
       "MR",
@@ -1232,17 +1006,13 @@
     "source": "https://en.wikipedia.org/wiki/Wolof_language"
   },
   "xh": {
-    "kind": "regional",
     "spokenIn": [
       "BW",
-      "LS",
-      "ZA",
-      "ZW"
+      "LS"
     ],
     "source": "https://en.wikipedia.org/wiki/Xhosa_language"
   },
   "yao": {
-    "kind": "indigenous",
     "spokenIn": [
       "MW",
       "MZ",
@@ -1251,7 +1021,6 @@
     "source": "https://en.wikipedia.org/wiki/Yao_language"
   },
   "yo": {
-    "kind": "indigenous",
     "spokenIn": [
       "BJ",
       "NG",
@@ -1260,21 +1029,18 @@
     "source": "https://en.wikipedia.org/wiki/Yoruba_language"
   },
   "za": {
-    "kind": "minority",
     "spokenIn": [
       "CN"
     ],
     "source": "https://en.wikipedia.org/wiki/Zhuang_languages"
   },
   "zap": {
-    "kind": "indigenous",
     "spokenIn": [
       "MX"
     ],
     "source": "https://en.wikipedia.org/wiki/Zapotec_languages"
   },
   "zza": {
-    "kind": "minority",
     "spokenIn": [
       "TR"
     ],

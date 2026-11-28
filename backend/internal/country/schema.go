@@ -20,8 +20,8 @@ type Country struct {
 	Region            string   `json:"region"`
 	OtherRegions      []string `json:"otherRegions"`      // regions the country is also counted in, never a wrong option for it
 	Languages         []string `json:"languages"`         // official at national level, or the de facto national language
-	RegionalLanguages []string `json:"regionalLanguages"` // regional, minority, creole or indigenous languages spoken there
-	BlockedLanguages  []string `json:"blockedLanguages"`  // other countries' official languages with a status here, never a wrong option for it
+	RegionalLanguages []string `json:"regionalLanguages"` // regional, minority, creole or indigenous languages established here and not official
+	BlockedLanguages  []string `json:"blockedLanguages"`  // languages with a lesser status or a community here, never asked about it nor a wrong option for it
 	Currencies        []string `json:"currencies"`
 	Fame              int      `json:"fame"`
 	FlagKey           string   `json:"flagKey"`

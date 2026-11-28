@@ -41,12 +41,9 @@ func targetCases(t QuestionType, target *country.Country) []Case {
 	if t.Prompt != AttrRegionalLanguage {
 		return []Case{{Type: t, Target: target.Code}}
 	}
-	var cases []Case
-	for _, l := range target.RegionalLanguages {
-		// An official language of the target would name it, as Mongolian names Mongolia.
-		if !slices.Contains(target.Languages, l) {
-			cases = append(cases, Case{Type: t, Target: target.Code, Prompt: l})
-		}
+	cases := make([]Case, len(target.RegionalLanguages))
+	for i, l := range target.RegionalLanguages {
+		cases[i] = Case{Type: t, Target: target.Code, Prompt: l}
 	}
 	return cases
 }
@@ -141,7 +138,7 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 		if c.Type.Prompt == AttrRegionalLanguage {
 			sets.True = nil
 			for i := range pool {
-				if speaks(&pool[i], c.Prompt) {
+				if slices.Contains(pool[i].RegionalLanguages, c.Prompt) {
 					sets.True = append(sets.True, pool[i].Code)
 				} else if holdsLanguage(&pool[i], c.Prompt) {
 					sets.Contested = append(sets.Contested, pool[i].Code)
@@ -225,11 +222,6 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 	}
 	sets.False = [][]string{collect(true), collect(false)}
 	return sets
-}
-
-// speaks reports whether lang is a regional language of c and not an official one: a true answer to its prompt.
-func speaks(c *country.Country, lang string) bool {
-	return slices.Contains(c.RegionalLanguages, lang) && !slices.Contains(c.Languages, lang)
 }
 
 // holdsLanguage reports whether lang is in any of c's language lists.
