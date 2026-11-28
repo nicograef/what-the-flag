@@ -95,16 +95,16 @@ func ended(r *Run, now time.Time) bool {
 // errNoLists marks the leaderboard lists, which the postgres integration tests own, as outside the core's tests.
 var errNoLists = errors.New("memory: no leaderboard lists")
 
-func (m *memory) Global(context.Context, time.Time, *RunID) ([]Entry, error) { return nil, errNoLists }
+func (m *memory) Global(context.Context, time.Time, *PlayerID) ([]Entry, error) { return nil, errNoLists }
 
-func (m *memory) Quiz(context.Context, QuizID, time.Time, *RunID) ([]Entry, error) {
+func (m *memory) Quiz(context.Context, QuizID, time.Time, *PlayerID) ([]Entry, error) {
 	return nil, errNoLists
 }
 
-func (m *memory) Creator(_ context.Context, id QuizID, now time.Time) (*CreatorView, error) {
+func (m *memory) Creator(_ context.Context, id QuizID, now time.Time, own *PlayerID) (*CreatorView, error) {
 	for _, r := range m.runs {
 		if r.QuizID == id && r.Creator {
-			return &CreatorView{Name: r.Name, Score: r.Score, Ended: ended(r, now)}, nil
+			return &CreatorView{Name: r.Name, Score: r.Score, Ended: ended(r, now), Own: own != nil && *own == r.Player}, nil
 		}
 	}
 	return nil, ErrQuizNotFound

@@ -89,7 +89,7 @@ func (b *board) creator(s spec) (quiz.QuizID, quiz.RunID) {
 }
 
 // global returns the global list's rows of this test's runs, which rank above every other.
-func (b *board) global(l *Leaderboards, own *quiz.RunID) []quiz.Entry {
+func (b *board) global(l *Leaderboards, own *quiz.PlayerID) []quiz.Entry {
 	b.t.Helper()
 	entries, err := l.Global(context.Background(), b.now, own)
 	if err != nil {
@@ -165,11 +165,11 @@ func TestLeaderboard(t *testing.T) {
 			t.Fatalf("quiz list = %+v, %v; want %+v", got, err, want)
 		}
 		playing, _ := b.creator(spec{name: "playing", score: base, open: 16 * time.Second})
-		if v, err := l.Creator(ctx, playing, b.now); err != nil || v == nil || *v != (quiz.CreatorView{Name: "playing", Score: base}) {
+		if v, err := l.Creator(ctx, playing, b.now, nil); err != nil || v == nil || *v != (quiz.CreatorView{Name: "playing", Score: base}) {
 			t.Fatalf("creator view = %+v, %v; want not ended", v, err)
 		}
 		hidden, _ := b.creator(spec{name: "hidden creator", score: base, end: time.Minute, hidden: true})
-		if v, err := l.Creator(ctx, hidden, b.now); err != nil || v != nil {
+		if v, err := l.Creator(ctx, hidden, b.now, nil); err != nil || v != nil {
 			t.Fatalf("hidden creator view = %+v, %v; want nil", v, err)
 		}
 	})
@@ -205,27 +205,69 @@ func TestLeaderboard(t *testing.T) {
 		if got := b.global(l, nil); !reflect.DeepEqual(got, want) {
 			t.Fatalf("global = %+v, want %+v", got, want)
 		}
-		if v, err := l.Creator(ctx, q, b.now); err != nil || v == nil || !v.Ended {
+		if v, err := l.Creator(ctx, q, b.now, nil); err != nil || v == nil || !v.Ended {
 			t.Fatalf("creator view = %+v, %v; want ended", v, err)
 		}
 	})
 
-	t.Run("own marks only the requester's row", func(t *testing.T) {
+	t.Run("own marks only the requester's player", func(t *testing.T) {
 		b := newBoard(t)
 		l := NewLeaderboards(b.tx)
-		q, _ := b.creator(spec{name: "creator", score: base + 1, end: time.Minute})
-		own := b.run(q, spec{name: "me", score: base, end: time.Minute})
-		b.run(q, spec{name: "me", score: base, end: 2 * time.Minute})
+		me, author := newPlayer(t, b.tx), newPlayer(t, b.tx)
+		q, _ := b.creator(spec{player: author, name: "creator", score: base + 1, end: time.Minute})
+		b.run(q, spec{player: me, name: "me", score: base, end: time.Minute})
+		b.run(q, spec{name: "other", score: base, end: 2 * time.Minute})
 		want := []quiz.Entry{
 			{Rank: 1, Name: "creator", Score: base + 1},
-			{Rank: 2, Name: "me", Score: base},
+			{Rank: 2, Name: "other", Score: base},
 			{Rank: 2, Name: "me", Score: base, Own: true},
 		}
-		if got, err := l.Quiz(ctx, q, b.now, &own); err != nil || !reflect.DeepEqual(got, want) {
+		if got, err := l.Quiz(ctx, q, b.now, &me); err != nil || !reflect.DeepEqual(got, want) {
 			t.Fatalf("quiz list = %+v, %v; want %+v", got, err, want)
 		}
-		if got := b.global(l, &own); len(got) != 1 || got[0].Own {
+		if got := b.global(l, &me); len(got) != 1 || got[0].Own {
 			t.Fatalf("global = %+v, want the creator without own", got)
 		}
+		for _, tt := range []struct {
+			own  quiz.PlayerID
+			want bool
+		}{{me, false}, {author, true}} {
+			if v, err := l.Creator(ctx, q, b.now, &tt.own); err != nil || v == nil || v.Own != tt.want {
+				t.Fatalf("creator view = %+v, %v; want own %t", v, err, tt.want)
+			}
+		}
 	})
+}
+
+func TestLeaderboardOnePerPlayer(t *testing.T) {
+	ctx := context.Background()
+	b := newBoard(t)
+	l := NewLeaderboards(b.tx)
+	ada, bea := newPlayer(t, b.tx), newPlayer(t, b.tx)
+	q, low := b.creator(spec{player: ada, name: "ada low", score: base + 1, end: time.Minute})
+	b.creator(spec{player: ada, name: "ada high", score: base + 5, end: time.Minute})
+	_, other := b.creator(spec{player: bea, name: "bea", score: base + 3, end: time.Minute})
+
+	want := []quiz.Entry{{Rank: 1, Name: "ada high", Score: base + 5}, {Rank: 2, Name: "bea", Score: base + 3}}
+	if got := b.global(l, nil); !reflect.DeepEqual(got, want) {
+		t.Fatalf("global = %+v, want %+v", got, want)
+	}
+	if ranks, err := l.Ranks(ctx, low, b.now); err != nil || ranks.Global == nil || *ranks.Global != 1 {
+		t.Fatalf("ranks of ada's lower run = %+v, %v; want the global rank 1 of her best", ranks, err)
+	}
+	if ranks, err := l.Ranks(ctx, other, b.now); err != nil || ranks.Global == nil || *ranks.Global != 2 {
+		t.Fatalf("ranks of bea's run = %+v, %v; want global 2", ranks, err)
+	}
+
+	// Equal scores of one player keep the earlier end.
+	b.run(q, spec{player: ada, name: "ada early", score: base + 2, end: 2 * time.Minute})
+	b.run(q, spec{player: ada, name: "ada late", score: base + 2, end: time.Minute})
+	b.run(q, spec{player: bea, name: "bea guest", score: base, end: time.Minute})
+	want = []quiz.Entry{{Rank: 1, Name: "ada early", Score: base + 2}, {Rank: 2, Name: "bea guest", Score: base}}
+	if got, err := l.Quiz(ctx, q, b.now, nil); err != nil || !reflect.DeepEqual(got, want) {
+		t.Fatalf("quiz list = %+v, %v; want %+v", got, err, want)
+	}
+	if ranks, err := l.Ranks(ctx, low, b.now); err != nil || ranks.Quiz != 1 {
+		t.Fatalf("quiz rank of ada's creator run = %+v, %v; want 1, the rank of her best on the quiz", ranks, err)
+	}
 }

@@ -85,7 +85,7 @@ func (s *Service) Start(ctx context.Context, player PlayerFunc, name string, qui
 	if quiz != nil {
 		// A challenge run would generate and reveal positions the creator has not reached yet.
 		// A hidden creator run ranks nowhere, so its quiz stays playable.
-		creator, err := s.boards.Creator(ctx, *quiz, now)
+		creator, err := s.boards.Creator(ctx, *quiz, now, nil)
 		if errors.Is(err, ErrQuizNotFound) {
 			return RunID{}, QuizID{}, err
 		}
@@ -149,10 +149,10 @@ func (s *Service) State(ctx context.Context, id RunID) (RunState, error) {
 	return st, nil
 }
 
-// Challenge returns a quiz's creator run and its list; own marks the requester's row.
-func (s *Service) Challenge(ctx context.Context, id QuizID, own *RunID) (Challenge, error) {
+// Challenge returns a quiz's creator run and its list; own is the requester's player, nil for none.
+func (s *Service) Challenge(ctx context.Context, id QuizID, own *PlayerID) (Challenge, error) {
 	now := s.now()
-	creator, err := s.boards.Creator(ctx, id, now)
+	creator, err := s.boards.Creator(ctx, id, now, own)
 	if errors.Is(err, ErrQuizNotFound) {
 		return Challenge{}, err
 	}
@@ -166,8 +166,8 @@ func (s *Service) Challenge(ctx context.Context, id QuizID, own *RunID) (Challen
 	return Challenge{Creator: creator, Top: top}, nil
 }
 
-// Global returns the global list; own marks the requester's row.
-func (s *Service) Global(ctx context.Context, own *RunID) ([]Entry, error) {
+// Global returns the global list; own is the requester's player, nil for none.
+func (s *Service) Global(ctx context.Context, own *PlayerID) ([]Entry, error) {
 	top, err := s.boards.Global(ctx, s.now(), own)
 	if err != nil {
 		return nil, fmt.Errorf("global list: %w", err)

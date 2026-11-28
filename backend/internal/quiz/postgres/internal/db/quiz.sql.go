@@ -62,7 +62,7 @@ func (q *Queries) CreateRun(ctx context.Context, arg CreateRunParams) error {
 }
 
 const creatorRun = `-- name: CreatorRun :one
-SELECT r.name, r.score, r.hidden,
+SELECT r.player_id, r.name, r.score, r.hidden,
   (r.finished_at IS NOT NULL OR coalesce(a.served_at + $1::interval < $2::timestamptz, false))::boolean AS ended
 FROM runs r
 LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
@@ -76,16 +76,18 @@ type CreatorRunParams struct {
 }
 
 type CreatorRunRow struct {
-	Name   string
-	Score  int32
-	Hidden bool
-	Ended  bool
+	PlayerID uuid.UUID
+	Name     string
+	Score    int32
+	Hidden   bool
+	Ended    bool
 }
 
 func (q *Queries) CreatorRun(ctx context.Context, arg CreatorRunParams) (CreatorRunRow, error) {
 	row := q.db.QueryRow(ctx, creatorRun, arg.LateAfter, arg.Now, arg.QuizID)
 	var i CreatorRunRow
 	err := row.Scan(
+		&i.PlayerID,
 		&i.Name,
 		&i.Score,
 		&i.Hidden,
@@ -129,14 +131,18 @@ func (q *Queries) GetQuestion(ctx context.Context, arg GetQuestionParams) (GetQu
 const globalTop = `-- name: GlobalTop :many
 
 WITH ended AS (
-  SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
+  SELECT r.id, r.player_id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
   FROM runs r
   LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
   WHERE r.creator AND NOT r.hidden
     AND (r.finished_at IS NOT NULL OR a.served_at + $1::interval < $2::timestamptz)
+), best AS (
+  SELECT DISTINCT ON (player_id) id, player_id, name, score, ended_at
+  FROM ended
+  ORDER BY player_id, score DESC, ended_at ASC, id ASC
 )
-SELECT id, name, score, rank() OVER (ORDER BY score DESC) AS rank
-FROM ended
+SELECT player_id, name, score, rank() OVER (ORDER BY score DESC) AS rank
+FROM best
 ORDER BY score DESC, ended_at ASC, id ASC
 LIMIT 100
 `
@@ -147,14 +153,15 @@ type GlobalTopParams struct {
 }
 
 type GlobalTopRow struct {
-	ID    uuid.UUID
-	Name  string
-	Score int32
-	Rank  int64
+	PlayerID uuid.UUID
+	Name     string
+	Score    int32
+	Rank     int64
 }
 
-// Leaderboards rank ended, visible runs. A run without an end counts as ended once its open answer is
-// older than @late_after, at served_at + @late_after; a run without an answer, or with a fresh one, has not ended.
+// Leaderboards rank players by their best ended, visible run: highest score, then earliest end, then id.
+// A run without an end counts as ended once its open answer is older than @late_after, at served_at + @late_after;
+// a run without an answer, or with a fresh one, has not ended.
 func (q *Queries) GlobalTop(ctx context.Context, arg GlobalTopParams) ([]GlobalTopRow, error) {
 	rows, err := q.db.Query(ctx, globalTop, arg.LateAfter, arg.Now)
 	if err != nil {
@@ -165,7 +172,7 @@ func (q *Queries) GlobalTop(ctx context.Context, arg GlobalTopParams) ([]GlobalT
 	for rows.Next() {
 		var i GlobalTopRow
 		if err := rows.Scan(
-			&i.ID,
+			&i.PlayerID,
 			&i.Name,
 			&i.Score,
 			&i.Rank,
@@ -323,14 +330,18 @@ func (q *Queries) PlayerByKeyHash(ctx context.Context, keyHash []byte) (uuid.UUI
 
 const quizTop = `-- name: QuizTop :many
 WITH ended AS (
-  SELECT r.id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
+  SELECT r.id, r.player_id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
   FROM runs r
   LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
   WHERE r.quiz_id = $2 AND NOT r.hidden
     AND (r.finished_at IS NOT NULL OR a.served_at + $1::interval < $3::timestamptz)
+), best AS (
+  SELECT DISTINCT ON (player_id) id, player_id, name, score, ended_at
+  FROM ended
+  ORDER BY player_id, score DESC, ended_at ASC, id ASC
 )
-SELECT id, name, score, rank() OVER (ORDER BY score DESC) AS rank
-FROM ended
+SELECT player_id, name, score, rank() OVER (ORDER BY score DESC) AS rank
+FROM best
 ORDER BY score DESC, ended_at ASC, id ASC
 LIMIT 100
 `
@@ -342,10 +353,10 @@ type QuizTopParams struct {
 }
 
 type QuizTopRow struct {
-	ID    uuid.UUID
-	Name  string
-	Score int32
-	Rank  int64
+	PlayerID uuid.UUID
+	Name     string
+	Score    int32
+	Rank     int64
 }
 
 func (q *Queries) QuizTop(ctx context.Context, arg QuizTopParams) ([]QuizTopRow, error) {
@@ -358,7 +369,7 @@ func (q *Queries) QuizTop(ctx context.Context, arg QuizTopParams) ([]QuizTopRow,
 	for rows.Next() {
 		var i QuizTopRow
 		if err := rows.Scan(
-			&i.ID,
+			&i.PlayerID,
 			&i.Name,
 			&i.Score,
 			&i.Rank,
@@ -375,23 +386,30 @@ func (q *Queries) QuizTop(ctx context.Context, arg QuizTopParams) ([]QuizTopRow,
 
 const runRanks = `-- name: RunRanks :one
 WITH ended AS NOT MATERIALIZED (
-  SELECT r.quiz_id, r.creator, r.score
+  SELECT r.quiz_id, r.player_id, r.creator, r.score
   FROM runs r
   LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
   WHERE NOT r.hidden
-    AND (r.finished_at IS NOT NULL OR a.served_at + $2::interval < $3::timestamptz)
+    AND (r.finished_at IS NOT NULL OR a.served_at + $1::interval < $2::timestamptz)
+), own AS (
+  SELECT r.quiz_id, r.player_id, r.creator,
+    greatest(r.score, (SELECT max(e.score) FROM ended e WHERE e.player_id = r.player_id AND e.quiz_id = r.quiz_id)) AS quiz_best,
+    greatest(r.score, (SELECT max(e.score) FROM ended e WHERE e.player_id = r.player_id AND e.creator)) AS global_best
+  FROM runs r
+  WHERE r.id = $3
 )
-SELECT r.creator,
-  1 + (SELECT count(*) FROM ended e WHERE e.quiz_id = r.quiz_id AND e.score > r.score) AS quiz_rank,
-  1 + (SELECT count(*) FROM ended e WHERE e.creator AND e.score > r.score) AS global_rank
-FROM runs r
-WHERE r.id = $1
+SELECT o.creator,
+  1 + (SELECT count(DISTINCT e.player_id) FROM ended e
+       WHERE e.quiz_id = o.quiz_id AND e.player_id <> o.player_id AND e.score > o.quiz_best) AS quiz_rank,
+  1 + (SELECT count(DISTINCT e.player_id) FROM ended e
+       WHERE e.creator AND e.player_id <> o.player_id AND e.score > o.global_best) AS global_rank
+FROM own o
 `
 
 type RunRanksParams struct {
-	ID        uuid.UUID
 	LateAfter pgtype.Interval
 	Now       time.Time
+	ID        uuid.UUID
 }
 
 type RunRanksRow struct {
@@ -400,10 +418,10 @@ type RunRanksRow struct {
 	GlobalRank int32
 }
 
-// A run's rank is one more than the ended, visible runs of its list with a higher score.
-// NOT MATERIALIZED inlines each count, so the global one reads runs_global_score.
+// A run ranks as its player's best on its list: one more than the other players with a better ended, visible run there.
+// NOT MATERIALIZED inlines each count, so the global one reads runs_global_player_score.
 func (q *Queries) RunRanks(ctx context.Context, arg RunRanksParams) (RunRanksRow, error) {
-	row := q.db.QueryRow(ctx, runRanks, arg.ID, arg.LateAfter, arg.Now)
+	row := q.db.QueryRow(ctx, runRanks, arg.LateAfter, arg.Now, arg.ID)
 	var i RunRanksRow
 	err := row.Scan(&i.Creator, &i.QuizRank, &i.GlobalRank)
 	return i, err

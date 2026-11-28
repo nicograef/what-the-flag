@@ -55,16 +55,18 @@ type UnitOfWork interface {
 	SaveRun(r *Run) error
 }
 
-// Leaderboards ranks ended runs; a run counts as ended once its open answer is late.
+// Leaderboards ranks players by their best ended run; a run counts as ended once its open answer is late.
+// own is the requester's player, nil for none.
 type Leaderboards interface {
-	Global(ctx context.Context, now time.Time, own *RunID) ([]Entry, error)
-	Quiz(ctx context.Context, id QuizID, now time.Time, own *RunID) ([]Entry, error)
+	Global(ctx context.Context, now time.Time, own *PlayerID) ([]Entry, error)
+	Quiz(ctx context.Context, id QuizID, now time.Time, own *PlayerID) ([]Entry, error)
 	// Creator is nil for a hidden creator run; a quiz without a creator run is ErrQuizNotFound.
-	Creator(ctx context.Context, id QuizID, now time.Time) (*CreatorView, error)
+	Creator(ctx context.Context, id QuizID, now time.Time, own *PlayerID) (*CreatorView, error)
+	// Ranks ranks the run's player by their best run on each list.
 	Ranks(ctx context.Context, id RunID, now time.Time) (Ranks, error)
 }
 
-// Entry is one leaderboard row; Own marks the requester's run.
+// Entry is one leaderboard row, a player's best run; Own marks the requester's player.
 type Entry struct {
 	Rank  int
 	Name  string
@@ -72,14 +74,15 @@ type Entry struct {
 	Own   bool
 }
 
-// CreatorView is a quiz creator's run as the challenge page shows it.
+// CreatorView is a quiz creator's run as the challenge page shows it; Own marks the requester's player's run.
 type CreatorView struct {
 	Name  string
 	Score int
 	Ended bool
+	Own   bool
 }
 
-// Ranks is a run's rank on its quiz's list and, for a creator, on the global list.
+// Ranks is a run's player's rank on its quiz's list and, for a creator run, on the global list.
 type Ranks struct {
 	Quiz   int
 	Global *int

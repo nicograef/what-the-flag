@@ -178,6 +178,7 @@ type creator struct {
 	Name  string `json:"name"`
 	Score int    `json:"score"`
 	Ended bool   `json:"ended"`
+	Own   bool   `json:"own"`
 }
 
 func (h *Handler) challenge(w http.ResponseWriter, r *http.Request) {
@@ -189,14 +190,19 @@ func (h *Handler) challenge(w http.ResponseWriter, r *http.Request) {
 		httpx.MapError(w, r, errUnparsableQuiz, errorTable)
 		return
 	}
-	c, err := h.svc.Challenge(r.Context(), quiz.QuizID(id), ownRun(r))
+	own, err := h.player(r.Context(), w, r)
+	if err != nil {
+		httpx.WriteError(w, r, err)
+		return
+	}
+	c, err := h.svc.Challenge(r.Context(), quiz.QuizID(id), own)
 	if err != nil {
 		httpx.MapError(w, r, err, errorTable)
 		return
 	}
 	body := challengeResponse{ID: id, Top: presentEntries(c.Top)}
 	if v := c.Creator; v != nil {
-		body.Creator = &creator{Name: v.Name, Score: v.Score, Ended: v.Ended}
+		body.Creator = &creator{Name: v.Name, Score: v.Score, Ended: v.Ended, Own: v.Own}
 	}
 	httpx.WriteJSON(w, http.StatusOK, body)
 }
@@ -209,21 +215,17 @@ func (h *Handler) leaderboard(w http.ResponseWriter, r *http.Request) {
 	if !h.allowRead(w, r) {
 		return
 	}
-	top, err := h.svc.Global(r.Context(), ownRun(r))
+	own, err := h.player(r.Context(), w, r)
+	if err != nil {
+		httpx.WriteError(w, r, err)
+		return
+	}
+	top, err := h.svc.Global(r.Context(), own)
 	if err != nil {
 		httpx.WriteError(w, r, err)
 		return
 	}
 	httpx.WriteJSON(w, http.StatusOK, leaderboardResponse{Top: presentEntries(top)})
-}
-
-// ownRun parses the run query parameter; a missing or unparsable one names no run.
-func ownRun(r *http.Request) *quiz.RunID {
-	id, err := uuid.Parse(r.URL.Query().Get("run"))
-	if err != nil {
-		return nil
-	}
-	return new(quiz.RunID(id))
 }
 
 // runID parses the {id} path value; an unparsable one is answered as an unknown run.
