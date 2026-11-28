@@ -85,7 +85,7 @@ None. Wikimedia, Wikidata, CLDR and auswaertiges-amt.de fetches are free.
 | quiz-domain-now 6 | domain-engine | waiting | lead dispatches |
 | quiz-domain-now 7 | domain-engine | waiting | lead dispatches |
 | quiz-domain-now 8 | domain-engine | waiting | lead dispatches |
-| redesign 1–9 | redesign | running | |
+| redesign 1–9 | redesign | landed | 37a5313 |
 | redesign 10–12 | redesign | waiting | domain-engine lands |
 | question-kinds 1 | kinds | waiting | domain-engine and redesign land |
 | question-kinds 2 | kinds | waiting | domain-engine and redesign land |

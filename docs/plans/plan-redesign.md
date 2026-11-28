@@ -123,13 +123,13 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm run build >/dev/null && ! grep -rqE 'fonts\.(googleapis|gstatic)\.com' dist && ls dist/assets | grep -qE '^baloo-2-latin-ext.*\.woff2$' && ! ls dist/assets | grep -qE '^baloo-2-(vietnamese|devanagari)'`
-- [ ] `! grep -rqE '\b(bg|text|border|ring|outline|divide)-(muted|card|primary|destructive|input|ring|success-foreground)\b' frontend/src && grep -qiE -- '--background:\s*#12142b' frontend/src/index.css && grep -qiE -- '--negation:\s*#c4a8ff' frontend/src/index.css`
-- [ ] `! grep -qE '"(radix-ui|shadcn|@fontsource-variable/geist)"' frontend/package.json && grep -q '"@fontsource-variable/baloo-2"' frontend/package.json && test ! -e frontend/components.json && test ! -e frontend/src/components/ui/progress.tsx`
-- [ ] `grep -q '<meta name="color-scheme" content="dark" />' frontend/index.html && test "$(grep -c 'name="theme-color"' frontend/index.html)" -eq 1`
-- [ ] `grep -q 'forced-colors: active' frontend/src/index.css && grep -q 'prefers-contrast: more' frontend/src/index.css && grep -q 'prefers-reduced-motion' frontend/src/index.css`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'shows the credit line on every route but play' --reporter=verbose | grep -q '✓.*shows the credit line on every route but play'`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm run build >/dev/null && ! grep -rqE 'fonts\.(googleapis|gstatic)\.com' dist && ls dist/assets | grep -qE '^baloo-2-latin-ext.*\.woff2$' && ! ls dist/assets | grep -qE '^baloo-2-(vietnamese|devanagari)'`
+- [x] `! grep -rqE '\b(bg|text|border|ring|outline|divide)-(muted|card|primary|destructive|input|ring|success-foreground)\b' frontend/src && grep -qiE -- '--background:\s*#12142b' frontend/src/index.css && grep -qiE -- '--negation:\s*#c4a8ff' frontend/src/index.css`
+- [x] `! grep -qE '"(radix-ui|shadcn|@fontsource-variable/geist)"' frontend/package.json && grep -q '"@fontsource-variable/baloo-2"' frontend/package.json && test ! -e frontend/components.json && test ! -e frontend/src/components/ui/progress.tsx`
+- [x] `grep -q '<meta name="color-scheme" content="dark" />' frontend/index.html && test "$(grep -c 'name="theme-color"' frontend/index.html)" -eq 1`
+- [x] `grep -q 'forced-colors: active' frontend/src/index.css && grep -q 'prefers-contrast: more' frontend/src/index.css && grep -q 'prefers-reduced-motion' frontend/src/index.css`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'shows the credit line on every route but play' --reporter=verbose | grep -q '✓.*shows the credit line on every route but play'`
+- [x] Final gate: `make fe-check`
 
 ## Phase 2: HoldButton and hold to answer
 
@@ -185,9 +185,9 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'hold to answer' --reporter=verbose | grep -c '✓.*hold to answer >' | grep -qx 8`
-- [ ] `grep -q 'HoldButton' frontend/src/features/play/name-form.tsx && test -e frontend/src/test/answer.ts`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'hold to answer' --reporter=verbose | grep -c '✓.*hold to answer >' | grep -qx 8`
+- [x] `grep -q 'HoldButton' frontend/src/features/play/name-form.tsx && test -e frontend/src/test/answer.ts`
+- [x] Final gate: `make fe-check`
 
 ## Phase 3: Home, first visit and returning
 
@@ -222,11 +222,11 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'shows the first-visit layout' --reporter=verbose | grep -c '✓.*shows the first-visit layout' | grep -qx 2`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'shows the record and world rank of a returning player' --reporter=verbose | grep -q '✓.*shows the record and world rank of a returning player'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t "starts a returning player's run with one press" --reporter=verbose | grep -q "✓.*starts a returning player's run with one press"`
-- [ ] `test ! -e frontend/src/features/play/rule-chips.tsx && test ! -e frontend/src/components/ui/input.tsx`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'shows the first-visit layout' --reporter=verbose | grep -c '✓.*shows the first-visit layout' | grep -qx 2`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'shows the record and world rank of a returning player' --reporter=verbose | grep -q '✓.*shows the record and world rank of a returning player'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t "starts a returning player's run with one press" --reporter=verbose | grep -q "✓.*starts a returning player's run with one press"`
+- [x] `test ! -e frontend/src/features/play/rule-chips.tsx && test ! -e frontend/src/components/ui/input.tsx`
+- [x] Final gate: `make fe-check`
 
 ## Phase 4: Question screen, gap pill and reveal
 
@@ -265,12 +265,12 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'counts the gap pill to the record from /api/me' --reporter=verbose | grep -q '✓.*counts the gap pill to the record from /api/me'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows no gap pill on a first run' --reporter=verbose | grep -q '✓.*shows no gap pill on a first run'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'toasts a new record when the score passes the best' --reporter=verbose | grep -q '✓.*toasts a new record when the score passes the best'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'holds the reveal 650 ms after a correct answer and 1300 ms after a wrong one' --reporter=verbose | grep -q '✓.*holds the reveal 650 ms'`
-- [ ] `test ! -e frontend/src/features/play/countdown.tsx`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'counts the gap pill to the record from /api/me' --reporter=verbose | grep -q '✓.*counts the gap pill to the record from /api/me'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows no gap pill on a first run' --reporter=verbose | grep -q '✓.*shows no gap pill on a first run'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'toasts a new record when the score passes the best' --reporter=verbose | grep -q '✓.*toasts a new record when the score passes the best'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'holds the reveal 650 ms after a correct answer and 1300 ms after a wrong one' --reporter=verbose | grep -q '✓.*holds the reveal 650 ms'`
+- [x] `test ! -e frontend/src/features/play/countdown.tsx`
+- [x] Final gate: `make fe-check`
 
 ## Phase 5: Result screens and the run strip
 
@@ -313,12 +313,12 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/result-head.test.ts -t 'selects' --reporter=verbose | grep -cE '✓.*row [0-9]+ selects' | grep -qx 10`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/result-head.test.ts -t 'counts a gap of 3 or of 15 % of the best as near' --reporter=verbose | grep -q '✓.*counts a gap of 3 or of 15 % of the best as near'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'ignores result buttons for 1000 ms and keeps their labels' --reporter=verbose | grep -q '✓.*ignores result buttons for 1000 ms and keeps their labels'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the record head with the previous best' --reporter=verbose | grep -q '✓.*shows the record head with the previous best'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the gap bar after a near miss' --reporter=verbose | grep -q '✓.*shows the gap bar after a near miss'`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/result-head.test.ts -t 'selects' --reporter=verbose | grep -cE '✓.*row [0-9]+ selects' | grep -qx 10`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/result-head.test.ts -t 'counts a gap of 3 or of 15 % of the best as near' --reporter=verbose | grep -q '✓.*counts a gap of 3 or of 15 % of the best as near'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'ignores result buttons for 1000 ms and keeps their labels' --reporter=verbose | grep -q '✓.*ignores result buttons for 1000 ms and keeps their labels'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the record head with the previous best' --reporter=verbose | grep -q '✓.*shows the record head with the previous best'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the gap bar after a near miss' --reporter=verbose | grep -q '✓.*shows the gap bar after a near miss'`
+- [x] Final gate: `make fe-check`
 
 ## Phase 6: Share sheet and share text
 
@@ -336,7 +336,7 @@ The game looks and plays like a game, on the data of the approved plans:
 - **`Sheet`.** As in the decisions: bottom-aligned, 28 px top radius, grab handle, 44 px close button, `::backdrop` dimmed.
 - **Share sheet.** `sheetTitle`, `sheetBody`, a preview of the static `/og.png` with `previewCaption`, then the share text.
   - `navigator.share` where the browser has it (`shareNative`).
-  - Else copying text and link, confirmed by `copied`.
+  - The copy button always shows, confirmed by `copied`; it is the primary action without a system share sheet.
 - **`buildShareText()`.** Score, run strip, challenge line and `/q/<quizId>`. It takes no question, option or country.
   - 🟩 correct, 🟥 wrong, ⏱️ timeout; blocks of five split by a space, two blocks per line.
   - More than 10 answers: line one "🟩 ×{k}", line two the last two blocks.
@@ -350,11 +350,11 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/share-text.test.ts -t 'builds the strip of a 23-answer run with the × line' --reporter=verbose | grep -q '✓.*builds the strip of a 23-answer run'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'closes the share sheet on Escape and returns focus to its trigger' --reporter=verbose | grep -q '✓.*closes the share sheet on Escape and returns focus to its trigger'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'copies text and link without a system share sheet' --reporter=verbose | grep -q '✓.*copies text and link without a system share sheet'`
-- [ ] `test ! -e frontend/src/features/play/share-button.tsx && grep -q 'showModal' frontend/src/components/ui/sheet.tsx`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/share-text.test.ts -t 'builds the strip of a 23-answer run with the × line' --reporter=verbose | grep -q '✓.*builds the strip of a 23-answer run'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'closes the share sheet on Escape and returns focus to its trigger' --reporter=verbose | grep -q '✓.*closes the share sheet on Escape and returns focus to its trigger'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'copies text and link without a system share sheet' --reporter=verbose | grep -q '✓.*copies text and link without a system share sheet'`
+- [x] `test ! -e frontend/src/features/play/share-button.tsx && grep -q 'showModal' frontend/src/components/ui/sheet.tsx`
+- [x] Final gate: `make fe-check`
 
 ## Phase 7: Challenge page and challenge runs
 
@@ -394,13 +394,13 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/challenge/challenge-page.test.tsx -t 'opens the quiz when the creator run ends' --reporter=verbose | grep -q '✓.*opens the quiz when the creator run ends'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/challenge/challenge-page.test.tsx -t 'shows the own quiz with a plain play button' --reporter=verbose | grep -q '✓.*shows the own quiz with a plain play button'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/challenge/challenge-page.test.tsx -t "shows a hidden creator's quiz without a head" --reporter=verbose | grep -q "✓.*shows a hidden creator's quiz without a head"`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'counts the gap pill to the creator in a challenge run' --reporter=verbose | grep -q '✓.*counts the gap pill to the creator in a challenge run'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows head-to-head after a won challenge' --reporter=verbose | grep -q '✓.*shows head-to-head after a won challenge'`
-- [ ] `cd frontend && pnpm exec vitest run src/lib/i18n/locale.test.ts -t 'writes the genitive of a name ending in s with an apostrophe' --reporter=verbose | grep -q '✓.*writes the genitive'`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/challenge/challenge-page.test.tsx -t 'opens the quiz when the creator run ends' --reporter=verbose | grep -q '✓.*opens the quiz when the creator run ends'`
+- [x] `cd frontend && pnpm exec vitest run src/features/challenge/challenge-page.test.tsx -t 'shows the own quiz with a plain play button' --reporter=verbose | grep -q '✓.*shows the own quiz with a plain play button'`
+- [x] `cd frontend && pnpm exec vitest run src/features/challenge/challenge-page.test.tsx -t "shows a hidden creator's quiz without a head" --reporter=verbose | grep -q "✓.*shows a hidden creator's quiz without a head"`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'counts the gap pill to the creator in a challenge run' --reporter=verbose | grep -q '✓.*counts the gap pill to the creator in a challenge run'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows head-to-head after a won challenge' --reporter=verbose | grep -q '✓.*shows head-to-head after a won challenge'`
+- [x] `cd frontend && pnpm exec vitest run src/lib/i18n/locale.test.ts -t 'writes the genitive of a name ending in s with an apostrophe' --reporter=verbose | grep -q '✓.*writes the genitive'`
+- [x] Final gate: `make fe-check`
 
 ## Phase 8: Leaderboard tabs, podium and the pinned row
 
@@ -433,11 +433,11 @@ The game looks and plays like a game, on the data of the approved plans:
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/leaderboard/leaderboard-page.test.tsx -t 'pins the own row from /api/me when it is outside the list' --reporter=verbose | grep -q '✓.*pins the own row from /api/me'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/leaderboard/leaderboard-page.test.tsx -t 'shows the latest quiz in its own tab' --reporter=verbose | grep -q '✓.*shows the latest quiz in its own tab'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/leaderboard/leaderboard-page.test.tsx -t 'moves between tabs with the arrow keys' --reporter=verbose | grep -q '✓.*moves between tabs with the arrow keys'`
-- [ ] `test ! -e frontend/src/features/leaderboard/ranking-table.tsx && ! ls frontend/src/components/ui | grep -qE '^(card|skeleton|table)\.tsx$'`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/leaderboard/leaderboard-page.test.tsx -t 'pins the own row from /api/me when it is outside the list' --reporter=verbose | grep -q '✓.*pins the own row from /api/me'`
+- [x] `cd frontend && pnpm exec vitest run src/features/leaderboard/leaderboard-page.test.tsx -t 'shows the latest quiz in its own tab' --reporter=verbose | grep -q '✓.*shows the latest quiz in its own tab'`
+- [x] `cd frontend && pnpm exec vitest run src/features/leaderboard/leaderboard-page.test.tsx -t 'moves between tabs with the arrow keys' --reporter=verbose | grep -q '✓.*moves between tabs with the arrow keys'`
+- [x] `test ! -e frontend/src/features/leaderboard/ranking-table.tsx && ! ls frontend/src/components/ui | grep -qE '^(card|skeleton|table)\.tsx$'`
+- [x] Final gate: `make fe-check`
 
 ## Phase 9: Resume banner and offline retry
 
@@ -461,21 +461,21 @@ The game looks and plays like a game, on the data of the approved plans:
   - `isRetrying` and `retryNow()` feed a danger banner: `offline`, `offlineRetry`, `offlineClock`.
   - The pick stays marked with a spinner and sr `sending`; options stay `aria-disabled`.
   - The UI shows a miss only when the server says so.
-- **409 after a lost response.** `not_current_question` means "already answered": the hook refetches and shows that state.
+- **Lost response.** The server answers a retried, already-resolved position with 200 and the stored outcome. A 409 `not_current_question` comes only for a position the server never served: the hook refetches and shows that state.
 - **Test plumbing.** `FakeApi` can reject a route's next fetches. Tests trigger the retry with the `offlineRetry` button.
 - **Tests** in `play.test.tsx`:
   - "shows the resume banner on a reload mid-question";
   - "keeps the pick and retries after a network error";
-  - "shows the next state after a 409 for a lost answer": the first POST rejects as a network error and the retry gets 409.
+  - "shows the stored outcome after a lost response": the first POST rejects as a network error and the retry gets the stored outcome.
+  - "refetches without an alert after a 409 for a position the server never served".
     The next question shows and no alert renders.
-  - The 409 test replaces "drops a not-current-question error once the next question shows". A direct 409 takes the same path.
 
 ### Acceptance criteria
 
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the resume banner on a reload mid-question' --reporter=verbose | grep -q '✓.*shows the resume banner on a reload mid-question'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'keeps the pick and retries after a network error' --reporter=verbose | grep -q '✓.*keeps the pick and retries after a network error'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the next state after a 409 for a lost answer' --reporter=verbose | grep -q '✓.*shows the next state after a 409 for a lost answer'`
-- [ ] Final gate: `make fe-check`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the resume banner on a reload mid-question' --reporter=verbose | grep -q '✓.*shows the resume banner on a reload mid-question'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'keeps the pick and retries after a network error' --reporter=verbose | grep -q '✓.*keeps the pick and retries after a network error'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'shows the stored outcome after a lost response' --reporter=verbose | grep -q '✓.*shows the stored outcome after a lost response'`
+- [x] Final gate: `make fe-check`
 
 ## Phase 10: Levels from the server
 
