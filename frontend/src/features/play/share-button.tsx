@@ -10,10 +10,16 @@ const copiedMs = 2000;
 export function ShareButton({
   quizId,
   score,
+  label,
+  variant,
+  guarded,
   className,
 }: {
   quizId: string;
   score: number;
+  label: string;
+  variant: "primary" | "secondary";
+  guarded: boolean;
   className?: string;
 }): ReactNode {
   const t = useMessages(messages);
@@ -47,12 +53,13 @@ export function ShareButton({
   return (
     <>
       <Button
-        variant="secondary"
+        variant={variant}
+        guarded={guarded}
         className={className}
         onClick={() => void share()}
       >
         {copied ? <Check aria-hidden="true" /> : <Share2 aria-hidden="true" />}
-        {copied ? t.copiedShort : t.share}
+        {copied ? t.copiedShort : label}
       </Button>
       <span role="status" className="sr-only">
         {copied ? t.copied : ""}

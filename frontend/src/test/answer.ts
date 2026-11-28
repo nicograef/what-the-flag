@@ -12,3 +12,15 @@ export async function answer(
   option.focus();
   await user.keyboard("{Enter}");
 }
+
+/** Clicks the button named `name` once it shows, after a reveal, and its guard has lifted. */
+export async function press(
+  user: UserEvent,
+  name: string | RegExp,
+): Promise<void> {
+  const button = await screen.findByRole("button", { name }, { timeout: 3000 });
+  await waitFor(() => expect(button).not.toHaveAttribute("aria-disabled"), {
+    timeout: 2000,
+  });
+  await user.click(button);
+}

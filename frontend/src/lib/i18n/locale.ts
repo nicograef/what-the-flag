@@ -48,3 +48,8 @@ export function useLocale(): {
   const locale = useSyncExternalStore(subscribe, getLocale);
   return { locale, setLocale };
 }
+
+/** The German genitive of a name: an apostrophe after s, ß, x or z ("Jonas'"), else an s ("Nicos"). */
+export function genitive(name: string): string {
+  return /[sßxz]$/i.test(name) ? `${name}'` : `${name}s`;
+}

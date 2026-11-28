@@ -6,7 +6,7 @@ import {
   unknownPlayer,
 } from "@/features/play/fake-run";
 import { FakeApi } from "@/test/fake-api";
-import { answer } from "@/test/answer";
+import { answer, press } from "@/test/answer";
 import { renderRoute } from "@/test/render";
 
 afterEach(() => {
@@ -109,8 +109,8 @@ it("drops a not-current-question error once the next question shows", async () =
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });
 
-it("shows the missed question and both ranks after a wrong answer", async () => {
-  const { ids, user } = await startPlaying({ quizRank: 3, globalRank: 12 });
+it("shows the result head, run strip and missed question after a wrong answer", async () => {
+  const { user } = await startPlaying({ globalRank: 12 });
 
   await answer(user, "Frankreich");
 
@@ -122,30 +122,23 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
     screen.getByRole("button", { name: /^Frankreich\s*, deine Antwort$/ }),
   ).toHaveAttribute("aria-disabled", "true");
   expect(
-    await screen.findByRole("heading", { name: "Spiel vorbei" }, slow),
+    await screen.findByRole("heading", { name: "Vorbei!" }, slow),
   ).toHaveFocus();
-  expect(screen.getByText("0 richtige Antworten")).toBeInTheDocument();
+  expect(screen.getByText(/^richtig in Folge/)).toHaveTextContent(
+    "richtig in Folge · dein bester Platz: 12 weltweit",
+  );
   expect(
-    screen.getByText("Die letzte Antwort war falsch."),
+    screen.getByRole("img", { name: "Dein Lauf: 0 richtig, dann ein Fehler" }),
   ).toBeInTheDocument();
-  expect(
-    screen.getByText("Dein bester Platz in diesem Quiz: 3"),
-  ).toBeInTheDocument();
-  expect(
-    screen.getByText("Dein bester Platz weltweit: 12"),
-  ).toBeInTheDocument();
-  expect(
-    screen.getByRole("link", { name: "Rangliste dieses Quiz" }),
-  ).toHaveAttribute("href", `/q/${ids.quizId}`);
-  expect(
-    screen.getByRole("link", { name: "Globale Rangliste" }),
-  ).toHaveAttribute("href", "/leaderboard");
   expect(screen.getByText("Deutschland").parentElement).toHaveTextContent(
     "Deutschland, richtige Antwort",
   );
   expect(screen.getByText("Frankreich").parentElement).toHaveTextContent(
     "Frankreich, deine Antwort",
   );
+  expect(
+    screen.queryByRole("button", { name: /Wer schafft mehr/ }),
+  ).not.toBeInTheDocument();
 });
 
 it("names a correct pick within the minimum answer time as too fast", async () => {
@@ -172,11 +165,7 @@ it("answers nothing when the time runs out", async () => {
     expect(answers(api)).toEqual([{ position: 0, option: null }]);
   });
   expect(
-    await screen.findByText(
-      "Die Zeit für die letzte Frage ist abgelaufen.",
-      {},
-      slow,
-    ),
+    await screen.findByRole("heading", { name: "Zeit abgelaufen" }, slow),
   ).toBeInTheDocument();
 });
 
@@ -194,9 +183,39 @@ it("resumes with the served question and its running deadline", async () => {
   expect(await screen.findByText("3 s")).toBeInTheDocument();
 });
 
-it("announces a new record from the server", async () => {
+it("shows the record head with the previous best", async () => {
   const { user } = await startPlaying({
-    best: { score: 4, isNew: true, previous: 3 },
+    globalRank: null,
+    best: { score: 2, isNew: true, previous: 1 },
+  });
+
+  await answer(user, "Deutschland");
+  await screen.findByRole(
+    "heading",
+    { name: "Was ist die Hauptstadt dieses Landes?" },
+    slow,
+  );
+  await answer(user, "Tokio");
+  await screen.findByRole(
+    "heading",
+    { name: "Welche Flagge hat das Land mit dieser Hauptstadt?" },
+    slow,
+  );
+  await answer(user, "Flagge 1");
+
+  expect(
+    await screen.findByRole("heading", { name: "Neuer Rekord!" }, slow),
+  ).toHaveFocus();
+  expect(screen.getByText("vorher 1")).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Rekord teilen" }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Nochmal" })).toBeInTheDocument();
+});
+
+it("shows the gap bar after a near miss", async () => {
+  const { user } = await startPlaying({
+    best: { score: 3, isNew: false, previous: 3 },
   });
 
   await answer(user, "Deutschland");
@@ -208,18 +227,22 @@ it("announces a new record from the server", async () => {
   await answer(user, "Kyoto");
 
   expect(
-    await screen.findByText("Neue Bestleistung!", {}, slow),
+    await screen.findByRole("heading", { name: "So knapp!" }, slow),
   ).toBeInTheDocument();
-  expect(screen.getByText("Deine Bestleistung: 4")).toBeInTheDocument();
+  expect(
+    screen.getByRole("progressbar", { name: "Noch 3 bis zum neuen Rekord" }),
+  ).toHaveAttribute("aria-valuenow", "1");
+  expect(screen.getAllByRole("button").map((b) => b.textContent)).toEqual([
+    "Nochmal",
+    "Wer schafft mehr als 1?",
+  ]);
 });
 
 it("plays again under the same name on a fresh quiz", async () => {
   const { api, user } = await startPlaying({ name: "Bea" });
   await answer(user, "Frankreich");
 
-  await user.click(
-    await screen.findByRole("button", { name: "Nochmal spielen" }, slow),
-  );
+  await press(user, "Nochmal");
 
   expect(
     await screen.findByRole("heading", {
@@ -242,14 +265,13 @@ it("shares the challenge link through the share sheet", async () => {
   });
   try {
     const { ids, user } = await startPlaying();
-    await answer(user, "Frankreich");
+    await answer(user, "Deutschland");
+    await answer(user, "Kyoto");
 
-    await user.click(
-      await screen.findByRole("button", { name: "Teilen" }, slow),
-    );
+    await press(user, "Wer schafft mehr als 1?");
 
     expect(share).toHaveBeenCalledWith({
-      text: "Ich habe bei What The Flag 0 Fragen in Folge richtig beantwortet. Schaffst du mehr?",
+      text: "Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr?",
       url: `${window.location.origin}/q/${ids.quizId}`,
     });
   } finally {
@@ -260,12 +282,13 @@ it("shares the challenge link through the share sheet", async () => {
 it("copies the challenge link without a share sheet", async () => {
   const { ids, user } = await startPlaying();
   const write = vi.spyOn(navigator.clipboard, "writeText");
-  await answer(user, "Frankreich");
+  await answer(user, "Deutschland");
+  await answer(user, "Kyoto");
 
-  await user.click(await screen.findByRole("button", { name: "Teilen" }, slow));
+  await press(user, "Wer schafft mehr als 1?");
 
   expect(write).toHaveBeenCalledWith(
-    `Ich habe bei What The Flag 0 Fragen in Folge richtig beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
+    `Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
   );
   expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
 });
@@ -567,4 +590,32 @@ it("fills the pips by the position in the block of five", async () => {
   await answer(user, "Frankreich");
   await screen.findByText("Leider falsch");
   expect(pips()).toEqual(["done", "miss", "open", "open", "open"]);
+});
+
+it("ignores result buttons for 1000 ms and keeps their labels", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    const { api } = await startPlaying({ name: "Bea" });
+    fireEvent.click(await armed("Frankreich"));
+    await advance(1300);
+    const again = await screen.findByRole("button", { name: "Nochmal" });
+    const starts = (): number =>
+      api.calls.filter((c) => c.route === "POST /api/runs").length;
+
+    expect(again).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(again);
+    await advance(800);
+    expect(starts()).toBe(0);
+    expect(again).toHaveTextContent("Nochmal");
+
+    await advance(300);
+    expect(again).not.toHaveAttribute("aria-disabled");
+    expect(again).toHaveTextContent("Nochmal");
+    fireEvent.click(again);
+    await waitFor(() => {
+      expect(starts()).toBe(1);
+    });
+  } finally {
+    vi.useRealTimers();
+  }
 });

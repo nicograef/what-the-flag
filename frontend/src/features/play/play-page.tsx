@@ -138,7 +138,9 @@ function Run({ runId }: { runId: string }): ReactNode {
   if (!query.data) return failure;
 
   const { state, receivedAt } = query.data;
-  if (state.result) return <RunResult run={state} result={state.result} />;
+  if (state.result) {
+    return <RunResult run={state} result={state.result} creator={null} />;
+  }
   const question = state.question;
   if (!question) return null;
 

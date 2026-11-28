@@ -82,6 +82,7 @@
   --animate-hold-fill: hold-fill 400ms linear forwards;
   --animate-hold-fill-up: hold-fill-up 400ms linear forwards;
   --animate-toast: toast 1s ease-out forwards;
+  --animate-confetti: confetti 1.6s ease-in forwards;
 
   @keyframes enter {
     from {
@@ -119,6 +120,11 @@
     }
     100% {
       opacity: 1;
+    }
+  }
+  @keyframes confetti {
+    to {
+      transform: translateY(110vh) rotate(540deg);
     }
   }
   @keyframes fade-in {

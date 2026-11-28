@@ -1,7 +1,7 @@
 import type { QuestionType } from "@/features/play/api";
 import { ApiError } from "@/lib/api";
 import { errorMessage } from "@/lib/i18n/error-messages";
-import type { Locale } from "@/lib/i18n/locale";
+import { genitive, type Locale } from "@/lib/i18n/locale";
 import { defineMessages } from "@/lib/i18n/messages";
 
 export const messages = defineMessages<{
@@ -53,24 +53,36 @@ export const messages = defineMessages<{
   toastCreator: (name: string) => string;
   correctAnswer: string;
   yourAnswer: string;
-  resultTitle: string;
-  resultScore: (score: number) => string;
-  resultScoreLabel: (score: number) => string;
-  endReasons: Record<"wrong" | "timeout" | "completed", string>;
   tooFastEnd: string;
   missed: string;
-  quizRank: (rank: number) => string;
-  globalRank: (rank: number) => string;
-  best: (best: number) => string;
-  rankValue: (rank: number) => string;
-  statQuiz: string;
-  statWorld: string;
-  statBest: string;
-  newBest: string;
+  headCompleted: string;
+  headFirst: string;
+  headRecord: string;
+  headTied: string;
+  headNearMiss: string;
+  headTimeout: string;
+  headOver: string;
+  headBehind: (n: number, name: string) => string;
+  wonTitle: (name: string) => string;
+  tiedTitle: (name: string) => string;
+  scoreLine: string;
+  scoreWorldRank: (rank: number) => string;
+  scoreBestRank: (rank: number) => string;
+  recordLine: (old: number) => string;
+  quizRankLine: (rank: number, name: string) => string;
+  recordBadge: (old: number) => string;
+  recordBadgeFirst: string;
+  gapToRecord: (n: number) => string;
+  runStripWrong: (n: number) => string;
+  runStripTimeout: (n: number) => string;
+  runStripCompleted: (n: number) => string;
+  challengeNote: string;
   playAgain: string;
-  quizRanking: string;
-  globalRanking: string;
-  share: string;
+  shareRun: (n: number) => string;
+  shareRecord: string;
+  shareCompleted: string;
+  tellCreator: (name: string) => string;
+  ownGameWorld: string;
   shareText: (score: number) => string;
   copied: string;
   copiedShort: string;
@@ -147,31 +159,38 @@ export const messages = defineMessages<{
     toastCreator: (name) => `Du hast ${name} überholt!`,
     correctAnswer: "richtige Antwort",
     yourAnswer: "deine Antwort",
-    resultTitle: "Spiel vorbei",
-    resultScore: (score) =>
-      score === 1 ? "1 richtige Antwort" : `${score} richtige Antworten`,
-    resultScoreLabel: (score) =>
-      score === 1 ? "richtige Antwort" : "richtige Antworten",
-    endReasons: {
-      wrong: "Die letzte Antwort war falsch.",
-      timeout: "Die Zeit für die letzte Frage ist abgelaufen.",
-      completed: "Du hast alle Fragen beantwortet.",
-    },
     tooFastEnd:
       "Die letzte Antwort kam in weniger als 300 ms und zählt deshalb als falsch.",
     missed: "Diese Frage hat dich erwischt:",
-    quizRank: (rank) => `Dein bester Platz in diesem Quiz: ${rank}`,
-    globalRank: (rank) => `Dein bester Platz weltweit: ${rank}`,
-    best: (best) => `Deine Bestleistung: ${best}`,
-    rankValue: (rank) => `${rank}.`,
-    statQuiz: "in diesem Quiz",
-    statWorld: "weltweit",
-    statBest: "Bestleistung",
-    newBest: "Neue Bestleistung!",
-    playAgain: "Nochmal spielen",
-    quizRanking: "Rangliste dieses Quiz",
-    globalRanking: "Globale Rangliste",
-    share: "Teilen",
+    headCompleted: "Du hast die Welt durchgespielt",
+    headFirst: "Dein erster Rekord!",
+    headRecord: "Neuer Rekord!",
+    headTied: "Rekord eingestellt!",
+    headNearMiss: "So knapp!",
+    headTimeout: "Zeit abgelaufen",
+    headOver: "Vorbei!",
+    headBehind: (n, name) => `Noch ${n}, um ${name} zu schlagen`,
+    wonTitle: (name) => `Du hast ${name} geschlagen!`,
+    tiedTitle: (name) => `Gleichstand mit ${name}`,
+    scoreLine: "richtig in Folge",
+    scoreWorldRank: (rank) => ` · Platz ${rank} weltweit`,
+    scoreBestRank: (rank) => ` · dein bester Platz: ${rank} weltweit`,
+    recordLine: (old) => `vorher ${old}`,
+    quizRankLine: (rank, name) => `Platz ${rank} in ${genitive(name)} Quiz`,
+    recordBadge: (old) => `Neuer Rekord · vorher ${old}`,
+    recordBadgeFirst: "Dein erster Rekord",
+    gapToRecord: (n) => `Noch ${n} bis zum neuen Rekord`,
+    runStripWrong: (n) => `Dein Lauf: ${n} richtig, dann ein Fehler`,
+    runStripTimeout: (n) => `Dein Lauf: ${n} richtig, dann lief die Zeit ab`,
+    runStripCompleted: (n) => `Dein Lauf: alle ${n} richtig`,
+    challengeNote:
+      "Herausforderungen zählen nur in diesem Quiz. Für die Weltrangliste startest du ein eigenes Spiel.",
+    playAgain: "Nochmal",
+    shareRun: (n) => `Wer schafft mehr als ${n}?`,
+    shareRecord: "Rekord teilen",
+    shareCompleted: "Das muss jeder wissen",
+    tellCreator: (name) => `${name} Bescheid geben`,
+    ownGameWorld: "Eigenes Spiel für die Weltrangliste",
     shareText: (score) =>
       score === 1
         ? "Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr?"
@@ -254,30 +273,37 @@ export const messages = defineMessages<{
     toastCreator: (name) => `You passed ${name}!`,
     correctAnswer: "correct answer",
     yourAnswer: "your answer",
-    resultTitle: "Game over",
-    resultScore: (score) =>
-      score === 1 ? "1 correct answer" : `${score} correct answers`,
-    resultScoreLabel: (score) =>
-      score === 1 ? "correct answer" : "correct answers",
-    endReasons: {
-      wrong: "The last answer was wrong.",
-      timeout: "The time for the last question ran out.",
-      completed: "You answered every question.",
-    },
     tooFastEnd: "The last answer came within 300 ms, so it counts as wrong.",
     missed: "This question got you:",
-    quizRank: (rank) => `Your best rank in this quiz: ${rank}`,
-    globalRank: (rank) => `Your best rank worldwide: ${rank}`,
-    best: (best) => `Your personal best: ${best}`,
-    rankValue: (rank) => `#${rank}`,
-    statQuiz: "this quiz",
-    statWorld: "worldwide",
-    statBest: "Personal best",
-    newBest: "New personal best!",
+    headCompleted: "You've played the whole world",
+    headFirst: "Your first record!",
+    headRecord: "New record!",
+    headTied: "Record tied!",
+    headNearMiss: "So close!",
+    headTimeout: "Time's up",
+    headOver: "Game over",
+    headBehind: (n, name) => `${n} more to beat ${name}`,
+    wonTitle: (name) => `You beat ${name}!`,
+    tiedTitle: (name) => `Tied with ${name}`,
+    scoreLine: "in a row",
+    scoreWorldRank: (rank) => ` · rank ${rank} worldwide`,
+    scoreBestRank: (rank) => ` · your best rank: ${rank} worldwide`,
+    recordLine: (old) => `before ${old}`,
+    quizRankLine: (rank, name) => `Rank ${rank} in ${name}'s quiz`,
+    recordBadge: (old) => `New record · before ${old}`,
+    recordBadgeFirst: "Your first record",
+    gapToRecord: (n) => `${n} more for a new record`,
+    runStripWrong: (n) => `Your run: ${n} correct, then a miss`,
+    runStripTimeout: (n) => `Your run: ${n} correct, then time ran out`,
+    runStripCompleted: (n) => `Your run: all ${n} correct`,
+    challengeNote:
+      "Challenges count only in this quiz. Start your own game for the world leaderboard.",
     playAgain: "Play again",
-    quizRanking: "This quiz's leaderboard",
-    globalRanking: "Global leaderboard",
-    share: "Share",
+    shareRun: (n) => `Who can beat ${n}?`,
+    shareRecord: "Share your record",
+    shareCompleted: "Everyone needs to see this",
+    tellCreator: (name) => `Tell ${name}`,
+    ownGameWorld: "Own game for the world leaderboard",
     shareText: (score) =>
       score === 1
         ? "I got 1 question right on What The Flag. Can you beat it?"
