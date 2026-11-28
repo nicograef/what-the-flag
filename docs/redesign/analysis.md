@@ -1,11 +1,11 @@
 # Analysis: why and how the UI was redesigned
 
-This file holds the review of the old UI, the UX and psychology principles behind the redesign, the variants explored, and the review of the game mechanics.
+This file holds four parts: the review of the old UI, the principles behind the redesign, the variants explored, and the mechanics review.
 The resulting requirements are in [prd-redesign.md](../prds/prd-redesign.md); the visual rules in [design-system.md](design-system.md).
 
 ## 1. Status quo review
 
-Reviewed from the source in `frontend/src` (the live site was not reachable from the design session). Every screen sat in one `max-w-md` column under a sticky navbar.
+Reviewed from the source in `frontend/src`. Every screen sits in one `max-w-md` column under a sticky navbar.
 
 | Screen | Route | Components | What it did |
 | --- | --- | --- | --- |
@@ -39,9 +39,9 @@ These come from established UX and behavioural-science literature; no new studie
 | Target size | WCAG 2.2, 2.5.5 (AAA, 44 px) and 2.5.8 | Every control at least 44 px; 12 px between answers |
 | Error prevention | Norman, *The Design of Everyday Things*; Nielsen heuristic 5 | Hold to answer, arming delays, result buttons arm after 1 s |
 | Goal gradient | Hull 1932; Kivetz, Urminsky & Zheng 2006 | Levels of five questions with pips; "Rekord in N" while playing |
-| Near-miss effect | Reid 1986; Clark et al. 2009 | "Noch 6 bis zum neuen Rekord" is the result headline below the record |
+| Near-miss effect | Reid 1986; Clark et al. 2009 | "So knapp!" and "Noch 2 bis zum neuen Rekord" lead the result when the gap is small |
 | Peak–end rule | Kahneman et al. 1993 | The record moment gets its own celebration during the run; the result ends on learning and one clear next step |
-| Competence need | Deci & Ryan, self-determination theory | Every miss teaches one thing; levels name the player's progress |
+| Competence need | Deci & Ryan, self-determination theory | Every miss teaches one thing; ten rank names mark the player's progress |
 | Testing effect | Roediger & Karpicke 2006 | The learning card shows the correct answer right after the failed recall, which is when it sticks best |
 | Social comparison | Festinger 1954 | Challenge links show the exact score to beat and an empty slot for the player |
 | Reciprocity | Cialdini | After beating a challenger, the next action is to tell them |
@@ -61,7 +61,13 @@ Three directions were designed as full flows. Their screens are in `screens/expl
 
 **Decision:** A as the base (look, levels, mechanics), with C's hold to answer. The result is "A+", the design in `screens/`.
 
-Why hold beats tap-and-confirm or a confirm button: it keeps one gesture per answer, adds 0.4 s at most to a 15 s clock, and makes it impossible for a touch answer to arrive within 300 ms. That removes the "too fast" end in practice.
+Why hold beats tap-and-confirm or a confirm button:
+
+- it keeps one gesture per answer;
+- no touch answer can arrive within 300 ms, which removes the "too fast" end in practice;
+- it costs a touch player 0.8 s of the 15 s clock: 0.4 s arming plus the 0.4 s hold.
+
+Mouse and keyboard answers skip the hold, because they don't suffer thumb slips.
 
 ## 4. Game mechanics review
 
@@ -73,8 +79,8 @@ Why hold beats tap-and-confirm or a confirm button: it keeps one gesture per ans
 | Restart | One tap; risk of a mistaken restart | One tap, armed after 1 s |
 | Visible progress | Score only | Levels with pips, streak flame, live gap to the record |
 | Peak moments | New-best pill after the run | Live record toast and confetti; level-up toast |
-| Misses | Missed question as two rows | One learning card plus one did-you-know fact |
-| Reason to return tomorrow | None | Daily quiz ([prd-daily-quiz.md](../prds/prd-daily-quiz.md)); overtaken card |
+| Misses | Missed question as two rows | One learning card; a did-you-know fact as a follow-up ([prd-did-you-know.md](../prds/prd-did-you-know.md)) |
+| Reason to return tomorrow | None | Daily quiz ([prd-daily-quiz.md](../prds/prd-daily-quiz.md)) |
 
 ### Virality
 
@@ -82,7 +88,7 @@ The challenge link (the same quiz for everyone) is the growth engine. Its loop: 
 Three weak links:
 
 1. **The preview is static.** Every shared link shows the same image, so it reads like an ad, not a challenge. Fix: a link preview image per quiz with the creator's name and score ([prd-challenge-preview.md](../prds/prd-challenge-preview.md)).
-2. **The loop stops at the winner.** A friend who beats you has no next step. Fix: "Nico Bescheid geben" shares the same quiz link with the new score, and the challenger's home shows the overtaken card.
+2. **The loop stops at the winner.** A friend who beats you has no next step. Fix: "Nico Bescheid geben" shares the same quiz link with the new score.
 3. **Challenge runs go nowhere globally.** Challengers don't count on the global leaderboard. Fix: say so and offer "Eigenes Spiel für die Weltrangliste", which starts a new quiz and so a new share.
 
 ### Shareability
@@ -95,8 +101,8 @@ Three weak links:
 
 | Risk | Mitigation |
 | --- | --- |
-| Hold feels slow to fast players | 400 ms is short; keyboard answers at once; watch the median time per answer in `make prod-stats` after release |
-| Players don't discover the hold | The home start button teaches it; a hint line shows for the first three questions; a tap shows "Festhalten …" |
+| Hold feels slow to fast players | 400 ms is short; mouse and keyboard answer at once; domain phase 8 measures response time per type and level after release |
+| Players don't discover the hold | The home start button teaches it; a hint line shows for the first three questions of a first run; a tap shows "Festhalten …" |
 | Dark-only theme | Contrast checked for every pair; a light theme stays possible through tokens |
-| Wrong facts in "Wusstest du?" | Curated file with a source per fact and a review step ([prd-did-you-know.md](../prds/prd-did-you-know.md)) |
-| Self-hosted font adds weight | One family, Latin subset, three weights as woff2; check the size in the build output (expect under 100 KB) |
+| Wrong facts in "Wusstest du?" | Facts in own words, a source URL per fact and a review step ([prd-did-you-know.md](../prds/prd-did-you-know.md)) |
+| Self-hosted font adds weight | One variable family; latin-ext loads only when a page needs it; check the size in the build output |

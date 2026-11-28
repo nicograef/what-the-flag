@@ -15,3 +15,5 @@ Durable architecture decisions the PRD does not state. A replaced line gets `rep
 - D11: The e2e stack runs `docker-compose.prod.yml` with Caddy local certificates, not the dev stack. It tests the real site blocks and the Origin check with a port.
 - D12: The edge's Content-Security-Policy allows only same-origin files plus `data:` images and fonts, without `'unsafe-inline'`. Vite emits no inline script or style, and React `style` props bypass `style-src`.
 - D13: The catalogue is an embedded artefact built by the importer; Postgres holds only what play produces. Catalogue tables would add a seed path, a migration per data edit and a second source of truth.
+- D15: The UI has one dark theme, from CSS variables named by the redesign's tokens. The game look is part of the identity, and one theme halves the contrast checks.
+- D16: The UI font is Baloo 2, self-hosted from `@fontsource-variable/baloo-2` with the latin and latin-ext subsets. D12 allows only same-origin fonts, and latin-ext covers catalogue names such as Chișinău and Złoty.

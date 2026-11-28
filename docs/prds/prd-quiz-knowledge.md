@@ -104,7 +104,7 @@ Missing data, to curate or fetch:
 | Wikidata SPARQL | CC0-1.0 | Capitals vendored; dewiki sitelinks in K3; batches later |
 | lipis/flag-icons | MIT | Vendored |
 | Wikimedia pageviews | Inference: CC0. The web-researcher verifies this before vendoring | New CSV under `data/sources/wikimedia/` |
-| Wikipedia article text | CC BY-SA 4.0 | Never copied. Facts only, cited by URL |
+| Wikipedia article text | CC BY-SA 4.0 | Never copied. Facts only, in own words, cited by URL. Did-you-know facts follow this rule until the owner decides that PRD's licence |
 
 A new source updates `data/SOURCES.md`, `NOTICE` and the footer credit in `frontend/src/app/messages.ts` in one change.
 

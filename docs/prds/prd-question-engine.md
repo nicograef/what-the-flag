@@ -15,7 +15,7 @@ Every answer is stored, yet nothing measures which wrong options lure players.
 
 State the option rules once, as one defensible set per question, used by the generator and by the question-space check.
 Draw distractors group by group: the familiar ones first early in a run, the same subregion late.
-Add two variety rules, a fact card on the miss screen, and statistics that measure question quality.
+Add two variety rules, a learning card on the miss screen, and statistics that measure question quality.
 Add new question types in order of fun per cost, each only when its data and rules exist.
 Keep difficulty explainable. One table of ten levels sets, per level, a window of type tiers, a fame ceiling, candidate groups and a NOT cap. There is no hidden score.
 
@@ -79,7 +79,7 @@ These rules apply to every question:
   - A value prompt shows a value whose answer is a country: a regional language, calling code, continent, currency or former name.
   - A referring prompt names the target by flag, capital or calling code and asks a further fact, such as flag → currency. It has one referent and one relation, never more.
 - **Case:** `Case{Type, Target, Prompt}`.
-  - The target is the country the question is about. The fact card shows it, and it is a target once per quiz.
+  - The target is the country the question is about. The learning card shows it, and it is a target once per quiz.
   - The prompt is the shown code ("+49", "EUR", "Africa", a language code) for value prompts and calling-code referents. Otherwise it is empty.
 - `candidates(cat, case, level)` returns the split into true, contested and false sets. Only the order of the false groups depends on the level.
 - `Draw(cat, case, level, rnd)` builds the question:
@@ -140,7 +140,7 @@ Wording and UI:
 
 - German uses NICHT, never KEIN or KEINE. English uses NOT. Both are uppercase in the `messages.ts` sentence.
 - The question card shows a NICHT/NOT pill attached to the prompt card.
-  - Its accent colour is neither the error red nor the success colour.
+  - Its colour is the redesign's `negation` token, neither the error red nor the success colour.
   - The frontend marks a type as negated when its id contains `_not_`.
 - Landlocked copy says "Binnenstaat", never "keinen Meerzugang".
 
@@ -190,6 +190,7 @@ Examples (inference, after K3):
 ### Difficulty
 
 There is one ladder: `level = min(10, 1 + position/5)` over the 0-based position. Level 10 starts at question 46.
+The server sends `level` with every question and with the result; the client never computes it.
 Each level sets four levers: a window of type tiers, a fame ceiling, the candidate groups and the NOT cap.
 Besides the window, each level changes at most one lever.
 
@@ -283,22 +284,27 @@ Time budget:
 - Every type has 15 seconds.
 - A per-type budget lands only when E4 shows a type's timeout share at least twice the median type's at the same level.
 - The budget change would be backend-only (explorer finding: the wire carries the limit per question).
+- Hold to answer ([prd-redesign.md](prd-redesign.md)) adds response time, so E4 reads only runs started after the redesign release.
 
-### Fact card
+### Learning card
 
-- After a `wrong` or `timeout` end, the result shows the target's name, flag, capital, continent, official languages and currency units.
+- After a `wrong` or `timeout` end, the finished-run payload carries `fact: { name, flag, capital, region, languages, currencies, chosenCountry, spokenIn }`.
+  - `region` is the target's continent; `languages` are its official languages; `currencies` are its currency units.
   - The calling code joins with E10; the neighbours join with E12.
-- A wrong country option names its country: "Deine Wahl: die Flagge von Senegal".
-- A regional-language miss lists the countries where the language is official or regional.
+- `chosenCountry` names the country of the picked option when exactly one pool country holds it. A country answer always has one.
+  - It is null for a value several pool countries hold, on a timeout, and on a too-fast pick of the correct option.
+- `spokenIn` exists only for `regional_language_name`: the countries where the language is official or regional.
+- The learning card shows the correct option beside the pick, one sentence and a row of these facts. [prd-redesign.md](prd-redesign.md) owns its UI and copy.
 - A miss on a referring prompt needs no extra line: the target line resolves the referent ("+49" → Deutschland).
 - After a NOT miss, the target's facts show why the three wrong options held the relation.
 - All text comes from the catalogue. No Wikipedia prose is shown, so no CC BY-SA obligation arises.
+- Did-you-know facts are a separate, later field, `result.didYouKnow`, rendered by `DidYouKnowCard` ([prd-did-you-know.md](prd-did-you-know.md)).
 
 ### Question types and modes, ranked by fun per cost
 
 | # | Item | Tier | Fun | Cost | Needs | Phase |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Fact card | — | High | S | — | Now (E3) |
+| 1 | Learning card | — | High | S | — | Now (E3) |
 | 2 | Familiar and same-subregion options; the level ladder | — | High | S | K1, K3, K4 | Now (E1, E2) |
 | 3 | Calling codes: "Welche Landesvorwahl hat Polen?", "Aus welchem Land kommt ein Anruf mit dieser Landesvorwahl? [+43]" | 5 | High in Europe | S | K10 | Next (E10) |
 | 4 | First NOT type: "Welches Land liegt NICHT auf diesem Kontinent? [Afrika]". It is easy by design and teaches the format | 5 | Medium | S | E1, E2 | Next (E11) |
@@ -356,8 +362,7 @@ Not planned:
 
 | Item | Why |
 | --- | --- |
-| Daily quiz | prd-rebuild Out of Scope |
-| Practice mode | L cost; the fact card gives most of its learning value |
+| Practice mode | L cost; the learning card gives most of its learning value |
 | Either-or and estimate | A 50 % guess or a tolerance clashes with sudden death |
 | Map tap | Needs Natural Earth shapes and a new UI; microstates are untappable |
 | Speed run | Fights the 300 ms rule and network fairness |
@@ -410,16 +415,16 @@ Each phase ships alone. E1 to E4 need no new question type.
 | --- | --- | --- | --- | --- |
 | E1 Fair options and the level ladder | Now | True, contested and false sets; the level table; today's 16 types on tiers 1–9; type-first selection; familiar groups; the giveaway rule | K1; better after K3 | S |
 | E2 Subregion groups and variety | Now | Subregion groups from level 4; the two variety rules | K4 | S |
-| E3 Fact card | Now | Result payload, presenter, UI and copy in de and en | — | S–M |
+| E3 Learning card | Now | The `result.fact` payload and its presenter; the card's UI and copy ship with [prd-redesign.md](prd-redesign.md) | — | S |
 | E4 Measurement | Now | Two `stats.sql` queries: per (type, level), with timeout share, and per (type, target, option) | — | S |
 | E5 Capital traps | Next | Trap option kind and its rules | K6 | M |
 | E6 Former names | Next | `former_name_name` on the value-prompt rule | K6, E10 | S |
 | E7 Evidence-driven tuning | Next | New look-alike pairs, primary currencies, fame overrides, tier moves, the step size | E4 data | S each |
 | E8 Largest by area | Later | Ranked type 11 | K7 | S |
 | E9 New formats | Later | Ranked types 12 to 16 | K8 for 12 and 14; E12 for 13; flag features for 15 | M each |
-| E10 Calling codes | Next | `name_calling_code`, `calling_code_name`; the value-prompt rule; the code on the fact card | K10, E1 | S |
+| E10 Calling codes | Next | `name_calling_code`, `calling_code_name`; the value-prompt rule; the code on the learning card | K10, E1 | S |
 | E11 Negation | Next | NOT types, Draw's NOT branch, the NOT cap, the NICHT/NOT pill; `region_not_name` | E1, E2 | S |
-| E12 Neighbours | Next | `name_neighbour`, `name_not_neighbour`, `capital_neighbour`, `capital_not_neighbour`; two-hop groups; neighbours on the fact card | K11, E11 | M |
+| E12 Neighbours | Next | `name_neighbour`, `name_not_neighbour`, `capital_neighbour`, `capital_not_neighbour`; two-hop groups; neighbours on the learning card | K11, E11 | M |
 | E13 Calling-code referents | Next | `calling_code_capital`, `calling_code_neighbour`, `calling_code_not_neighbour`; the referent uniqueness rule | E10, E12 | S |
 | E14 Currency prompts | Next | `currency_name`, `currency_not_name` | E11 | S |
 | E15 Language NOT | Next | `name_not_language` | E11 | S |
@@ -436,7 +441,7 @@ Each phase ships alone. E1 to E4 need no new question type.
   - no repeated target; the variety rules; the NOT cap and no two NOT questions in a row;
   - at levels 1 to 3, country distractors come from the target's continent within the fame ceiling whenever that group holds three;
   - each correct index from 0 to 3 lands between 20 % and 30 % of the time.
-- The fact card extends the `run-finished` contract golden. A frontend test renders it through `FakeApi`.
+- The learning-card payload extends the `run-finished` contract golden. A unit test pins the `chosenCountry` rule. The redesign's feature tests render the card through `FakeApi`.
 - From E11 on, one play test finds the NICHT pill on a NOT question through `FakeApi`.
 - `stats.sql` gets no test: it is a report.
 
@@ -444,7 +449,7 @@ Each phase ships alone. E1 to E4 need no new question type.
 
 - A difficulty model, calibration from answers, generate-and-rank selection, and a fame rank finer than three tiers.
 - Weighted similarity sampling and a language-family proximity map.
-- Practice mode, daily quiz, either-or, estimate, map tap, speed run.
+- Practice mode, either-or, estimate, map tap, speed run. The daily quiz has its own PRD, [prd-daily-quiz.md](prd-daily-quiz.md).
 - Breather questions and type weights.
 - A generic eponymy or stem detector.
 - A question report button. It is a scope change, revisited before the public launch.
@@ -458,7 +463,7 @@ Scope changes against [prd-rebuild.md](prd-rebuild.md):
 
 | Item | Change |
 | --- | --- |
-| Level ladder, candidate groups, variety rules, giveaway rule, fact card | In scope; game-rules.md changes |
+| Level ladder, candidate groups, variety rules, giveaway rule, learning card | In scope; game-rules.md changes |
 | Capital traps | A new curated set and option kind; extends the Data table |
 | Former names, calling codes, currency prompts, NOT types | New question types in the existing four-option format |
 | Neighbours | Pulled from Further Notes into Next (E12) by owner decision |
@@ -472,18 +477,17 @@ Doc changes this PRD owes:
   - "Wrong options come from the target's continent …" becomes the familiar and subregion group rule (E1, E2).
   - "Within the allowed tiers, the type is drawn at random" gains the variety rules (E2) and the NOT cap (E11).
   - New lines: the defensible-set sentence and the giveaway rule (E1).
-  - The result paragraph gains the fact card (E3).
+  - The result paragraph gains the learning card, with the redesign's learning-card phase (E3).
   - A capital question from level 3 may offer the target's trap city (E5).
   - "A calling code is the ITU country code, such as +49; the NANP countries share +1" (E10).
   - "A NOT question shows three options that hold the relation; the correct option is the one that does not" (E11).
   - "Neighbours share a land border both states agree on; a border a player could argue either way is never asked" (E12).
 - `docs/UBIQUITOUS_LANGUAGE.md` gains the terms below.
 
-New and changed terms for `docs/UBIQUITOUS_LANGUAGE.md`:
+New and changed terms for `docs/UBIQUITOUS_LANGUAGE.md`; "Level" and "Learning card" are already there:
 
 | Term | Definition | Avoid |
 | --- | --- | --- |
-| Level | The difficulty step of a position, 1 to 10, one per five questions; it sets the type window, fame ceiling, candidate groups and NOT cap. | stage, band |
 | Question type (changed) | A prompt attribute, an answer attribute, a polarity, a difficulty tier and a fame cap, e.g. flag to capital. | mode, quiz mode |
 | Difficulty tier (changed) | How hard a question type is, 1 to 10; a level asks the tiers of its type window. | level |
 | Type window | The tiers a level asks: L−2 to L, extended down until it holds four types. | tier range |
@@ -496,7 +500,6 @@ New and changed terms for `docs/UBIQUITOUS_LANGUAGE.md`:
 | NOT question | A question whose correct option is the one that does not hold the relation; its type id contains `_not_`. | negative question, inverse question |
 | Referring prompt | A prompt that names the target by flag, capital or calling code and asks a further fact about it. | chain |
 | Giveaway | A question whose prompt gives the answer away through a shared name word; it is never asked, and in neighbour questions such a country is never an option. | eponym |
-| Fact card | The target's key facts shown on the result screen after a miss. | info box |
 | Capital trap | A famous city of the target that players take for its capital; offered only as a distractor. | decoy city |
 | Former name | A name a country had before, used as a prompt whose answer is the country. | old name |
 | Value prompt | A prompt that shows an attribute value whose answer is a country, such as a regional language or a calling code. | reverse question |

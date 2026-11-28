@@ -2,13 +2,15 @@
 
 > Source PRD: docs/prds/prd-question-engine.md (E10–E15) and docs/prds/prd-quiz-knowledge.md (K10, K11)
 >
-> Runs after docs/plans/plan-anonymous-player.md and docs/plans/plan-quiz-domain-now.md. Every phase relies on what they build:
+> Runs after docs/plans/plan-anonymous-player.md, docs/plans/plan-quiz-domain-now.md and docs/plans/plan-redesign.md have landed. Every phase relies on what they build:
 > - migration `000006`, so this plan's migration is `000007`;
 > - `Cases()`, `Draw()` and `candidates()` with true, contested and false sets;
 > - `TestQuestionSpace`, its checker table of rule-breaking questions, `TestImporterRejects` and `make data-review`;
 > - the level table, type-first selection, the four-type window extension and the giveaway word check;
 > - subregion groups, the variety rules, and `Generate` over the stored questions;
-> - the fact card payload `fact` and its screen;
+> - the learning-card payload `result.fact`, and the redesign's learning card that renders it;
+> - the redesign's question card and its `negation` colour token;
+> - the learning-sentence table in `docs/redesign/copy.md`;
 > - disjoint language lists and fame from pageviews.
 
 ## Goal
@@ -64,9 +66,12 @@ After the last phase the quiz holds 29 question types over its ten levels.
   - A NOT question never follows a NOT question.
   - Both rules are soft, like the variety rules.
 - **Neighbour groups.** A neighbour answer uses, at every level: two-hop neighbours, same subregion, same continent, rest of the pool.
-- **Fact card.** `fact` gains `callingCode` (string, null for an excluded country) in phase 1. It gains `neighbours` (`[{de,en}]` in `borders` order) in phase 3.
+- **Learning-card payload.** `fact` gains `callingCode` (string, null for an excluded country) in phase 1. It gains `neighbours` (`[{de,en}]` in `borders` order) in phase 3.
   A NOT miss needs no further field. The card's continent, currencies, languages and neighbours already explain the wrong options.
-- **NOT pill.** `QuestionCard` shows a NICHT/NOT pill on the prompt when the type id contains `_not_`. It uses the `warning` colour token, never `destructive` or `success`.
+- **Learning sentences.** Each new type adds one row to the learning-sentence table in `docs/redesign/copy.md`, keyed by its type id, in de and en.
+  The same sentences land in `frontend/src/features/play/messages.ts`. A NOT type's sentence names why the correct option is the odd one out.
+- **NOT pill.** Phase 2 builds `NotPill`, NICHT/NOT, to the spec in `docs/redesign/design-system.md`. The question card shows it on the prompt when the type id contains `_not_`.
+  It uses the redesign's `negation` token, never `danger` or `success`.
 - **Overrides.** Both new sections live in `data/overrides.json`:
   - `callingCodes`: `{ "VA": { "blocked": ["+39"], "reason": "…", "source": "https://…" } }`. An entry removes the country's code and sets its blocked codes.
   - `borders`: `{ "remove": [{ "pair": ["IN", "LK"], "reason", "source" }], "blocked": [{ "pair", "reason", "source" }] }`.
@@ -94,7 +99,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
   - the `question-types` golden.
 
   So the phases run in sequence in one lane. The PRD's own needs are weaker: E13 needs E10 and E12; E12, E14 and E15 need E11.
-- **Integration commands** pass `POSTGRES_DB="$POSTGRES_DB"` on every make command line. Inside make, `.env` beats the environment.
+- **Integration commands** pass the lane database to make, as in [programme.md](programme.md#stores).
 - **Named subtests.** Rows of the `TestQuestionSpace` checker table and of `TestImporterRejects` run as `t.Run(<row name>)`.
   A phase that finds them otherwise converts the table first.
 - **Raw-list oracles.** Each new `candidates()` row adds its own raw-list oracle to `TestQuestionSpace`'s defensible-set computation.
@@ -103,7 +108,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
 
 - `backend/internal/quiz/question.go — QuestionType, QuestionType.ID(), Types, Attr, answerText(), values(), labelKind()` — the type table every phase extends.
 - `backend/internal/quiz/options.go — Case, Cases(), Draw(), candidates()` — the option rules; new answer and prompt rows land here.
-- `backend/internal/quiz/generate.go — Generate(), level()` and its level table — type-first selection, the fame cap and the NOT cap.
+- `backend/internal/quiz/generate.go — Generate(), Level()` and its level table — type-first selection, the fame cap and the NOT cap.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace` and its checker table — raw-list checks per case.
 - `backend/internal/quiz/generate_test.go — TestGenerate(), checkRun(), sharedPool` — seeded sampling checks.
 - `backend/internal/quiz/postgres/repository_integration_test.go — TestEveryTypeFitsTheSchema()` — pins `Types` against both CHECKs; sets a prompt only for `AttrRegionalLanguage` today.
@@ -114,10 +119,11 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - `data/overrides.json`, `data/SOURCES.md`.
 - `backend/cmd/datareview/main.go` — the review dump; headings read `## <typeId> <target> [<prompt>]`.
 - `backend/internal/quiz/httpapi/present.go — presenter.question(), presenter.option(), presenter.label(), countryItem()` and the `fact` payload.
-- `backend/internal/contract/golden_test.go — TestQuestionTypes()`; `testdata/question-types.json`, `testdata/run-finished.json` (target DE). Regenerate with `cd backend && go test -tags=integration ./internal/contract -update`.
-- `frontend/src/features/play/api.ts — questionTypes`, the `fact` schema; `messages.ts — questions`; `question-card.tsx — QuestionCard`; `run-result.tsx`; `play.test.tsx`; `fake-run.ts`.
+- `backend/internal/contract/golden_test.go — TestQuestionTypes()`; `testdata/question-types.json`, `testdata/run-finished.json` (target DE). Regenerate with `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 ./internal/contract -args -update'`.
+- `frontend/src/features/play/api.ts — questionTypes`, the `fact` schema; `messages.ts — questions` and the learning sentences; the redesign's question card and its learning card; `play.test.tsx`; `fake-run.ts`.
 - `frontend/src/test/api-contract.test.ts` — parses every golden and compares `questionTypes` with `question-types.json`.
-- `frontend/src/index.css` — the `warning` colour token.
+- `frontend/src/index.css` — the redesign's `negation` colour token.
+- `docs/redesign/copy.md` — the learning-sentence table keyed by type id.
 - `docs/game-rules.md` — the level table and the type tier table; `docs/UBIQUITOUS_LANGUAGE.md`.
 
 ## Open questions / Risks
@@ -148,7 +154,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - `database/migrations/` — new `000007_question_kinds.up.sql`.
 - `backend/internal/quiz/httpapi/present.go — presenter.question(), presenter.option()` and the `fact` payload.
 - `backend/internal/contract/testdata/question-types.json`, `run-finished.json`.
-- `frontend/src/features/play/api.ts`, `messages.ts`, `run-result.tsx`, `play.test.tsx`, `fake-run.ts`.
+- `frontend/src/features/play/api.ts`, `messages.ts`, the redesign's learning card, `play.test.tsx`, `fake-run.ts`; `docs/redesign/copy.md`.
 - `data/overrides.json`, `data/SOURCES.md`, `docs/game-rules.md`, `docs/UBIQUITOUS_LANGUAGE.md`.
 
 ### What to build
@@ -181,8 +187,9 @@ After the last phase the quiz holds 29 question types over its ten levels.
   - `fact` gains `callingCode`. Regenerate the goldens.
 - **UI.**
   - `questionTypes` and both sentences per locale join `api.ts` and `messages.ts`.
-  - The fact schema gains `callingCode`; the fact card shows it when it is not null.
-  - A play test named "shows the calling code on the fact card" finds "+49" through `FakeApi`.
+  - Both learning sentences join `messages.ts` and the table in `docs/redesign/copy.md`.
+  - The fact schema gains `callingCode`; the learning card shows it when it is not null.
+  - A play test named "shows the calling code on the learning card" finds "+49" through `FakeApi`.
 - **Docs.**
   - `docs/game-rules.md`: "A calling code is the ITU country code, such as +49; the NANP countries share +1."
   - Also there: calling-code questions ask only about fame tier 1 countries; VA, XK, PS and KZ have no calling code in the quiz.
@@ -200,9 +207,10 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - [ ] `cd backend && go test ./internal/quiz/ -count=1 -v | grep -q -- '--- PASS: .*/nanp_holder_as_option'`
 - [ ] `cd backend && go test ./internal/quiz/ -run '^TestFameCapHolds$' -count=1 -v | grep -q -- '--- PASS: TestFameCapHolds'`
 - [ ] `jq -e '.result.fact.callingCode == "+49"' backend/internal/contract/testdata/run-finished.json && jq -e 'index("name_calling_code") and index("calling_code_name")' backend/internal/contract/testdata/question-types.json`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'calling code on the fact card' --reporter=json --outputFile=/tmp/kinds-vitest.json && jq -e '.numPassedTests >= 1' /tmp/kinds-vitest.json`
+- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'calling code on the learning card' --reporter=json --outputFile=/tmp/kinds-vitest.json && jq -e '.numPassedTests >= 1' /tmp/kinds-vitest.json`
 - [ ] `grep -q 'ITU country code' docs/game-rules.md && grep -q 'idd' data/SOURCES.md && test "$(grep -cE '^\| (Calling code|Blocked calling code|Fame cap|Value prompt) \|' docs/UBIQUITOUS_LANGUAGE.md)" -eq 4`
-- [ ] Final gate: `make check && GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration`
+- [ ] `test "$(grep -oE '^\| .(name_calling_code|calling_code_name). \|' docs/redesign/copy.md | sort -u | wc -l)" -eq 2`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 2: Negation and the continent NOT (E11)
 
@@ -210,10 +218,10 @@ After the last phase the quiz holds 29 question types over its ten levels.
 
 ### Context
 
-- `backend/internal/quiz/question.go — QuestionType, QuestionType.ID(), Types`; `options.go — Cases(), Draw(), candidates()`; `generate.go — Generate(), level()` and its level table.
+- `backend/internal/quiz/question.go — QuestionType, QuestionType.ID(), Types`; `options.go — Cases(), Draw(), candidates()`; `generate.go — Generate(), Level()` and its level table.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace`; `generate_test.go — checkRun(), sharedPool`.
 - `backend/internal/contract/testdata/question-types.json`.
-- `frontend/src/features/play/api.ts`, `messages.ts`, `question-card.tsx — QuestionCard`, `play.test.tsx`, `fake-run.ts`; `frontend/src/index.css`.
+- `frontend/src/features/play/api.ts`, `messages.ts`, the redesign's question card, a new `not-pill.tsx`, `play.test.tsx`, `fake-run.ts`; `docs/redesign/copy.md`.
 - `docs/game-rules.md`, `docs/UBIQUITOUS_LANGUAGE.md`.
 
 ### What to build
@@ -235,7 +243,8 @@ After the last phase the quiz holds 29 question types over its ten levels.
     It also asserts that some NOT question occurred, so it cannot pass vacuously.
 - **UI.**
   - `region_not_name` and its sentences join `api.ts` and `messages.ts`. NICHT and NOT stay uppercase in the sentence.
-  - `QuestionCard` shows the pill of the decisions; `messages.ts` gains its label "NICHT" / "NOT".
+  - `NotPill` lands as in the decisions; `messages.ts` gains its label "NICHT" / "NOT".
+  - The learning sentence of `region_not_name` joins `messages.ts` and the table in `docs/redesign/copy.md`.
   - A play test named "shows the NICHT pill on a NOT question" finds the pill through `FakeApi`.
 - **Docs.**
   - `docs/game-rules.md`: "A NOT question shows three options that hold the relation; the correct option is the one that does not."
@@ -249,7 +258,8 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - [ ] `cd backend && go test ./internal/quiz/ -count=1 -v | grep -q -- '--- PASS: .*/not_option_outside_true_set'`
 - [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'NICHT pill' --reporter=json --outputFile=/tmp/kinds-vitest.json && jq -e '.numPassedTests >= 1' /tmp/kinds-vitest.json`
 - [ ] `grep -q 'A NOT question shows three options that hold the relation' docs/game-rules.md && grep -qE '^\| NOT question \|' docs/UBIQUITOUS_LANGUAGE.md && grep -qE '^\| Question type \|.*polarity' docs/UBIQUITOUS_LANGUAGE.md`
-- [ ] Final gate: `make check && GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration`
+- [ ] `test "$(grep -oE '^\| .(region_not_name). \|' docs/redesign/copy.md | sort -u | wc -l)" -eq 1`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 3: Neighbours (K11, E12)
 
@@ -263,7 +273,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace`; `generate_test.go — checkRun()`.
 - `backend/internal/quiz/httpapi/present.go — presenter.option()` and the `fact` payload.
 - `backend/internal/contract/testdata/question-types.json`, `run-finished.json`.
-- `frontend/src/features/play/api.ts`, `messages.ts`, `run-result.tsx`, `play.test.tsx`, `fake-run.ts`.
+- `frontend/src/features/play/api.ts`, `messages.ts`, the redesign's learning card, `play.test.tsx`, `fake-run.ts`; `docs/redesign/copy.md`.
 - `data/overrides.json`, `data/SOURCES.md`, `docs/game-rules.md`, `docs/UBIQUITOUS_LANGUAGE.md`.
 
 ### What to build
@@ -292,8 +302,9 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - **API.** `presenter.option()` shows a neighbour option by the country's name. `fact` gains `neighbours`. Regenerate the goldens.
 - **UI.**
   - The four types and their sentences join `api.ts` and `messages.ts`.
-  - The fact schema gains `neighbours`; the fact card lists them when there are any.
-  - A play test named "lists the neighbours on the fact card" finds one neighbour's name through `FakeApi`.
+  - The four learning sentences join `messages.ts` and the table in `docs/redesign/copy.md`.
+  - The fact schema gains `neighbours`; the learning card lists them when there are any.
+  - A play test named "lists the neighbours on the learning card" finds one neighbour's name through `FakeApi`.
 - **Docs.**
   - `docs/game-rules.md`: "Neighbours share a land border both states agree on; a border a player could argue either way is never asked."
   - The type tier table gains the four rows.
@@ -307,9 +318,10 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - [ ] `make -s data-review > /tmp/kinds-review.md && test "$(grep -oE '^## (name|capital)_(not_)?neighbour ' /tmp/kinds-review.md | sort -u | wc -l)" -eq 4 && grep -qE '^## name_not_neighbour DE( |$)' /tmp/kinds-review.md && ! grep -qE '^## [a-z_]*neighbour (XK|PS|TW)( |$)' /tmp/kinds-review.md`
 - [ ] `test "$(cd backend && go test ./internal/quiz/ -count=1 -v | grep -cE -- '--- PASS: .*/(neighbour_sharing_name_word|blocked_border_as_option) ')" -eq 2`
 - [ ] `jq -e '[.result.fact.neighbours[].de] | index("Österreich")' backend/internal/contract/testdata/run-finished.json`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'neighbours on the fact card' --reporter=json --outputFile=/tmp/kinds-vitest.json && jq -e '.numPassedTests >= 1' /tmp/kinds-vitest.json`
+- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'neighbours on the learning card' --reporter=json --outputFile=/tmp/kinds-vitest.json && jq -e '.numPassedTests >= 1' /tmp/kinds-vitest.json`
 - [ ] `grep -q 'land border both states agree on' docs/game-rules.md && grep -q 'borders' data/SOURCES.md && test "$(grep -cE '^\| (Neighbour|Blocked border|Two-hop neighbour) \|' docs/UBIQUITOUS_LANGUAGE.md)" -eq 3`
-- [ ] Final gate: `make check && GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration`
+- [ ] `test "$(grep -oE '^\| .(name_neighbour|name_not_neighbour|capital_neighbour|capital_not_neighbour). \|' docs/redesign/copy.md | sort -u | wc -l)" -eq 4`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 4: Calling-code referents (E13)
 
@@ -320,7 +332,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - `backend/internal/quiz/question.go — Types`; `options.go — Cases(), candidates()`.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace`.
 - `backend/internal/contract/testdata/question-types.json`.
-- `frontend/src/features/play/api.ts`, `messages.ts`.
+- `frontend/src/features/play/api.ts`, `messages.ts`; `docs/redesign/copy.md`.
 - `docs/game-rules.md`, `docs/UBIQUITOUS_LANGUAGE.md`.
 
 ### What to build
@@ -332,7 +344,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
   - So +1, +7, +39, +377, +381, +386 and +972 never refer.
   - There is no calling code → continent type.
 - **Checks.** `TestQuestionSpace` asserts referent uniqueness against the raw lists for every calling-code referent case.
-- **UI.** The three types and their sentences join `api.ts` and `messages.ts`.
+- **UI.** The three types, their question sentences and their learning sentences join `api.ts` and `messages.ts`. The learning sentences also join the table in `docs/redesign/copy.md`.
 - **Docs.**
   - `docs/game-rules.md`: "A calling code names a country only when exactly one country holds it and no country uses it in practice."
   - The type tier table gains the three rows.
@@ -342,7 +354,8 @@ After the last phase the quiz holds 29 question types over its ten levels.
 
 - [ ] `make -s data-review > /tmp/kinds-review.md && test "$(grep -oE '^## calling_code_(capital|neighbour|not_neighbour) ' /tmp/kinds-review.md | sort -u | wc -l)" -eq 3 && grep -qF '## calling_code_capital DE [+49]' /tmp/kinds-review.md && ! grep -qE '^## calling_code_(capital|neighbour|not_neighbour) [A-Z]{2} \[\+(1|7|39|377|381|386|972)\]' /tmp/kinds-review.md`
 - [ ] `grep -q 'A calling code names a country only when exactly one country holds it' docs/game-rules.md && grep -qE '^\| Referring prompt \|' docs/UBIQUITOUS_LANGUAGE.md`
-- [ ] Final gate: `make check && GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration`
+- [ ] `test "$(grep -oE '^\| .(calling_code_capital|calling_code_neighbour|calling_code_not_neighbour). \|' docs/redesign/copy.md | sort -u | wc -l)" -eq 3`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 5: Currency prompts (E14)
 
@@ -354,7 +367,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - `backend/internal/country/catalogue.go — Catalogue.Label(), Catalogue.Family()` — unit labels and currency families.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace`.
 - `backend/internal/contract/testdata/question-types.json`.
-- `frontend/src/features/play/api.ts`, `messages.ts`.
+- `frontend/src/features/play/api.ts`, `messages.ts`; `docs/redesign/copy.md`.
 - `docs/game-rules.md`.
 
 ### What to build
@@ -368,7 +381,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
   - A NOT target lies outside the defensible set, and its continent holds at least three true members.
   - So Denmark meets Finland, Ireland and Estonia for the Euro; Japan never does.
 - **Checks.** `TestQuestionSpace` asserts the currency-NOT rule against the raw lists.
-- **UI.** Both types and their sentences join `api.ts` and `messages.ts`.
+- **UI.** Both types, their question sentences and their learning sentences join `api.ts` and `messages.ts`. The learning sentences also join the table in `docs/redesign/copy.md`.
 - **Docs.**
   - `docs/game-rules.md`: "A currency prompt shows a unit name; a country pays with it when every currency it has carries that name."
   - Also there: "A NOT currency question asks only about a country whose continent has three countries paying with that unit."
@@ -378,7 +391,8 @@ After the last phase the quiz holds 29 question types over its ten levels.
 
 - [ ] `make -s data-review > /tmp/kinds-review.md && grep -qF '## currency_name MX [MXN]' /tmp/kinds-review.md && grep -qF '## currency_not_name DK [EUR]' /tmp/kinds-review.md && ! grep -qF '## currency_not_name JP [EUR]' /tmp/kinds-review.md`
 - [ ] `grep -q 'A NOT currency question asks only about a country whose continent' docs/game-rules.md`
-- [ ] Final gate: `make check && GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration`
+- [ ] `test "$(grep -oE '^\| .(currency_name|currency_not_name). \|' docs/redesign/copy.md | sort -u | wc -l)" -eq 2`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 6: Language NOT (E15)
 
@@ -389,7 +403,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - `backend/internal/quiz/question.go — Types`; `options.go — Cases(), Draw(), candidates()`.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace`.
 - `backend/internal/contract/testdata/question-types.json`.
-- `frontend/src/features/play/api.ts`, `messages.ts`.
+- `frontend/src/features/play/api.ts`, `messages.ts`; `docs/redesign/copy.md`.
 - `docs/game-rules.md`.
 
 ### What to build
@@ -399,7 +413,7 @@ After the last phase the quiz holds 29 question types over its ten levels.
   - A case needs at least three official languages with distinct families.
   - The three wrong options are official languages of the target. The odd one out is the first fitting false language over the value groups, such as Luxemburgisch for Switzerland.
   - The existing official-language row of `candidates()` serves it unchanged.
-- **UI.** The type and its sentences join `api.ts` and `messages.ts`.
+- **UI.** The type, its question sentence and its learning sentence join `api.ts` and `messages.ts`. The learning sentence also joins the table in `docs/redesign/copy.md`.
 - **Docs.**
   - `docs/game-rules.md`: "A NOT language question asks about a fame tier 1 country with three official languages of distinct families."
   - The type tier table gains the row.
@@ -409,4 +423,5 @@ After the last phase the quiz holds 29 question types over its ten levels.
 - [ ] `make -s data-review > /tmp/kinds-review.md && grep -qE '^## name_not_language CH( |$)' /tmp/kinds-review.md && ! grep -qE '^## name_not_language (DE|FR|JP)( |$)' /tmp/kinds-review.md`
 - [ ] `jq -e 'length == 29 and index("name_not_language")' backend/internal/contract/testdata/question-types.json`
 - [ ] `grep -q 'A NOT language question asks about a fame tier 1 country' docs/game-rules.md`
-- [ ] Final gate: `make check && GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration`
+- [ ] `test "$(grep -oE '^\| .(name_not_language). \|' docs/redesign/copy.md | sort -u | wc -l)" -eq 1`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`

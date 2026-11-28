@@ -12,7 +12,7 @@ Ship the approved "now" phases of both PRDs:
 - familiar and same-subregion distractors;
 - a ten-level difficulty ladder;
 - giveaway and variety rules;
-- a fact card after a miss;
+- the learning-card payload `result.fact` after a miss;
 - two quality queries.
 
 After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`. The owner has authorised releases and deploys.
@@ -34,14 +34,18 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
   - Level L asks type tiers L−2 to L, extended one tier down until the window holds four types.
   - Fame ceiling: 1 at levels 1–2, 2 at levels 3–5, 3 from level 6.
   - Familiar groups at levels 1–3, subregion groups from level 4.
+  - The server sends `level` with every question and with the result; the client never computes it.
 - **Language lists.** A country's `languages`, `regionalLanguages` and `blockedLanguages` are disjoint from phase 2 on. `data/regional-languages.json` entries become `{ "spokenIn": [...], "blockedIn": [...], "source": "https://..." }`, with no `kind` and no cap.
 - **Country fields.** `Country` gains `Subregion string` in phase 6, together with its only reader. `Fame` keeps tiers 1..3 and gets a new source in phase 3.
-- **German names.** The Auswärtiges Amt list decides a German country or capital name only where it uses a different name word than CLDR, such as Kyjiw vs Kiew. Inverted sort forms and state designators ("Korea, Republik") never replace a CLDR common name ("Südkorea").
+- **German names.** The Auswärtiges Amt list decides a German country or capital name only where it uses another name word than CLDR. An example is Kyjiw vs Kiew. Inverted sort forms and state designators ("Korea, Republik") never replace a CLDR common name ("Südkorea").
 - **Generate's input.** In phase 6 it takes the stored questions, `[]Question` by position, instead of the used targets. `UnitOfWork.Targets()` and the `ListTargets` query go.
-- **Fact card.** The finished-run payload gains `fact` in phase 7:
-  - the target's name, flag, capital, continent, official languages and currency units;
-  - `chosenCountry` (`{de,en}`, null on a timeout or a value answer);
-  - `spokenIn` (`[{de,en}]`, only for `regional_language_name`): the countries where the language is official or regional.
+- **Learning-card payload.** After a `wrong` or `timeout` end, the finished-run payload gains `fact: { name, flag, capital, region, languages, currencies, chosenCountry, spokenIn }` in phase 7:
+  - `name`, `flag`, `capital`, `region`, `languages` and `currencies` are the target's, with `languages` the official ones and `currencies` the units;
+  - `chosenCountry` (`{de,en}`) is the country of the picked option when exactly one pool country holds it, which a country answer always does;
+  - `chosenCountry` is null for a value several pool countries hold, on a timeout, and on a too-fast pick of the correct option;
+  - `spokenIn` (`[{de,en}]`, only for `regional_language_name`) lists the countries where the language is official or regional.
+
+  The learning card that renders it belongs to `docs/plans/plan-redesign.md`.
 
 ## Inventory
 
@@ -54,14 +58,15 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 - `backend/cmd/importdata/build.go — build(), regionalLanguages(), blockedLanguages(), languageLabels(), fameTiers(), validate()`; `sources.go — readSources(), regionalLanguage, mledozeCountry, overrides`.
 - `scripts/fetch-data-sources.sh — ALL_SOURCES` — vendoring; `data/sources/wikidata/capitals.rq` is the join pattern on ISO alpha-2 through `wdt:P297`.
 - `data/regional-languages.json`, `data/overrides.json`, `data/SOURCES.md`, `NOTICE`, `frontend/src/app/messages.ts` (footer credit).
-- `backend/internal/quiz/httpapi/present.go — presenter.state(), missed`; `backend/internal/contract/testdata/run-finished.json` (target DE; regenerate with `cd backend && go test -tags=integration ./internal/contract -update`); `frontend/src/test/api-contract.test.ts` (parses the golden).
-- `frontend/src/features/play/run-result.tsx`, `api.ts`, `messages.ts`, `play.test.tsx`, `fake-run.ts`.
+- `backend/internal/quiz/httpapi/present.go — presenter.state(), question, result, missed`; `backend/internal/contract/testdata/run-playing.json` and `run-finished.json` (target DE). Regenerate the goldens with `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 ./internal/contract -args -update'`.
 - `database/stats.sql` — owner statistics; `make stats`.
 - `Makefile — CLASS_developer`; `docs/game-rules.md`; `docs/UBIQUITOUS_LANGUAGE.md`.
 
 ## Open questions / Risks
 
-- **Database.** Phases 6–8 need `make db` running and `make POSTGRES_DB="$POSTGRES_DB" db-migrate` applied to the lane's database. Inside make, `.env` beats the environment, so every make command line passes `POSTGRES_DB`.
+- **Database.** Phases 5–8 need `make db` running and `make POSTGRES_DB="$POSTGRES_DB" db-migrate` applied to the lane's database. Every make command passes the lane database, as in [programme.md](programme.md#stores).
+- **Shared files.** Phase 5 edits `httpapi/present.go` and the contract goldens, which the player lane owns in wave 1. The lane rebases onto player before landing and regenerates the goldens.
+- **Hold to answer.** The redesign's hold adds response time. Phase 8's response-time medians are read only over runs started after the redesign release.
 - **Network.** Phases 2, 3 and 4 need the network for git, SPARQL, the Wikimedia pageviews REST API and the Auswärtiges Amt site. If a fetch fails, the phase stops and reports. The vendored results are committed, so the gate stays offline.
 - **Real defects in today's data.** Phase 1's check may find some. Each one gets its own fix commit inside phase 1.
 - **Owner spot-check (phase 2).** The PRD's "owner spot-checks 10 %" of the backfilled sources is a post-run review item. The lead lists the sample in the report; it does not count as verified.
@@ -216,10 +221,12 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 - `backend/internal/quiz/question.go — Types`; `options.go — Case, Cases(), Draw(), candidates()`; `generate.go — Generate(), maxTier(), maxFame()`.
 - `backend/internal/quiz/questionspace_test.go`; `generate_test.go — checkRun()`.
+- `backend/internal/quiz/httpapi/present.go — presenter.state(), question, result`; `backend/internal/contract/testdata/run-playing.json`, `run-finished.json`.
+- `frontend/src/features/play/api.ts` — the question and result schemas; `frontend/src/test/api-contract.test.ts` compares each parsed golden with `toEqual`.
 
 ### What to build
 
-- **Levels.** `level(position)` as in the decisions.
+- **Levels.** The exported `quiz.Level(position)` as in the decisions.
   - `Types` takes tiers 1–9:
     - 1: flag→name, name→flag, name→continent;
     - 2: name→capital, capital→name, flag→continent;
@@ -242,21 +249,25 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
   A value candidate belongs to the best group of any country holding it.
 - **Question space.** `TestQuestionSpace` draws each case at the level equal to its type's tier.
-- **Giveaway rule.** name → capital and capital → name skip a target whose name and capital share a word in de or en, split at spaces and hyphens. `TestQuestionSpace` pins the target list computed from the dataset.
+- **Giveaway rule.** name → capital and capital → name skip a target whose name and capital share a word in de or en. Words split at spaces and hyphens. `TestQuestionSpace` pins the target list computed from the dataset.
 - **Sampling check.** `checkRun` asserts:
   - while more than 20 targets remain unused, each type lies in its level's window, extension included;
   - each target lies within the fame ceiling while such targets remain;
   - at levels 1–3, country distractors come from the target's continent within the fame ceiling whenever that group holds three.
+- **Level on the wire.** The presenter adds `level` to each question and to the result. The result's level is that of the run's last question. Regenerate the goldens.
+  The question and result schemas in `features/play/api.ts` gain `level`, an integer from 1 to 10, so the contract test still parses the goldens unchanged.
 - **Docs.**
   - `docs/game-rules.md`: the tier table and the two position lines become the level table and the type tier table; add the familiar-group row, the defensible-set sentence and the giveaway rule.
-  - Glossary: add "Level", "Type window", "Fame ceiling", "Candidate group" and "Giveaway"; change "Difficulty tier".
+  - Glossary: add "Type window", "Fame ceiling", "Candidate group" and "Giveaway"; change "Difficulty tier". "Level" is already there.
 
 ### Acceptance criteria
 
 - [ ] `cd backend && go test ./internal/quiz/... -count=1` passes.
 - [ ] `set -o pipefail; ! make -s data-review | grep -qE '^## (name_capital|capital_name) SG '`
 - [ ] `grep -qE '^\| 10 \| 46' docs/game-rules.md`
-- [ ] `make check` passes.
+- [ ] `jq -e '.question.level == 1' backend/internal/contract/testdata/run-playing.json && jq -e '.result.level == 1' backend/internal/contract/testdata/run-finished.json`
+- [ ] `cd frontend && pnpm exec vitest run src/test/api-contract.test.ts`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 6: Subregion groups and variety (K4, E2)
 
@@ -282,33 +293,37 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 - [ ] `jq -e '[.countries[] | select((.subregion // "") == "")] | length == 0' backend/internal/country/dataset/countries.json`
 - [ ] `cd backend && go test ./internal/quiz/... -count=1` passes.
-- [ ] `GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration` passes.
-- [ ] `make check` passes.
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
-## Phase 7: Fact card (E3)
+## Phase 7: Learning-card payload (E3)
 
 **Depends on**: 6
 
 ### Context
 
+This phase is backend only, apart from the result schema. Its frontend part, the learning card, is built by `docs/plans/plan-redesign.md`.
+
 - `backend/internal/quiz/httpapi/present.go — presenter.state(), missed`.
-- `backend/internal/contract/quiz_integration_test.go`; `testdata/run-finished.json` (target DE).
-- `frontend/src/test/api-contract.test.ts`; `frontend/src/features/play/run-result.tsx`, `api.ts`, `messages.ts`, `play.test.tsx`, `fake-run.ts`.
+- `backend/internal/quiz/` — a new pure function for `chosenCountry` and its test.
+- `backend/internal/contract/quiz_integration_test.go`; `testdata/run-finished.json` (target DE, a `regional_language_name` miss picking France), `testdata/run-timeout.json`.
+- `frontend/src/features/play/api.ts` — the result schema; `frontend/src/test/api-contract.test.ts`.
 
 ### What to build
 
-- **Payload.** After a `wrong` or `timeout` end, the result carries `fact` as in the decisions, all from the catalogue. Regenerate the golden.
-- **Result screen.** It shows the fact card under the missed question.
-  - A wrong country pick reads "Deine Wahl: die Flagge von Senegal" from `chosenCountry`.
-  - A regional-language miss lists `spokenIn`.
-- **Docs.** The `docs/game-rules.md` result paragraph names the fact card; add the term "Fact card".
+- **Payload.** After a `wrong` or `timeout` end, the result carries `fact` as in the decisions, all from the catalogue. Regenerate the goldens.
+  The result schema in `features/play/api.ts` gains `fact`, optional because only a miss carries it.
+- **The `chosenCountry` rule.** A pure function in `backend/internal/quiz/` resolves the picked option to its country, as in the decisions. The presenter calls it.
+  - "Holds" means the value lies in that country's list for the question's answer attribute.
+  - `TestChosenCountry` has one row each: a country answer, a value one pool country holds, a value several hold, a timeout, and a too-fast pick of the correct option.
+- **Docs.** None here. The redesign plan names the learning card in `docs/game-rules.md`; the glossary already holds it.
 
 ### Acceptance criteria
 
-- [ ] `jq -e '.result.fact.capital.de == "Berlin"' backend/internal/contract/testdata/run-finished.json`
-- [ ] `GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration` passes.
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx src/test/api-contract.test.ts` passes. A play test finds the target's capital on the fact card through `FakeApi`.
-- [ ] `make check` passes.
+- [ ] `jq -e '.result.fact | .capital.de == "Berlin" and .chosenCountry.de == "Frankreich" and ([.spokenIn[].de] | index("Deutschland") != null)' backend/internal/contract/testdata/run-finished.json`
+- [ ] `jq -e '.result.fact | has("chosenCountry") and .chosenCountry == null' backend/internal/contract/testdata/run-timeout.json`
+- [ ] `cd backend && go test ./internal/quiz/ -run '^TestChosenCountry$' -count=1 -v | grep -q -- '--- PASS: TestChosenCountry'`
+- [ ] `cd frontend && pnpm exec vitest run src/test/api-contract.test.ts`
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 8: Quality measures (E4)
 
@@ -327,4 +342,4 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 ### Acceptance criteria
 
 - [ ] `test "$(make -s POSTGRES_DB="$POSTGRES_DB" stats | grep -c -e 'Miss share by type and level' -e 'Distractor lure shares')" -eq 2`
-- [ ] `make check` passes.
+- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`

@@ -27,16 +27,19 @@
 | Creator | The run that created its quiz; only creators count on the global leaderboard. | owner, host |
 | Challenge link | The public link `/q/<quizId>` that lets others play the same quiz. | invite, share URL |
 | Player name | The free text a visitor enters to start a run; the leaderboards show it. | username, account, nickname |
+| Player | A visitor recognised by a player key, without signup; runs belong to a player, and a later account would attach to one. | user, account, profile |
+| Player key | The random key in the HttpOnly cookie `wtf_player` that identifies a player; the server stores only its hash. | session, token, user id |
 | Answer | The option a visitor picked for one question of a run, or a timeout. | result, guess |
 | Score | The number of correct answers of a run. | points, high score |
 | End reason | Why a run ended: `wrong`, `timeout` or `completed`. | status, outcome |
-| Global leaderboard | The top 100 creator runs of all time. | ranking, high-score list |
-| Quiz leaderboard | The top 100 runs of one quiz. | challenge ranking |
+| Global leaderboard | The top 100 players of all time, each with their best visible creator run. | ranking, high-score list |
+| Quiz leaderboard | The top 100 players of one quiz, each with their best visible run on it. | challenge ranking |
 | Hidden run | A run the owner removed from every leaderboard. | banned, deleted |
-| Level | A block of five consecutive questions of a run, shown to the player; level n starts at question 5(n−1)+1 and allows difficulty tiers up to n, at most 4. | stage, round; tier (a tier is a question type's difficulty) |
-| Personal best | The highest score this browser has reached, kept in the browser only. | high score, record (record is fine in UI copy) |
-| Hold to answer | Committing an option by pressing it for 400 ms; a keyboard commits at once. | long press, confirm |
-| Arming | The 400 ms after a question renders (1000 ms after a result renders) in which presses are ignored. | cooldown, debounce |
-| Learning card | The one card on a result that explains the missed question: correct option, the pick and one sentence. | tip, explanation box |
+| Level | The difficulty step of a run position, 1 to 10: one per five questions, level 10 from question 46 on. It sets the question types and target fame a question can have; the server sends it with every question and the result. | stage, band, round; tier (a tier is a question type's difficulty) |
+| Rank name | The neutral title of a level shown beside its number, from Neuling (1) to Legende (10). | level name, theme |
+| Personal best | The highest score over a player's ended runs, kept on the server per player key and sent as `best`. | high score; record is fine in UI copy |
+| Hold to answer | Committing an option by holding it 400 ms with a touch or pen; a mouse click or a key commits at once. | long press, confirm |
+| Arming | The 400 ms after a question renders in which its options ignore presses. | cooldown, debounce |
+| Result guard | The 1000 ms after a result renders in which its buttons ignore presses. | cooldown, debounce |
+| Learning card | The one card on the result screen after a miss: the correct option beside the pick, one sentence and a row of the target's key facts. | fact card, tip, info box |
 | Run strip | One square per answer of a run in blocks of five, shown on the result and in the share text. | emoji grid, history |
-| Remembered quiz | A quiz this browser played, kept in the browser with its own run id and last seen rank. | saved quiz, bookmark |

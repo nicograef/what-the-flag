@@ -71,9 +71,9 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | Layout | Handbook Go + React row: `backend/`, `frontend/`, `database/`, `reverse-proxy/` |
 | Backend | Go, standard `net/http` mux, `log/slog`, pgx v5, sqlc, golang-migrate |
 | Database | PostgreSQL 19. The handbook runs every backend on Postgres, so SQLite is out |
-| Frontend | Vite, React, TypeScript 7, Tailwind, shadcn/ui, TanStack Query, React Router, Zod |
+| Frontend | Vite, React, TypeScript 7, Tailwind, TanStack Query, React Router, Zod |
 | Edge | Caddy image with the SPA baked in; `/api/*` proxied to the backend on port 8080 |
-| Look | Clean and minimal: slate neutrals, one blue accent, success, warning and error colours, short transitions; dark mode follows the system |
+| Look | One dark game theme in navy and gold with the Baloo 2 typeface, set by [prd-redesign.md](prd-redesign.md) (D15, D16) |
 | Languages | German and English UI. Repository files are English |
 | Toolchain | Latest stable Go and the Active LTS Node at scaffold time, pinned as the handbook says |
 
@@ -123,7 +123,7 @@ The PRD adds what those rules leave to the implementation:
 - No response carries a run id other than the requester's own.
 - The API sends every label in both languages as `{"de": "…", "en": "…"}`. The client shows one.
 - The name field says that the name appears publicly on the leaderboards.
-- The browser remembers the last name to prefill the form, and the personal best to compare with.
+- The server remembers the last name and the personal best per player key ([plan-anonymous-player.md](../plans/plan-anonymous-player.md)). The browser keeps only the locale.
 
 ### Sharing
 
@@ -131,6 +131,7 @@ The PRD adds what those rules leave to the implementation:
 - The text names the score and the quiz link, nothing that spoils a question.
 - The challenge page `/q/<quizId>` shows the creator's name and score, or that the creator still plays. Below it are the quiz's list and the name form.
 - `index.html` carries fixed Open Graph tags and a static image, so a shared link shows a preview.
+- [prd-challenge-preview.md](prd-challenge-preview.md) gives each challenge link its own preview.
 
 ### Abuse protection
 
@@ -200,7 +201,7 @@ No route negotiates language. There is no authentication. State-changing request
 ## Out of Scope
 
 - Accounts, login, sessions, profiles, avatars, friends and duels.
-- A daily quiz, a today list, milestones, confetti, an installable app and per-score preview images.
+- An installable app. Milestones and confetti come with [prd-redesign.md](prd-redesign.md), the daily quiz with [prd-daily-quiz.md](prd-daily-quiz.md).
 - A word filter for names; the owner hides abusive runs.
 - Captchas from third parties, stored IP addresses, per-run flag URLs and client obfuscation.
 - Monetisation and languages beyond German and English.
