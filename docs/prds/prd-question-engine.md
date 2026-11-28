@@ -192,6 +192,8 @@ Value-prompt generalisation (E6):
 | A curated list of about 25 capital traps | Wikidata largest-city and former-capital batches; a city entity keyed by QID | Population ranks produce dull traps, such as Pointe-Noire. A hand list picks famous ones |
 | Generalise value prompts at the second such type | Generalise now | One user does not justify the table. Former names is the trigger |
 | A uniform correct value for multi-valued answers | Weights from CLDR speaker shares; a primary subset | Shares are noisy. A primary subset waits for player reports (knowledge PRD) |
+| New Further Notes types wait for four weeks of E4 statistics and start with largest by area (E8) | Add them now; after the beta | Evidence first; E8 costs S and carries no rule debt |
+| A themed quiz counts only on its quiz leaderboard | A global board per theme | A small player base stays on one board; revisited at E9 |
 
 ### Roadmap
 
@@ -208,13 +210,6 @@ Each phase ships alone. E1 to E4 need no new question type.
 | E7 Evidence-driven tuning | Next | New look-alike pairs, primary currencies, fame overrides; continent types dropped late if they prove trivial | E4 data | S each |
 | E8 Largest by area | Later | Ranked type 5 | K7 | S |
 | E9 New formats | Later | Ranked types 6 to 10 | K8 for types 6 to 8; flag features for type 9 | M each |
-
-### Open decisions
-
-| # | Decision | Options | Recommendation |
-| --- | --- | --- | --- |
-| 1 | When to pull Further Notes types forward | Now; after the beta; when stats show a need | After four weeks of E4 data, if late runs show repetition or trivial continent questions. Start with largest by area (K7, E8): S cost each, no rule debt |
-| 2 | Whether themed quizzes get their own leaderboard | Own global board per theme; quiz leaderboard only | Quiz leaderboard only, so a small player base is not split. It is a scope change either way |
 
 ## Testing Decisions
 

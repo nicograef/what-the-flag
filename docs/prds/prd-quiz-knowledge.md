@@ -253,6 +253,8 @@ Until K5, a data edit that removes a code also resets the staging database.
 | Subregion as mledoze's string key | An M49 code with CLDR labels | No label is shown yet. The mapping waits for a consumer that displays it |
 | No cap on spoken-in lists; `blockedIn` holds diaspora | Keeping the build cap; the cap as a prompt filter; a heartland and also-spoken rewrite of 155 entries | The build cap caused truncation. As a prompt filter it would disable Quechua once Chile is added, and 11 languages sit at exactly five today. The generator's pool fallback already guarantees three wrong countries. `blockedIn` is additive |
 | An https URL on curated fact entries; no dates | URL plus a checked date and a staleness report on every entry | In-scope facts rarely change, so dates are bookkeeping |
+| Stored questions keep codes and reset with breaking data edits during the beta; at the public launch, after one final reset, each stored question also stores its displayed texts (K5) | Snapshot texts now; the importer refuses to drop referenced codes | Data still changes weekly, so a snapshot now costs a migration per change. Refusing drops blocks every cleanup. Changes prd-rebuild's "The database stores country codes and attribute values only" at K5 and extends D09 |
+| German country and capital names follow the Auswärtiges Amt list of state names where it has an entry, else CLDR, through the existing override sections (K9) | CLDR as is; Duden | Official, consistent and neutral. Duden is no list of state names |
 
 ### Roadmap
 
@@ -264,23 +266,17 @@ Each phase ships alone. K1 goes first because it guards the rest. K2 depends on 
 | K2 Honest language relation | Now | Disjoint lists, `blockedIn`, the build cap deleted, `kind` deleted, four label fixes, the 7 official-only entries deleted. The generator reads spoken-in from all three lists and prompts from `regionalLanguages`. `territoryInfo` is vendored and its diff printed. Gaps found are fixed, Quechua in Chile first. The 65 sources are backfilled: a `sonnet` agent drafts, the owner spot-checks 10% | K1 | M |
 | K3 Fame from pageviews | Now | A new Wikidata query `data/sources/wikidata/articles.rq` fetches each country's dewiki sitelink by QID. The fetch script reads monthly `agent=user` views of that title over the last 12 full months into a CSV; the end month is its pin. The rank replaces area with the same cut-offs. The importer then rejects redundant `fameTiers` overrides, and lowering overrides become possible | — | S |
 | K4 Subregion | Now | `subregion` on Country, read from mledoze | — | S |
-| K5 Stable stored questions | Before the public launch | Open decision 1 | — | S–M |
+| K5 Stable stored questions | Before the public launch | One final reset, then each stored question also stores its displayed texts | — | S–M |
 | K6 Trap and former-name data | Next | `capital-traps.json`, `former-names.json` and their importer checks, shipped with engine E5 and E6 | K1 | S each |
 | K7 Area | Later | `area` on Country, read from mledoze, for engine E8 | — | S |
 | K8 More attributes | Later | Borders, landlocked, memberships, each with its question type, once the beta shows a need for variety | — | M each |
+| K9 German names | Now | A curation pass of German country and capital names against the Auswärtiges Amt list; differences land as `countryNames` and `capitalLabels` overrides with the list as source | — | S |
 
 K3's join and its failure modes:
 
 - A sitelink names the item's own article, never a redirect or a disambiguation page.
 - Views through redirect titles, such as "Kongo", are not counted. Inference: this skews few countries; the curator reads the tier diff and corrects an outlier through `fameTiers`.
 - The importer fails when a pool country has no sitelink or no view count.
-
-### Open decisions
-
-| # | Decision | Options | Recommendation |
-| --- | --- | --- | --- |
-| 1 | How stored questions survive data edits | (a) Store the displayed texts per question. (b) The importer refuses to drop a code that stored questions can reference; the presenter falls back to the code. (c) Reset the database, leaderboards included, after a breaking data edit | (c) during the beta. (a) at the public launch, after one final reset. A quiz is drawn lazily, so it can span a deploy; (a) keeps each question self-contained. Changes prd-rebuild ("The database stores country codes and attribute values only") and extends D09 |
-| 2 | The authority for German country and capital names, such as Kiew or Kyjiw | CLDR as is; the Auswärtiges Amt list of state names; Duden | The Auswärtiges Amt list where it has an entry, else CLDR, applied through the existing override sections. Inference: the list exists and covers capitals; the web-researcher verifies |
 
 ## Testing Decisions
 
