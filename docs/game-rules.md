@@ -18,7 +18,7 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 
 - Questions 1 to 5 use tier 1 only. Each further block of five allows the next tier, up to tier 4 from question 16.
 - Within the allowed tiers, the type is drawn at random.
-- Each country has a fame tier: the 50 largest by area are tier 1, ranks 51 to 120 tier 2, the rest tier 3. A curated list adjusts some.
+- Each country has a fame tier: the 50 most-viewed on German Wikipedia over 12 months are tier 1, ranks 51 to 120 tier 2, the rest tier 3. A curated list adjusts some.
 - Questions 1 to 8 target fame tier 1 and questions 9 to 16 tiers 1 and 2. Later ones target any country.
 - No country is the target twice in one quiz.
 - Wrong options come from the target's continent when it holds at least eight countries, else from the whole pool.

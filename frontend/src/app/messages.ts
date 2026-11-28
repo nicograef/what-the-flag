@@ -7,7 +7,7 @@ export const messages = defineMessages({
     switchLocale: "English",
     switchLocaleShort: "EN",
     credits:
-      "Länderdaten: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flaggen: flag-icons (MIT)",
+      "Länderdaten: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR, Wikimedia Pageviews; Flaggen: flag-icons (MIT)",
     notFound: "Diese Seite gibt es nicht.",
     backHome: "Zur Startseite",
   },
@@ -17,7 +17,7 @@ export const messages = defineMessages({
     switchLocale: "Deutsch",
     switchLocaleShort: "DE",
     credits:
-      "Country data: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR; Flags: flag-icons (MIT)",
+      "Country data: mledoze/countries (ODbL 1.0), Wikidata, Unicode CLDR, Wikimedia pageviews; Flags: flag-icons (MIT)",
     notFound: "This page does not exist.",
     backHome: "Back to home",
   },

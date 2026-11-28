@@ -27,7 +27,15 @@ Unicode CLDR
 
 Wikidata
   URL:       https://www.wikidata.org
-  Pin:       query data/sources/wikidata/capitals.rq, fetched 2026-11-26
+  Pin:       query data/sources/wikidata/capitals.rq, fetched 2026-11-26;
+             query data/sources/wikidata/articles.rq, fetched 2026-11-28
+  Licence:   CC0-1.0
+  Copyright: none; CC0 waives it
+  Full text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Wikimedia pageviews (Analytics API)
+  URL:       https://wikimedia.org/api/rest_v1/metrics/pageviews/
+  Pin:       German Wikipedia user pageviews, 2025-11 to 2026-10, fetched 2026-11-28
   Licence:   CC0-1.0
   Copyright: none; CC0 waives it
   Full text: https://creativecommons.org/publicdomain/zero/1.0/legalcode

@@ -18,7 +18,7 @@
 | Look-alike pair | Two flags a player cannot tell apart; they never share a flag question. | similar flags, twin flags |
 | Question type | A prompt attribute paired with an answer attribute, e.g. flag to capital. | mode, quiz mode |
 | Difficulty tier | How hard a question type is; a quiz moves from easy tiers to hard ones. | level |
-| Fame tier | How well known a country is, derived from its area rank in the quiz pool and adjusted by a curated list. | popularity |
+| Fame tier | How well known a country is, from its German Wikipedia pageview rank in the quiz pool and adjusted by a curated list. | popularity |
 | Question | A target country, a question type, four options and the correct option. | task, challenge |
 | Option | One of the four selectable answers of a question. | choice, answer |
 | Target | The country a question asks about. | solution |
