@@ -18,3 +18,6 @@ The project curates three files without an upstream source; NOTICE puts them und
 | `overrides.json` | Corrections to the sources, language families and blocked languages, each with its reason |
 | `currency-units.json` | Each pool currency's unit name without the country, in German and English, and its currency family |
 | `regional-languages.json` | Regional, minority, creole and indigenous languages, each with `spokenIn`, the pool countries where it is established and not official, `blockedIn`, those with a diaspora or a small community, and its https `source` |
+
+German country and capital names follow the Auswärtiges Amt [Länderverzeichnis für den amtlichen Gebrauch](https://www.auswaertiges-amt.de/resource/blob/215256/1be251028e07b08a89e6b65aba71f271/laenderverzeichnis-data.pdf) (Stand 28.07.2026), a reference that is not vendored.
+Where it uses another name word than CLDR or Wikidata, a `countryNames` or `capitalLabels` override applies it and cites it; its designators and inverted forms, such as "Republik Korea", never replace a common name.

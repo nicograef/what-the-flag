@@ -48,8 +48,65 @@
       "de": "Aschgabat",
       "reason": "Wikidata de uses Turkmen \"Aşgabat\"; Duden form wins"
     }
+ ,
+    "Q1953": {
+      "de": "Eriwan",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Eriwan, not Jerewan"
+    },
+    "Q11194": {
+      "de": "Sarajewo",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Sarajewo, not Sarajevo"
+    },
+    "Q3808": {
+      "de": "Jaunde",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Jaunde, not Yaoundé"
+    },
+    "Q987": {
+      "de": "New Delhi",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it New Delhi, not Neu-Delhi"
+    },
+    "Q1490": {
+      "de": "Tokyo",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Tokyo, not Tokio"
+    },
+    "Q35178": {
+      "de": "Kuwait-Stadt",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) spells the city Kuwait, not Kuweit; the designator Stadt stays"
+    },
+    "Q21197": {
+      "de": "Chisinau",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Chisinau, not Kischinau"
+    },
+    "Q23430": {
+      "de": "Ulan-Bator",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Ulan-Bator, not Ulaanbaatar"
+    },
+    "Q3935": {
+      "de": "Windhuk",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Windhuk, not Windhoek"
+    },
+    "Q1963": {
+      "de": "Khartum",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Khartum, not Chartum"
+    },
+    "Q1780": {
+      "de": "Pressburg",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Pressburg, not Bratislava"
+    },
+    "Q1947": {
+      "de": "Dschuba",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Dschuba, not Juba"
+    },
+    "Q1899": {
+      "de": "Kyjiw",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Kyjiw, not Kiew"
+    }
   },
   "countryNames": {
+    "NR": {
+      "de": "Naoero",
+      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Naoero, not Nauru"
+    },
     "PS": {
       "de": "Palästina",
       "reason": "CLDR PS is \"Palästinensische Autonomiegebiete\"; CLDR PS-alt-short \"Palästina\" matches en \"Palestine\""

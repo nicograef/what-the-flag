@@ -130,7 +130,7 @@
         "en": "Armenia"
       },
       "capital": {
-        "de": "Jerewan",
+        "de": "Eriwan",
         "en": "Yerevan"
       },
       "region": "Asia",
@@ -298,7 +298,7 @@
         "en": "Bosnia and Herzegovina"
       },
       "capital": {
-        "de": "Sarajevo",
+        "de": "Sarajewo",
         "en": "Sarajevo"
       },
       "region": "Europe",
@@ -961,7 +961,7 @@
         "en": "Cameroon"
       },
       "capital": {
-        "de": "Yaoundé",
+        "de": "Jaunde",
         "en": "Yaoundé"
       },
       "region": "Africa",
@@ -2151,7 +2151,7 @@
         "en": "India"
       },
       "capital": {
-        "de": "Neu-Delhi",
+        "de": "New Delhi",
         "en": "New Delhi"
       },
       "region": "Asia",
@@ -2352,7 +2352,7 @@
         "en": "Japan"
       },
       "capital": {
-        "de": "Tokio",
+        "de": "Tokyo",
         "en": "Tokyo"
       },
       "region": "Asia",
@@ -2588,7 +2588,7 @@
         "en": "Kuwait"
       },
       "capital": {
-        "de": "Kuweit-Stadt",
+        "de": "Kuwait-Stadt",
         "en": "Kuwait City"
       },
       "region": "Asia",
@@ -2984,7 +2984,7 @@
         "en": "Moldova"
       },
       "capital": {
-        "de": "Kischinau",
+        "de": "Chisinau",
         "en": "Chișinău"
       },
       "region": "Europe",
@@ -3170,7 +3170,7 @@
         "en": "Mongolia"
       },
       "capital": {
-        "de": "Ulaanbaatar",
+        "de": "Ulan-Bator",
         "en": "Ulaanbaatar"
       },
       "region": "Asia",
@@ -3422,7 +3422,7 @@
         "en": "Namibia"
       },
       "capital": {
-        "de": "Windhoek",
+        "de": "Windhuk",
         "en": "Windhoek"
       },
       "region": "Africa",
@@ -3621,7 +3621,7 @@
     {
       "code": "NR",
       "name": {
-        "de": "Nauru",
+        "de": "Naoero",
         "en": "Nauru"
       },
       "capital": {
@@ -4178,7 +4178,7 @@
         "en": "Sudan"
       },
       "capital": {
-        "de": "Chartum",
+        "de": "Khartum",
         "en": "Khartoum"
       },
       "region": "Africa",
@@ -4291,7 +4291,7 @@
         "en": "Slovakia"
       },
       "capital": {
-        "de": "Bratislava",
+        "de": "Pressburg",
         "en": "Bratislava"
       },
       "region": "Europe",
@@ -4457,7 +4457,7 @@
         "en": "South Sudan"
       },
       "capital": {
-        "de": "Juba",
+        "de": "Dschuba",
         "en": "Juba"
       },
       "region": "Africa",
@@ -4942,7 +4942,7 @@
         "en": "Ukraine"
       },
       "capital": {
-        "de": "Kiew",
+        "de": "Kyjiw",
         "en": "Kyiv"
       },
       "region": "Europe",
