@@ -41,8 +41,11 @@ func TestGenerate(t *testing.T) {
 	t.Run("five-country catalogue", fiveCountries)
 }
 
-// checkRun generates one run's questions from position 0 until the pool is exhausted
-// and checks each against the question rules and the position's tier and fame.
+// levelTiers holds, per level from 1, the lowest and highest type tier of its window, extension included.
+var levelTiers = [...][2]int{{1, 1}, {1, 2}, {1, 3}, {2, 4}, {3, 5}, {4, 6}, {4, 7}, {6, 8}, {7, 9}, {7, 10}}
+
+// checkRun generates one run's questions from position 0 until the pool is exhausted and checks each
+// against the question rules, its level's type window and fame ceiling, and the order of the candidate groups.
 func checkRun(t *testing.T, s space, seed uint64) {
 	t.Helper()
 	pool := s.cat.pool
@@ -53,8 +56,14 @@ func checkRun(t *testing.T, s space, seed uint64) {
 	rnd := newRand(seed)
 	used := map[string]bool{}
 	for position := 0; ; position++ {
-		wantTier, wantFame := min(4, 1+position/5), min(3, 1+position/8)
-		famousLeft := slices.ContainsFunc(pool, func(c country.Country) bool { return !used[c.Code] && c.Fame <= wantFame })
+		level := min(10, 1+position/5)
+		ceiling := 3
+		if level <= 2 {
+			ceiling = 1
+		} else if level <= 5 {
+			ceiling = 2
+		}
+		famousLeft := slices.ContainsFunc(pool, func(c country.Country) bool { return !used[c.Code] && c.Fame <= ceiling })
 		q, err := Generate(s.cat, position, used, rnd)
 		if position == len(pool) {
 			if !errors.Is(err, errQuizExhausted) {
@@ -73,21 +82,32 @@ func checkRun(t *testing.T, s space, seed uint64) {
 		if used[q.Target] {
 			fail("target repeats")
 		}
-		used[q.Target] = true
-		if q.Type.Tier > wantTier {
-			fail("tier above %d", wantTier)
+		if tiers := levelTiers[level-1]; len(pool)-len(used) > 20 && (q.Type.Tier < tiers[0] || q.Type.Tier > tiers[1]) {
+			fail("tier %d outside the level %d window %v", q.Type.Tier, level, tiers)
 		}
-		if famousLeft && target.Fame > wantFame {
-			fail("fame %d above %d", target.Fame, wantFame)
+		used[q.Target] = true
+		if famousLeft && target.Fame > ceiling {
+			fail("fame %d above the ceiling %d", target.Fame, ceiling)
 		}
 		if p := s.problems(q); len(p) > 0 {
 			fail("%s", strings.Join(p, "; "))
 		}
-		// A distractor country may leave a region of eight or more only when every other country there
-		// clashes with an option or is defensible.
-		if !q.Type.Answer.identifiesCountry() || regionSize[target.Region] < 8 {
+		if !q.Type.Answer.identifiesCountry() {
 			continue
 		}
+		// group ranks a country as a distractor: the target's continent within the ceiling at levels 1 to 3,
+		// the continent, then the rest, with continents under eight countries counted as the rest.
+		group := func(c *country.Country) int {
+			switch {
+			case c.Region != target.Region || regionSize[target.Region] < 8:
+				return 2
+			case level <= 3 && c.Fame <= ceiling:
+				return 0
+			}
+			return 1
+		}
+		// A distractor may come from a later group only when every country of an earlier one
+		// is an option, is defensible or clashes with an option.
 		def := s.defensible(Case{Type: q.Type, Target: q.Target, Prompt: q.Prompt})
 		flag := q.Type.Prompt == AttrFlag || q.Type.Answer == AttrFlag
 		clashes := func(c *country.Country) bool {
@@ -96,14 +116,14 @@ func checkRun(t *testing.T, s space, seed uint64) {
 				return l.De == ol.De || l.En == ol.En || (flag && slices.Contains(s.byCode[o].Lookalikes, c.Code))
 			})
 		}
-		for _, o := range q.Options {
-			if s.byCode[o].Region == target.Region {
+		for i, o := range q.Options {
+			if i == q.Correct {
 				continue
 			}
-			for i := range pool {
-				c := &pool[i]
-				if c.Region == target.Region && !slices.Contains(q.Options[:], c.Code) && !clashes(c) {
-					fail("option %s is outside %s, though %s fits", o, target.Region, c.Code)
+			for j := range pool {
+				c := &pool[j]
+				if group(c) < group(s.byCode[o]) && !slices.Contains(q.Options[:], c.Code) && !clashes(c) {
+					fail("option %s is in group %d, though %s of group %d fits", o, group(s.byCode[o]), c.Code, group(c))
 				}
 			}
 		}
@@ -143,26 +163,35 @@ func fivePool(regions ...string) fakeCatalogue {
 	return cat
 }
 
-// fiveCountries pins exhaustion, the fallback to another type and errPoolTooSmall on a literal pool.
+// fiveCountries pins exhaustion, the fallbacks and errPoolTooSmall on a literal pool.
 func fiveCountries(t *testing.T) {
 	others := map[string]bool{"BB": true, "CC": true, "DD": true, "EE": true}
+	obscure := fivePool("R1", "R2", "R3", "R4", "R5")
+	obscure[0].Fame = 3
+	three := fivePool("R1", "R2", "R3", "R4", "R5")[:3]
+	three[0].Lookalikes = []string{"BB", "CC"}
 	tests := []struct {
-		name     string
-		cat      fakeCatalogue
-		used     map[string]bool
-		wantType string
-		wantErr  error
+		name    string
+		cat     fakeCatalogue
+		used    map[string]bool
+		want    func(Question) bool
+		wantErr error
 	}{
-		{"every country used", fivePool("R1", "R2", "R3", "R4", "R5"), map[string]bool{"AA": true, "BB": true, "CC": true, "DD": true, "EE": true}, "", errQuizExhausted},
-		{"look-alike flags fall back to name_region", fivePool("R1", "R2", "R3", "R4", "R5"), others, "name_region", nil},
-		{"no type has three distractors", fivePool("R1", "R2", "R1", "R2", "R1"), others, "", errPoolTooSmall},
+		{"every country used", fivePool("R1", "R2", "R3", "R4", "R5"), map[string]bool{"AA": true, "BB": true, "CC": true, "DD": true, "EE": true}, nil, errQuizExhausted},
+		{"look-alike flags fall back to name_region", fivePool("R1", "R2", "R3", "R4", "R5"), others,
+			func(q Question) bool { return q.Type.ID() == "name_region" }, nil},
+		{"no target within the fame ceiling retries without it", obscure, others,
+			func(q Question) bool { return q.Target == "AA" && q.Type.ID() == "name_region" }, nil},
+		{"no window type fits, so any type does", fivePool("R1", "R2", "R1", "R2", "R1"), others,
+			func(q Question) bool { return q.Type.Tier > 1 }, nil},
+		{"no type has three distractors", three, map[string]bool{"BB": true, "CC": true}, nil, errPoolTooSmall},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for seed := range uint64(20) {
 				q, err := Generate(tt.cat, 0, tt.used, newRand(seed))
-				if !errors.Is(err, tt.wantErr) || (err == nil && q.Type.ID() != tt.wantType) {
-					t.Fatalf("seed %d: Generate = %+v, %v; want type %q, err %v", seed, q, err, tt.wantType, tt.wantErr)
+				if !errors.Is(err, tt.wantErr) || (err == nil && !tt.want(q)) {
+					t.Fatalf("seed %d: Generate = %+v, %v; want err %v", seed, q, err, tt.wantErr)
 				}
 			}
 		})

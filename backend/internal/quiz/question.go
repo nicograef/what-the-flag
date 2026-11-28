@@ -34,7 +34,7 @@ func (t QuestionType) ID() string {
 	return string(t.Prompt) + "_" + string(t.Answer)
 }
 
-// Types holds every question type.
+// Types holds every question type; the tiers run from 1 to 9.
 var Types = []QuestionType{
 	{AttrFlag, AttrName, 1},
 	{AttrName, AttrFlag, 1},
@@ -42,16 +42,16 @@ var Types = []QuestionType{
 	{AttrName, AttrCapital, 2},
 	{AttrCapital, AttrName, 2},
 	{AttrFlag, AttrRegion, 2},
-	{AttrName, AttrCurrency, 2},
-	{AttrFlag, AttrCapital, 3},
-	{AttrCapital, AttrFlag, 3},
-	{AttrName, AttrLanguage, 3},
+	{AttrName, AttrCurrency, 3},
+	{AttrFlag, AttrCapital, 4},
+	{AttrCapital, AttrFlag, 4},
+	{AttrName, AttrLanguage, 4},
 	{AttrCapital, AttrRegion, 3},
-	{AttrFlag, AttrCurrency, 4},
-	{AttrFlag, AttrLanguage, 4},
-	{AttrCapital, AttrCurrency, 4},
-	{AttrCapital, AttrLanguage, 4},
-	{AttrRegionalLanguage, AttrName, 4},
+	{AttrFlag, AttrCurrency, 6},
+	{AttrFlag, AttrLanguage, 8},
+	{AttrCapital, AttrCurrency, 7},
+	{AttrCapital, AttrLanguage, 8},
+	{AttrRegionalLanguage, AttrName, 9},
 }
 
 // Question asks about Target, an alpha-2 code. Options are alpha-2 codes for a

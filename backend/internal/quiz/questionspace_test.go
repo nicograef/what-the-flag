@@ -157,6 +157,9 @@ func (s space) problems(q Question) []string {
 	if !s.holds(c, q.Options[q.Correct]) {
 		add("correct option %s is not true", q.Options[q.Correct])
 	}
+	if namesCapital(q.Type) && sharesNameWord(s.byCode[q.Target]) {
+		add("type %s gives %s away: its name and capital share a word", q.Type.ID(), q.Target)
+	}
 	def := s.defensible(c)
 	a := q.Type.Answer
 	kind := labelKind(a)
@@ -185,6 +188,24 @@ func (s space) problems(q Question) []string {
 	return out
 }
 
+// namesCapital reports whether a type pairs a name with a capital, the types the giveaway rule covers.
+func namesCapital(t QuestionType) bool {
+	return (t.Prompt == AttrName && t.Answer == AttrCapital) || (t.Prompt == AttrCapital && t.Answer == AttrName)
+}
+
+// sharesNameWord reports whether c's name and capital share a word in de or en, words split at spaces and hyphens.
+func sharesNameWord(c *country.Country) bool {
+	for _, n := range [][2]string{{c.Name.De, c.Capital.De}, {c.Name.En, c.Capital.En}} {
+		capital := strings.Fields(strings.ReplaceAll(n[1], "-", " "))
+		for _, w := range strings.Fields(strings.ReplaceAll(n[0], "-", " ")) {
+			if slices.Contains(capital, w) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // typeOf returns the type with id.
 func typeOf(t *testing.T, id string) QuestionType {
 	t.Helper()
@@ -203,7 +224,7 @@ func TestQuestionSpace(t *testing.T) {
 	var ineligible []string
 	for _, c := range cases {
 		name := fmt.Sprintf("%s %s [%s]", c.Type.ID(), c.Target, c.Prompt)
-		sets := candidates(cat, cat.pool, c)
+		sets := candidates(cat, cat.pool, c, c.Type.Tier)
 		for _, v := range sets.True {
 			if !s.holds(c, v) {
 				t.Errorf("%s: true code %s does not hold", name, v)
@@ -230,7 +251,7 @@ func TestQuestionSpace(t *testing.T) {
 		if n < 6 && c.Type.Answer != AttrRegion {
 			thin[c.Type.ID()] = append(thin[c.Type.ID()], c.Target+c.Prompt)
 		}
-		q, ok := Draw(cat, c, 1, newRand(1))
+		q, ok := Draw(cat, c, c.Type.Tier, newRand(1))
 		switch {
 		case !ok && n < 3:
 			// Too few false candidates make a case ineligible; Generate then asks another type.
@@ -252,6 +273,28 @@ func TestQuestionSpace(t *testing.T) {
 		t.Logf("%s: %d cases with fewer than 6 candidates: %v", id, len(thin[id]), thin[id])
 	}
 
+	// The giveaway rule skips exactly the targets whose name and capital share a word, for both name-capital types.
+	var giveaways []string
+	for i := range cat.pool {
+		if sharesNameWord(&cat.pool[i]) {
+			giveaways = append(giveaways, cat.pool[i].Code)
+		}
+	}
+	wantGiveaways := []string{"AD", "CD", "CG", "CL", "DJ", "GT", "GW", "KW", "LK", "LU", "MC", "MX", "PA", "SG", "SM", "ST", "SV", "VA"}
+	if !slices.Equal(giveaways, wantGiveaways) {
+		t.Errorf("giveaway targets %q, want %q", giveaways, wantGiveaways)
+	}
+	for _, ty := range Types {
+		for i := range cat.pool {
+			code := cat.pool[i].Code
+			has := slices.ContainsFunc(cases, func(c Case) bool { return c.Type == ty && c.Target == code })
+			skipped := namesCapital(ty) && slices.Contains(wantGiveaways, code)
+			if ty.Prompt != AttrRegionalLanguage && has == skipped {
+				t.Errorf("%s %s: case present %t, giveaway skip %t", ty.ID(), code, has, skipped)
+			}
+		}
+	}
+
 	// Each hand-built question breaks one rule, which the checker must report.
 	flagName, nameRegion, nameLanguage := typeOf(t, "flag_name"), typeOf(t, "name_region"), typeOf(t, "name_language")
 	nameCurrency, regional := typeOf(t, "name_currency"), typeOf(t, "regional_language_name")
@@ -270,6 +313,7 @@ func TestQuestionSpace(t *testing.T) {
 		{"repeated option", Question{Type: flagName, Target: "DE", Options: [4]string{"DE", "FR", "FR", "IT"}}, "share a text"},
 		{"shared family", Question{Type: nameCurrency, Target: "DE", Options: [4]string{"EUR", "USD", "CAD", "JPY"}}, "share family"},
 		{"unlabelled option", Question{Type: nameLanguage, Target: "DE", Options: [4]string{"de", "fr", "xx", "ru"}}, "lacks a de or en label"},
+		{"giveaway target", Question{Type: typeOf(t, "name_capital"), Target: "SG", Options: [4]string{"SG", "MY", "TH", "VN"}}, "gives SG away"},
 		{"prompt on a prompt-less type", Question{Type: flagName, Target: "DE", Prompt: "li", Options: [4]string{"DE", "FR", "IT", "ES"}}, "does not fit"},
 	}
 	for _, b := range broken {

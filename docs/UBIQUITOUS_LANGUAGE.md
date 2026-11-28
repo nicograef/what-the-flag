@@ -17,7 +17,11 @@
 | Flag key | The opaque file name of a flag, which hides the country code. | flag id, flag code |
 | Look-alike pair | Two flags a player cannot tell apart; they never share a flag question. | similar flags, twin flags |
 | Question type | A prompt attribute paired with an answer attribute, e.g. flag to capital. | mode, quiz mode |
-| Difficulty tier | How hard a question type is; a quiz moves from easy tiers to hard ones. | level |
+| Difficulty tier | How hard a question type is, from tier 1 up; a level asks the tiers of its type window. | level |
+| Type window | The tiers a level asks: two below the level up to the level, extended one tier down until it holds four types. | tier range |
+| Fame ceiling | The least famous fame tier a level allows for targets and first-group wrong options. | fame gate |
+| Candidate group | One set of possible wrong options, such as the famous countries of the target's continent; groups are drawn in order. | proximity level |
+| Giveaway | A name-capital pair sharing a word, such as Guatemala and Guatemala-Stadt; name → capital and capital → name skip its country. | leak |
 | Fame tier | How well known a country is, from its German Wikipedia pageview rank in the quiz pool and adjusted by a curated list. | popularity |
 | Question | A target country, a question type, four options and the correct option. | task, challenge |
 | Option | One of the four selectable answers of a question. | choice, answer |

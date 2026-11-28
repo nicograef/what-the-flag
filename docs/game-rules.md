@@ -12,16 +12,37 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 | Tier | Question types (prompt → answer) |
 | --- | --- |
 | 1 | flag → name, name → flag, name → continent |
-| 2 | name → capital, capital → name, flag → continent, name → currency |
-| 3 | flag → capital, capital → flag, name → official language, capital → continent |
-| 4 | flag → currency, flag → official language, capital → currency, capital → official language, regional language → name |
+| 2 | name → capital, capital → name, flag → continent |
+| 3 | name → currency, capital → continent |
+| 4 | flag → capital, capital → flag, name → official language |
+| 6 | flag → currency |
+| 7 | capital → currency |
+| 8 | flag → official language, capital → official language |
+| 9 | regional language → name |
 
-- Questions 1 to 5 use tier 1 only. Each further block of five allows the next tier, up to tier 4 from question 16.
-- Within the allowed tiers, the type is drawn at random.
+A run climbs one level every five questions; the server sends the level with every question and the result.
+
+| Level | Questions | Type tiers | Fame ceiling | Wrong options first from |
+| --- | --- | --- | --- | --- |
+| 1 | 1–5 | 1 | 1 | famous countries of the continent |
+| 2 | 6–10 | 1–2 | 1 | famous countries of the continent |
+| 3 | 11–15 | 1–3 | 2 | famous countries of the continent |
+| 4 | 16–20 | 2–4 | 2 | the continent |
+| 5 | 21–25 | 3–5 | 2 | the continent |
+| 6 | 26–30 | 4–6 | 3 | the continent |
+| 7 | 31–35 | 4–7 | 3 | the continent |
+| 8 | 36–40 | 6–8 | 3 | the continent |
+| 9 | 41–45 | 7–9 | 3 | the continent |
+| 10 | 46+ | 7–10 | 3 | the continent |
+
+- A level asks the tiers from two below its number up to its number, extended one tier down while that window holds fewer than four types.
+- The type is drawn at random from the window, then a target among the unused countries within the level's fame ceiling. When none fits, the ceiling goes, then the window.
 - Each country has a fame tier: the 50 most-viewed on German Wikipedia over 12 months are tier 1, ranks 51 to 120 tier 2, the rest tier 3. A curated list adjusts some.
-- Questions 1 to 8 target fame tier 1 and questions 9 to 16 tiers 1 and 2. Later ones target any country.
 - No country is the target twice in one quiz.
-- Wrong options come from the target's continent when it holds at least eight countries, else from the whole pool.
+- Wrong options are drawn group by group. At levels 1 to 3 the groups are the target's continent within the fame ceiling, the rest of the continent, then the rest of the pool. From level 4 they are the continent, then the rest of the pool.
+- A continent of fewer than eight countries counts as the rest of the pool. A continent, language or currency option belongs to the best group of any country holding it.
+- No wrong option is one a player could defend as correct, such as a second continent of the target or a language it holds with any status.
+- A name → capital or capital → name question skips a target whose name and capital share a word in German or English, such as Guatemala and Guatemala-Stadt.
 - Two flags a player cannot tell apart are a look-alike pair, such as Indonesia and Monaco. They never appear in the same flag question.
 - A question that shows a flag never offers a continent, language or currency of the target's look-alike as a wrong option.
 - No two options of a question show the same text.

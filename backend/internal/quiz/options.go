@@ -2,6 +2,7 @@ package quiz
 
 import (
 	"slices"
+	"strings"
 
 	"github.com/nicograef/what-the-flag/internal/country"
 )
@@ -36,8 +37,12 @@ func Cases(cat Catalogue) []Case {
 	return cases
 }
 
-// targetCases returns the cases of one type and target: one per prompt for a prompt type, else one.
+// targetCases returns the cases of one type and target: one per prompt for a prompt type, else one,
+// and none for a target the type would give away.
 func targetCases(t QuestionType, target *country.Country) []Case {
+	if !eligible(t, target) {
+		return nil
+	}
 	if t.Prompt != AttrRegionalLanguage {
 		return []Case{{Type: t, Target: target.Code}}
 	}
@@ -48,16 +53,41 @@ func targetCases(t QuestionType, target *country.Country) []Case {
 	return cases
 }
 
+// eligible reports whether a type has a case for target: a regional-language prompt needs one of its
+// regional languages, and a name-capital pair skips a target whose name and capital share a word.
+func eligible(t QuestionType, target *country.Country) bool {
+	switch {
+	case t.Prompt == AttrRegionalLanguage:
+		return len(target.RegionalLanguages) > 0
+	case (t.Prompt == AttrName && t.Answer == AttrCapital) || (t.Prompt == AttrCapital && t.Answer == AttrName):
+		return !giveaway(target)
+	}
+	return true
+}
+
+// giveaway reports whether a country's name and primary capital share a word in de or en,
+// words split at spaces and hyphens, as Guatemala and Guatemala-Stadt do.
+func giveaway(c *country.Country) bool {
+	words := func(s string) []string {
+		return strings.FieldsFunc(s, func(r rune) bool { return r == ' ' || r == '-' })
+	}
+	shares := func(a, b string) bool {
+		bw := words(b)
+		return slices.ContainsFunc(words(a), func(w string) bool { return slices.Contains(bw, w) })
+	}
+	return shares(c.Name.De, c.Capital.De) || shares(c.Name.En, c.Capital.En)
+}
+
 // Draw builds one question for c at a run level, or reports false when fewer than three wrong options fit.
 // The correct option is the target when the true set holds it, else a uniform draw from the true set.
-// Every level draws from the same candidate groups.
+// The level orders the candidate groups.
 func Draw(cat Catalogue, c Case, level int, rnd Rand) (Question, bool) {
 	return draw(cat, cat.Pool(), c, level, rnd)
 }
 
 // draw is Draw over a pool the caller already holds, since Catalogue.Pool clones it.
-func draw(cat Catalogue, pool []country.Country, c Case, _ int, rnd Rand) (Question, bool) {
-	sets := candidates(cat, pool, c)
+func draw(cat Catalogue, pool []country.Country, c Case, level int, rnd Rand) (Question, bool) {
+	sets := candidates(cat, pool, c, level)
 	if len(sets.True) == 0 {
 		return Question{}, false
 	}
@@ -128,12 +158,24 @@ func shuffled(t QuestionType, target string, options []string, rnd Rand) Questio
 	return q
 }
 
-// candidates returns c's true, contested and false sets. The false groups are the target's region first,
-// for a country answer only when the region holds at least minRegion countries, then the rest of the pool.
-func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
+// candidates returns c's true, contested and false sets. The false set holds three candidate groups, each in
+// pool order: at levels 1 to 3 the target's continent within the level's fame ceiling, the rest of the continent,
+// then the rest of the pool; from level 4 an empty group, the continent, then the rest. A continent of fewer than
+// minRegion countries falls into the rest. A value candidate belongs to the best group of any country holding it.
+func candidates(cat Catalogue, pool []country.Country, c Case, level int) optionSets {
 	target := countryOf(pool, c.Target)
 	if target == nil {
 		return optionSets{}
+	}
+	continent := regionSize(pool, target.Region) >= minRegion
+	group := func(o *country.Country) int {
+		switch {
+		case !continent || o.Region != target.Region:
+			return 2
+		case level <= 3 && o.Fame <= fameCeiling(level):
+			return 0
+		}
+		return 1
 	}
 	answer := c.Type.Answer
 	var sets optionSets
@@ -152,22 +194,14 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 		if flagType(c.Type) {
 			sets.Contested = append(sets.Contested, target.Lookalikes...)
 		}
-		var region, rest []string
+		sets.False = make([][]string, 3)
 		for i := range pool {
 			code := pool[i].Code
-			switch {
-			case slices.Contains(sets.True, code) || slices.Contains(sets.Contested, code):
-			case pool[i].Region == target.Region:
-				region = append(region, code)
-			default:
-				rest = append(rest, code)
+			if !slices.Contains(sets.True, code) && !slices.Contains(sets.Contested, code) {
+				g := group(&pool[i])
+				sets.False[g] = append(sets.False[g], code)
 			}
 		}
-		if regionSize(pool, target.Region) < minRegion {
-			rest = slices.Concat(region, rest)
-			region = nil
-		}
-		sets.False = [][]string{region, rest}
 		return sets
 	}
 
@@ -192,13 +226,14 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 			families[f] = true
 		}
 	}
-	seen := make(map[string]bool, 2*len(pool))
+	// best holds each value's best candidate group; a true or contested value holds -1.
+	best := make(map[string]int, 2*len(pool))
 	for _, v := range sets.True {
-		seen[v] = true
+		best[v] = -1
 	}
 	contest := func(v string) {
-		if !seen[v] {
-			seen[v] = true
+		if _, ok := best[v]; !ok {
+			best[v] = -1
 			sets.Contested = append(sets.Contested, v)
 		}
 	}
@@ -216,22 +251,23 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 			}
 		}
 	}
-	collect := func(inRegion bool) []string {
-		var vs []string
-		for i := range pool {
-			if (pool[i].Region == target.Region) != inRegion {
-				continue
-			}
-			for _, v := range values(&pool[i], answer) {
-				if !seen[v] {
-					seen[v] = true
-					vs = append(vs, v)
-				}
+	order := make([]string, 0, 2*len(pool))
+	for i := range pool {
+		g := group(&pool[i])
+		for _, v := range values(&pool[i], answer) {
+			switch prev, ok := best[v]; {
+			case !ok:
+				order = append(order, v)
+				best[v] = g
+			case g < prev:
+				best[v] = g
 			}
 		}
-		return vs
 	}
-	sets.False = [][]string{collect(true), collect(false)}
+	sets.False = make([][]string, 3)
+	for _, v := range order {
+		sets.False[best[v]] = append(sets.False[best[v]], v)
+	}
 	return sets
 }
 
