@@ -18,7 +18,7 @@ The game looks and plays like a game, on the data of the approved plans:
 
   | Data | Source | Lands with |
   | --- | --- | --- |
-  | `lastName`, `best`, `worldRank`, `lastQuizId` | `GET /api/me`, all null without a known player | anonymous-player 3 |
+  | `lastName`, `best`, `worldRank`, `worldBest`, `lastQuizId` | `GET /api/me`, all null without a known player | anonymous-player 3 |
   | `best: { score, isNew, previous }` | the finished-run payload | anonymous-player 3 |
   | own row | the `own` flag the server sets from the player key | anonymous-player 2 |
   | `creator.own` | `GET /api/quizzes/:quizId` | anonymous-player 2 |
@@ -423,7 +423,7 @@ The game looks and plays like a game, on the data of the approved plans:
   A hidden creator (`creator` null) leaves the tab without a sub line.
 - **`Podium`.** Ranks 1–3 in 2-1-3 order at 92/128/72 px, medal colours with their inks, real text.
 - **Rows.** 50 px `RankRow`s in an `<ol>`; the own row has `surface-2`, `youSuffix` and `aria-current="true"`.
-- **Pinned row.** On the world tab, when no listed row is own and `worldRank` is set: `worldRank`, `pinnedYou`, `best`, and a Play button.
+- **Pinned row.** On the world tab, when no listed row is own and `worldRank` is set: `worldRank`, `pinnedYou`, `worldBest`, and a Play button.
   The quiz tab only highlights in place.
 - **Tests** in `leaderboard-page.test.tsx`:
   - "pins the own row from /api/me when it is outside the list";

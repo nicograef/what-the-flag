@@ -97,7 +97,7 @@ The redesign reads its data from the approved plans.
 
 | Data | Source | Plan |
 | --- | --- | --- |
-| Last name, personal best, world rank, latest quiz | `GET /api/me` → `{ lastName, best, worldRank, lastQuizId }`; all null without a known player | anonymous player, phase 3 |
+| Last name, personal best, world rank and score, latest quiz | `GET /api/me` → `{ lastName, best, worldRank, worldBest, lastQuizId }`; all null without a known player | anonymous player, phase 3 |
 | New record and the best before the run | finished-run `best: { score, isNew, previous }` | anonymous player, phase 3 |
 | Own leaderboard row | the `own` flag the server sets from the player key | anonymous player, phase 2 |
 | Own quiz | challenge response `creator.own`: true when the creator run belongs to the requesting player | anonymous player, phase 2 |
@@ -277,7 +277,7 @@ States, from the challenge endpoint:
 - Tabs: world, and "Letztes Quiz" for `lastQuizId` when it is set. The daily tab ships with its PRD.
 - Podium for ranks 1–3, then 50 px rows.
 - The own row is highlighted in place inside the top 100.
-- On the world tab, an own row outside the top 100 is pinned to the bottom from `/api/me`: `worldRank` and "Du", with a Play button.
+- On the world tab, an own row outside the top 100 is pinned to the bottom from `/api/me`: `worldRank`, "Du" and `worldBest`, with a Play button.
 - The quiz tab only highlights in place. Its board stops at 100.
 
 ### Edge cases

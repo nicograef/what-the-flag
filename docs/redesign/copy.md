@@ -53,14 +53,14 @@ One neutral rank per level. The label reads "Level {n} · {rank}".
 | Level | de | en |
 | --- | --- | --- |
 | 1 | Neuling | Newcomer |
-| 2 | Tourist | Tourist |
-| 3 | Wanderer | Wanderer |
-| 4 | Pfadfinder | Pathfinder |
-| 5 | Entdecker | Explorer |
-| 6 | Abenteurer | Adventurer |
-| 7 | Weltenbummler | Globetrotter |
-| 8 | Navigator | Navigator |
-| 9 | Kartograf | Cartographer |
+| 2 | Tourist:in | Tourist |
+| 3 | Wanderer:in | Wanderer |
+| 4 | Pfadfinder:in | Pathfinder |
+| 5 | Entdecker:in | Explorer |
+| 6 | Abenteurer:in | Adventurer |
+| 7 | Weltenbummler:in | Globetrotter |
+| 8 | Navigator:in | Navigator |
+| 9 | Kartograf:in | Cartographer |
 | 10 | Legende | Legend |
 
 ## Play
@@ -263,4 +263,4 @@ These strings ship with their PRD and stay out of `messages.ts` until then.
 - Plurals: a key marked (1) and (n) has a singular and a plural form, chosen by the message function.
 - Dates: `Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" })` over the plain date. That gives "28. Nov." and "Nov 28".
 - Lists: `Intl.ListFormat(locale, { type: "conjunction" })`.
-- Rank names have one form for every player.
+- German rank names take the gender colon (`Entdecker:in`); Neuling and Legende are neutral already.

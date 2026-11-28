@@ -6,7 +6,7 @@
 
 A returning visitor is recognised without signup or login:
 - their name is prefilled;
-- the server knows their best score, their world rank and their latest quiz, and `GET /api/me` serves them.
+- the server knows their best score, their world rank and score, and their latest quiz, and `GET /api/me` serves them.
 
 `docs/plans/plan-redesign.md` builds the screens that show them.
 
@@ -47,10 +47,11 @@ Every leaderboard lists a player once, with their best run. The anonymous identi
   - A hidden run is skipped. `make hide` and `make prod-hide` hide every run of the given run's player.
   - `GlobalTop` no longer limits through an index. It scans every ended creator run, which is acceptable at this scale.
 - **API.**
-  - `GET /api/me` answers 200 with `{ lastName, best, worldRank, lastQuizId }`:
+  - `GET /api/me` answers 200 with `{ lastName, best, worldRank, worldBest, lastQuizId }`:
     - every field is null without a known player;
     - `best` is the best score over all of the player's ended runs;
     - `worldRank` is the player's rank on the global leaderboard;
+    - `worldBest` is the score of the run behind `worldRank`, null when `worldRank` is;
     - `lastQuizId` is the quiz of the player's latest run of any kind, creator or challenge.
   - The finished-run payload gains `best: { score, isNew, previous }`:
     - `score` is the player's best score over all ended runs;
@@ -214,7 +215,7 @@ This phase builds data and its plumbing only. `docs/plans/plan-redesign.md` buil
 
 - [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestMe' | grep -q -- '--- PASS: TestMe'`
 - [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestBestPrevious' | grep -q -- '--- PASS: TestBestPrevious'`
-- [ ] `jq -e 'has("lastName") and has("best") and has("worldRank") and has("lastQuizId") and (has("record") | not)' backend/internal/contract/testdata/me.json && jq -e '.result.best | has("previous")' backend/internal/contract/testdata/run-finished.json`
+- [ ] `jq -e 'has("lastName") and has("best") and has("worldRank") and has("worldBest") and has("lastQuizId") and (has("record") | not)' backend/internal/contract/testdata/me.json && jq -e '.result.best | has("previous")' backend/internal/contract/testdata/run-finished.json`
 - [ ] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'prefills the name from the server' --reporter=verbose | grep -q '✓.*prefills the name from the server'`
 - [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'announces a new record from the server' --reporter=verbose | grep -q '✓.*announces a new record from the server'`
 - [ ] `test ! -e frontend/src/features/play/personal-best.ts && ! grep -rq -e 'wtf.best' -e 'wtf.name' frontend/src`
