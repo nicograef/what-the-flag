@@ -41,7 +41,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border-b transition-colors data-[state=selected]:bg-muted",
+        "border-b transition-colors data-[state=selected]:bg-surface-2",
         className,
       )}
       {...props}
@@ -54,7 +54,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "h-9 px-3 text-left align-middle text-xs font-medium whitespace-nowrap text-muted-foreground",
+        "h-9 px-3 text-left align-middle text-xs font-medium whitespace-nowrap text-foreground-muted",
         className,
       )}
       {...props}
@@ -79,7 +79,7 @@ function TableCaption({
   return (
     <caption
       data-slot="table-caption"
-      className={cn("mt-4 text-sm text-muted-foreground", className)}
+      className={cn("mt-4 text-sm text-foreground-muted", className)}
       {...props}
     />
   );

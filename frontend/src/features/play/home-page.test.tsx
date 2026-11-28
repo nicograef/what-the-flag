@@ -103,11 +103,48 @@ it("shows the not-found page on an unknown path", async () => {
   ).toBeInTheDocument();
 });
 
-it("links the footer to the NOTICE file", () => {
-  renderRoute("/", { api: server() });
+it("shows the credit line on every route but play", async () => {
+  const api = server()
+    .respond("GET /api/leaderboard", { top: [] })
+    .respond("GET /api/quizzes/00000000-0000-4000-8000-0000000000aa", {
+      id: "00000000-0000-4000-8000-0000000000aa",
+      creator: null,
+      top: [],
+    });
+  const { runId } = fakeRun(api, sampleQuestions);
 
-  expect(screen.getByRole("link", { name: /Länderdaten/ })).toHaveAttribute(
-    "href",
-    expect.stringMatching(/\/NOTICE$/),
-  );
+  for (const path of [
+    "/",
+    "/leaderboard",
+    "/q/00000000-0000-4000-8000-0000000000aa",
+    "/nope",
+  ]) {
+    const { unmount } = renderRoute(path, { api });
+    expect(screen.getByRole("link", { name: /Länderdaten/ })).toHaveAttribute(
+      "href",
+      expect.stringMatching(/\/NOTICE$/),
+    );
+    unmount();
+  }
+
+  renderRoute(`/play/${runId}`, { api });
+  await screen.findByRole("heading", {
+    name: "Welches Land hat diese Flagge?",
+  });
+  expect(
+    screen.queryByRole("link", { name: /Länderdaten/ }),
+  ).not.toBeInTheDocument();
+});
+
+it("switches the language without a request", async () => {
+  const api = server();
+  const { user } = renderRoute("/", { api });
+  await screen.findByLabelText("Dein Name");
+  const requests = api.calls.length;
+
+  await user.click(screen.getByRole("button", { name: "English" }));
+
+  expect(screen.getByLabelText("Your name")).toBeInTheDocument();
+  expect(document.documentElement.lang).toBe("en");
+  expect(api.calls).toHaveLength(requests);
 });

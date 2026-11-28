@@ -39,12 +39,11 @@ export function LeaderboardPage(): ReactNode {
   } else if (query.isError) {
     body = (
       <EmptyState icon={<CircleAlert />}>
-        <p role="alert" className="text-destructive">
+        <p role="alert" className="text-danger">
           {errorMessage(query.error, locale)}
         </p>
         <Button
-          variant="outline"
-          size="lg"
+          variant="secondary"
           className="w-full"
           onClick={() => void query.refetch()}
         >
@@ -60,7 +59,7 @@ export function LeaderboardPage(): ReactNode {
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
-        <p className="text-sm text-muted-foreground">{t.intro}</p>
+        <p className="text-sm text-foreground-muted">{t.intro}</p>
       </div>
       {body}
     </section>

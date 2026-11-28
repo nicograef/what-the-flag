@@ -74,20 +74,15 @@ export function NameForm({
         spellCheck={false}
         enterKeyHint="go"
       />
-      <p id={hintId} className="text-sm text-muted-foreground">
+      <p id={hintId} className="text-sm text-foreground-muted">
         {t.namePublic}
       </p>
       {start.isError && (
-        <p id={errorId} role="alert" className="text-sm text-destructive">
+        <p id={errorId} role="alert" className="text-sm text-danger">
           {errorText(start.error, locale)}
         </p>
       )}
-      <Button
-        type="submit"
-        size="lg"
-        disabled={start.isPending}
-        className="mt-2 w-full"
-      >
+      <Button type="submit" disabled={start.isPending} className="mt-2 w-full">
         {start.isPending ? t.starting : t.start}
       </Button>
     </form>

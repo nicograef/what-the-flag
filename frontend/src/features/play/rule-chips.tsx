@@ -17,9 +17,9 @@ export function RuleChips(): ReactNode {
       {chips.map(([rule, Icon]) => (
         <li
           key={rule}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-card px-3 text-sm font-medium ring-1 ring-border"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-medium ring-1 ring-border"
         >
-          <Icon aria-hidden="true" className="size-4 text-primary" />
+          <Icon aria-hidden="true" className="size-4 text-accent" />
           {t.rules[rule]}
         </li>
       ))}

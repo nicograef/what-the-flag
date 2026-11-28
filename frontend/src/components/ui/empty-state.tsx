@@ -11,7 +11,7 @@ function EmptyState({
     <div className="flex flex-1 flex-col items-center justify-center gap-4 py-10 text-center">
       <div
         aria-hidden="true"
-        className="flex size-16 items-center justify-center rounded-2xl bg-muted text-muted-foreground [&_svg]:size-8"
+        className="flex size-16 items-center justify-center rounded-2xl bg-surface-2 text-foreground-muted [&_svg]:size-8"
       >
         {icon}
       </div>

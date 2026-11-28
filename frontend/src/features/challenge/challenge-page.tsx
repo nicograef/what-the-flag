@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CircleAlert, Hourglass } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router";
-import { Button } from "@/components/ui/button";
+import { Button, buttonClass } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,10 +27,10 @@ function Creator({ creator }: Pick<Challenge, "creator">): ReactNode {
       <>
         <Hourglass
           aria-hidden="true"
-          className="size-8 text-muted-foreground"
+          className="size-8 text-foreground-muted"
         />
         <p className="text-lg font-semibold">{t.stillPlaying(creator.name)}</p>
-        <p className="text-sm text-muted-foreground">{t.autoRefresh}</p>
+        <p className="text-sm text-foreground-muted">{t.autoRefresh}</p>
       </>
     );
   }
@@ -44,11 +44,11 @@ function Creator({ creator }: Pick<Challenge, "creator">): ReactNode {
       </span>
       <span
         aria-hidden="true"
-        className="text-6xl leading-none font-bold text-primary tabular-nums"
+        className="text-6xl leading-none font-bold text-accent tabular-nums"
       >
         {creator.score}
       </span>
-      <span aria-hidden="true" className="text-sm text-muted-foreground">
+      <span aria-hidden="true" className="text-sm text-foreground-muted">
         {t.scoreLabel(creator.score)}
       </span>
       <span aria-hidden="true" className="mt-2 text-lg font-semibold">
@@ -95,16 +95,15 @@ export function ChallengePage(): ReactNode {
     return (
       <EmptyState icon={<CircleAlert />}>
         <h1 className="text-2xl font-bold">{t.title}</h1>
-        <p role="alert" className="text-destructive">
+        <p role="alert" className="text-danger">
           {challengeError(query.error, locale)}
         </p>
-        <Button asChild size="lg" className="w-full">
-          <Link to="/">{t.home}</Link>
-        </Button>
+        <Link to="/" className={`${buttonClass()} w-full`}>
+          {t.home}
+        </Link>
         {!missing && (
           <Button
-            variant="outline"
-            size="lg"
+            variant="secondary"
             className="w-full"
             onClick={() => void query.refetch()}
           >
@@ -121,7 +120,7 @@ export function ChallengePage(): ReactNode {
   return (
     <section className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-1 pt-2 text-center">
-        <h1 className="text-sm font-semibold text-primary">{t.title}</h1>
+        <h1 className="text-sm font-semibold text-accent">{t.title}</h1>
         <Creator creator={creator} />
       </div>
       {playable && (

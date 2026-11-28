@@ -54,8 +54,8 @@ function MarkBadge({ tone }: { tone: Status["tone"] }): ReactNode {
       className={cn(
         "absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full ring-2 ring-background",
         tone === "success"
-          ? "bg-success text-success-foreground"
-          : "bg-destructive text-destructive-foreground",
+          ? "bg-success text-success-ink"
+          : "bg-danger text-danger-ink",
       )}
     >
       <Icon className="size-4" />
@@ -125,8 +125,8 @@ export function QuestionCard({
                 className={cn(
                   "inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-semibold shadow-md motion-safe:animate-pop",
                   status.tone === "success"
-                    ? "bg-success text-success-foreground"
-                    : "bg-destructive text-destructive-foreground",
+                    ? "bg-success text-success-ink"
+                    : "bg-danger text-danger-ink",
                 )}
               >
                 <StatusIcon aria-hidden="true" className="size-4" />
@@ -152,15 +152,15 @@ export function QuestionCard({
                 disabled={disabled}
                 onClick={() => onAnswer(i)}
                 className={cn(
-                  "relative flex w-full touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-border bg-card px-4 text-base font-semibold shadow-xs select-none",
+                  "relative flex w-full touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-border bg-surface px-4 text-base font-semibold shadow-xs select-none",
                   "transition-[transform,background-color,border-color,opacity] duration-150 motion-reduce:transition-none",
-                  "enabled:hover:bg-muted enabled:active:bg-muted motion-safe:active:scale-[0.98]",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  "enabled:hover:bg-surface-2 enabled:active:bg-surface-2 motion-safe:active:scale-[0.98]",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   "disabled:cursor-default",
                   flagOptions ? "h-24 p-2" : "min-h-13",
                   correct && "border-success bg-success/10",
                   chosenWrong &&
-                    "border-destructive bg-destructive/10 motion-safe:animate-shake",
+                    "border-danger bg-danger/10 motion-safe:animate-shake",
                   marks && !correct && !chosenWrong && "opacity-50",
                 )}
               >

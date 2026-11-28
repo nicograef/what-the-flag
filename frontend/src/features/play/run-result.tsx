@@ -32,7 +32,7 @@ function MissedQuestion({ last }: { last: Missed }): ReactNode {
 
   return (
     <Card className="gap-3 p-4">
-      <p className="text-sm font-medium text-muted-foreground">{t.missed}</p>
+      <p className="text-sm font-medium text-foreground-muted">{t.missed}</p>
       <div className="flex items-center gap-3">
         <div className="shrink-0 text-lg font-bold">
           <ItemView
@@ -55,14 +55,14 @@ function MissedQuestion({ last }: { last: Missed }): ReactNode {
                 "flex min-h-11 items-center gap-2 rounded-xl border-2 px-3 text-sm font-medium",
                 correct
                   ? "border-success bg-success/10"
-                  : "border-destructive bg-destructive/10",
+                  : "border-danger bg-danger/10",
               )}
             >
               <Icon
                 aria-hidden="true"
                 className={cn(
                   "size-4",
-                  correct ? "text-success" : "text-destructive",
+                  correct ? "text-success" : "text-danger",
                 )}
               />
               <ItemView
@@ -97,15 +97,15 @@ function StatTile({
   return (
     <li
       className={cn(
-        "flex flex-col items-center gap-0.5 rounded-2xl bg-card px-2 py-3 text-center ring-1 ring-border",
-        highlight && "ring-2 ring-primary",
+        "flex flex-col items-center gap-0.5 rounded-2xl bg-surface px-2 py-3 text-center ring-1 ring-border",
+        highlight && "ring-2 ring-accent",
       )}
     >
       <span className="sr-only">{label}</span>
       <span aria-hidden="true" className="text-2xl font-bold tabular-nums">
         {value}
       </span>
-      <span aria-hidden="true" className="text-xs text-muted-foreground">
+      <span aria-hidden="true" className="text-xs text-foreground-muted">
         {caption}
       </span>
     </li>
@@ -113,7 +113,7 @@ function StatTile({
 }
 
 const rankingLinkClass =
-  "flex h-12 items-center justify-between px-4 text-sm font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset active:bg-muted";
+  "flex h-12 items-center justify-between px-4 text-sm font-medium outline-none hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset active:bg-surface-2";
 
 export function RunResult({
   run,
@@ -162,7 +162,7 @@ export function RunResult({
         <h1
           ref={headingRef}
           tabIndex={-1}
-          className="text-base font-semibold text-muted-foreground outline-none"
+          className="text-base font-semibold text-foreground-muted outline-none"
         >
           {t.resultTitle}
         </h1>
@@ -176,18 +176,18 @@ export function RunResult({
           </span>
           <span
             aria-hidden="true"
-            className="mt-1 text-base font-medium text-muted-foreground"
+            className="mt-1 text-base font-medium text-foreground-muted"
           >
             {t.resultScoreLabel(result.score)}
           </span>
         </p>
         {best.isNew && (
-          <p className="inline-flex h-8 items-center gap-1.5 rounded-full bg-primary px-3 text-sm font-semibold text-primary-foreground motion-safe:animate-pop">
+          <p className="inline-flex h-8 items-center gap-1.5 rounded-full bg-accent px-3 text-sm font-semibold text-accent-ink motion-safe:animate-pop">
             <Sparkles aria-hidden="true" className="size-4" />
             {t.newBest}
           </p>
         )}
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-foreground-muted">
           {tooFast ? t.tooFastEnd : t.endReasons[result.endReason]}
         </p>
       </div>
@@ -222,20 +222,20 @@ export function RunResult({
           <span>{t.quizRanking}</span>
           <ChevronRight
             aria-hidden="true"
-            className="size-4 text-muted-foreground"
+            className="size-4 text-foreground-muted"
           />
         </Link>
         <Link to="/leaderboard" className={rankingLinkClass}>
           <span>{t.globalRanking}</span>
           <ChevronRight
             aria-hidden="true"
-            className="size-4 text-muted-foreground"
+            className="size-4 text-foreground-muted"
           />
         </Link>
       </Card>
       <div className="sticky bottom-0 -mx-4 mt-auto flex flex-col gap-2 bg-background/85 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md">
         {again.isError && (
-          <p role="alert" className="text-sm text-destructive">
+          <p role="alert" className="text-sm text-danger">
             {playError(again.error, locale)}
           </p>
         )}
@@ -246,7 +246,6 @@ export function RunResult({
             className="w-full"
           />
           <Button
-            size="lg"
             className="w-full"
             disabled={again.isPending}
             onClick={() => again.mutate()}

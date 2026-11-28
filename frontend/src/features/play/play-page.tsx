@@ -51,7 +51,7 @@ function RunError({
   const t = useMessages(messages);
   const { locale } = useLocale();
   const alert = (
-    <p role="alert" className={banner ? "flex-1 text-sm" : "text-destructive"}>
+    <p role="alert" className={banner ? "flex-1 text-sm" : "text-danger"}>
       {playError(error, locale)}
     </p>
   );
@@ -60,8 +60,7 @@ function RunError({
       <EmptyState icon={<CircleAlert />}>
         {alert}
         <Button
-          variant="outline"
-          size="lg"
+          variant="secondary"
           className="w-full"
           disabled={retrying}
           onClick={onRetry}
@@ -72,10 +71,10 @@ function RunError({
     );
   }
   return (
-    <div className="mb-3 flex items-center gap-3 rounded-xl bg-destructive/10 p-3">
-      <CircleAlert aria-hidden="true" className="shrink-0 text-destructive" />
+    <div className="mb-3 flex items-center gap-3 rounded-xl bg-danger/10 p-3">
+      <CircleAlert aria-hidden="true" className="shrink-0 text-danger" />
       {alert}
-      <Button variant="outline" disabled={retrying} onClick={onRetry}>
+      <Button variant="secondary" disabled={retrying} onClick={onRetry}>
         {t.retry}
       </Button>
     </div>
@@ -119,10 +118,10 @@ function Run({ runId }: { runId: string }): ReactNode {
       {failure}
       <div className="flex items-center justify-between">
         <h1 className="sr-only">{state.name}</h1>
-        <p className="inline-flex h-8 items-center rounded-full bg-muted px-3 text-sm font-semibold">
+        <p className="inline-flex h-8 items-center rounded-full bg-surface-2 px-3 text-sm font-semibold">
           {t.question(question.position)}
         </p>
-        <p className="inline-flex h-8 items-center rounded-full bg-primary px-3 text-sm font-bold text-primary-foreground tabular-nums">
+        <p className="inline-flex h-8 items-center rounded-full bg-accent px-3 text-sm font-bold text-accent-ink tabular-nums">
           <span key={score} className="inline-block motion-safe:animate-pop">
             {t.score(score)}
           </span>
@@ -150,7 +149,7 @@ function Run({ runId }: { runId: string }): ReactNode {
         onAnswer={answer}
       />
       {answerError && (
-        <p role="alert" className="mt-3 text-sm text-destructive">
+        <p role="alert" className="mt-3 text-sm text-danger">
           {playError(answerError, locale)}
         </p>
       )}

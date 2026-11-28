@@ -7,7 +7,7 @@
   },
   "overrides": [
     {
-      // shadcn components export their variants; Fast Refresh reloads these modules whole.
+      // UI components export their class builders; Fast Refresh reloads these modules whole.
       "files": ["src/components/ui/**"],
       "rules": { "react/only-export-components": "off" }
     }

@@ -47,8 +47,7 @@ export function ShareButton({
   return (
     <>
       <Button
-        variant="outline"
-        size="lg"
+        variant="secondary"
         className={className}
         onClick={() => void share()}
       >

@@ -26,7 +26,7 @@ function medal(rank: number): string {
     case 3:
       return "bg-orange-300 text-orange-950";
     default:
-      return "bg-muted text-muted-foreground";
+      return "bg-surface-2 text-foreground-muted";
   }
 }
 
@@ -48,7 +48,7 @@ export function RankingTable({
   if (entries.length === 0) {
     return (
       <EmptyState icon={<Trophy />}>
-        <p className="text-muted-foreground">{t.empty}</p>
+        <p className="text-foreground-muted">{t.empty}</p>
       </EmptyState>
     );
   }
@@ -71,7 +71,7 @@ export function RankingTable({
               key={i}
               ref={e.own ? ownRow : undefined}
               aria-current={e.own ? "true" : undefined}
-              className={e.own ? "bg-primary/10" : undefined}
+              className={e.own ? "bg-accent/10" : undefined}
             >
               <TableCell className="text-center">
                 <span
@@ -87,7 +87,7 @@ export function RankingTable({
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="truncate font-medium">{e.name}</span>
                   {e.own && (
-                    <span className="shrink-0 text-xs font-semibold text-primary">
+                    <span className="shrink-0 text-xs font-semibold text-accent">
                       ({t.you})
                     </span>
                   )}

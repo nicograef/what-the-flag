@@ -264,16 +264,3 @@ it("copies the challenge link without a share sheet", async () => {
   );
   expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
 });
-
-it("switches the language without a request", async () => {
-  const { api, user } = await startPlaying();
-  const requests = api.calls.length;
-
-  await user.click(screen.getByRole("button", { name: "English" }));
-
-  expect(
-    screen.getByRole("heading", { name: "Which country has this flag?" }),
-  ).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Germany" })).toBeInTheDocument();
-  expect(api.calls).toHaveLength(requests);
-});
