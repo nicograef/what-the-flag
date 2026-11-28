@@ -208,6 +208,7 @@
   },
   "languageFamilies": {
     "hindustani": {"languages": ["hi", "ur"], "reason": "Hindi and Urdu are standard registers of Hindustani"},
+    "kurdish": {"languages": ["ckb", "ku"], "reason": "Central Kurdish (Sorani) and Kurdish (Kurmanji) are varieties of Kurdish"},
     "malay": {"languages": ["id", "ms"], "reason": "Indonesian and Malay are standard varieties of Malay"},
     "persian": {"languages": ["fa", "fa-AF", "tg"], "reason": "Dari and Tajik are varieties of Persian"},
     "rwanda-rundi": {"languages": ["rn", "rw"], "reason": "Kinyarwanda and Kirundi are mutually intelligible varieties of Rwanda-Rundi"}

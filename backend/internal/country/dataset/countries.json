@@ -5479,7 +5479,8 @@
       },
       "ckb": {
         "de": "Zentralkurdisch",
-        "en": "Central Kurdish"
+        "en": "Central Kurdish",
+        "family": "kurdish"
       },
       "co": {
         "de": "Korsisch",
@@ -5803,7 +5804,8 @@
       },
       "ku": {
         "de": "Kurdisch",
-        "en": "Kurdish"
+        "en": "Kurdish",
+        "family": "kurdish"
       },
       "kw": {
         "de": "Kornisch",
