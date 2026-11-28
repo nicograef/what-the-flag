@@ -6,13 +6,13 @@
   "capital_name",
   "flag_region",
   "name_currency",
+  "capital_region",
   "flag_capital",
   "capital_flag",
   "name_language",
-  "capital_region",
   "flag_currency",
-  "flag_language",
   "capital_currency",
+  "flag_language",
   "capital_language",
   "regional_language_name"
 ]
