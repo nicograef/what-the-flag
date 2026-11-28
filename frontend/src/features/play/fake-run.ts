@@ -83,6 +83,7 @@ export function fakeRun(
         question: {
           ...wire(questions[run.score]),
           position: run.score,
+          level: fakeLevel(run.score),
           deadline,
           limitMs: 15_000,
         },
@@ -96,6 +97,9 @@ export function fakeRun(
       question: null,
       result: {
         score: run.score,
+        level: fakeLevel(
+          run.ended.reason === "completed" ? run.score - 1 : run.score,
+        ),
         endReason: run.ended.reason,
         last:
           run.ended.reason === "completed" || !missed
@@ -216,3 +220,8 @@ export const sampleQuestions: FakeQuestion[] = [
     correctOption: 2,
   },
 ];
+
+/** The server's level of a 0-based position, which the fake server mirrors. */
+function fakeLevel(position: number): number {
+  return Math.min(10, 1 + Math.floor(Math.max(0, position) / 5));
+}
