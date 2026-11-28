@@ -8,7 +8,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -451,6 +453,76 @@ func TestChallenge(t *testing.T) {
 		t.Fatalf("view after hiding the creator = %+v, want no creator and only the challenger", view)
 	}
 	startRun(t, second, map[string]any{"name": "late", "quizId": a.QuizID})
+}
+
+// runPlayer reads the player a run belongs to from the database.
+func runPlayer(t *testing.T, runID string) string {
+	t.Helper()
+	var player string
+	if err := postgres.TestPool(t).QueryRow(context.Background(),
+		`SELECT player_id FROM runs WHERE id = $1`, runID).Scan(&player); err != nil {
+		t.Fatalf("player of run %s: %v", runID, err)
+	}
+	return player
+}
+
+// playerCookie returns the player cookie resp sets, failing the test without exactly one.
+func playerCookie(t *testing.T, resp *http.Response) *http.Cookie {
+	t.Helper()
+	var found []*http.Cookie
+	for _, c := range resp.Cookies() {
+		if c.Name == "wtf_player" {
+			found = append(found, c)
+		}
+	}
+	if len(found) != 1 {
+		t.Fatalf("response sets %d player cookies, want 1: %v", len(found), resp.Header.Values("Set-Cookie"))
+	}
+	return found[0]
+}
+
+func TestPlayerKey(t *testing.T) {
+	srv := newServer(t)
+	c := newClient(t, srv)
+
+	resp := c.post("/api/runs", map[string]any{"name": "keyed"})
+	key := playerCookie(t, resp)
+	if !key.HttpOnly || !key.Secure || key.SameSite != http.SameSiteLaxMode || key.Path != "/api" ||
+		key.MaxAge != 34560000 || len(key.Value) != 43 {
+		t.Fatalf("player cookie = %+v, want HttpOnly, Secure, SameSite=Lax, Path=/api, 400 days, 43 characters", key)
+	}
+	first := decodeQuiz[started](t, resp, http.StatusCreated)
+
+	resp = c.post("/api/runs", map[string]any{"name": "keyed"})
+	if again := playerCookie(t, resp); again.Value != key.Value {
+		t.Fatalf("second start set key %q, want the first %q again", again.Value, key.Value)
+	}
+	second := decodeQuiz[started](t, resp, http.StatusCreated)
+	if runPlayer(t, second.RunID) != runPlayer(t, first.RunID) {
+		t.Fatal("a second start with the cookie made a new player")
+	}
+
+	api, err := url.Parse(srv.URL + "/api")
+	if err != nil {
+		t.Fatalf("parse url: %v", err)
+	}
+	for _, bad := range []string{"nope", strings.Repeat("A", 43)} {
+		c.http.Jar.SetCookies(api, []*http.Cookie{{Name: "wtf_player", Value: bad, Path: "/api"}})
+		resp = c.post("/api/runs", map[string]any{"name": "keyed"})
+		if fresh := playerCookie(t, resp); fresh.Value == bad || fresh.Value == key.Value {
+			t.Fatalf("start with key %q set %q, want a fresh key", bad, fresh.Value)
+		}
+		s := decodeQuiz[started](t, resp, http.StatusCreated)
+		if runPlayer(t, s.RunID) == runPlayer(t, first.RunID) {
+			t.Fatalf("start with key %q reused the first player", bad)
+		}
+	}
+
+	resp = newClient(t, srv).post("/api/runs", map[string]any{"name": "   "})
+	if cookies := resp.Header.Values("Set-Cookie"); len(cookies) != 0 {
+		t.Fatalf("rejected start set cookies %v", cookies)
+	}
+	expectError(t, resp, http.StatusBadRequest, "invalid_name")
 }
 
 func TestRateLimit(t *testing.T) {

@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"net/http/cookiejar"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -30,7 +31,8 @@ func newServer(t *testing.T) *httptest.Server {
 	return srv
 }
 
-// client is one browser behind the edge: its own /64 in 2001:db8::/32, sent as X-Forwarded-For.
+// client is one browser behind the edge: its own /64 in 2001:db8::/32, sent as X-Forwarded-For, and its own
+// cookie jar. The jar treats the loopback server as a secure origin, so the Secure player cookie round-trips.
 type client struct {
 	t    *testing.T
 	http *http.Client
@@ -44,7 +46,11 @@ func newClient(t *testing.T, srv *httptest.Server) *client {
 	copy(ip, net.ParseIP("2001:db8::"))
 	_, _ = rand.Read(ip[4:8])
 	ip[15] = 1
-	return &client{t: t, http: srv.Client(), base: srv.URL, ip: ip.String()}
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		t.Fatalf("cookie jar: %v", err)
+	}
+	return &client{t: t, http: &http.Client{Transport: srv.Client().Transport, Jar: jar}, base: srv.URL, ip: ip.String()}
 }
 
 // do sends a request. Unsafe methods carry Origin, Content-Type and a JSON
