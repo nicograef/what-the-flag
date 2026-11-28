@@ -73,6 +73,7 @@ type creatorView struct {
 	Name  string `json:"name"`
 	Score int    `json:"score"`
 	Ended bool   `json:"ended"`
+	Own   bool   `json:"own"`
 }
 
 type challenge struct {
@@ -396,7 +397,7 @@ func TestChallenge(t *testing.T) {
 	readState(t, first, a.RunID)
 
 	view := decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
-	if view.ID != a.QuizID || view.Creator == nil || *view.Creator != (creatorView{Name: "creator"}) || len(view.Top) != 0 {
+	if view.ID != a.QuizID || view.Creator == nil || *view.Creator != (creatorView{Name: "creator", Own: true}) || len(view.Top) != 0 {
 		t.Fatalf("view while the creator plays = %+v", view)
 	}
 	expectError(t, second.post("/api/runs", map[string]any{"name": "scout", "quizId": a.QuizID}),
@@ -406,8 +407,8 @@ func TestChallenge(t *testing.T) {
 	readState(t, first, a.RunID)
 	answerWrong(t, first, a.RunID, 1)
 	view = decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID), http.StatusOK)
-	if view.Creator == nil || *view.Creator != (creatorView{Name: "creator", Score: 1, Ended: true}) ||
-		len(view.Top) != 1 || view.Top[0] != (entry{Rank: 1, Name: "creator", Score: 1}) {
+	if view.Creator == nil || *view.Creator != (creatorView{Name: "creator", Score: 1, Ended: true, Own: true}) ||
+		len(view.Top) != 1 || view.Top[0] != (entry{Rank: 1, Name: "creator", Score: 1, Own: true}) {
 		t.Fatalf("view after the creator ended = %+v", view)
 	}
 
@@ -419,13 +420,13 @@ func TestChallenge(t *testing.T) {
 		t.Fatalf("challenger result = %+v, want quiz rank 2 and no global rank", res)
 	}
 
-	view = decodeGolden[challenge](t, "challenge", second.get("/api/quizzes/"+a.QuizID+"?run="+b.RunID), http.StatusOK, nil)
+	view = decodeGolden[challenge](t, "challenge", second.get("/api/quizzes/"+a.QuizID), http.StatusOK, nil)
 	want := []entry{{Rank: 1, Name: "creator", Score: 1}, {Rank: 2, Name: "challenger", Own: true}}
 	if len(view.Top) != 2 || view.Top[0] != want[0] || view.Top[1] != want[1] {
 		t.Fatalf("quiz list = %+v, want %+v", view.Top, want)
 	}
 	// The global list holds every run the database holds, so its golden keeps the first row with fixed values.
-	global := decodeGolden[leaderboard](t, "leaderboard", second.get("/api/leaderboard?run="+b.RunID), http.StatusOK,
+	global := decodeGolden[leaderboard](t, "leaderboard", second.get("/api/leaderboard"), http.StatusOK,
 		func(m map[string]any) {
 			top := m["top"].([]any)[:1]
 			first := top[0].(map[string]any)
@@ -434,14 +435,13 @@ func TestChallenge(t *testing.T) {
 		})
 	for _, e := range global.Top {
 		if e.Own {
-			t.Fatalf("global list holds the challenger's run: %+v", e)
+			t.Fatalf("global list holds the challenger, who created no quiz: %+v", e)
 		}
 	}
 
 	const unknown = "00000000-0000-4000-8000-000000000000"
 	expectError(t, first.get("/api/quizzes/"+unknown), http.StatusNotFound, "quiz_not_found")
 	expectError(t, first.get("/api/quizzes/nope"), http.StatusNotFound, "quiz_not_found")
-	decodeQuiz[challenge](t, first.get("/api/quizzes/"+a.QuizID+"?run=nope"), http.StatusOK)
 
 	// make hide: the creator's name is never served again, and the quiz stays playable.
 	if _, err := postgres.TestPool(t).Exec(context.Background(),
@@ -524,6 +524,55 @@ func TestPlayerKey(t *testing.T) {
 		t.Fatalf("rejected start set cookies %v", cookies)
 	}
 	expectError(t, resp, http.StatusBadRequest, "invalid_name")
+}
+
+func TestOwnRowByPlayer(t *testing.T) {
+	srv := newServer(t)
+	me, other := newClient(t, srv), newClient(t, srv)
+	play := func(c *client, body map[string]any) started {
+		t.Helper()
+		s := startRun(t, c, body)
+		readState(t, c, s.RunID)
+		answerWrong(t, c, s.RunID, 0)
+		return s
+	}
+	mine := play(me, map[string]any{"name": "me"})
+	theirs := play(other, map[string]any{"name": "other"})
+	play(me, map[string]any{"name": "me", "quizId": theirs.QuizID})
+
+	view := decodeQuiz[challenge](t, me.get("/api/quizzes/"+mine.QuizID), http.StatusOK)
+	if view.Creator == nil || !view.Creator.Own || len(view.Top) != 1 || !view.Top[0].Own {
+		t.Fatalf("own quiz = %+v, want an own creator and an own row", view)
+	}
+	view = decodeQuiz[challenge](t, me.get("/api/quizzes/"+theirs.QuizID), http.StatusOK)
+	want := []entry{{Rank: 1, Name: "other"}, {Rank: 1, Name: "me", Own: true}}
+	if view.Creator == nil || view.Creator.Own || len(view.Top) != 2 || view.Top[0] != want[0] || view.Top[1] != want[1] {
+		t.Fatalf("other's quiz = %+v, want a foreign creator and rows %+v", view, want)
+	}
+
+	// The global list holds every run the database holds, so the own row may sit below its top 100.
+	resp := me.get("/api/leaderboard")
+	playerCookie(t, resp)
+	var own []entry
+	global := decodeQuiz[leaderboard](t, resp, http.StatusOK)
+	for _, e := range global.Top {
+		if e.Own {
+			own = append(own, e)
+		}
+	}
+	if len(own) > 1 || (len(global.Top) < 100 && (len(own) != 1 || own[0].Name != "me")) {
+		t.Fatalf("own rows of the global list = %+v, want my one row", own)
+	}
+
+	resp = newClient(t, srv).get("/api/leaderboard")
+	if cookies := resp.Header.Values("Set-Cookie"); len(cookies) != 0 {
+		t.Fatalf("a read without a key set cookies %v", cookies)
+	}
+	for _, e := range decodeQuiz[leaderboard](t, resp, http.StatusOK).Top {
+		if e.Own {
+			t.Fatalf("a request without a key got an own row: %+v", e)
+		}
+	}
 }
 
 func TestRateLimit(t *testing.T) {

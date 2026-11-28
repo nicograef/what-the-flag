@@ -43,9 +43,9 @@ const calls: [string, (api: ApiClient) => Promise<unknown>][] = [
     "outcome-timeout",
     (api) => answerQuestion(api, "id", { position: 0, option: null }),
   ],
-  ["challenge", (api) => getChallenge(api, "id", null)],
-  ["challenge-hidden", (api) => getChallenge(api, "id", null)],
-  ["leaderboard", (api) => getLeaderboard(api, null)],
+  ["challenge", (api) => getChallenge(api, "id")],
+  ["challenge-hidden", (api) => getChallenge(api, "id")],
+  ["leaderboard", (api) => getLeaderboard(api)],
 ];
 
 describe("backend responses", () => {
