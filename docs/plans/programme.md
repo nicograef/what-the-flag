@@ -74,9 +74,9 @@ None. Wikimedia, Wikidata, CLDR and auswaertiges-amt.de fetches are free.
 
 | Phase | Lane | Status | Note |
 | --- | --- | --- | --- |
-| anonymous-player 1 | player | running | |
-| anonymous-player 2 | player | running | |
-| anonymous-player 3 | player | running | |
+| anonymous-player 1 | player | landed | 8a927aa; migration 000006 |
+| anonymous-player 2 | player | landed | 8a927aa; migration 000006 |
+| anonymous-player 3 | player | landed | 8a927aa; migration 000006 |
 | quiz-domain-now 1 | domain-data | running | |
 | quiz-domain-now 2 | domain-data | running | |
 | quiz-domain-now 3 | domain-data | running | |

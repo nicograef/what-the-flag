@@ -135,10 +135,10 @@ Every leaderboard lists a player once, with their best run. The anonymous identi
 
 ### Acceptance criteria
 
-- [ ] `make POSTGRES_DB="$POSTGRES_DB" db-migrate && docker compose -f docker-compose.yml exec -T -e DB="$POSTGRES_DB" postgres sh -c 'psql -U "$POSTGRES_USER" -d "${DB:-$POSTGRES_DB}" -Atc "select attnotnull from pg_attribute where attrelid = '\''runs'\''::regclass and attname = '\''player_id'\''"' | grep -qx t` (run with the lane's database exported as `POSTGRES_DB`)
-- [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestPlayerKey' | grep -q -- '--- PASS: TestPlayerKey'`
-- [ ] `grep -q '^- D14' docs/decisions.md`
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `make POSTGRES_DB="$POSTGRES_DB" db-migrate && docker compose -f docker-compose.yml exec -T -e DB="$POSTGRES_DB" postgres sh -c 'psql -U "$POSTGRES_USER" -d "${DB:-$POSTGRES_DB}" -Atc "select attnotnull from pg_attribute where attrelid = '\''runs'\''::regclass and attname = '\''player_id'\''"' | grep -qx t` (run with the lane's database exported as `POSTGRES_DB`)
+- [x] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestPlayerKey' | grep -q -- '--- PASS: TestPlayerKey'`
+- [x] `grep -q '^- D14' docs/decisions.md`
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 2: One leaderboard entry per player
 
@@ -172,11 +172,11 @@ Every leaderboard lists a player once, with their best run. The anonymous identi
 
 ### Acceptance criteria
 
-- [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestLeaderboardOnePerPlayer' | grep -q -- '--- PASS: TestLeaderboardOnePerPlayer'`
-- [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestOwnRowByPlayer' | grep -q -- '--- PASS: TestOwnRowByPlayer'`
-- [ ] `! grep -rqw -e runQuery -e useOwnRun -e ownRunState frontend/src`
-- [ ] `jq -e '.creator.own == false' backend/internal/contract/testdata/challenge.json`
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestLeaderboardOnePerPlayer' | grep -q -- '--- PASS: TestLeaderboardOnePerPlayer'`
+- [x] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestOwnRowByPlayer' | grep -q -- '--- PASS: TestOwnRowByPlayer'`
+- [x] `! grep -rqw -e runQuery -e useOwnRun -e ownRunState frontend/src`
+- [x] `jq -e '.creator.own == false' backend/internal/contract/testdata/challenge.json`
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 3: /api/me and the run's best
 
@@ -213,11 +213,11 @@ This phase builds data and its plumbing only. `docs/plans/plan-redesign.md` buil
 
 ### Acceptance criteria
 
-- [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestMe' | grep -q -- '--- PASS: TestMe'`
-- [ ] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestBestPrevious' | grep -q -- '--- PASS: TestBestPrevious'`
-- [ ] `jq -e 'has("lastName") and has("best") and has("worldRank") and has("worldBest") and has("lastQuizId") and (has("record") | not)' backend/internal/contract/testdata/me.json && jq -e '.result.best | has("previous")' backend/internal/contract/testdata/run-finished.json`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'prefills the name from the server' --reporter=verbose | grep -q '✓.*prefills the name from the server'`
-- [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'announces a new record from the server' --reporter=verbose | grep -q '✓.*announces a new record from the server'`
-- [ ] `test ! -e frontend/src/features/play/personal-best.ts && ! grep -rq -e 'wtf.best' -e 'wtf.name' frontend/src`
-- [ ] `grep -q -- '-c ' scripts/smoke.sh && grep -q '/api/me' scripts/smoke.sh`
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestMe' | grep -q -- '--- PASS: TestMe'`
+- [x] `make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS='-count=1 -v -run=TestBestPrevious' | grep -q -- '--- PASS: TestBestPrevious'`
+- [x] `jq -e 'has("lastName") and has("best") and has("worldRank") and has("worldBest") and has("lastQuizId") and (has("record") | not)' backend/internal/contract/testdata/me.json && jq -e '.result.best | has("previous")' backend/internal/contract/testdata/run-finished.json`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/home-page.test.tsx -t 'prefills the name from the server' --reporter=verbose | grep -q '✓.*prefills the name from the server'`
+- [x] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx -t 'announces a new record from the server' --reporter=verbose | grep -q '✓.*announces a new record from the server'`
+- [x] `test ! -e frontend/src/features/play/personal-best.ts && ! grep -rq -e 'wtf.best' -e 'wtf.name' frontend/src`
+- [x] `grep -q -- '-c ' scripts/smoke.sh && grep -q '/api/me' scripts/smoke.sh`
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
