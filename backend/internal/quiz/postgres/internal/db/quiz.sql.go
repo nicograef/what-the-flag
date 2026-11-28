@@ -328,6 +328,78 @@ func (q *Queries) PlayerByKeyHash(ctx context.Context, keyHash []byte) (uuid.UUI
 	return id, err
 }
 
+const playerSummary = `-- name: PlayerSummary :one
+WITH latest AS (
+  SELECT r.name, r.quiz_id FROM runs r WHERE r.player_id = $1 ORDER BY r.started_at DESC, r.id DESC LIMIT 1
+), ended AS (
+  SELECT r.score
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE r.player_id = $1
+    AND (r.finished_at IS NOT NULL OR a.served_at + $2::interval < $3::timestamptz)
+)
+SELECT l.name AS last_name, l.quiz_id AS last_quiz_id,
+  (SELECT count(*) > 0 FROM ended)::boolean AS has_best,
+  (SELECT coalesce(max(score), 0) FROM ended)::integer AS best
+FROM latest l
+`
+
+type PlayerSummaryParams struct {
+	PlayerID  uuid.UUID
+	LateAfter pgtype.Interval
+	Now       time.Time
+}
+
+type PlayerSummaryRow struct {
+	LastName   string
+	LastQuizID uuid.UUID
+	HasBest    bool
+	Best       int32
+}
+
+// A player's latest run of any kind, and their best ended run; has_best is false while none has ended.
+// A player without a run has no row.
+func (q *Queries) PlayerSummary(ctx context.Context, arg PlayerSummaryParams) (PlayerSummaryRow, error) {
+	row := q.db.QueryRow(ctx, playerSummary, arg.PlayerID, arg.LateAfter, arg.Now)
+	var i PlayerSummaryRow
+	err := row.Scan(
+		&i.LastName,
+		&i.LastQuizID,
+		&i.HasBest,
+		&i.Best,
+	)
+	return i, err
+}
+
+const playerWorldRun = `-- name: PlayerWorldRun :one
+SELECT r.id, r.score
+FROM runs r
+LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+WHERE r.player_id = $1 AND r.creator AND NOT r.hidden
+  AND (r.finished_at IS NOT NULL OR a.served_at + $2::interval < $3::timestamptz)
+ORDER BY r.score DESC, coalesce(r.finished_at, a.served_at + $2::interval) ASC, r.id ASC
+LIMIT 1
+`
+
+type PlayerWorldRunParams struct {
+	PlayerID  uuid.UUID
+	LateAfter pgtype.Interval
+	Now       time.Time
+}
+
+type PlayerWorldRunRow struct {
+	ID    uuid.UUID
+	Score int32
+}
+
+// A player's best visible ended creator run, the run behind their global rank.
+func (q *Queries) PlayerWorldRun(ctx context.Context, arg PlayerWorldRunParams) (PlayerWorldRunRow, error) {
+	row := q.db.QueryRow(ctx, playerWorldRun, arg.PlayerID, arg.LateAfter, arg.Now)
+	var i PlayerWorldRunRow
+	err := row.Scan(&i.ID, &i.Score)
+	return i, err
+}
+
 const quizTop = `-- name: QuizTop :many
 WITH ended AS (
   SELECT r.id, r.player_id, r.name, r.score, coalesce(r.finished_at, a.served_at + $1::interval) AS ended_at
@@ -382,6 +454,48 @@ func (q *Queries) QuizTop(ctx context.Context, arg QuizTopParams) ([]QuizTopRow,
 		return nil, err
 	}
 	return items, nil
+}
+
+const runBest = `-- name: RunBest :one
+SELECT r.score,
+  coalesce(max(o.score) FILTER (
+    WHERE o.finished_at IS NOT NULL OR a.served_at + $1::interval < $2::timestamptz), 0)::integer AS other_best,
+  (count(o.id) FILTER (
+    WHERE coalesce(o.finished_at, a.served_at + $1::interval) < r.finished_at) > 0)::boolean AS has_previous,
+  coalesce(max(o.score) FILTER (
+    WHERE coalesce(o.finished_at, a.served_at + $1::interval) < r.finished_at), 0)::integer AS previous
+FROM runs r
+LEFT JOIN runs o ON o.player_id = r.player_id AND o.id <> r.id
+LEFT JOIN run_answers a ON a.run_id = o.id AND a.correct IS NULL
+WHERE r.id = $3
+GROUP BY r.id
+`
+
+type RunBestParams struct {
+	LateAfter pgtype.Interval
+	Now       time.Time
+	ID        uuid.UUID
+}
+
+type RunBestRow struct {
+	Score       int32
+	OtherBest   int32
+	HasPrevious bool
+	Previous    int32
+}
+
+// A finished run against its player's other ended runs: their best, and the best of those that ended before it.
+// A missing best reads as 0; has_previous is false when no other run ended before it.
+func (q *Queries) RunBest(ctx context.Context, arg RunBestParams) (RunBestRow, error) {
+	row := q.db.QueryRow(ctx, runBest, arg.LateAfter, arg.Now, arg.ID)
+	var i RunBestRow
+	err := row.Scan(
+		&i.Score,
+		&i.OtherBest,
+		&i.HasPrevious,
+		&i.Previous,
+	)
+	return i, err
 }
 
 const runRanks = `-- name: RunRanks :one

@@ -158,6 +158,7 @@ No route negotiates language. There is no authentication. State-changing request
 | `POST /runs/{id}/answers` | Answer the current question; returns correctness, the correct option and the score |
 | `GET /quizzes/{id}` | Challenge view: the creator's name and score, and the quiz's top 100 players; rate limited |
 | `GET /leaderboard` | The global top 100 players; rate limited |
+| `GET /me` | The requester's player: the last name, the best score, the world rank with its score and the latest quiz |
 
 ### Frontend
 

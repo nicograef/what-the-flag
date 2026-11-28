@@ -4,6 +4,11 @@
   "question": null,
   "quizId": "00000000-0000-4000-8000-000000000002",
   "result": {
+    "best": {
+      "isNew": false,
+      "previous": null,
+      "score": 0
+    },
     "endReason": "timeout",
     "globalRank": 1,
     "last": {

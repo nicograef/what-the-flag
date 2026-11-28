@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod/mini";
 import type { ApiClient } from "@/lib/api";
 
@@ -53,12 +54,20 @@ const missedSchema = z.extend(
   },
 );
 
+/** The player's best over all their ended runs; `previous` is the best before this run, null on a first. */
+const bestSchema = z.object({
+  score: z.int().check(z.minimum(0)),
+  isNew: z.boolean(),
+  previous: z.nullable(z.int().check(z.minimum(0))),
+});
+
 const resultSchema = z.object({
   score: z.int().check(z.minimum(0)),
   endReason: z.enum(["wrong", "timeout", "completed"]),
   last: z.nullable(missedSchema),
   quizRank: z.int().check(z.minimum(1)),
   globalRank: z.nullable(z.int().check(z.minimum(1))),
+  best: bestSchema,
 });
 
 export type RunResultData = z.infer<typeof resultSchema>;
@@ -122,4 +131,26 @@ export function answerQuestion(
     outcomeSchema,
     body,
   );
+}
+
+/** What the server knows of the requester's player; every field is null for an unknown one. */
+const meSchema = z.object({
+  lastName: z.nullable(z.string()),
+  best: z.nullable(z.int().check(z.minimum(0))),
+  worldRank: z.nullable(z.int().check(z.minimum(1))),
+  worldBest: z.nullable(z.int().check(z.minimum(0))),
+  lastQuizId: z.nullable(z.uuid()),
+});
+
+export type Me = z.infer<typeof meSchema>;
+
+export function fetchMe(api: ApiClient): Promise<Me> {
+  return api.get("/api/me", meSchema);
+}
+
+export const meKey = ["me"] as const;
+
+/** The requester's player; starting or finishing a run invalidates it. */
+export function meQuery(api: ApiClient) {
+  return queryOptions({ queryKey: meKey, queryFn: () => fetchMe(api) });
 }

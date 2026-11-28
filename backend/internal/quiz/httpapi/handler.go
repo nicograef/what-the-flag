@@ -56,6 +56,7 @@ func (h *Handler) Register(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/runs/{id}/answers", h.answer)
 	mux.HandleFunc("GET /api/quizzes/{id}", h.challenge)
 	mux.HandleFunc("GET /api/leaderboard", h.leaderboard)
+	mux.HandleFunc("GET /api/me", h.me)
 }
 
 // allowStart takes a token from the client's, its network's and the global bucket, and answers a refusal with 429.
@@ -236,4 +237,30 @@ func runID(w http.ResponseWriter, r *http.Request) (quiz.RunID, bool) {
 		return quiz.RunID{}, false
 	}
 	return quiz.RunID(id), true
+}
+
+type meResponse struct {
+	LastName   *string    `json:"lastName"`
+	Best       *int       `json:"best"`
+	WorldRank  *int       `json:"worldRank"`
+	WorldBest  *int       `json:"worldBest"`
+	LastQuizID *uuid.UUID `json:"lastQuizId"`
+}
+
+func (h *Handler) me(w http.ResponseWriter, r *http.Request) {
+	player, err := h.player(r.Context(), w, r)
+	if err != nil {
+		httpx.WriteError(w, r, err)
+		return
+	}
+	me, err := h.svc.Me(r.Context(), player)
+	if err != nil {
+		httpx.WriteError(w, r, err)
+		return
+	}
+	body := meResponse{LastName: me.LastName, Best: me.Best, WorldRank: me.WorldRank, WorldBest: me.WorldBest}
+	if me.LastQuiz != nil {
+		body.LastQuizID = new(uuid.UUID(*me.LastQuiz))
+	}
+	httpx.WriteJSON(w, http.StatusOK, body)
 }

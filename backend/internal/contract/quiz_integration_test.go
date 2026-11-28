@@ -60,6 +60,21 @@ type result struct {
 	Last       *missed `json:"last"`
 	QuizRank   int     `json:"quizRank"`
 	GlobalRank *int    `json:"globalRank"`
+	Best       best    `json:"best"`
+}
+
+type best struct {
+	Score    int  `json:"score"`
+	IsNew    bool `json:"isNew"`
+	Previous *int `json:"previous"`
+}
+
+type me struct {
+	LastName   *string `json:"lastName"`
+	Best       *int    `json:"best"`
+	WorldRank  *int    `json:"worldRank"`
+	WorldBest  *int    `json:"worldBest"`
+	LastQuizID *string `json:"lastQuizId"`
 }
 
 type entry struct {
@@ -572,6 +587,60 @@ func TestOwnRowByPlayer(t *testing.T) {
 		if e.Own {
 			t.Fatalf("a request without a key got an own row: %+v", e)
 		}
+	}
+}
+
+// playScore plays a run on body's quiz to score correct answers and a wrong one, and returns it.
+func playScore(t *testing.T, c *client, body map[string]any, score int) started {
+	t.Helper()
+	s := startRun(t, c, body)
+	for position := range score {
+		readState(t, c, s.RunID)
+		answerCorrectly(t, c, s.RunID, position)
+	}
+	readState(t, c, s.RunID)
+	answerWrong(t, c, s.RunID, score)
+	return s
+}
+
+func TestMe(t *testing.T) {
+	srv := newServer(t)
+	c := newClient(t, srv)
+	resp := c.get("/api/me")
+	if cookies := resp.Header.Values("Set-Cookie"); len(cookies) != 0 {
+		t.Fatalf("/api/me without a key set cookies %v", cookies)
+	}
+	if got := decode[me](t, resp, http.StatusOK); got != (me{}) {
+		t.Fatalf("/api/me without a key = %+v, want every field null", got)
+	}
+
+	created := playScore(t, c, map[string]any{"name": "me"}, 1)
+	got := decodeGolden[me](t, "me", c.get("/api/me"), http.StatusOK, nil)
+	if got.LastName == nil || *got.LastName != "me" || got.Best == nil || *got.Best != 1 ||
+		got.WorldRank == nil || *got.WorldRank < 1 || got.WorldBest == nil || *got.WorldBest != 1 ||
+		got.LastQuizID == nil || *got.LastQuizID != created.QuizID {
+		t.Fatalf("/api/me after a creator run = %+v", got)
+	}
+
+	other := playScore(t, newClient(t, srv), map[string]any{"name": "other"}, 0)
+	playScore(t, c, map[string]any{"name": "guest", "quizId": other.QuizID}, 0)
+	got = decode[me](t, c.get("/api/me"), http.StatusOK)
+	if got.LastName == nil || *got.LastName != "guest" || got.Best == nil || *got.Best != 1 ||
+		got.WorldBest == nil || *got.WorldBest != 1 || got.LastQuizID == nil || *got.LastQuizID != other.QuizID {
+		t.Fatalf("/api/me after a challenge run = %+v, want its name and quiz and the creator run's best", got)
+	}
+}
+
+func TestBestPrevious(t *testing.T) {
+	c := newClient(t, newServer(t))
+	first := playScore(t, c, map[string]any{"name": "best"}, 1)
+	if res := readState(t, c, first.RunID).Result; res == nil || res.Best != (best{Score: 1, IsNew: true}) {
+		t.Fatalf("first result = %+v, want best 1, new, no previous", res)
+	}
+	second := playScore(t, c, map[string]any{"name": "best"}, 0)
+	res := readState(t, c, second.RunID).Result
+	if res == nil || res.Best.Score != 1 || res.Best.IsNew || res.Best.Previous == nil || *res.Best.Previous != 1 {
+		t.Fatalf("lower second result = %+v, want best 1, not new, previous 1", res)
 	}
 }
 

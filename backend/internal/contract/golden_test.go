@@ -15,15 +15,17 @@ var update = flag.Bool("update", false, "rewrite the golden files in testdata")
 
 // pinned replaces the non-null values that differ between test runs; the frontend schemas must still accept them.
 var pinned = map[string]any{
-	"id":        "00000000-0000-4000-8000-000000000001",
-	"quizId":    "00000000-0000-4000-8000-000000000002",
-	"runId":     "00000000-0000-4000-8000-000000000003",
-	"serverNow": "2026-01-01T12:00:00.123456Z",
-	"deadline":  "2026-01-01T12:00:15.123456Z",
+	"id":         "00000000-0000-4000-8000-000000000001",
+	"quizId":     "00000000-0000-4000-8000-000000000002",
+	"lastQuizId": "00000000-0000-4000-8000-000000000002",
+	"runId":      "00000000-0000-4000-8000-000000000003",
+	"serverNow":  "2026-01-01T12:00:00.123456Z",
+	"deadline":   "2026-01-01T12:00:15.123456Z",
 	// A flag key hashes the flag file, which a data refresh changes.
 	"flagKey": "0123456789",
-	// The global rank depends on every run the database holds.
+	// The global ranks depend on every run the database holds.
 	"globalRank": 1,
+	"worldRank":  1,
 }
 
 // golden compares body, a JSON value, with testdata/<name>.json after pinning its volatile values

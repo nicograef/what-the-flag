@@ -59,6 +59,13 @@ type result struct {
 	Last       *missed `json:"last"`
 	QuizRank   int     `json:"quizRank"`
 	GlobalRank *int    `json:"globalRank"`
+	Best       best    `json:"best"`
+}
+
+type best struct {
+	Score    int  `json:"score"`
+	IsNew    bool `json:"isNew"`
+	Previous *int `json:"previous"`
 }
 
 // entry is a leaderboard row; own is present only on the requester's row.
@@ -118,6 +125,7 @@ func (p *presenter) state(st quiz.RunState) (runState, error) {
 			EndReason:  string(st.Result.EndReason),
 			QuizRank:   st.Result.QuizRank,
 			GlobalRank: st.Result.GlobalRank,
+			Best:       best{Score: st.Result.Best.Score, IsNew: st.Result.Best.IsNew, Previous: st.Result.Best.Previous},
 		}
 		if last := st.Result.Last; last != nil {
 			prompt, options, err := p.question(last.Question)

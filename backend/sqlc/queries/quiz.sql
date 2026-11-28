@@ -114,3 +114,46 @@ SELECT o.creator,
   1 + (SELECT count(DISTINCT e.player_id) FROM ended e
        WHERE e.creator AND e.player_id <> o.player_id AND e.score > o.global_best) AS global_rank
 FROM own o;
+
+-- A player's latest run of any kind, and their best ended run; has_best is false while none has ended.
+-- A player without a run has no row.
+-- name: PlayerSummary :one
+WITH latest AS (
+  SELECT r.name, r.quiz_id FROM runs r WHERE r.player_id = @player_id ORDER BY r.started_at DESC, r.id DESC LIMIT 1
+), ended AS (
+  SELECT r.score
+  FROM runs r
+  LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+  WHERE r.player_id = @player_id
+    AND (r.finished_at IS NOT NULL OR a.served_at + @late_after::interval < @now::timestamptz)
+)
+SELECT l.name AS last_name, l.quiz_id AS last_quiz_id,
+  (SELECT count(*) > 0 FROM ended)::boolean AS has_best,
+  (SELECT coalesce(max(score), 0) FROM ended)::integer AS best
+FROM latest l;
+
+-- A player's best visible ended creator run, the run behind their global rank.
+-- name: PlayerWorldRun :one
+SELECT r.id, r.score
+FROM runs r
+LEFT JOIN run_answers a ON a.run_id = r.id AND a.correct IS NULL
+WHERE r.player_id = @player_id AND r.creator AND NOT r.hidden
+  AND (r.finished_at IS NOT NULL OR a.served_at + @late_after::interval < @now::timestamptz)
+ORDER BY r.score DESC, coalesce(r.finished_at, a.served_at + @late_after::interval) ASC, r.id ASC
+LIMIT 1;
+
+-- A finished run against its player's other ended runs: their best, and the best of those that ended before it.
+-- A missing best reads as 0; has_previous is false when no other run ended before it.
+-- name: RunBest :one
+SELECT r.score,
+  coalesce(max(o.score) FILTER (
+    WHERE o.finished_at IS NOT NULL OR a.served_at + @late_after::interval < @now::timestamptz), 0)::integer AS other_best,
+  (count(o.id) FILTER (
+    WHERE coalesce(o.finished_at, a.served_at + @late_after::interval) < r.finished_at) > 0)::boolean AS has_previous,
+  coalesce(max(o.score) FILTER (
+    WHERE coalesce(o.finished_at, a.served_at + @late_after::interval) < r.finished_at), 0)::integer AS previous
+FROM runs r
+LEFT JOIN runs o ON o.player_id = r.player_id AND o.id <> r.id
+LEFT JOIN run_answers a ON a.run_id = o.id AND a.correct IS NULL
+WHERE r.id = @id
+GROUP BY r.id;

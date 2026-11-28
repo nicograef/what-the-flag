@@ -113,3 +113,9 @@ func (m *memory) Creator(_ context.Context, id QuizID, now time.Time, own *Playe
 }
 
 func (m *memory) Ranks(context.Context, RunID, time.Time) (Ranks, error) { return Ranks{}, nil }
+
+func (m *memory) Best(context.Context, RunID, time.Time) (Best, error) { return Best{}, nil }
+
+func (m *memory) Player(context.Context, PlayerID, time.Time) (PlayerSummary, error) {
+	return PlayerSummary{}, errNoLists
+}

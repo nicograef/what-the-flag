@@ -49,6 +49,17 @@ type Result struct {
 	Last       *Missed
 	QuizRank   int
 	GlobalRank *int
+	Best       Best
+}
+
+// Me is what the server knows of a player: the latest run's name and quiz, the best score of an ended run,
+// and the rank and score of their best run on the global list. Each is nil without a player or such a run.
+type Me struct {
+	LastName  *string
+	Best      *int
+	WorldRank *int
+	WorldBest *int
+	LastQuiz  *QuizID
 }
 
 // Challenge is a quiz as its challenge page shows it: the creator's run and the quiz's list.
@@ -146,7 +157,34 @@ func (s *Service) State(ctx context.Context, id RunID) (RunState, error) {
 		return RunState{}, fmt.Errorf("ranks: %w", err)
 	}
 	st.Result.QuizRank, st.Result.GlobalRank = ranks.Quiz, ranks.Global
+	if st.Result.Best, err = s.boards.Best(ctx, id, st.Now); err != nil {
+		return RunState{}, fmt.Errorf("best: %w", err)
+	}
 	return st, nil
+}
+
+// Me returns what the server knows of player, nil for none.
+func (s *Service) Me(ctx context.Context, player *PlayerID) (Me, error) {
+	if player == nil {
+		return Me{}, nil
+	}
+	now := s.now()
+	sum, err := s.boards.Player(ctx, *player, now)
+	if err != nil {
+		return Me{}, fmt.Errorf("player summary: %w", err)
+	}
+	me := Me{LastName: sum.LastName, Best: sum.Best, LastQuiz: sum.LastQuiz}
+	if sum.WorldRun == nil {
+		return me, nil
+	}
+	ranks, err := s.boards.Ranks(ctx, *sum.WorldRun, now)
+	if err != nil {
+		return Me{}, fmt.Errorf("world rank: %w", err)
+	}
+	if ranks.Global != nil {
+		me.WorldRank, me.WorldBest = ranks.Global, sum.WorldBest
+	}
+	return me, nil
 }
 
 // Challenge returns a quiz's creator run and its list; own is the requester's player, nil for none.

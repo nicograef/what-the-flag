@@ -4,6 +4,7 @@ import { getChallenge } from "@/features/challenge/api";
 import { getLeaderboard } from "@/features/leaderboard/api";
 import {
   answerQuestion,
+  fetchMe,
   getRun,
   questionTypes,
   startRun,
@@ -46,6 +47,7 @@ const calls: [string, (api: ApiClient) => Promise<unknown>][] = [
   ["challenge", (api) => getChallenge(api, "id")],
   ["challenge-hidden", (api) => getChallenge(api, "id")],
   ["leaderboard", (api) => getLeaderboard(api)],
+  ["me", (api) => fetchMe(api)],
 ];
 
 describe("backend responses", () => {

@@ -85,6 +85,47 @@ func (l *Leaderboards) Ranks(ctx context.Context, id quiz.RunID, now time.Time) 
 	return ranks, nil
 }
 
+// Best compares a finished run with its player's other ended runs.
+func (l *Leaderboards) Best(ctx context.Context, id quiz.RunID, now time.Time) (quiz.Best, error) {
+	row, err := db.New(l.db).RunBest(ctx, db.RunBestParams{ID: uuid.UUID(id), LateAfter: lateAfter, Now: now})
+	if errors.Is(err, pgx.ErrNoRows) {
+		return quiz.Best{}, quiz.ErrRunNotFound
+	}
+	if err != nil {
+		return quiz.Best{}, err
+	}
+	best := quiz.Best{Score: int(max(row.Score, row.OtherBest)), IsNew: row.Score > 0 && row.Score > row.OtherBest}
+	if row.HasPrevious {
+		best.Previous = new(int(row.Previous))
+	}
+	return best, nil
+}
+
+// Player summarizes the player's runs.
+func (l *Leaderboards) Player(ctx context.Context, id quiz.PlayerID, now time.Time) (quiz.PlayerSummary, error) {
+	q := db.New(l.db)
+	row, err := q.PlayerSummary(ctx, db.PlayerSummaryParams{PlayerID: uuid.UUID(id), LateAfter: lateAfter, Now: now})
+	if errors.Is(err, pgx.ErrNoRows) {
+		return quiz.PlayerSummary{}, nil
+	}
+	if err != nil {
+		return quiz.PlayerSummary{}, err
+	}
+	sum := quiz.PlayerSummary{LastName: &row.LastName, LastQuiz: new(quiz.QuizID(row.LastQuizID))}
+	if row.HasBest {
+		sum.Best = new(int(row.Best))
+	}
+	world, err := q.PlayerWorldRun(ctx, db.PlayerWorldRunParams{PlayerID: uuid.UUID(id), LateAfter: lateAfter, Now: now})
+	if errors.Is(err, pgx.ErrNoRows) {
+		return sum, nil
+	}
+	if err != nil {
+		return quiz.PlayerSummary{}, err
+	}
+	sum.WorldRun, sum.WorldBest = new(quiz.RunID(world.ID)), new(int(world.Score))
+	return sum, nil
+}
+
 func entry(player uuid.UUID, name string, score int32, rank int64, own *quiz.PlayerID) quiz.Entry {
 	return quiz.Entry{Rank: int(rank), Name: name, Score: int(score), Own: isOwn(player, own)}
 }
