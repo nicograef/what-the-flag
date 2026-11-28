@@ -191,7 +191,7 @@ it("resumes with the served question and its running deadline", async () => {
 
 it("announces a new record from the server", async () => {
   const { user } = await startPlaying({
-    best: { score: 1, isNew: true, previous: 0 },
+    best: { score: 4, isNew: true, previous: 3 },
   });
 
   await user.click(screen.getByRole("button", { name: "Deutschland" }));
@@ -205,7 +205,7 @@ it("announces a new record from the server", async () => {
   expect(
     await screen.findByText("Neue Bestleistung!", {}, slow),
   ).toBeInTheDocument();
-  expect(screen.getByText("Deine Bestleistung: 1")).toBeInTheDocument();
+  expect(screen.getByText("Deine Bestleistung: 4")).toBeInTheDocument();
 });
 
 it("plays again under the same name on a fresh quiz", async () => {
