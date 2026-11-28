@@ -3,6 +3,7 @@
   "name": "Ada Lovelace",
   "question": {
     "deadline": "2026-01-01T12:00:15.123456Z",
+    "level": 1,
     "limitMs": 15000,
     "options": [
       {
