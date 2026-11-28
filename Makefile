@@ -66,13 +66,16 @@ be-check: data-check ## Backend: Go gate (modules, generated code, format, vet, 
 be-integration: ## Backend: integration tests against the `make db` database (TEST_ARGS passes go test flags)
 	cd $(BACKEND_DIR) && go test -tags=integration -race $(TEST_ARGS) ./...
 
-.PHONY: data data-check
+.PHONY: data data-check data-review
 
 data:          ## Regenerate the country dataset and flags from data/
 	cd $(BACKEND_DIR) && go run ./cmd/importdata
 
 data-check:    ## Fail when the generated dataset differs from the importer's output
 	cd $(BACKEND_DIR) && go run ./cmd/importdata -check
+
+data-review:   ## Print one fixed-seed question per case of the question space as Markdown
+	cd $(BACKEND_DIR) && go run ./cmd/datareview
 # <<< stack: go
 
 # >>> stack: frontend
@@ -195,7 +198,7 @@ hide:          ## Hide every run of a run's player from every leaderboard (RUN=<
 
 # Every documented target stands in exactly one CLASS_* list, and `make help` prints the
 # lists as its sections. A target in none prints under UNCLASSIFIED.
-CLASS_developer := db be fe be-check be-integration data data-check fe-check check e2e up down logs db-shell db-migrate stats hide help
+CLASS_developer := db be fe be-check be-integration data data-check data-review fe-check check e2e up down logs db-shell db-migrate stats hide help
 CLASS_production := prod-deploy prod-down prod-logs prod-migrate prod-stats prod-hide prod-release
 
 HELP_WIDTH ?= 96
