@@ -55,26 +55,16 @@ type missed struct {
 	ChosenOption  *int    `json:"chosenOption"`
 }
 
-type fact struct {
-	Name          names   `json:"name"`
-	Flag          string  `json:"flag"`
-	Capital       names   `json:"capital"`
-	Region        names   `json:"region"`
-	Languages     []names `json:"languages"`
-	Currencies    []names `json:"currencies"`
-	ChosenCountry *names  `json:"chosenCountry"`
-	SpokenIn      []names `json:"spokenIn"`
-}
-
 type result struct {
-	Score      int     `json:"score"`
-	Level      int     `json:"level"`
-	EndReason  string  `json:"endReason"`
-	Last       *missed `json:"last"`
-	Fact       *fact   `json:"fact"`
-	QuizRank   int     `json:"quizRank"`
-	GlobalRank *int    `json:"globalRank"`
-	Best       best    `json:"best"`
+	Score     int     `json:"score"`
+	Level     int     `json:"level"`
+	EndReason string  `json:"endReason"`
+	Last      *missed `json:"last"`
+	// Fact is pinned by the goldens; the strict decoder only needs to accept it.
+	Fact       json.RawMessage `json:"fact"`
+	QuizRank   int             `json:"quizRank"`
+	GlobalRank *int            `json:"globalRank"`
+	Best       best            `json:"best"`
 }
 
 type best struct {
