@@ -3,7 +3,7 @@ import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { meKey, meQuery, startRun } from "@/features/play/api";
+import { meKey, meQuery, startRun, type Me } from "@/features/play/api";
 import { messages, playError } from "@/features/play/messages";
 import { ApiError, useApiClient } from "@/lib/api";
 import { useLocale, type Locale } from "@/lib/i18n/locale";
@@ -33,7 +33,12 @@ export function NameForm({
   const start = useMutation({
     mutationFn: (body: { name: string; quizId?: string }) =>
       startRun(api, body),
-    onSuccess: async ({ runId }) => {
+    onSuccess: async ({ runId }, { name: started }) => {
+      // The cached name stands in until the refetch, so the home page never shows the previous one.
+      queryClient.setQueryData<Me>(
+        meKey,
+        (old) => old && { ...old, lastName: started },
+      );
       void queryClient.invalidateQueries({
         queryKey: meKey,
         refetchType: "none",
