@@ -623,11 +623,12 @@ func TestMe(t *testing.T) {
 	}
 
 	other := playScore(t, newClient(t, srv), map[string]any{"name": "other"}, 0)
-	playScore(t, c, map[string]any{"name": "guest", "quizId": other.QuizID}, 0)
+	playScore(t, c, map[string]any{"name": "guest", "quizId": other.QuizID}, 2)
 	got = decode[me](t, c.get("/api/me"), http.StatusOK)
-	if got.LastName == nil || *got.LastName != "guest" || got.Best == nil || *got.Best != 1 ||
-		got.WorldBest == nil || *got.WorldBest != 1 || got.LastQuizID == nil || *got.LastQuizID != other.QuizID {
-		t.Fatalf("/api/me after a challenge run = %+v, want its name and quiz and the creator run's best", got)
+	if got.LastName == nil || *got.LastName != "guest" || got.Best == nil || *got.Best != 2 ||
+		got.WorldRank == nil || got.WorldBest == nil || *got.WorldBest != 1 ||
+		got.LastQuizID == nil || *got.LastQuizID != other.QuizID {
+		t.Fatalf("/api/me after a better challenge run = %+v, want its name, quiz and best 2, and world best 1", got)
 	}
 }
 
