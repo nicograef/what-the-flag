@@ -59,6 +59,23 @@ func TestService(t *testing.T) {
 		}
 	}
 
+	t.Run("A position another run stored after the first read is served as stored", func(t *testing.T) {
+		s, mem, _ := setup()
+		id, quizID, err := s.Start(ctx, nico, "Nico", nil)
+		if err != nil {
+			t.Fatalf("Start: %v", err)
+		}
+		stored := Question{Type: Types[0], Target: "DE", Options: [4]string{"DE", "FR", "IT", "ES"}}
+		mem.questions[quizID][0] = stored
+		u := racedUnit{&memoryUnit{m: mem, run: cloneRun(mem.runs[id])}}
+		if err := s.serveNext(u, u.run, t0); err != nil {
+			t.Fatalf("serveNext: %v", err)
+		}
+		if a := u.run.open(); a == nil || a.Position != 0 || mem.questions[quizID][0] != stored {
+			t.Fatalf("open answer %+v, stored %+v; want position 0 served as %+v", a, mem.questions[quizID][0], stored)
+		}
+	})
+
 	t.Run("Start without a quiz creates one with a creator run", func(t *testing.T) {
 		s, mem, _ := setup()
 		runID, quizID, err := s.Start(ctx, nico, "  Nico  ", nil)
@@ -192,3 +209,8 @@ func TestService(t *testing.T) {
 		}
 	})
 }
+
+// racedUnit misses every question on the first read, as when another run stores it between serveNext's reads.
+type racedUnit struct{ *memoryUnit }
+
+func (racedUnit) Question(int) (Question, bool, error) { return Question{}, false, nil }

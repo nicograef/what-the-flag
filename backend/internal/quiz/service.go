@@ -214,7 +214,8 @@ func (s *Service) Global(ctx context.Context, own *PlayerID) ([]Entry, error) {
 }
 
 // serveNext serves the stored question at the run's next position, generating and storing it first if needed.
-// A quiz without an unused country completes the run.
+// A quiz without an unused country completes the run. Another run of the quiz may store the position between
+// the two reads; that question is then served as stored.
 func (s *Service) serveNext(uow UnitOfWork, r *Run, now time.Time) error {
 	position := r.Score
 	_, ok, err := uow.Question(position)
@@ -226,19 +227,21 @@ func (s *Service) serveNext(uow UnitOfWork, r *Run, now time.Time) error {
 		if err != nil {
 			return fmt.Errorf("read questions: %w", err)
 		}
-		if len(stored) != position {
+		if len(stored) < position {
 			return fmt.Errorf("quiz stores %d questions before position %d", len(stored), position)
 		}
-		q, err := Generate(s.cat, stored, s.rnd)
-		if errors.Is(err, errQuizExhausted) {
-			r.Complete(now)
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-		if err := uow.AddQuestion(position, q); err != nil {
-			return fmt.Errorf("add question: %w", err)
+		if len(stored) == position {
+			q, err := Generate(s.cat, stored, s.rnd)
+			if errors.Is(err, errQuizExhausted) {
+				r.Complete(now)
+				return nil
+			}
+			if err != nil {
+				return err
+			}
+			if err := uow.AddQuestion(position, q); err != nil {
+				return fmt.Errorf("add question: %w", err)
+			}
 		}
 	}
 	return r.Serve(position, now)
