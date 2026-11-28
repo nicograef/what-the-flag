@@ -62,8 +62,9 @@ be-check: data-check ## Backend: Go gate (modules, generated code, format, vet, 
 
 .PHONY: be-integration
 
-be-integration: ## Backend: integration tests against the `make db` database
-	cd $(BACKEND_DIR) && go test -tags=integration -race ./...
+# TEST_ARGS narrows the run, e.g. `make be-integration TEST_ARGS='-count=1 -v -run=TestMe'`.
+be-integration: ## Backend: integration tests against the `make db` database (TEST_ARGS passes go test flags)
+	cd $(BACKEND_DIR) && go test -tags=integration -race $(TEST_ARGS) ./...
 
 .PHONY: data data-check
 
