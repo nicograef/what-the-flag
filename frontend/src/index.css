@@ -79,11 +79,20 @@
   --animate-fade-in: fade-in 300ms ease-out;
   --animate-shake: shake 320ms ease-in-out;
   --animate-pop: pop 700ms ease-out;
+  --animate-hold-fill: hold-fill 400ms linear forwards;
 
   @keyframes enter {
     from {
       opacity: 0;
       transform: translateY(0.5rem);
+    }
+  }
+  @keyframes hold-fill {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
     }
   }
   @keyframes fade-in {

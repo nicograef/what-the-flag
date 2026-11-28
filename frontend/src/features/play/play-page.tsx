@@ -84,7 +84,8 @@ function RunError({
 function Run({ runId }: { runId: string }): ReactNode {
   const t = useMessages(messages);
   const { locale } = useLocale();
-  const { query, reveal, busy, answerError, answer } = useRun(runId);
+  const { query, reveal, busy, answerError, answer, expire, holdChange } =
+    useRun(runId);
 
   if (query.isPending) return <RunLoading />;
   // A failed refetch keeps the last state, so the run stays playable under the error.
@@ -134,7 +135,7 @@ function Run({ runId }: { runId: string }): ReactNode {
         serverNow={state.serverNow}
         receivedAt={receivedAt}
         paused={busy}
-        onExpire={() => answer(null)}
+        onExpire={expire}
       />
       <QuestionCard
         key={`question-${question.position}`}
@@ -147,6 +148,7 @@ function Run({ runId }: { runId: string }): ReactNode {
         status={status}
         disabled={busy}
         onAnswer={answer}
+        onHoldChange={holdChange}
       />
       {answerError && (
         <p role="alert" className="mt-3 text-sm text-danger">

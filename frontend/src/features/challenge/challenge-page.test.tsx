@@ -78,7 +78,7 @@ it("starts a run on this quiz from the name form", async () => {
   const { user } = renderRoute(`/q/${quizId}`, { api });
 
   await user.type(await screen.findByLabelText("Dein Name"), "Bea");
-  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+  await user.click(screen.getByRole("button", { name: "Annehmen" }));
 
   expect(
     await screen.findByRole("heading", {
@@ -99,7 +99,7 @@ it("shows quiz_in_progress when the start is refused", async () => {
   const { user } = renderRoute(`/q/${quizId}`, { api });
 
   await user.type(await screen.findByLabelText("Dein Name"), "Bea");
-  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+  await user.click(screen.getByRole("button", { name: "Annehmen" }));
 
   expect(await screen.findByRole("alert")).toHaveTextContent(
     "Das Quiz läuft noch. Du kannst spielen, sobald die erste Runde vorbei ist.",

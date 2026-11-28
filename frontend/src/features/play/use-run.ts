@@ -4,7 +4,13 @@ import {
   useQuery,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   answerQuestion,
   getRun,
@@ -43,7 +49,12 @@ interface UseRun {
   /** True while an answer is in flight or its outcome shows; the question takes no answer meanwhile. */
   busy: boolean;
   answerError: Error | null;
-  answer: (option: number | null) => void;
+  /** Answers the current question; only the first answer per position goes out. */
+  answer: (option: number) => void;
+  /** The clock reached 0: answers nothing, unless a hold runs, which then decides. */
+  expire: () => void;
+  /** A hold on an option started or ended. */
+  holdChange: (holding: boolean) => void;
 }
 
 export function useRun(runId: string): UseRun {
@@ -51,12 +62,21 @@ export function useRun(runId: string): UseRun {
   const [reveal, setReveal] = useState<Outcome | null>(null);
   const query = useQuery(runQueryOptions(api, runId, reveal === null));
   const { refetch } = query;
+  /** The position an answer went out for: a hold, a click, a key and the expiry share it. */
+  const latch = useRef<number | null>(null);
+  const holding = useRef(false);
+  /** The clock reached 0 during a hold; a hold that ends without a commit then sends the timeout. */
+  const expiredInHold = useRef(false);
   const mutation = useMutation({
     mutationFn: (body: { position: number; option: number | null }) =>
       answerQuestion(api, runId, body),
     onSuccess: setReveal,
-    // A 409 means another tab answered first; the fresh state shows what happened.
-    onError: () => void refetch(),
+    onError: (_err, { position }) => {
+      // The answer did not count, so the question takes another one.
+      if (latch.current === position) latch.current = null;
+      // A 409 means another tab answered first; the fresh state shows what happened.
+      void refetch();
+    },
   });
 
   useEffect(() => {
@@ -69,14 +89,38 @@ export function useRun(runId: string): UseRun {
   }, [reveal, refetch]);
 
   const question = query.data?.state.question;
+  const position = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    position.current = question?.position ?? null;
+  });
   const busy = reveal !== null || mutation.isPending;
   const { mutate } = mutation;
-  const answer = useCallback(
+
+  const send = useCallback(
     (option: number | null) => {
-      if (!question || busy) return;
-      mutate({ position: question.position, option });
+      const at = position.current;
+      if (at === null || latch.current === at) return;
+      latch.current = at;
+      expiredInHold.current = false;
+      mutate({ position: at, option });
     },
-    [question, busy, mutate],
+    [mutate],
+  );
+
+  const expire = useCallback(() => {
+    if (holding.current) {
+      expiredInHold.current = true;
+      return;
+    }
+    send(null);
+  }, [send]);
+
+  const holdChange = useCallback(
+    (active: boolean) => {
+      holding.current = active;
+      if (!active && expiredInHold.current) send(null);
+    },
+    [send],
   );
 
   return {
@@ -88,6 +132,8 @@ export function useRun(runId: string): UseRun {
       mutation.variables?.position === question?.position
         ? mutation.error
         : null,
-    answer,
+    answer: send,
+    expire,
+    holdChange,
   };
 }

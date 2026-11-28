@@ -10,8 +10,11 @@ export const messages = defineMessages<{
   rules: Record<"time" | "miss" | "harder", string>;
   nameLabel: string;
   namePublic: string;
+  holdToStart: string;
   start: string;
-  starting: string;
+  holdToAccept: string;
+  accept: string;
+  answerHow: string;
   loading: string;
   retry: string;
   score: (score: number) => string;
@@ -65,8 +68,11 @@ export const messages = defineMessages<{
     },
     nameLabel: "Dein Name",
     namePublic: "Dein Name erscheint öffentlich in den Ranglisten.",
-    start: "Los geht's",
-    starting: "Wird gestartet …",
+    holdToStart: "Halten zum Starten",
+    start: "Starten",
+    holdToAccept: "Halten zum Annehmen",
+    accept: "Annehmen",
+    answerHow: "Auf dem Touchscreen halten, sonst klicken oder Enter drücken.",
     loading: "Wird geladen …",
     retry: "Erneut versuchen",
     score: (score) => `Punkte: ${score}`,
@@ -151,8 +157,11 @@ export const messages = defineMessages<{
     },
     nameLabel: "Your name",
     namePublic: "Your name appears publicly on the leaderboards.",
-    start: "Let's go",
-    starting: "Starting …",
+    holdToStart: "Hold to start",
+    start: "Start",
+    holdToAccept: "Hold to accept",
+    accept: "Accept",
+    answerHow: "Hold on a touch screen; otherwise click or press Enter.",
     loading: "Loading …",
     retry: "Try again",
     score: (score) => `Score: ${score}`,

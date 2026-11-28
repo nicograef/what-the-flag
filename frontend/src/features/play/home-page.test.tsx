@@ -37,7 +37,7 @@ it("starts a run and plays it", async () => {
   const { user } = renderRoute("/", { api });
 
   await user.type(screen.getByLabelText("Dein Name"), "Bea");
-  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+  await user.click(screen.getByRole("button", { name: "Starten" }));
 
   expect(
     await screen.findByRole("heading", {
@@ -58,7 +58,7 @@ it("starts a run while /api/me fails", async () => {
   const { user } = renderRoute("/", { api });
 
   await user.type(screen.getByLabelText("Dein Name"), "Bea");
-  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+  await user.click(screen.getByRole("button", { name: "Starten" }));
 
   expect(
     await screen.findByRole("heading", {
@@ -88,7 +88,7 @@ it.each([
   const input = screen.getByLabelText("Dein Name");
 
   await user.type(input, "Bea");
-  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+  await user.click(screen.getByRole("button", { name: "Starten" }));
 
   expect(await screen.findByRole("alert")).toHaveTextContent(text);
   expect(input).toHaveAttribute("aria-invalid", invalid);

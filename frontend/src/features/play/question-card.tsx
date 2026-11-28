@@ -1,10 +1,14 @@
 import { Check, X } from "lucide-react";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { cn } from "cn";
-import type { Item, Question } from "@/features/play/api";
+import { AnswerOption, type Mark } from "@/features/play/answer-option";
+import type { Question } from "@/features/play/api";
+import { ItemView } from "@/features/play/item-view";
 import { messages } from "@/features/play/messages";
-import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
+
+/** How long after a question renders its options ignore activation. */
+export const armingMs = 400;
 
 /** The revealed options: the correct one and the player's pick, null for no pick. */
 interface Marks {
@@ -17,73 +21,41 @@ export interface Status {
   tone: "success" | "danger";
 }
 
-/** A flag as an image sized by `width`/`height` and `className`, any other item as its label. */
-export function ItemView({
-  item,
-  alt,
-  width,
-  height,
-  className,
-}: {
-  item: Item;
-  alt: string;
-  width: number;
-  height: number;
-  className?: string;
-}): ReactNode {
-  const { locale } = useLocale();
-  if (item.kind === "flag") {
-    return (
-      <img
-        src={`/flags/${item.flagKey}.svg`}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
-      />
-    );
-  }
-  return <span>{item.text[locale]}</span>;
+function markOf(marks: Marks | null, i: number): Mark {
+  if (!marks) return null;
+  if (marks.correct === i) return "correct";
+  if (marks.chosen === i) return "chosen";
+  return "dimmed";
 }
 
-function MarkBadge({ tone }: { tone: Status["tone"] }): ReactNode {
-  const Icon = tone === "success" ? Check : X;
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        "absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full ring-2 ring-background",
-        tone === "success"
-          ? "bg-success text-success-ink"
-          : "bg-danger text-danger-ink",
-      )}
-    >
-      <Icon className="size-4" />
-    </span>
-  );
-}
-
+/** A question; mount it per position, so each one arms afresh. */
 export function QuestionCard({
   question,
   marks,
   status,
   disabled,
   onAnswer,
+  onHoldChange,
 }: {
   question: Pick<Question, "type" | "prompt" | "options">;
   marks: Marks | null;
   status: Status | null;
   disabled: boolean;
   onAnswer: (option: number) => void;
+  onHoldChange: (holding: boolean) => void;
 }): ReactNode {
   const t = useMessages(messages);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const howId = useId();
+  const [armed, setArmed] = useState(false);
   const flagOptions = question.options[0].kind === "flag";
   const StatusIcon = status?.tone === "success" ? Check : X;
 
   // A new question takes focus, so a screen reader reads it and Tab reaches its options.
   useEffect(() => {
     headingRef.current?.focus();
+    const timer = setTimeout(() => setArmed(true), armingMs);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -136,57 +108,29 @@ export function QuestionCard({
           </p>
         </div>
       </div>
+      <p id={howId} className="sr-only">
+        {t.answerHow}
+      </p>
       <ol
         className={cn(
-          "grid gap-2",
+          "grid gap-3",
           flagOptions ? "grid-cols-2" : "grid-cols-1",
         )}
       >
-        {question.options.map((option, i) => {
-          const correct = marks?.correct === i;
-          const chosenWrong = !correct && marks?.chosen === i;
-          return (
-            <li key={i}>
-              <button
-                type="button"
-                disabled={disabled}
-                onClick={() => onAnswer(i)}
-                className={cn(
-                  "relative flex w-full touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-border bg-surface px-4 text-base font-semibold shadow-xs select-none",
-                  "transition-[transform,background-color,border-color,opacity] duration-150 motion-reduce:transition-none",
-                  "enabled:hover:bg-surface-2 enabled:active:bg-surface-2 motion-safe:active:scale-[0.98]",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                  "disabled:cursor-default",
-                  flagOptions ? "h-24 p-2" : "min-h-13",
-                  correct && "border-success bg-success/10",
-                  chosenWrong &&
-                    "border-danger bg-danger/10 motion-safe:animate-shake",
-                  marks && !correct && !chosenWrong && "opacity-50",
-                )}
-              >
-                <ItemView
-                  item={option}
-                  alt={t.flagOption(i + 1)}
-                  width={160}
-                  height={120}
-                  className="h-auto max-h-full w-auto max-w-full rounded-sm object-contain ring-1 ring-foreground/10"
-                />
-                {correct && (
-                  <>
-                    <MarkBadge tone="success" />
-                    <span className="sr-only">, {t.correctAnswer}</span>
-                  </>
-                )}
-                {chosenWrong && (
-                  <>
-                    <MarkBadge tone="danger" />
-                    <span className="sr-only">, {t.yourAnswer}</span>
-                  </>
-                )}
-              </button>
-            </li>
-          );
-        })}
+        {question.options.map((option, i) => (
+          <li key={i}>
+            <AnswerOption
+              item={option}
+              index={i}
+              armed={armed}
+              answerable={!disabled}
+              mark={markOf(marks, i)}
+              describedBy={howId}
+              onAnswer={onAnswer}
+              onHoldChange={onHoldChange}
+            />
+          </li>
+        ))}
       </ol>
     </div>
   );

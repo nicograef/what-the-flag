@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
+import { HoldButton } from "@/components/ui/hold-button";
 import { Input } from "@/components/ui/input";
 import { meKey, meQuery, startRun, type Me } from "@/features/play/api";
 import { messages, playError } from "@/features/play/messages";
@@ -82,9 +82,13 @@ export function NameForm({
           {errorText(start.error, locale)}
         </p>
       )}
-      <Button type="submit" disabled={start.isPending} className="mt-2 w-full">
-        {start.isPending ? t.starting : t.start}
-      </Button>
+      <HoldButton
+        label={quizId ? t.accept : t.start}
+        holdLabel={quizId ? t.holdToAccept : t.holdToStart}
+        guarded={start.isPending}
+        className="mt-2 w-full"
+        onCommit={(button) => button.form?.requestSubmit()}
+      />
     </form>
   );
 }

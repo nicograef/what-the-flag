@@ -1,7 +1,12 @@
-import { screen, waitFor } from "@testing-library/react";
-import { afterEach, expect, it, vi } from "vitest";
-import { fakeRun, sampleQuestions } from "@/features/play/fake-run";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  fakeRun,
+  sampleQuestions,
+  unknownPlayer,
+} from "@/features/play/fake-run";
 import { FakeApi } from "@/test/fake-api";
+import { answer } from "@/test/answer";
 import { renderRoute } from "@/test/render";
 
 afterEach(() => {
@@ -44,12 +49,12 @@ async function startPlaying(
 it("reveals a correct answer, then shows the next question", async () => {
   const { api, user } = await startPlaying();
 
-  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+  await answer(user, "Deutschland");
 
   expect(await screen.findByText("Richtig!")).toBeInTheDocument();
   expect(
     screen.getByRole("button", { name: /^Deutschland\s*, richtige Antwort$/ }),
-  ).toBeDisabled();
+  ).toHaveAttribute("aria-disabled", "true");
   expect(
     await screen.findByRole(
       "heading",
@@ -67,7 +72,7 @@ it("keeps the question under a failed refetch and retries it", async () => {
   const { api, ids, user } = await startPlaying();
   api.fail(`GET /api/runs/${ids.runId}`, 503, "database_unavailable");
 
-  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+  await answer(user, "Deutschland");
 
   expect(await screen.findByRole("alert", {}, slow)).toHaveTextContent(
     "Die Datenbank ist gerade nicht erreichbar.",
@@ -77,7 +82,7 @@ it("keeps the question under a failed refetch and retries it", async () => {
   ).toBeInTheDocument();
   const reads = api.calls.length;
 
-  await user.click(screen.getByRole("button", { name: "Erneut versuchen" }));
+  await answer(user, "Erneut versuchen");
 
   await waitFor(() => {
     expect(api.calls.slice(reads).map((c) => c.route)).toContain(
@@ -96,7 +101,7 @@ it("drops a not-current-question error once the next question shows", async () =
   });
   api.fail(`POST ${answersRoute}`, 409, "not_current_question");
 
-  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+  await answer(user, "Deutschland");
 
   await screen.findByRole("heading", {
     name: "Was ist die Hauptstadt dieses Landes?",
@@ -107,15 +112,15 @@ it("drops a not-current-question error once the next question shows", async () =
 it("shows the missed question and both ranks after a wrong answer", async () => {
   const { ids, user } = await startPlaying({ quizRank: 3, globalRank: 12 });
 
-  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+  await answer(user, "Frankreich");
 
   expect(await screen.findByText("Leider falsch.")).toBeInTheDocument();
   expect(
     screen.getByRole("button", { name: /^Deutschland\s*, richtige Antwort$/ }),
-  ).toBeDisabled();
+  ).toHaveAttribute("aria-disabled", "true");
   expect(
     screen.getByRole("button", { name: /^Frankreich\s*, deine Antwort$/ }),
-  ).toBeDisabled();
+  ).toHaveAttribute("aria-disabled", "true");
   expect(
     await screen.findByRole("heading", { name: "Spiel vorbei" }, slow),
   ).toHaveFocus();
@@ -146,7 +151,7 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
 it("names a correct pick within the minimum answer time as too fast", async () => {
   const { user } = await startPlaying({ tooFast: true });
 
-  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+  await answer(user, "Deutschland");
 
   expect(
     await screen.findByText(
@@ -194,13 +199,13 @@ it("announces a new record from the server", async () => {
     best: { score: 4, isNew: true, previous: 3 },
   });
 
-  await user.click(screen.getByRole("button", { name: "Deutschland" }));
+  await answer(user, "Deutschland");
   await screen.findByRole(
     "heading",
     { name: "Was ist die Hauptstadt dieses Landes?" },
     slow,
   );
-  await user.click(screen.getByRole("button", { name: "Kyoto" }));
+  await answer(user, "Kyoto");
 
   expect(
     await screen.findByText("Neue Bestleistung!", {}, slow),
@@ -210,7 +215,7 @@ it("announces a new record from the server", async () => {
 
 it("plays again under the same name on a fresh quiz", async () => {
   const { api, user } = await startPlaying({ name: "Bea" });
-  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+  await answer(user, "Frankreich");
 
   await user.click(
     await screen.findByRole("button", { name: "Nochmal spielen" }, slow),
@@ -237,7 +242,7 @@ it("shares the challenge link through the share sheet", async () => {
   });
   try {
     const { ids, user } = await startPlaying();
-    await user.click(screen.getByRole("button", { name: "Frankreich" }));
+    await answer(user, "Frankreich");
 
     await user.click(
       await screen.findByRole("button", { name: "Teilen" }, slow),
@@ -255,7 +260,7 @@ it("shares the challenge link through the share sheet", async () => {
 it("copies the challenge link without a share sheet", async () => {
   const { ids, user } = await startPlaying();
   const write = vi.spyOn(navigator.clipboard, "writeText");
-  await user.click(screen.getByRole("button", { name: "Frankreich" }));
+  await answer(user, "Frankreich");
 
   await user.click(await screen.findByRole("button", { name: "Teilen" }, slow));
 
@@ -263,4 +268,195 @@ it("copies the challenge link without a share sheet", async () => {
     `Ich habe bei What The Flag 0 Fragen in Folge richtig beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
   );
   expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
+});
+
+/** Moves the fake timers by `ms` and lets React render what they set off. */
+async function advance(ms: number): Promise<void> {
+  await act(() => vi.advanceTimersByTimeAsync(ms));
+}
+
+const touch = { pointerType: "touch", clientX: 50, clientY: 20 };
+
+/** The option named `name` once arming has ended. */
+async function armed(name: string): Promise<HTMLElement> {
+  const option = screen.getByRole("button", { name });
+  await advance(400);
+  expect(option).not.toHaveAttribute("aria-disabled");
+  return option;
+}
+
+describe("hold to answer", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("a 400 ms touch hold answers", async () => {
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+
+    fireEvent.pointerDown(option, touch);
+    await advance(300);
+    expect(answers(api)).toEqual([]);
+    await advance(100);
+    fireEvent.pointerUp(option, touch);
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+    });
+  });
+
+  it("a touch release at 300 ms answers nothing", async () => {
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+
+    fireEvent.pointerDown(option, touch);
+    await advance(300);
+    fireEvent.pointerUp(option, touch);
+    fireEvent.click(option);
+    await advance(1000);
+    expect(answers(api)).toEqual([]);
+
+    fireEvent.pointerDown(option, touch);
+    await advance(400);
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+    });
+  });
+
+  it("a touch slide off the option answers nothing", async () => {
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+    vi.spyOn(option, "getBoundingClientRect").mockReturnValue(
+      DOMRect.fromRect({ x: 0, y: 0, width: 300, height: 64 }),
+    );
+
+    fireEvent.pointerDown(option, touch);
+    fireEvent.pointerMove(option, { ...touch, clientY: 70 });
+    await advance(100);
+    fireEvent.pointerMove(option, { ...touch, clientY: 90 });
+    await advance(1000);
+    fireEvent.pointerUp(option, { ...touch, clientY: 90 });
+    expect(answers(api)).toEqual([]);
+
+    fireEvent.pointerDown(option, touch);
+    await advance(400);
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+    });
+  });
+
+  it("a touch hold started at 14.8 s answers when the clock reaches 0", async () => {
+    const setNow = clock();
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+
+    setNow(14_800);
+    await advance(100);
+    fireEvent.pointerDown(option, touch);
+    await advance(100);
+    setNow(15_000);
+    await advance(200);
+    expect(screen.getByText("0 s")).toBeInTheDocument();
+    expect(answers(api)).toEqual([]);
+    await advance(100);
+
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+    });
+  });
+
+  it("a hold and the expiry together send one answer", async () => {
+    const setNow = clock();
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+
+    setNow(14_600);
+    await advance(100);
+    fireEvent.pointerDown(option, touch);
+    setNow(15_000);
+    await advance(400);
+    await advance(1000);
+
+    expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+  });
+
+  it("a click without a preceding pointer down answers at once", async () => {
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+
+    fireEvent.click(option);
+
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
+    });
+  });
+
+  it("options ignore activation during arming and stay reachable by Tab", async () => {
+    const { api, user } = await startPlaying();
+    const option = screen.getByRole("button", { name: "Frankreich" });
+
+    expect(option).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(option);
+    await user.tab();
+    expect(option).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(answers(api)).toEqual([]);
+
+    await advance(400);
+    await user.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: 0 }]);
+    });
+  });
+
+  it("a touch tap on the start button starts nothing", async () => {
+    const api = new FakeApi().respond("GET /api/me", unknownPlayer);
+    fakeRun(api, sampleQuestions);
+    const { user } = renderRoute("/", { api });
+    await user.type(screen.getByLabelText("Dein Name"), "Bea");
+    const start = screen.getByRole("button", { name: "Starten" });
+    const starts = (): number =>
+      api.calls.filter((c) => c.route === "POST /api/runs").length;
+
+    fireEvent.pointerDown(start, touch);
+    await advance(100);
+    fireEvent.pointerUp(start, touch);
+    fireEvent.click(start);
+    await advance(1000);
+    expect(starts()).toBe(0);
+
+    fireEvent.pointerDown(start, touch);
+    await advance(400);
+    await waitFor(() => {
+      expect(starts()).toBe(1);
+    });
+  });
+});
+
+it("sends the timeout when a hold that outlived the clock is released", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    const setNow = clock();
+    const { api } = await startPlaying();
+    const option = await armed("Deutschland");
+
+    setNow(14_900);
+    await advance(100);
+    fireEvent.pointerDown(option, touch);
+    setNow(15_000);
+    await advance(200);
+    expect(answers(api)).toEqual([]);
+    fireEvent.pointerUp(option, touch);
+
+    await waitFor(() => {
+      expect(answers(api)).toEqual([{ position: 0, option: null }]);
+    });
+  } finally {
+    vi.useRealTimers();
+  }
 });

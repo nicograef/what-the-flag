@@ -13,7 +13,7 @@ import {
   type RunState,
 } from "@/features/play/api";
 import { messages, playError } from "@/features/play/messages";
-import { ItemView } from "@/features/play/question-card";
+import { ItemView } from "@/features/play/item-view";
 import { ShareButton } from "@/features/play/share-button";
 import { useApiClient } from "@/lib/api";
 import { useLocale } from "@/lib/i18n/locale";
@@ -247,10 +247,10 @@ export function RunResult({
           />
           <Button
             className="w-full"
-            disabled={again.isPending}
+            guarded={again.isPending}
             onClick={() => again.mutate()}
           >
-            {again.isPending ? t.starting : t.playAgain}
+            {t.playAgain}
           </Button>
         </div>
       </div>
