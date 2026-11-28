@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ownRunState } from "@/features/leaderboard/own-run";
 import {
   isTooFast,
   startRun,
@@ -207,22 +206,14 @@ export function RunResult({
       </ul>
       {result.last && <MissedQuestion last={result.last} />}
       <Card className="gap-0 divide-y divide-border py-0">
-        <Link
-          to={`/q/${run.quizId}`}
-          state={ownRunState(run.id)}
-          className={rankingLinkClass}
-        >
+        <Link to={`/q/${run.quizId}`} className={rankingLinkClass}>
           <span>{t.quizRanking}</span>
           <ChevronRight
             aria-hidden="true"
             className="size-4 text-muted-foreground"
           />
         </Link>
-        <Link
-          to="/leaderboard"
-          state={ownRunState(run.id)}
-          className={rankingLinkClass}
-        >
+        <Link to="/leaderboard" className={rankingLinkClass}>
           <span>{t.globalRanking}</span>
           <ChevronRight
             aria-hidden="true"

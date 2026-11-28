@@ -153,20 +153,6 @@ it("names a correct pick within the minimum answer time as too fast", async () =
   ).toBeInTheDocument();
 });
 
-it("names the run to the global ranking through router state", async () => {
-  const { api, ids, user } = await startPlaying();
-  api.respond(`GET /api/leaderboard?run=${ids.runId}`, {
-    top: [{ rank: 1, name: "Ada", score: 0, own: true }],
-  });
-  await user.click(screen.getByRole("button", { name: "Frankreich" }));
-
-  await user.click(
-    await screen.findByRole("link", { name: "Globale Rangliste" }, slow),
-  );
-
-  expect(await screen.findByText("(du)")).toBeInTheDocument();
-});
-
 it("answers nothing when the time runs out", async () => {
   const setNow = clock();
   const { api } = await startPlaying();

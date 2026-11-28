@@ -12,7 +12,6 @@ import {
   messages,
   startError,
 } from "@/features/challenge/messages";
-import { useOwnRun } from "@/features/leaderboard/own-run";
 import { RankingTable } from "@/features/leaderboard/ranking-table";
 import { NameForm } from "@/features/play/name-form";
 import { RuleChips } from "@/features/play/rule-chips";
@@ -64,10 +63,9 @@ export function ChallengePage(): ReactNode {
   const { locale } = useLocale();
   const api = useApiClient();
   const quizId = useParams().quizId ?? "";
-  const run = useOwnRun();
   const query = useQuery({
-    queryKey: ["quiz", quizId, run],
-    queryFn: () => getChallenge(api, quizId, run),
+    queryKey: ["quiz", quizId],
+    queryFn: () => getChallenge(api, quizId),
     refetchInterval: (q) =>
       q.state.data?.creator && !q.state.data.creator.ended ? 5000 : false,
   });

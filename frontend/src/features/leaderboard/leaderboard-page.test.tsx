@@ -1,10 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { ownRunState } from "@/features/leaderboard/own-run";
 import { FakeApi } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
-
-const ownRun = "00000000-0000-4000-8000-0000000000bb";
 
 async function rows(): Promise<HTMLElement[]> {
   const table = await screen.findByRole("table", { name: "Rangliste" });
@@ -31,15 +28,15 @@ it("shows the global list", async () => {
   expect(shown.some((r) => r.hasAttribute("aria-current"))).toBe(false);
 });
 
-it("highlights the own row named by the router state", async () => {
-  const api = new FakeApi().respond(`GET /api/leaderboard?run=${ownRun}`, {
+it("highlights the own row the server marks", async () => {
+  const api = new FakeApi().respond("GET /api/leaderboard", {
     top: [
       { rank: 1, name: "Ada", score: 12 },
       { rank: 2, name: "Bea", score: 9, own: true },
     ],
   });
 
-  renderRoute("/leaderboard", { api, state: ownRunState(ownRun) });
+  renderRoute("/leaderboard", { api });
 
   const shown = await rows();
   expect(shown.map((r) => r.getAttribute("aria-current"))).toEqual([

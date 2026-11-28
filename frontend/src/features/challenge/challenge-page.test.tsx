@@ -1,12 +1,10 @@
 import { screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { ownRunState } from "@/features/leaderboard/own-run";
 import { fakeRun, sampleQuestions } from "@/features/play/fake-run";
 import { FakeApi, type Json } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
 
 const quizId = "00000000-0000-4000-8000-0000000000aa";
-const ownRun = "00000000-0000-4000-8000-0000000000bb";
 
 function challenge(creator: Json, top: Json[] = []): Json {
   return { id: quizId, creator, top };
@@ -14,12 +12,12 @@ function challenge(creator: Json, top: Json[] = []): Json {
 
 it.each([
   {
-    creator: { name: "Ada", score: 7, ended: true },
+    creator: { name: "Ada", score: 7, ended: true, own: false },
     text: "Ada hat 7 Fragen richtig beantwortet. Schaffst du mehr?",
     form: true,
   },
   {
-    creator: { name: "Ada", score: 2, ended: false },
+    creator: { name: "Ada", score: 2, ended: false, own: false },
     text: "Ada spielt noch.",
     form: false,
   },
@@ -37,15 +35,15 @@ it.each([
 
 it("highlights the requester's own row in the quiz ranking", async () => {
   const api = new FakeApi().respond(
-    `GET /api/quizzes/${quizId}?run=${ownRun}`,
-    challenge({ name: "Ada", score: 3, ended: true }, [
+    `GET /api/quizzes/${quizId}`,
+    challenge({ name: "Ada", score: 3, ended: true, own: false }, [
       { rank: 1, name: "Ada", score: 3 },
       { rank: 2, name: "Bea", score: 1, own: true },
       { rank: 2, name: "Cem", score: 1 },
     ]),
   );
 
-  renderRoute(`/q/${quizId}`, { api, state: ownRunState(ownRun) });
+  renderRoute(`/q/${quizId}`, { api });
 
   const table = await screen.findByRole("table", {
     name: "Rangliste dieses Quiz",
@@ -66,7 +64,7 @@ it("highlights the requester's own row in the quiz ranking", async () => {
 it("starts a run on this quiz from the name form", async () => {
   const api = new FakeApi().respond(
     `GET /api/quizzes/${quizId}`,
-    challenge({ name: "Ada", score: 3, ended: true }),
+    challenge({ name: "Ada", score: 3, ended: true, own: false }),
   );
   fakeRun(api, sampleQuestions);
   const { user } = renderRoute(`/q/${quizId}`, { api });
@@ -87,7 +85,7 @@ it("shows quiz_in_progress when the start is refused", async () => {
   const api = new FakeApi()
     .respond(
       `GET /api/quizzes/${quizId}`,
-      challenge({ name: "Ada", score: 3, ended: true }),
+      challenge({ name: "Ada", score: 3, ended: true, own: false }),
     )
     .fail("POST /api/runs", 409, "quiz_in_progress");
   const { user } = renderRoute(`/q/${quizId}`, { api });

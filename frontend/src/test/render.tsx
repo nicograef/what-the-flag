@@ -11,11 +11,7 @@ import type { FakeApi } from "@/test/fake-api";
 
 export function renderRoute(
   path: string,
-  {
-    api,
-    locale = "de",
-    state,
-  }: { api: FakeApi; locale?: Locale; state?: unknown },
+  { api, locale = "de" }: { api: FakeApi; locale?: Locale },
 ): RenderResult & { user: UserEvent } {
   setLocale(locale);
   const queryClient = createQueryClient();
@@ -24,9 +20,7 @@ export function renderRoute(
     ...queryClient.getDefaultOptions(),
     queries: { ...queryClient.getDefaultOptions().queries, retryDelay: 0 },
   });
-  const router = createMemoryRouter(routes, {
-    initialEntries: [state === undefined ? path : { pathname: path, state }],
-  });
+  const router = createMemoryRouter(routes, { initialEntries: [path] });
 
   return {
     user: userEvent.setup(),
