@@ -180,6 +180,7 @@ func fiveCountries(t *testing.T) {
 	obscure := fivePool("R1", "R2", "R3", "R4", "R5")
 	obscure[0].Fame = 3
 	three := fivePool("R1", "R2", "R3", "R4", "R5")[:3]
+	// AA's look-alikes must stay inside the pool, as the importer guarantees; DD and EE are cut off.
 	three[0].Lookalikes = []string{"BB", "CC"}
 	tests := []struct {
 		name    string
