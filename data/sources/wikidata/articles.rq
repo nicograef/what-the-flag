@@ -1,0 +1,5 @@
+SELECT DISTINCT ?iso2 ?article WHERE {
+  ?country wdt:P297 ?iso2 ; wdt:P31/wdt:P279* wd:Q3624078 .
+  ?sitelink schema:about ?country ; schema:isPartOf <https://de.wikipedia.org/> ; schema:name ?article .
+}
+ORDER BY ?iso2 ?article

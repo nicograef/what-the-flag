@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"maps"
 	"os"
@@ -32,6 +30,10 @@ const (
 	currencyUnitsPath = "data/currency-units.json"
 	regionalPath      = "data/regional-languages.json"
 	capitalsHeader    = "iso2,capital,capitalEn,capitalDe"
+	articlesPath      = "data/sources/wikidata/articles.csv"
+	articlesHeader    = "iso2,article"
+	pageviewsPath     = "data/sources/wikimedia/pageviews.csv"
+	pageviewsHeader   = "article,views"
 	cldrAltKeyMarker  = "-alt-"
 )
 
@@ -48,8 +50,11 @@ type sources struct {
 	// currencyUnits is keyed by ISO 4217 code.
 	currencyUnits map[string]country.CurrencyLabel
 	// regional is keyed by CLDR language code.
-	regional    map[string]regionalLanguage
-	capitals    []capitalRow
+	regional map[string]regionalLanguage
+	capitals []capitalRow
+	// articles maps a code to its German Wikipedia article; pageviews maps an article to its yearly user views.
+	articles    map[string]string
+	pageviews   map[string]int
 	flags       map[string][]byte
 	overrides   overrides
 	dataLicense []byte
@@ -69,11 +74,10 @@ type mledozeCountry struct {
 	Name struct {
 		Common string `json:"common"`
 	} `json:"name"`
-	UNMember   bool    `json:"unMember"`
-	Region     string  `json:"region"`
-	Languages  keySet  `json:"languages"`
-	Currencies keySet  `json:"currencies"`
-	Area       float64 `json:"area"`
+	UNMember   bool   `json:"unMember"`
+	Region     string `json:"region"`
+	Languages  keySet `json:"languages"`
+	Currencies keySet `json:"currencies"`
 }
 
 // keySet reads a mledoze object as its sorted keys; mledoze writes an empty one as [].
@@ -179,6 +183,9 @@ func readSources(root *os.Root) (sources, error) {
 		return sources{}, err
 	}
 	if src.capitals, err = readCapitals(root); err != nil {
+		return sources{}, err
+	}
+	if src.articles, src.pageviews, err = readFame(root); err != nil {
 		return sources{}, err
 	}
 	if src.flags, err = readFlags(root); err != nil {
@@ -334,34 +341,64 @@ func setLabel(labels map[string]country.Names, code, lang, name string) {
 }
 
 func readCapitals(root *os.Root) ([]capitalRow, error) {
-	raw, err := root.ReadFile(capitalsPath)
+	records, err := readCSV(root, capitalsPath, capitalsHeader)
+	if err != nil {
+		return nil, err
+	}
+	rows := make([]capitalRow, len(records))
+	for i, rec := range records {
+		rows[i] = capitalRow{
+			Code:  rec[0],
+			QID:   rec[1][strings.LastIndex(rec[1], "/")+1:],
+			Names: country.Names{En: rec[2], De: rec[3]},
+		}
+	}
+	return rows, nil
+}
+
+// readFame returns each code's German Wikipedia article and each article's view count.
+func readFame(root *os.Root) (map[string]string, map[string]int, error) {
+	records, err := readCSV(root, articlesPath, articlesHeader)
+	if err != nil {
+		return nil, nil, err
+	}
+	articles := map[string]string{}
+	for _, rec := range records {
+		if prev, dup := articles[rec[0]]; dup {
+			return nil, nil, fmt.Errorf("%s: %s has two articles, %q and %q", articlesPath, rec[0], prev, rec[1])
+		}
+		articles[rec[0]] = rec[1]
+	}
+	if records, err = readCSV(root, pageviewsPath, pageviewsHeader); err != nil {
+		return nil, nil, err
+	}
+	views := map[string]int{}
+	for _, rec := range records {
+		n, err := strconv.Atoi(rec[1])
+		if err != nil {
+			return nil, nil, fmt.Errorf("%s: %q: %w", pageviewsPath, rec[0], err)
+		}
+		views[rec[0]] = n
+	}
+	return articles, views, nil
+}
+
+// readCSV returns a CSV file's records after checking its header.
+func readCSV(root *os.Root, name, header string) ([][]string, error) {
+	raw, err := root.ReadFile(name)
 	if err != nil {
 		return nil, err
 	}
 	r := csv.NewReader(bytes.NewReader(raw))
-	r.FieldsPerRecord = 4
-	header, err := r.Read()
+	r.FieldsPerRecord = strings.Count(header, ",") + 1
+	records, err := r.ReadAll()
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", capitalsPath, err)
+		return nil, fmt.Errorf("%s: %w", name, err)
 	}
-	if got := strings.Join(header, ","); got != capitalsHeader {
-		return nil, fmt.Errorf("%s: header is %q, want %q", capitalsPath, got, capitalsHeader)
+	if len(records) == 0 || strings.Join(records[0], ",") != header {
+		return nil, fmt.Errorf("%s: the header is not %q", name, header)
 	}
-	var rows []capitalRow
-	for {
-		rec, err := r.Read()
-		if errors.Is(err, io.EOF) {
-			return rows, nil
-		}
-		if err != nil {
-			return nil, fmt.Errorf("%s: %w", capitalsPath, err)
-		}
-		rows = append(rows, capitalRow{
-			Code:  rec[0],
-			QID:   rec[1][strings.LastIndex(rec[1], "/")+1:],
-			Names: country.Names{En: rec[2], De: rec[3]},
-		})
-	}
+	return records[1:], nil
 }
 
 // readFlags returns every flag source, keyed by the upper-case code its file name carries.

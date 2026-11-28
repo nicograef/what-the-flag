@@ -2,17 +2,20 @@
 # fetch-data-sources.sh – vendor the pinned country sources into data/sources/
 #
 # Usage:
-#   scripts/fetch-data-sources.sh [mledoze] [cldr] [wikidata] [flag-icons]
-#   MLEDOZE_REV=<commit> CLDR_TAG=<tag> FLAG_ICONS_TAG=<tag> scripts/fetch-data-sources.sh
+#   scripts/fetch-data-sources.sh [mledoze] [cldr] [wikidata] [wikimedia] [flag-icons]
+#   MLEDOZE_REV=<commit> CLDR_TAG=<tag> FLAG_ICONS_TAG=<tag> PAGEVIEWS_END=<YYYY-MM> scripts/fetch-data-sources.sh
 #
 # What it does:
 #   1. Fetches each named source, or every source when none is named, into a temporary directory:
 #      mledoze/countries at MLEDOZE_REV, cldr-json at CLDR_TAG (sparse: the de territory names,
 #      the de and en language names, the language aliases, the territory languages), flag-icons at
 #      FLAG_ICONS_TAG, and the Wikidata capitals.csv by POSTing data/sources/wikidata/capitals.rq
-#      to the SPARQL endpoint
+#      to the SPARQL endpoint. The wikimedia source POSTs data/sources/wikidata/articles.rq for each
+#      country's German Wikipedia article, then sums each article's monthly user pageviews over the
+#      12 full months ending at PAGEVIEWS_END, one request at a time as the API's access policy asks
 #   2. Only after every download succeeded, replaces each named data/sources/<source>/ with the
-#      files the importer reads plus the source's LICENSE, and writes capitals.csv as served (CRLF)
+#      files the importer reads plus the source's LICENSE, writes capitals.csv as served (CRLF),
+#      and writes wikidata/articles.csv and wikimedia/pageviews.csv
 #
 # It writes nothing outside DATA_DIR/sources and nothing of an unnamed source.
 # A pin change also updates data/SOURCES.md by hand.
@@ -24,15 +27,18 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 MLEDOZE_REV="${MLEDOZE_REV:-fa4f62182d19ff4f8b325cde6387c9cd9d80955a}"
 CLDR_TAG="${CLDR_TAG:-49.0.0}"
 FLAG_ICONS_TAG="${FLAG_ICONS_TAG:-v7.6.0}"
+PAGEVIEWS_END="${PAGEVIEWS_END:-2026-10}"
 DATA_DIR="${DATA_DIR:-$PROJECT_ROOT/data}"
 
 SOURCES_DIR="$DATA_DIR/sources"
 QUERY_FILE="$SOURCES_DIR/wikidata/capitals.rq"
+ARTICLES_QUERY="$SOURCES_DIR/wikidata/articles.rq"
 CLDR_NAMES="cldr-json/cldr-localenames-full"
 CLDR_CORE="cldr-json/cldr-core"
 CLDR_LOCALES=(de en)
-ALL_SOURCES=(mledoze cldr wikidata flag-icons)
+ALL_SOURCES=(mledoze cldr wikidata wikimedia flag-icons)
 SPARQL_ENDPOINT="https://query.wikidata.org/sparql"
+PAGEVIEWS_API="https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia.org/all-access/user"
 USER_AGENT="what-the-flag-data-fetch/1.0 (https://what-the-flag.de)"
 
 info()  { printf '[INFO]  %s\n' "$1"; }
@@ -40,7 +46,7 @@ fatal() { printf '[ERROR] %s\n' "$1" >&2; exit 1; }
 
 # ── Pre-flight ──
 
-for cmd in git curl; do
+for cmd in git curl jq; do
   command -v "$cmd" >/dev/null 2>&1 || fatal "Missing required command '$cmd'."
 done
 # The query file marks DATA_DIR as the data directory before any directory under it is replaced.
@@ -113,6 +119,26 @@ if selected wikidata; then
     "$SPARQL_ENDPOINT"
 fi
 
+if selected wikimedia; then
+  start="$(date -d "$PAGEVIEWS_END-01 -11 months" +%Y%m%d)00"
+  end="$(date -d "$PAGEVIEWS_END-01 +1 month -1 day" +%Y%m%d)00"
+  info "Wikidata dewiki articles and their pageviews from $start to $end"
+  mkdir -p "$STAGE/wikimedia"
+  curl --silent --show-error --fail --retry 3 --retry-delay 65 \
+    --header 'Accept: application/sparql-results+json' --user-agent "$USER_AGENT" \
+    --data-urlencode "query@$ARTICLES_QUERY" --output "$WORK_DIR/articles.json" \
+    "$SPARQL_ENDPOINT"
+  jq -r '"iso2,article", (.results.bindings[] | [.iso2.value, .article.value] | @csv)' \
+    "$WORK_DIR/articles.json" > "$STAGE/wikimedia/articles.csv"
+  echo "article,views" > "$STAGE/wikimedia/pageviews.csv"
+  jq -r '.results.bindings[].article.value' "$WORK_DIR/articles.json" | LC_ALL=C sort -u | while IFS= read -r article; do
+    path="$(jq -rn --arg t "$article" '$t | gsub(" "; "_") | @uri')"
+    views="$(curl --silent --show-error --fail --retry 3 --user-agent "$USER_AGENT" \
+      "$PAGEVIEWS_API/$path/monthly/$start/$end" | jq '[.items[].views] | add')"
+    jq -rn --arg a "$article" --argjson v "$views" '[$a, $v] | @csv' >> "$STAGE/wikimedia/pageviews.csv"
+  done
+fi
+
 # ── Replace ──
 
 for source in mledoze-countries cldr flag-icons; do
@@ -122,6 +148,11 @@ for source in mledoze-countries cldr flag-icons; do
 done
 if [[ -f "$STAGE/wikidata/capitals.csv" ]]; then
   cp "$STAGE/wikidata/capitals.csv" "$SOURCES_DIR/wikidata/capitals.csv"
+fi
+if [[ -d "$STAGE/wikimedia" ]]; then
+  cp "$STAGE/wikimedia/articles.csv" "$SOURCES_DIR/wikidata/articles.csv"
+  mkdir -p "$SOURCES_DIR/wikimedia"
+  cp "$STAGE/wikimedia/pageviews.csv" "$SOURCES_DIR/wikimedia/pageviews.csv"
 fi
 
 info "Vendored into $SOURCES_DIR; review with: git diff --stat -- data/sources"

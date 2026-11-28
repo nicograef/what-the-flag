@@ -15,7 +15,7 @@ import (
 const (
 	wantUNMembers = 193
 	wantPool      = 197
-	// Fame tiers by area rank in the pool, largest first: ranks up to tier1MaxRank are tier 1.
+	// Fame tiers by German Wikipedia pageview rank in the pool, most viewed first: ranks up to tier1MaxRank are tier 1.
 	tier1MaxRank = 50
 	tier2MaxRank = 120
 )
@@ -559,17 +559,27 @@ func (b *builder) languageFamilies(labels map[string]country.LanguageLabel) {
 	}
 }
 
-// fameTiers ranks the pool by area, largest first, and applies the fameTiers overrides.
+// fameTiers ranks the pool by its German Wikipedia pageviews, most viewed first, and applies the fameTiers overrides.
 func (b *builder) fameTiers() map[string]int {
+	views := make(map[string]int, len(b.pool))
+	for _, code := range b.pool {
+		article, ok := b.src.articles[code]
+		if !ok {
+			b.p.add("%s: no German Wikipedia article in %s", code, articlesPath)
+			continue
+		}
+		n, ok := b.src.pageviews[article]
+		if !ok {
+			b.p.add("%s: article %q has no view count in %s", code, article, pageviewsPath)
+		}
+		views[code] = n
+	}
 	ranked := slices.Clone(b.pool)
-	// Stable on the code-sorted pool, so equal areas rank by code.
-	slices.SortStableFunc(ranked, func(x, y string) int { return cmp.Compare(b.byCode[y].Area, b.byCode[x].Area) })
+	// Stable on the code-sorted pool, so equal counts rank by code.
+	slices.SortStableFunc(ranked, func(x, y string) int { return cmp.Compare(views[y], views[x]) })
 	tiers := make(map[string]int, len(ranked))
 	rank := make(map[string]int, len(ranked))
 	for i, code := range ranked {
-		if b.byCode[code].Area <= 0 {
-			b.p.add("%s: area %v is not positive", code, b.byCode[code].Area)
-		}
 		rank[code] = i + 1
 		switch {
 		case i+1 <= tier1MaxRank:
@@ -590,7 +600,7 @@ func (b *builder) fameTiers() map[string]int {
 		case o.Tier < 1 || o.Tier > 3:
 			b.p.add("%s: tier %d is not 1-3", name, o.Tier)
 		case o.Tier == tiers[code]:
-			b.p.add("%s: equals tier %d from area rank %d", name, o.Tier, rank[code])
+			b.p.add("%s: equals tier %d from pageview rank %d", name, o.Tier, rank[code])
 		default:
 			tiers[code] = o.Tier
 		}

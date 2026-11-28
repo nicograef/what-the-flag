@@ -20,7 +20,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "b246d536c6",
       "lookalikes": []
     },
@@ -46,7 +46,7 @@
       "currencies": [
         "AED"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "fa70ff26ca",
       "lookalikes": []
     },
@@ -71,7 +71,7 @@
       "currencies": [
         "AFN"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "b838aa65e7",
       "lookalikes": []
     },
@@ -119,7 +119,7 @@
       "currencies": [
         "ALL"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "213fda8799",
       "lookalikes": []
     },
@@ -147,7 +147,7 @@
       "currencies": [
         "AMD"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "a5f08d19cd",
       "lookalikes": []
     },
@@ -178,7 +178,7 @@
       "currencies": [
         "AOA"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "d9cc2194a5",
       "lookalikes": []
     },
@@ -313,7 +313,7 @@
       "currencies": [
         "BAM"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "652954ca73",
       "lookalikes": []
     },
@@ -337,7 +337,7 @@
       "currencies": [
         "BBD"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "cfc04ec33d",
       "lookalikes": []
     },
@@ -527,7 +527,7 @@
       "currencies": [
         "XOF"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "31a0989bd5",
       "lookalikes": []
     },
@@ -579,7 +579,7 @@
       "currencies": [
         "BOB"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "4c4363b622",
       "lookalikes": []
     },
@@ -691,7 +691,7 @@
       "currencies": [
         "BWP"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "8deea6ed8a",
       "lookalikes": []
     },
@@ -812,7 +812,7 @@
       "currencies": [
         "CDF"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "d57799b61c",
       "lookalikes": []
     },
@@ -839,7 +839,7 @@
       "currencies": [
         "XAF"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "4cd4ea6471",
       "lookalikes": []
     },
@@ -867,7 +867,7 @@
       "currencies": [
         "XAF"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "6c84eaf332",
       "lookalikes": []
     },
@@ -950,7 +950,7 @@
       "currencies": [
         "CLP"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "4444e5acae",
       "lookalikes": []
     },
@@ -982,7 +982,7 @@
       "currencies": [
         "XAF"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "9d5cf6d0dc",
       "lookalikes": []
     },
@@ -1040,7 +1040,7 @@
       "currencies": [
         "COP"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "8ee02471d2",
       "lookalikes": []
     },
@@ -1064,7 +1064,7 @@
       "currencies": [
         "CRC"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "c83647edeb",
       "lookalikes": []
     },
@@ -1116,7 +1116,7 @@
       "currencies": [
         "CVE"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "8e743d1f41",
       "lookalikes": []
     },
@@ -1143,7 +1143,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "1625a52e09",
       "lookalikes": []
     },
@@ -1169,7 +1169,7 @@
       "currencies": [
         "CZK"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "e71bf7b6c3",
       "lookalikes": []
     },
@@ -1335,7 +1335,7 @@
       "currencies": [
         "DZD"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "ba1ff49bc4",
       "lookalikes": []
     },
@@ -1360,7 +1360,7 @@
       "currencies": [
         "USD"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "45eaadb895",
       "lookalikes": []
     },
@@ -1386,7 +1386,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "30d7ab2b46",
       "lookalikes": []
     },
@@ -1441,7 +1441,7 @@
       "currencies": [
         "ERN"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "b95d85e968",
       "lookalikes": []
     },
@@ -1502,7 +1502,7 @@
       "currencies": [
         "ETB"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "957d6f9875",
       "lookalikes": []
     },
@@ -1530,7 +1530,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "ba9d5c7bee",
       "lookalikes": []
     },
@@ -1642,7 +1642,7 @@
       "currencies": [
         "XAF"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "2e8d9e9745",
       "lookalikes": []
     },
@@ -1825,7 +1825,7 @@
       "currencies": [
         "GNF"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "1c7d6e24f9",
       "lookalikes": []
     },
@@ -1904,7 +1904,7 @@
       "currencies": [
         "GTQ"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "95ff5176b2",
       "lookalikes": []
     },
@@ -1956,7 +1956,7 @@
       "currencies": [
         "GYD"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "e3e6584c3f",
       "lookalikes": []
     },
@@ -1980,7 +1980,7 @@
       "currencies": [
         "HNL"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "da3f98270c",
       "lookalikes": []
     },
@@ -2004,7 +2004,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "5dc6f174cf",
       "lookalikes": []
     },
@@ -2029,7 +2029,7 @@
       "currencies": [
         "HTG"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "5aceb27893",
       "lookalikes": []
     },
@@ -2053,7 +2053,7 @@
       "currencies": [
         "HUF"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "a85bdb3771",
       "lookalikes": []
     },
@@ -2256,7 +2256,7 @@
       "currencies": [
         "ISK"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "73e5671d4e",
       "lookalikes": []
     },
@@ -2400,7 +2400,7 @@
       "currencies": [
         "KES"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "1a2f47dded",
       "lookalikes": []
     },
@@ -2454,7 +2454,7 @@
         "KHR",
         "USD"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "4154c9ae1b",
       "lookalikes": []
     },
@@ -2656,7 +2656,7 @@
       "currencies": [
         "LAK"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "38d2ede108",
       "lookalikes": []
     },
@@ -2682,7 +2682,7 @@
       "currencies": [
         "LBP"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "af23f19074",
       "lookalikes": []
     },
@@ -2730,7 +2730,7 @@
       "currencies": [
         "CHF"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "309097c499",
       "lookalikes": []
     },
@@ -2787,7 +2787,7 @@
       "currencies": [
         "LRD"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "bb075a48ba",
       "lookalikes": []
     },
@@ -2841,7 +2841,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "0f628ab921",
       "lookalikes": []
     },
@@ -2893,7 +2893,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "5bdac9582c",
       "lookalikes": []
     },
@@ -2917,7 +2917,7 @@
       "currencies": [
         "LYD"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "ce9d0370a6",
       "lookalikes": []
     },
@@ -2945,7 +2945,7 @@
       "currencies": [
         "MAD"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "84244c7433",
       "lookalikes": []
     },
@@ -2999,7 +2999,7 @@
       "currencies": [
         "MDL"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "afb2c63e10",
       "lookalikes": []
     },
@@ -3026,7 +3026,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "bf94e7214f",
       "lookalikes": []
     },
@@ -3051,7 +3051,7 @@
       "currencies": [
         "MGA"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "94c1a71560",
       "lookalikes": []
     },
@@ -3101,7 +3101,7 @@
       "currencies": [
         "MKD"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "0dfa50f793",
       "lookalikes": []
     },
@@ -3132,7 +3132,7 @@
       "currencies": [
         "XOF"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "e74133adcf",
       "lookalikes": []
     },
@@ -3159,7 +3159,7 @@
       "currencies": [
         "MMK"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "4a466ec629",
       "lookalikes": []
     },
@@ -3187,7 +3187,7 @@
       "currencies": [
         "MNT"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "84b1295a81",
       "lookalikes": []
     },
@@ -3216,7 +3216,7 @@
       "currencies": [
         "MRU"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "3910c218e8",
       "lookalikes": []
     },
@@ -3241,7 +3241,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "e0fa050791",
       "lookalikes": []
     },
@@ -3270,7 +3270,7 @@
       "currencies": [
         "MUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "a326c8ef24",
       "lookalikes": []
     },
@@ -3294,7 +3294,7 @@
       "currencies": [
         "MVR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "150ceeaeb9",
       "lookalikes": []
     },
@@ -3323,7 +3323,7 @@
       "currencies": [
         "MWK"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "9de986562f",
       "lookalikes": []
     },
@@ -3349,7 +3349,7 @@
       "currencies": [
         "MXN"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "6ca4587f27",
       "lookalikes": []
     },
@@ -3411,7 +3411,7 @@
       "currencies": [
         "MZN"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "24d09e420f",
       "lookalikes": []
     },
@@ -3443,7 +3443,7 @@
         "NAD",
         "ZAR"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "23df22b26d",
       "lookalikes": []
     },
@@ -3472,7 +3472,7 @@
       "currencies": [
         "XOF"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "1650ed87d1",
       "lookalikes": []
     },
@@ -3503,7 +3503,7 @@
       "currencies": [
         "NGN"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "ebfa1af8ec",
       "lookalikes": []
     },
@@ -3527,7 +3527,7 @@
       "currencies": [
         "NIO"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "65a323a019",
       "lookalikes": [
         "SV"
@@ -3614,7 +3614,7 @@
       "currencies": [
         "NPR"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "d2c003092f",
       "lookalikes": []
     },
@@ -3713,7 +3713,7 @@
         "PAB",
         "USD"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "f01128263a",
       "lookalikes": []
     },
@@ -3740,7 +3740,7 @@
       "currencies": [
         "PEN"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "018c0b1ef0",
       "lookalikes": []
     },
@@ -3766,7 +3766,7 @@
       "currencies": [
         "PGK"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "9b6297d132",
       "lookalikes": []
     },
@@ -3823,7 +3823,7 @@
       "currencies": [
         "PKR"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "de249a66fb",
       "lookalikes": []
     },
@@ -3850,7 +3850,7 @@
       "currencies": [
         "PLN"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "7762d8267e",
       "lookalikes": []
     },
@@ -3876,7 +3876,7 @@
         "ILS",
         "JOD"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "794b36031c",
       "lookalikes": []
     },
@@ -3954,7 +3954,7 @@
       "currencies": [
         "PYG"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "ce6185d3a5",
       "lookalikes": []
     },
@@ -4002,7 +4002,7 @@
       "currencies": [
         "RON"
       ],
-      "fame": 2,
+      "fame": 1,
       "flagKey": "70d1368aa0",
       "lookalikes": [
         "TD"
@@ -4114,7 +4114,7 @@
       "currencies": [
         "SAR"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "711cf7a96b",
       "lookalikes": []
     },
@@ -4197,7 +4197,7 @@
       "currencies": [
         "SDG"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "135908a602",
       "lookalikes": []
     },
@@ -4280,7 +4280,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "78f0ab53a2",
       "lookalikes": []
     },
@@ -4304,7 +4304,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "c3723f5ef1",
       "lookalikes": []
     },
@@ -4335,7 +4335,7 @@
       "currencies": [
         "SLE"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "6eabafe4ad",
       "lookalikes": []
     },
@@ -4359,7 +4359,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "88b548ba1d",
       "lookalikes": []
     },
@@ -4419,7 +4419,7 @@
       "currencies": [
         "SOS"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "d7105a7def",
       "lookalikes": []
     },
@@ -4473,7 +4473,7 @@
       "currencies": [
         "SSP"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "f19665ca89",
       "lookalikes": []
     },
@@ -4608,7 +4608,7 @@
       "currencies": [
         "XAF"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "8ac85ce8ce",
       "lookalikes": [
         "RO"
@@ -4666,7 +4666,7 @@
       "currencies": [
         "THB"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "a05e4c7d38",
       "lookalikes": []
     },
@@ -4692,7 +4692,7 @@
       "currencies": [
         "TJS"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "0577191c2d",
       "lookalikes": []
     },
@@ -4767,7 +4767,7 @@
       "currencies": [
         "TND"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "12ff3091d2",
       "lookalikes": []
     },
@@ -4897,7 +4897,7 @@
       "currencies": [
         "TWD"
       ],
-      "fame": 3,
+      "fame": 2,
       "flagKey": "e7f7e8a895",
       "lookalikes": []
     },
@@ -4931,7 +4931,7 @@
       "currencies": [
         "TZS"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "0f6db769b9",
       "lookalikes": []
     },
@@ -5144,7 +5144,7 @@
       "currencies": [
         "VES"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "dc837cec8c",
       "lookalikes": []
     },
@@ -5249,7 +5249,7 @@
       "currencies": [
         "EUR"
       ],
-      "fame": 3,
+      "fame": 1,
       "flagKey": "4ba3abe046",
       "lookalikes": []
     },
@@ -5273,7 +5273,7 @@
       "currencies": [
         "YER"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "9fa6c367e6",
       "lookalikes": []
     },
@@ -5310,7 +5310,7 @@
       "currencies": [
         "ZAR"
       ],
-      "fame": 1,
+      "fame": 2,
       "flagKey": "c080d7bc55",
       "lookalikes": []
     },
@@ -5339,7 +5339,7 @@
       "currencies": [
         "ZMW"
       ],
-      "fame": 1,
+      "fame": 3,
       "flagKey": "f38f506bf1",
       "lookalikes": []
     },
@@ -5374,7 +5374,7 @@
         "USD",
         "ZWG"
       ],
-      "fame": 2,
+      "fame": 3,
       "flagKey": "9d8e9b25f4",
       "lookalikes": []
     }
