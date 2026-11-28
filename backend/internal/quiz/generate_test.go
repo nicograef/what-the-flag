@@ -41,6 +41,15 @@ func TestGenerate(t *testing.T) {
 	t.Run("five-country catalogue", fiveCountries)
 }
 
+func TestLevel(t *testing.T) {
+	// The play API accepts levels 1 to 10 only.
+	for _, tt := range []struct{ position, want int }{{0, 1}, {4, 1}, {5, 2}, {44, 9}, {45, 10}, {500, 10}} {
+		if got := Level(tt.position); got != tt.want {
+			t.Errorf("Level(%d) = %d, want %d", tt.position, got, tt.want)
+		}
+	}
+}
+
 // levelTiers holds, per level from 1, the lowest and highest type tier of its window, extension included.
 var levelTiers = [...][2]int{{1, 1}, {1, 2}, {1, 3}, {2, 4}, {3, 5}, {4, 6}, {4, 7}, {6, 8}, {7, 9}, {7, 10}}
 
