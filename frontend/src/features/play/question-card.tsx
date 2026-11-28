@@ -87,7 +87,7 @@ export function QuestionCard({
   }, []);
 
   return (
-    <div className="mt-3 flex min-h-0 flex-1 flex-col gap-3 motion-safe:animate-enter">
+    <div className="mt-3 flex min-h-0 flex-1 flex-col gap-8 motion-safe:animate-enter">
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4">
         <h2
           ref={headingRef}
