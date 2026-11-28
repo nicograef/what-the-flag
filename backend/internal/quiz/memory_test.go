@@ -95,7 +95,9 @@ func ended(r *Run, now time.Time) bool {
 // errNoLists marks the leaderboard lists, which the postgres integration tests own, as outside the core's tests.
 var errNoLists = errors.New("memory: no leaderboard lists")
 
-func (m *memory) Global(context.Context, time.Time, *PlayerID) ([]Entry, error) { return nil, errNoLists }
+func (m *memory) Global(context.Context, time.Time, *PlayerID) ([]Entry, error) {
+	return nil, errNoLists
+}
 
 func (m *memory) Quiz(context.Context, QuizID, time.Time, *PlayerID) ([]Entry, error) {
 	return nil, errNoLists
