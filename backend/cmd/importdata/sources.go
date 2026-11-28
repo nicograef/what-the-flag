@@ -113,6 +113,7 @@ type overrides struct {
 	PrimaryCapitals  map[string]primaryCapital   `json:"primaryCapitals"`
 	CapitalLabels    map[string]labelOverride    `json:"capitalLabels"`
 	CountryNames     map[string]labelOverride    `json:"countryNames"`
+	NameExceptions   nameExceptions              `json:"nameExceptions"`
 	Lookalikes       []lookalike                 `json:"lookalikes"`
 	OtherRegions     map[string]otherRegions     `json:"otherRegions"`
 	FameTiers        map[string]fameTier         `json:"fameTiers"`
@@ -149,6 +150,17 @@ type unMemberOverride struct {
 type poolAdditions struct {
 	Codes  []string `json:"codes"`
 	Reason string   `json:"reason"`
+}
+
+// nameExceptions keeps the source's German country name (by code) or capital label (by QID)
+// where the Auswärtiges Amt list uses a form German players do not know.
+type nameExceptions struct {
+	CountryNames  map[string]reasonOnly `json:"countryNames"`
+	CapitalLabels map[string]reasonOnly `json:"capitalLabels"`
+}
+
+type reasonOnly struct {
+	Reason string `json:"reason"`
 }
 
 type primaryCapital struct {

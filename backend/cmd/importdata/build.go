@@ -221,6 +221,14 @@ func (b *builder) countryNames() map[string]country.Names {
 		}
 		names[code] = applyLabels(&b.p, "countryNames "+code, names[code], ov[code])
 	}
+	ex := b.src.overrides.NameExceptions.CountryNames
+	for _, code := range slices.Sorted(maps.Keys(ex)) {
+		name := "nameExceptions.countryNames " + code
+		requireReason(&b.p, name, ex[code].Reason)
+		if _, overridden := ov[code]; !b.inPool(code) || overridden {
+			b.p.add("%s: not a pool code, or a countryNames override replaces the name it keeps", name)
+		}
+	}
 	return names
 }
 
@@ -255,6 +263,17 @@ func (b *builder) capitals() map[string]capitalSet {
 			continue
 		}
 		label[qid] = applyLabels(&b.p, "capitalLabels "+qid, label[qid], o.CapitalLabels[qid])
+	}
+
+	for _, qid := range slices.Sorted(maps.Keys(o.NameExceptions.CapitalLabels)) {
+		name := "nameExceptions.capitalLabels " + qid
+		requireReason(&b.p, name, o.NameExceptions.CapitalLabels[qid].Reason)
+		if _, ok := label[qid]; !ok {
+			b.p.add("%s: not a capital of a pool code", name)
+		}
+		if _, overridden := o.CapitalLabels[qid]; overridden {
+			b.p.add("%s: a capitalLabels override replaces the label it keeps", name)
+		}
 	}
 
 	for _, code := range slices.Sorted(maps.Keys(o.PrimaryCapitals)) {

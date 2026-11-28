@@ -65,10 +65,6 @@
       "de": "New Delhi",
       "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it New Delhi, not Neu-Delhi"
     },
-    "Q1490": {
-      "de": "Tokyo",
-      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Tokyo, not Tokio"
-    },
     "Q35178": {
       "de": "Kuwait-Stadt",
       "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) spells the city Kuwait, not Kuweit; the designator Stadt stays"
@@ -89,10 +85,6 @@
       "de": "Khartum",
       "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Khartum, not Chartum"
     },
-    "Q1780": {
-      "de": "Pressburg",
-      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Pressburg, not Bratislava"
-    },
     "Q1947": {
       "de": "Dschuba",
       "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Dschuba, not Juba"
@@ -103,13 +95,18 @@
     }
   },
   "countryNames": {
-    "NR": {
-      "de": "Naoero",
-      "reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) names it Naoero, not Nauru"
-    },
     "PS": {
       "de": "Palästina",
       "reason": "CLDR PS is \"Palästinensische Autonomiegebiete\"; CLDR PS-alt-short \"Palästina\" matches en \"Palestine\""
+    }
+  },
+  "nameExceptions": {
+    "countryNames": {
+      "NR": {"reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) says Naoero, which German players do not know; CLDR's Nauru stays (owner ruling)"}
+    },
+    "capitalLabels": {
+      "Q1490": {"reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) says Tokyo; Tokio is the common German spelling and the German Wikipedia title (owner ruling)"},
+      "Q1780": {"reason": "The Auswärtiges Amt Länderverzeichnis (https://www.auswaertiges-amt.de/de/service/terminologie) says Pressburg, which German players do not know; Bratislava stays (owner ruling)"}
     }
   },
   "lookalikes": [

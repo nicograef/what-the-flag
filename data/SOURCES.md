@@ -21,3 +21,4 @@ The project curates three files without an upstream source; NOTICE puts them und
 
 German country and capital names follow the Auswärtiges Amt [Länderverzeichnis für den amtlichen Gebrauch](https://www.auswaertiges-amt.de/resource/blob/215256/1be251028e07b08a89e6b65aba71f271/laenderverzeichnis-data.pdf) (Stand 28.07.2026), a reference that is not vendored.
 Where it uses another name word than CLDR or Wikidata, a `countryNames` or `capitalLabels` override applies it and cites it; its designators and inverted forms, such as "Republik Korea", never replace a common name.
+A `nameExceptions` entry keeps the source form where the AA form is unfamiliar to German players, such as Nauru for Naoero.
