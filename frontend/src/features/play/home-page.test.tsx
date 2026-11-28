@@ -53,14 +53,17 @@ it("shows the first-visit layout for an unknown player", async () => {
   expect(api.calls.map((c) => c.route)).toEqual([
     "GET /api/me",
     "POST /api/runs",
+    // The play screen reads the player afresh: the start changed its last name.
+    "GET /api/me",
     "GET /api/runs/00000000-0000-4000-8000-000000000002",
   ]);
   expect(api.calls[1]?.body).toEqual({ name: "Bea" });
 });
 
 it("shows the first-visit layout when /api/me fails", async () => {
-  const api = new FakeApi().fail("GET /api/me", 503, "database_unavailable");
+  const api = new FakeApi();
   fakeRun(api, sampleQuestions);
+  api.fail("GET /api/me", 503, "database_unavailable");
   const { user } = renderRoute("/", { api });
 
   await expectFirstVisit();
@@ -93,8 +96,8 @@ it("shows the record and world rank of a returning player", async () => {
 });
 
 it("starts a returning player's run with one press", async () => {
-  const api = new FakeApi().respond("GET /api/me", returning);
-  fakeRun(api, sampleQuestions);
+  const api = new FakeApi();
+  fakeRun(api, sampleQuestions, { me: returning });
   const { user } = renderRoute("/", { api });
 
   await user.click(await screen.findByRole("button", { name: "Spielen" }));
@@ -109,8 +112,8 @@ it("starts a returning player's run with one press", async () => {
 });
 
 it("swaps the name line for the field on Change name", async () => {
-  const api = new FakeApi().respond("GET /api/me", returning);
-  fakeRun(api, sampleQuestions);
+  const api = new FakeApi();
+  fakeRun(api, sampleQuestions, { me: returning });
   const { user } = renderRoute("/", { api });
 
   await user.click(await screen.findByRole("button", { name: "Name ändern" }));

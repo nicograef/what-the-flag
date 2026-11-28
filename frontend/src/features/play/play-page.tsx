@@ -1,36 +1,52 @@
+import { useQuery } from "@tanstack/react-query";
 import { CircleAlert } from "lucide-react";
-import type { ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Skeleton } from "@/components/ui/skeleton";
-import { isTooFast } from "@/features/play/api";
-import { Countdown } from "@/features/play/countdown";
+import { useCoarsePointer } from "@/components/ui/hold-button";
+import { isTooFast, meQuery } from "@/features/play/api";
+import { passedTarget, type GapTarget } from "@/features/play/gap";
+import { GapPill } from "@/features/play/gap-pill";
+import { LevelPips } from "@/features/play/level-pips";
 import { messages, playError } from "@/features/play/messages";
-import { QuestionCard, type Status } from "@/features/play/question-card";
+import { QuestionCard } from "@/features/play/question-card";
 import { RunResult } from "@/features/play/run-result";
+import { StreakPill } from "@/features/play/streak-pill";
+import { TimerBar } from "@/features/play/timer-bar";
+import { Toast } from "@/features/play/toast";
 import { useRun } from "@/features/play/use-run";
+import { useApiClient } from "@/lib/api";
 import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
 
+/** How long an outcome shows: a correct answer, one with a toast, a miss. */
+const revealMs = 650;
+const toastRevealMs = 1100;
+const missRevealMs = 1300;
+
 function RunLoading(): ReactNode {
   const t = useMessages(messages);
+  const block = "rounded-option bg-surface motion-safe:animate-pulse";
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-1 flex-col">
       <p role="status" className="sr-only">
         {t.loading}
       </p>
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-8 w-20 rounded-full" />
-        <Skeleton className="h-8 w-24 rounded-full" />
-      </div>
-      <Skeleton className="mt-3 h-2.5" />
-      <Skeleton className="mx-auto mt-3 h-6 w-3/4" />
-      <Skeleton className="mx-auto mt-3 aspect-4/3 w-48 rounded-lg" />
-      <div className="mt-3 grid gap-2">
-        {[0, 1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-13 rounded-xl" />
-        ))}
+      <div aria-hidden="true" className="flex flex-1 flex-col">
+        <div className="flex h-12 items-center justify-between">
+          <div className={`h-2 w-[180px] ${block}`} />
+          <div className={`h-10 w-20 rounded-full ${block}`} />
+        </div>
+        <div className={`mt-2.5 h-3 rounded-full ${block}`} />
+        <div className="flex flex-1 items-center justify-center">
+          <div className={`aspect-4/3 w-[232px] ${block}`} />
+        </div>
+        <div className="grid gap-3">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className={`h-16 ${block}`} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -84,8 +100,30 @@ function RunError({
 function Run({ runId }: { runId: string }): ReactNode {
   const t = useMessages(messages);
   const { locale } = useLocale();
+  const api = useApiClient();
+  const coarse = useCoarsePointer();
+  // Read once at mount: the record stays the run's target even when the player beats it.
+  const me = useQuery({
+    ...meQuery(api),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+  const best = me.data?.best ?? null;
+  const target: GapTarget | null =
+    best === null ? null : { kind: "record", score: best };
+  const [holding, setHolding] = useState(false);
   const { query, reveal, busy, answerError, answer, expire, holdChange } =
-    useRun(runId);
+    useRun(runId, (outcome) => {
+      if (!outcome.correct) return missRevealMs;
+      return passedTarget(target, outcome.score) ? toastRevealMs : revealMs;
+    });
+  const onHoldChange = useCallback(
+    (active: boolean) => {
+      setHolding(active);
+      holdChange(active);
+    },
+    [holdChange],
+  );
 
   if (query.isPending) return <RunLoading />;
   // A failed refetch keeps the last state, so the run stays playable under the error.
@@ -107,28 +145,58 @@ function Run({ runId }: { runId: string }): ReactNode {
   // A refetch can land before the reveal clears; marks belong to their own position only.
   const shown = reveal?.position === question.position ? reveal : null;
   const score = shown?.score ?? state.score;
-  let status: Status | null = null;
-  if (shown?.correct) status = { text: t.correct, tone: "success" };
-  else if (shown?.timedOut) status = { text: t.timedOut, tone: "danger" };
-  else if (shown && isTooFast(shown)) {
-    status = { text: t.tooFast, tone: "danger" };
-  } else if (shown) status = { text: t.wrong, tone: "danger" };
+  // A first run is one whose player had no ended run; a failed /api/me counts as one.
+  const firstRun = !me.isPending && best === null;
+
+  let outcome: ReactNode = null;
+  let hint = "";
+  if (shown?.correct) {
+    outcome = (
+      <>
+        <span className="sr-only">{t.correct}</span>
+        {passedTarget(target, shown.score) && best !== null && (
+          <Toast title={t.toastRecord} body={t.toastRecordBody(best)} />
+        )}
+      </>
+    );
+    hint = shown.finished ? t.resultSoon : t.nextSoon;
+  } else if (shown) {
+    const title = shown.timedOut
+      ? t.timedOut
+      : isTooFast(shown)
+        ? t.tooFast
+        : t.wrong;
+    outcome = (
+      <div className="flex flex-col items-center gap-0.5 rounded-card border-2 border-danger bg-[#2B1F3F] px-5 py-3">
+        <strong className="text-[22px] text-[#FF8A96]">{title}</strong>
+        <span className="text-base text-foreground-soft">{t.revealHint}</span>
+      </div>
+    );
+    hint = t.resultSoon;
+  } else if (coarse && firstRun && question.position < 3) {
+    hint = holding ? t.holding : t.holdHint;
+  }
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <section className="flex min-h-full flex-1 flex-col pb-[max(1.25rem,env(safe-area-inset-bottom))]">
       {failure}
-      <div className="flex items-center justify-between">
-        <h1 className="sr-only">{state.name}</h1>
-        <p className="inline-flex h-8 items-center rounded-full bg-surface-2 px-3 text-sm font-semibold">
-          {t.question(question.position)}
-        </p>
-        <p className="inline-flex h-8 items-center rounded-full bg-accent px-3 text-sm font-bold text-accent-ink tabular-nums">
-          <span key={score} className="inline-block motion-safe:animate-pop">
-            {t.score(score)}
-          </span>
-        </p>
+      <h1 className="sr-only">{state.name}</h1>
+      <div className="flex min-h-12 items-center justify-between gap-3">
+        <LevelPips
+          position={question.position}
+          answered={shown?.correct ?? false}
+          missed={shown !== null && !shown.correct}
+        />
+        <div className="flex flex-col items-end gap-0.5">
+          <StreakPill
+            score={score}
+            passed={target !== null && score > target.score}
+            pop={shown?.correct ?? false}
+          />
+          {target && <GapPill target={target} score={score} />}
+        </div>
       </div>
-      <Countdown
+      <TimerBar
         key={`timer-${question.position}`}
         deadline={question.deadline}
         limitMs={question.limitMs}
@@ -138,20 +206,20 @@ function Run({ runId }: { runId: string }): ReactNode {
         onExpire={expire}
       />
       <QuestionCard
-        key={`question-${question.position}`}
         question={question}
         marks={
           shown
             ? { correct: shown.correctOption, chosen: shown.chosenOption }
             : null
         }
-        status={status}
+        outcome={outcome}
+        hint={hint}
         disabled={busy}
         onAnswer={answer}
-        onHoldChange={holdChange}
+        onHoldChange={onHoldChange}
       />
       {answerError && (
-        <p role="alert" className="mt-3 text-sm text-danger">
+        <p role="alert" className="mt-3 text-[15px] text-danger">
           {playError(answerError, locale)}
         </p>
       )}

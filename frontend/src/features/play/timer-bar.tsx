@@ -5,13 +5,10 @@ import { useMessages } from "@/lib/i18n/messages";
 
 const tickMs = 100;
 
-const toneClasses = {
-  normal: { bar: "bg-accent", text: "text-foreground" },
+const tones = {
+  normal: { bar: "bg-accent", text: "text-accent" },
   warning: { bar: "bg-warning", text: "text-warning" },
-  danger: {
-    bar: "bg-danger",
-    text: "text-danger motion-safe:animate-pulse",
-  },
+  danger: { bar: "bg-danger", text: "text-danger" },
 };
 
 /**
@@ -27,7 +24,8 @@ function remainingMs(
   return Math.max(0, atArrival - (performance.now() - receivedAt));
 }
 
-export function Countdown({
+/** The question's clock: a bar by the time left and the seconds; dimmed while paused. */
+export function TimerBar({
   deadline,
   limitMs,
   serverNow,
@@ -67,7 +65,12 @@ export function Countdown({
   const tone = seconds <= 3 ? "danger" : seconds <= 5 ? "warning" : "normal";
   const percent = Math.round((remaining / limitMs) * 100);
   return (
-    <div className="mt-3 flex items-center gap-3">
+    <div
+      className={cn(
+        "mt-2.5 flex items-center gap-2.5 transition-opacity",
+        paused && "opacity-50",
+      )}
+    >
       <div
         role="progressbar"
         aria-label={t.timeLeft}
@@ -80,7 +83,7 @@ export function Countdown({
         <div
           className={cn(
             "h-full rounded-full transition-[width] duration-100 ease-linear motion-reduce:transition-none",
-            toneClasses[tone].bar,
+            tones[tone].bar,
           )}
           style={{ width: `${percent}%` }}
         />
@@ -88,8 +91,8 @@ export function Countdown({
       <span
         aria-hidden="true"
         className={cn(
-          "w-10 text-right text-base font-bold tabular-nums",
-          toneClasses[tone].text,
+          "w-10 text-right text-xl font-extrabold tabular-nums",
+          tones[tone].text,
         )}
       >
         {t.secondsShort(seconds)}

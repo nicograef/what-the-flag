@@ -80,6 +80,8 @@
   --animate-shake: shake 320ms ease-in-out;
   --animate-pop: pop 700ms ease-out;
   --animate-hold-fill: hold-fill 400ms linear forwards;
+  --animate-hold-fill-up: hold-fill-up 400ms linear forwards;
+  --animate-toast: toast 1s ease-out forwards;
 
   @keyframes enter {
     from {
@@ -93,6 +95,30 @@
     }
     to {
       transform: scaleX(1);
+    }
+  }
+  @keyframes hold-fill-up {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes toast {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    35% {
+      transform: scale(1);
+    }
+    100% {
+      opacity: 1;
     }
   }
   @keyframes fade-in {

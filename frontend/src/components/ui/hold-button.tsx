@@ -183,14 +183,23 @@ export function useHold({
 export const holdSurface =
   "touch-manipulation select-none [-webkit-touch-callout:none] [&_img]:pointer-events-none";
 
-/** The fill that grows left to right while a hold runs. */
-export function HoldFill({ className }: { className?: string }): ReactNode {
+/** The fill that grows while a hold runs: left to right, or bottom up for a tall flag option. */
+export function HoldFill({
+  up = false,
+  className,
+}: {
+  up?: boolean;
+  className?: string;
+}): ReactNode {
   return (
     <span
       data-hold-fill=""
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 origin-left animate-hold-fill",
+        "pointer-events-none absolute inset-0",
+        up
+          ? "origin-bottom animate-hold-fill-up"
+          : "origin-left animate-hold-fill",
         className,
       )}
     />

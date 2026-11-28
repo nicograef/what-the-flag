@@ -26,8 +26,6 @@ export const messages = defineMessages<{
   answerHow: string;
   loading: string;
   retry: string;
-  score: (score: number) => string;
-  question: (position: number) => string;
   questions: Record<QuestionType, string>;
   flag: string;
   flagOption: (n: number) => string;
@@ -38,6 +36,21 @@ export const messages = defineMessages<{
   wrong: string;
   timedOut: string;
   tooFast: string;
+  streak: (n: number) => string;
+  recordIn: (n: number) => string;
+  recordTied: string;
+  recordNew: string;
+  creatorIn: (name: string, n: number) => string;
+  creatorTied: (name: string) => string;
+  creatorBeaten: (name: string) => string;
+  holdHint: string;
+  holding: string;
+  revealHint: string;
+  resultSoon: string;
+  nextSoon: string;
+  toastRecord: string;
+  toastRecordBody: (n: number) => string;
+  toastCreator: (name: string) => string;
   correctAnswer: string;
   yourAnswer: string;
   resultTitle: string;
@@ -88,8 +101,6 @@ export const messages = defineMessages<{
     answerHow: "Auf dem Touchscreen halten, sonst klicken oder Enter drücken.",
     loading: "Wird geladen …",
     retry: "Erneut versuchen",
-    score: (score) => `Punkte: ${score}`,
-    question: (position) => `Frage ${position + 1}`,
     questions: {
       flag_name: "Welches Land hat diese Flagge?",
       name_flag: "Welche Flagge hat dieses Land?",
@@ -116,9 +127,24 @@ export const messages = defineMessages<{
     seconds: (s) => `${s} Sekunden`,
     secondsShort: (s) => `${s} s`,
     correct: "Richtig!",
-    wrong: "Leider falsch.",
-    timedOut: "Die Zeit ist abgelaufen.",
+    wrong: "Leider falsch",
+    timedOut: "Zeit abgelaufen",
     tooFast: "Zu schnell geantwortet.",
+    streak: (n) => `${n} richtig`,
+    recordIn: (n) => `Rekord in ${n}`,
+    recordTied: "Rekord eingestellt",
+    recordNew: "Neuer Rekord",
+    creatorIn: (name, n) => `${name} in ${n}`,
+    creatorTied: (name) => `${name} eingeholt`,
+    creatorBeaten: (name) => `${name} geschlagen`,
+    holdHint: "Antwort halten, bis der Balken voll ist",
+    holding: "Festhalten …",
+    revealHint: "Die richtige Antwort trägt einen Haken.",
+    resultSoon: "Gleich siehst du dein Ergebnis …",
+    nextSoon: "Nächste Frage kommt …",
+    toastRecord: "Neuer Rekord!",
+    toastRecordBody: (n) => `Du hast deine ${n} geknackt. Weiter so.`,
+    toastCreator: (name) => `Du hast ${name} überholt!`,
     correctAnswer: "richtige Antwort",
     yourAnswer: "deine Antwort",
     resultTitle: "Spiel vorbei",
@@ -181,8 +207,6 @@ export const messages = defineMessages<{
     answerHow: "Hold on a touch screen; otherwise click or press Enter.",
     loading: "Loading …",
     retry: "Try again",
-    score: (score) => `Score: ${score}`,
-    question: (position) => `Question ${position + 1}`,
     questions: {
       flag_name: "Which country has this flag?",
       name_flag: "Which flag does this country have?",
@@ -210,9 +234,24 @@ export const messages = defineMessages<{
     seconds: (s) => `${s} seconds`,
     secondsShort: (s) => `${s} s`,
     correct: "Correct!",
-    wrong: "Sorry, that's wrong.",
-    timedOut: "Time is up.",
+    wrong: "Not quite",
+    timedOut: "Time's up",
     tooFast: "Answered too fast.",
+    streak: (n) => `${n} correct`,
+    recordIn: (n) => `Record in ${n}`,
+    recordTied: "Record tied",
+    recordNew: "New record",
+    creatorIn: (name, n) => `${name} in ${n}`,
+    creatorTied: (name) => `Level with ${name}`,
+    creatorBeaten: (name) => `${name} beaten`,
+    holdHint: "Hold your answer until the bar fills",
+    holding: "Keep holding …",
+    revealHint: "The correct answer has a check mark.",
+    resultSoon: "Your result is coming …",
+    nextSoon: "Next question …",
+    toastRecord: "New record!",
+    toastRecordBody: (n) => `You beat your ${n}. Keep going.`,
+    toastCreator: (name) => `You passed ${name}!`,
     correctAnswer: "correct answer",
     yourAnswer: "your answer",
     resultTitle: "Game over",

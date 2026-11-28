@@ -25,10 +25,6 @@ interface LoadedRun {
   receivedAt: number;
 }
 
-const revealMs = 800;
-/** A miss holds its marks longer, so the player sees the right answer before the result. */
-const missRevealMs = 1500;
-
 function runQueryOptions(api: ApiClient, runId: string, enabled: boolean) {
   return queryOptions({
     queryKey: ["run", runId],
@@ -57,7 +53,14 @@ interface UseRun {
   holdChange: (holding: boolean) => void;
 }
 
-export function useRun(runId: string): UseRun {
+/**
+ * One run. `revealDelay` says how long an answer's outcome shows before the next state loads;
+ * it is read when the outcome arrives.
+ */
+export function useRun(
+  runId: string,
+  revealDelay: (outcome: Outcome) => number,
+): UseRun {
   const api = useApiClient();
   const [reveal, setReveal] = useState<Outcome | null>(null);
   const query = useQuery(runQueryOptions(api, runId, reveal === null));
@@ -79,9 +82,14 @@ export function useRun(runId: string): UseRun {
     },
   });
 
+  const delayOf = useRef(revealDelay);
+  useLayoutEffect(() => {
+    delayOf.current = revealDelay;
+  });
+
   useEffect(() => {
     if (!reveal) return;
-    const delay = reveal.correct ? revealMs : missRevealMs;
+    const delay = delayOf.current(reveal);
     const timer = setTimeout(() => {
       void refetch().finally(() => setReveal(null));
     }, delay);

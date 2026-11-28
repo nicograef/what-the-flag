@@ -12,12 +12,16 @@ interface FakeRunOptions {
   name?: string;
   /** The time left on a served question when it is read. */
   remainingMs?: number;
+  /** The first run's score so far: it starts at this position. */
+  score?: number;
   quizRank?: number;
   globalRank?: number | null;
   /** The result's `best`; by default the run's own score, not new, without a previous best. */
   best?: { score: number; isNew: boolean; previous: number | null };
   /** Every answer arrives within the minimum answer time, so even the correct option is wrong. */
   tooFast?: boolean;
+  /** The `GET /api/me` body; an unknown player by default. */
+  me?: Json;
 }
 
 interface RunRecord {
@@ -31,7 +35,7 @@ interface RunRecord {
 }
 
 /** The `GET /api/me` body for a visitor the server does not know. */
-export const unknownPlayer: Json = {
+export const unknownPlayer: { [key: string]: Json } = {
   lastName: null,
   best: null,
   worldRank: null,
@@ -48,7 +52,7 @@ function runId(n: number): string {
 
 /**
  * A stateful run server on `FakeApi`: the first run exists at once, and each
- * `POST /api/runs` creates the next one over the same questions.
+ * `POST /api/runs` creates the next one over the same questions. It also answers `GET /api/me`.
  */
 export function fakeRun(
   api: FakeApi,
@@ -164,7 +168,9 @@ export function fakeRun(
     return run;
   }
 
+  api.respond("GET /api/me", options.me ?? unknownPlayer);
   const first = create(options.name ?? "Ada");
+  first.score = options.score ?? 0;
   api.respond(
     "POST /api/runs",
     (call) => ({

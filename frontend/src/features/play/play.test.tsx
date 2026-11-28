@@ -62,7 +62,7 @@ it("reveals a correct answer, then shows the next question", async () => {
       slow,
     ),
   ).toHaveFocus();
-  expect(screen.getByText("Punkte: 1")).toBeInTheDocument();
+  expect(screen.getByText("1 richtig")).toBeInTheDocument();
   // The timer and the card share a position; equal sibling keys left old timers mounted.
   expect(screen.getAllByRole("progressbar")).toHaveLength(1);
   expect(answers(api)).toEqual([{ position: 0, option: 1 }]);
@@ -114,7 +114,7 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
 
   await answer(user, "Frankreich");
 
-  expect(await screen.findByText("Leider falsch.")).toBeInTheDocument();
+  expect(await screen.findByText("Leider falsch")).toBeInTheDocument();
   expect(
     screen.getByRole("button", { name: /^Deutschland\s*, richtige Antwort$/ }),
   ).toHaveAttribute("aria-disabled", "true");
@@ -268,6 +268,52 @@ it("copies the challenge link without a share sheet", async () => {
     `Ich habe bei What The Flag 0 Fragen in Folge richtig beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
   );
   expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
+});
+
+it("counts the gap pill to the record from /api/me", async () => {
+  const { user } = await startPlaying({ me: { ...unknownPlayer, best: 1 } });
+
+  expect(screen.getByText("Rekord in 2")).toBeInTheDocument();
+  await answer(user, "Deutschland");
+  expect(await screen.findByText("Rekord eingestellt")).toBeInTheDocument();
+  await screen.findByRole(
+    "heading",
+    { name: "Was ist die Hauptstadt dieses Landes?" },
+    slow,
+  );
+  await answer(user, "Tokio");
+  expect(await screen.findByText("Neuer Rekord")).toBeInTheDocument();
+});
+
+it("shows no gap pill on a first run", async () => {
+  const { user } = await startPlaying();
+
+  await answer(user, "Deutschland");
+
+  expect(await screen.findByText("1 richtig")).toBeInTheDocument();
+  expect(screen.queryByText(/^Rekord/)).not.toBeInTheDocument();
+  expect(screen.queryByText("Neuer Rekord")).not.toBeInTheDocument();
+});
+
+it("toasts a new record when the score passes the best", async () => {
+  const { user } = await startPlaying({ me: { ...unknownPlayer, best: 1 } });
+  const outcome = (): HTMLElement =>
+    screen.getAllByRole("status").find((s) => s.textContent !== "")!;
+
+  await answer(user, "Deutschland");
+  await screen.findByText("Rekord eingestellt");
+  expect(screen.queryByText("Neuer Rekord!")).not.toBeInTheDocument();
+  await screen.findByRole(
+    "heading",
+    { name: "Was ist die Hauptstadt dieses Landes?" },
+    slow,
+  );
+  await answer(user, "Tokio");
+
+  expect(await screen.findByText("Neuer Rekord!")).toBeInTheDocument();
+  expect(outcome()).toHaveTextContent(
+    "Richtig!Neuer Rekord!Du hast deine 1 geknackt. Weiter so.",
+  );
 });
 
 /** Moves the fake timers by `ms` and lets React render what they set off. */
@@ -459,4 +505,66 @@ it("sends the timeout when a hold that outlived the clock is released", async ()
   } finally {
     vi.useRealTimers();
   }
+});
+
+it("holds the reveal 650 ms after a correct answer and 1300 ms after a wrong one", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  try {
+    const { api, ids } = await startPlaying();
+    const reads = (): number =>
+      api.calls.filter((c) => c.route === `GET /api/runs/${ids.runId}`).length;
+
+    fireEvent.click(await armed("Deutschland"));
+    await screen.findByText("Richtig!");
+    const afterCorrect = reads();
+    await advance(500);
+    expect(reads()).toBe(afterCorrect);
+    await advance(200);
+    expect(reads()).toBe(afterCorrect + 1);
+
+    await screen.findByRole("heading", {
+      name: "Was ist die Hauptstadt dieses Landes?",
+    });
+    fireEvent.click(await armed("Kyoto"));
+    await screen.findByText("Leider falsch");
+    const afterWrong = reads();
+    await advance(1150);
+    expect(reads()).toBe(afterWrong);
+    await advance(200);
+    expect(reads()).toBe(afterWrong + 1);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it("fills the pips by the position in the block of five", async () => {
+  const api = new FakeApi();
+  const ids = fakeRun(
+    api,
+    [...sampleQuestions, ...sampleQuestions, ...sampleQuestions],
+    { score: 5 },
+  );
+  const { container, user } = renderRoute(`/play/${ids.runId}`, { api });
+  const pips = (): (string | null)[] =>
+    [...container.querySelectorAll("[data-pip]")].map((p) =>
+      p.getAttribute("data-pip"),
+    );
+  await screen.findByRole("heading", {
+    name: "Welche Flagge hat das Land mit dieser Hauptstadt?",
+  });
+
+  expect(pips()).toEqual(["current", "open", "open", "open", "open"]);
+  await answer(user, "Flagge 3");
+  await screen.findByText("Richtig!");
+  expect(pips()).toEqual(["done", "open", "open", "open", "open"]);
+
+  await screen.findByRole(
+    "heading",
+    { name: "Welches Land hat diese Flagge?" },
+    slow,
+  );
+  expect(pips()).toEqual(["done", "current", "open", "open", "open"]);
+  await answer(user, "Frankreich");
+  await screen.findByText("Leider falsch");
+  expect(pips()).toEqual(["done", "miss", "open", "open", "open"]);
 });
