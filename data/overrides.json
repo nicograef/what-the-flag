@@ -202,6 +202,7 @@
     "hmn": {"de": "Hmong", "reason": "CLDR de \"Miao\" is the Chinese umbrella term, which many Hmong reject"},
     "na": {"en": "Nauruan", "reason": "CLDR en \"Nauru\" is the country's name"},
     "pau": {"de": "Palauisch", "reason": "CLDR de \"Palau\" is the country's name"},
+    "sco": {"de": "Scots", "reason": "CLDR de \"Schottisch\" reads as Scottish Gaelic; German texts call the Germanic language Scots"},
     "szl": {"de": "Schlesisch", "reason": "CLDR de \"Wasserpolnisch\" is a pejorative term"},
     "tpi": {"de": "Tok Pisin", "reason": "CLDR de \"Neumelanesisch\" is archaic; German texts use the language's own name"},
     "tvl": {"en": "Tuvaluan", "reason": "CLDR en \"Tuvalu\" is the country's name"},

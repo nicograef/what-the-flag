@@ -52,7 +52,11 @@ func targetCases(t QuestionType, target *country.Country) []Case {
 // The correct option is the target when the true set holds it, else a uniform draw from the true set.
 // Every level draws from the same candidate groups.
 func Draw(cat Catalogue, c Case, level int, rnd Rand) (Question, bool) {
-	pool := cat.Pool()
+	return draw(cat, cat.Pool(), c, level, rnd)
+}
+
+// draw is Draw over a pool the caller already holds, since Catalogue.Pool clones it.
+func draw(cat Catalogue, pool []country.Country, c Case, _ int, rnd Rand) (Question, bool) {
 	sets := candidates(cat, pool, c)
 	if len(sets.True) == 0 {
 		return Question{}, false

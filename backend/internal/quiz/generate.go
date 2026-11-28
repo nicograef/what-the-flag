@@ -55,7 +55,7 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 		if len(cases) == 0 {
 			continue
 		}
-		if q, ok := Draw(cat, cases[rnd.IntN(len(cases))], 1, rnd); ok {
+		if q, ok := draw(cat, pool, cases[rnd.IntN(len(cases))], 1, rnd); ok {
 			return q, nil
 		}
 	}

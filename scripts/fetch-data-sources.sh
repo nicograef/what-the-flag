@@ -134,7 +134,8 @@ if selected wikimedia; then
   jq -r '.results.bindings[].article.value' "$WORK_DIR/articles.json" | LC_ALL=C sort -u | while IFS= read -r article; do
     path="$(jq -rn --arg t "$article" '$t | gsub(" "; "_") | @uri')"
     views="$(curl --silent --show-error --fail --retry 3 --user-agent "$USER_AGENT" \
-      "$PAGEVIEWS_API/$path/monthly/$start/$end" | jq '[.items[].views] | add')"
+      "$PAGEVIEWS_API/$path/monthly/$start/$end" | jq -e '[.items[].views] | add')" \
+      || fatal "No pageviews for $article"
     jq -rn --arg a "$article" --argjson v "$views" '[$a, $v] | @csv' >> "$STAGE/wikimedia/pageviews.csv"
   done
 fi

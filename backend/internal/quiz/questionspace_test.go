@@ -226,7 +226,8 @@ func TestQuestionSpace(t *testing.T) {
 				}
 			}
 		}
-		if n < 6 {
+		// Region types have five continents, so every case of theirs is thin.
+		if n < 6 && c.Type.Answer != AttrRegion {
 			thin[c.Type.ID()] = append(thin[c.Type.ID()], c.Target+c.Prompt)
 		}
 		q, ok := Draw(cat, c, 1, newRand(1))
