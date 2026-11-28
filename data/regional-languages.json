@@ -67,6 +67,12 @@
     "spokenIn": [
       "IN"
     ],
+    "blockedIn": [
+      "CA",
+      "GB",
+      "NP",
+      "SG"
+    ],
     "source": "https://en.wikipedia.org/wiki/Bengali_language"
   },
   "bo": {
@@ -139,8 +145,10 @@
   },
   "cy": {
     "spokenIn": [
-      "AR",
       "GB"
+    ],
+    "blockedIn": [
+      "AR"
     ],
     "source": "https://en.wikipedia.org/wiki/Welsh_language"
   },
@@ -192,9 +200,19 @@
   },
   "ff": {
     "spokenIn": [
+      "CM",
+      "GM",
       "GN",
+      "GW",
+      "MR",
       "NE",
+      "NG",
+      "SL",
       "SN"
+    ],
+    "blockedIn": [
+      "GH",
+      "LR"
     ],
     "source": "https://en.wikipedia.org/wiki/Fula_language"
   },
@@ -275,6 +293,9 @@
     "spokenIn": [
       "ES"
     ],
+    "blockedIn": [
+      "PT"
+    ],
     "source": "https://en.wikipedia.org/wiki/Galician_language"
   },
   "gn": {
@@ -297,6 +318,9 @@
       "GH",
       "NG",
       "TD"
+    ],
+    "blockedIn": [
+      "SD"
     ],
     "source": "https://en.wikipedia.org/wiki/Hausa_language"
   },
@@ -358,6 +382,9 @@
       "ID",
       "MY",
       "SR"
+    ],
+    "blockedIn": [
+      "SG"
     ],
     "source": "https://en.wikipedia.org/wiki/Javanese_language"
   },
@@ -466,6 +493,13 @@
       "IR",
       "SY",
       "TR"
+    ],
+    "blockedIn": [
+      "AZ",
+      "DE",
+      "GE",
+      "LB",
+      "TM"
     ],
     "source": "https://rm.coe.int/armeniaecrml6-en/4880287d2c"
   },
@@ -687,6 +721,12 @@
       "IN",
       "PK"
     ],
+    "blockedIn": [
+      "CA",
+      "GB",
+      "KE",
+      "SG"
+    ],
     "source": "https://en.wikipedia.org/wiki/Punjabi_language"
   },
   "pcd": {
@@ -714,11 +754,16 @@
     "spokenIn": [
       "PK"
     ],
+    "blockedIn": [
+      "AE",
+      "IR"
+    ],
     "source": "https://en.wikipedia.org/wiki/Pashto"
   },
   "qu": {
     "spokenIn": [
       "AR",
+      "CL",
       "CO",
       "PE"
     ],
@@ -735,6 +780,9 @@
       "DZ",
       "ES",
       "MA"
+    ],
+    "blockedIn": [
+      "NL"
     ],
     "source": "https://en.wikipedia.org/wiki/Riffian_language"
   },
@@ -823,6 +871,10 @@
       "ET",
       "KE"
     ],
+    "blockedIn": [
+      "CA",
+      "GB"
+    ],
     "source": "https://en.wikipedia.org/wiki/Somali_language"
   },
   "srn": {
@@ -863,6 +915,11 @@
     "spokenIn": [
       "CD"
     ],
+    "blockedIn": [
+      "BI",
+      "MZ",
+      "SO"
+    ],
     "source": "https://en.wikipedia.org/wiki/Swahili_language"
   },
   "szl": {
@@ -876,6 +933,11 @@
     "spokenIn": [
       "IN",
       "MY"
+    ],
+    "blockedIn": [
+      "CA",
+      "GB",
+      "MU"
     ],
     "source": "https://en.wikipedia.org/wiki/Tamil_language"
   },
@@ -900,6 +962,9 @@
   "ti": {
     "spokenIn": [
       "ET"
+    ],
+    "blockedIn": [
+      "IL"
     ],
     "source": "https://en.wikipedia.org/wiki/Tigrinya_language"
   },
@@ -956,6 +1021,9 @@
       "TJ",
       "UZ"
     ],
+    "blockedIn": [
+      "MN"
+    ],
     "source": "https://en.wikipedia.org/wiki/Uyghur_language"
   },
   "umb": {
@@ -967,6 +1035,11 @@
   "ur": {
     "spokenIn": [
       "IN"
+    ],
+    "blockedIn": [
+      "CA",
+      "GB",
+      "MU"
     ],
     "source": "https://en.wikipedia.org/wiki/Urdu"
   },

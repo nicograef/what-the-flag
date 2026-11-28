@@ -8,8 +8,9 @@
 | Attribute | One kind of fact about a country with labels in both languages, e.g. capital or currency. | property, field |
 | Continent | One of Africa, Americas, Asia, Europe, Oceania; a country can count in more than one. Code and wire call it region: `AttrRegion`, `Country.Region`/`OtherRegions`, the type ids `name_region`, `flag_region`, `capital_region`. | region (outside code) |
 | Official language | A language official at national level in a country, or its de facto national language where none is official; language questions ask for one. Code and wire call it language: `Country.Languages`, `name_language`. | national language |
-| Regional language | A regional, minority, creole or indigenous language of the curated list, spoken in one to five countries; the regional-language question asks for one of them. Code and wire: `Country.RegionalLanguages`, `regional_language_name`. | dialect, minority language |
-| Blocked language | Another country's official language with a lesser status in a country, such as Arabic in Israel; never a wrong option for it. Code: `Country.BlockedLanguages`. | excluded language |
+| Regional language | A curated regional, minority, indigenous or creole language established in a country where it is not official; the regional-language question asks for a country of its spoken-in list. Code and wire: `Country.RegionalLanguages`, `regional_language_name`. | dialect, minority language |
+| Spoken-in list | A regional language's countries where it is established and not official; the possible correct answers of its question. Code: `spokenIn` in `data/regional-languages.json`. | heartland |
+| Blocked language | A language with a lesser status or a community in a country, such as Arabic in Israel or Welsh in Argentina; never asked about it and never a wrong option for it. Code: `Country.BlockedLanguages`. | excluded language |
 | Language family | Standard varieties of one language a player could take for one another, such as Hindi and Urdu; no two options of a language question share one. | language group |
 | Currency family | Currency units a player could mistake for one another, such as Rupee and Rupiah, or every Dollar; no two options of a currency question share one. | currency group |
 | Primary capital | The one capital a question about a country uses. | main city |

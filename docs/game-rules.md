@@ -27,10 +27,12 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 - No two options of a question show the same text.
 - Continents are Africa, Americas, Asia, Europe and Oceania.
 - A country that spans or is also counted in a second continent, such as Russia, Turkey or Cyprus, has a main one, the correct option. Its other continent is never offered.
+- Each language has at most one status in a country: official, regional or blocked.
 - A country's official languages are those official at national level, or its de facto national language where none is official. A language question asks for one; its wrong options are official languages of other countries.
-- No wrong option of a language question is a regional language of the target, nor one with a lesser status there, such as Arabic in Israel.
-- A regional language is a regional, minority, creole or indigenous language of a curated list. It counts as spoken in its listed countries and every country it is official in, at most five.
-- A regional-language question shows a regional language spoken in the target and not official there; a target without one gets another type. No wrong option is a country where it is spoken.
+- A regional language is a regional, minority, creole or indigenous language of a curated list, established in a country where it is not official.
+- A blocked language has a lesser status or a community in a country, such as Arabic in Israel. A country with a diaspora, such as Argentina for Welsh, blocks the language.
+- No wrong option of a language question is a regional or blocked language of the target.
+- A regional-language question shows a regional language of the target; a target without one gets another type. No wrong option holds the language in any status.
 - A currency option shows the unit name without the country, such as Peso or Dollar.
 - No two options of a currency question share a currency family, such as Rupee and Rupiah.
 - No two options of a language question share a language family, such as Hindi and Urdu.
