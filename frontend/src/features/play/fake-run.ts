@@ -1,5 +1,5 @@
 import type { Item, QuestionType } from "@/features/play/api";
-import type { FakeApi, Json } from "@/test/fake-api";
+import { StatusReply, type FakeApi, type Json } from "@/test/fake-api";
 
 interface FakeQuestion {
   type: QuestionType;
@@ -128,11 +128,16 @@ export function fakeRun(
     };
   }
 
-  function answer(run: RunRecord, body: unknown): Json {
+  function answer(run: RunRecord, body: unknown): Json | StatusReply {
     const { position, option } = body as {
       position: number;
       option: number | null;
     };
+    if (run.ended || position !== run.score) {
+      return new StatusReply(409, {
+        error: { code: "not_current_question", message: "fake" },
+      });
+    }
     const q = questions[position];
     const correct = !tooFast && option === q.correctOption;
     if (correct) {

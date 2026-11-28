@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, LoaderCircle, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "cn";
 import { HoldFill, holdSurface, useHold } from "@/components/ui/hold-button";
@@ -8,8 +8,8 @@ import { messages } from "@/features/play/messages";
 import { useLocale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
 
-/** How an option shows after the reveal; null before it. */
-export type Mark = "correct" | "chosen" | "dimmed" | null;
+/** How an option shows: revealed, or on its way to the server; null otherwise. */
+export type Mark = "correct" | "chosen" | "dimmed" | "sending" | null;
 
 function MarkIcon({
   mark,
@@ -93,6 +93,8 @@ export function AnswerOption({
             ? "bg-danger text-danger-ink shadow-[0_5px_0_var(--color-danger-edge)] motion-safe:animate-shake"
             : "bg-surface-2 shadow-[0_5px_0_#1A1D40]",
         mark === "dimmed" && "opacity-35",
+        mark === "sending" &&
+          "bg-[#4A4A52] shadow-[0_5px_0_#1A1D40,inset_0_0_0_3px_var(--color-accent)]",
         !armed && "opacity-30",
         holding &&
           "translate-y-[3px] shadow-[0_2px_0_#1A1D40,inset_0_0_0_3px_var(--color-accent)] motion-reduce:translate-y-0",
@@ -113,6 +115,16 @@ export function AnswerOption({
         <>
           <MarkIcon mark="correct" flag={flag} />
           <span className="sr-only">, {t.correctAnswer}</span>
+        </>
+      )}
+      {mark === "sending" && (
+        <>
+          <LoaderCircle
+            aria-hidden="true"
+            className="size-6 shrink-0 text-accent motion-safe:animate-spin"
+            strokeWidth={3}
+          />
+          <span className="sr-only">, {t.sending}</span>
         </>
       )}
       {mark === "chosen" && (

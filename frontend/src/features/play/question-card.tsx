@@ -16,7 +16,8 @@ export interface Marks {
   chosen: number | null;
 }
 
-function markOf(marks: Marks | null, i: number): Mark {
+function markOf(marks: Marks | null, sending: number | null, i: number): Mark {
+  if (sending !== null) return sending === i ? "sending" : "dimmed";
   if (!marks) return null;
   if (marks.correct === i) return "correct";
   if (marks.chosen === i) return "chosen";
@@ -67,6 +68,7 @@ function Prompt({
 export function QuestionCard({
   question,
   marks,
+  sending,
   outcome,
   hint,
   disabled,
@@ -75,6 +77,8 @@ export function QuestionCard({
 }: {
   question: Pick<Question, "position" | "type" | "prompt" | "options">;
   marks: Marks | null;
+  /** The pick a lost connection holds back; the others dim meanwhile. */
+  sending: number | null;
   /** The content of the persistent `role=status` region: the reveal, a toast. */
   outcome: ReactNode;
   /** The line under the options: the hold hint or what comes next. */
@@ -134,7 +138,7 @@ export function QuestionCard({
               index={i}
               armed={armed}
               answerable={!disabled}
-              mark={markOf(marks, i)}
+              mark={markOf(marks, sending, i)}
               describedBy={howId}
               onAnswer={onAnswer}
               onHoldChange={onHoldChange}

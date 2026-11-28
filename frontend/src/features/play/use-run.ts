@@ -17,13 +17,18 @@ import {
   type Outcome,
   type RunState,
 } from "@/features/play/api";
-import { useApiClient, type ApiClient } from "@/lib/api";
+import { ApiError, useApiClient, type ApiClient } from "@/lib/api";
 
 /** A run state with the `performance.now()` instant it arrived, the base of the countdown. */
 interface LoadedRun {
   state: RunState;
   receivedAt: number;
 }
+
+/** How long past the deadline the server still accepts an answer. */
+const graceMs = 2000;
+/** The waits between retries of an answer lost to the network. */
+const backoffMs = [500, 1000, 2000];
 
 function runQueryOptions(api: ApiClient, runId: string, enabled: boolean) {
   return queryOptions({
@@ -38,12 +43,30 @@ function runQueryOptions(api: ApiClient, runId: string, enabled: boolean) {
   });
 }
 
+function isNetwork(err: unknown): boolean {
+  return err instanceof ApiError && err.code === "network";
+}
+
+/** The question a reload landed on, with its whole seconds left at arrival. */
+interface Resumed {
+  position: number;
+  secondsLeft: number;
+}
+
 interface UseRun {
   query: UseQueryResult<LoadedRun>;
   /** The outcome of the last answer while it shows; the query is disabled meanwhile. */
   reveal: Outcome | null;
   /** True while an answer is in flight or its outcome shows; the question takes no answer meanwhile. */
   busy: boolean;
+  /** The option on its way to the server; null when nothing is sent. */
+  sending: number | null;
+  /** True while a lost answer waits for its next try. */
+  isRetrying: boolean;
+  /** Ends the current wait, so the lost answer goes out now. */
+  retryNow: () => void;
+  /** Set when the first state after mount served a question whose clock had already run. */
+  resumed: Resumed | null;
   answerError: Error | null;
   /** Answers the current question; only the first answer per position goes out. */
   answer: (option: number) => void;
@@ -55,7 +78,8 @@ interface UseRun {
 
 /**
  * One run. `revealDelay` says how long an answer's outcome shows before the next state loads;
- * it is read when the outcome arrives.
+ * it is read when the outcome arrives. An answer lost to the network retries with back-off until
+ * the deadline plus the server's grace.
  */
 export function useRun(
   runId: string,
@@ -63,6 +87,7 @@ export function useRun(
 ): UseRun {
   const api = useApiClient();
   const [reveal, setReveal] = useState<Outcome | null>(null);
+  const [isRetrying, setRetrying] = useState(false);
   const query = useQuery(runQueryOptions(api, runId, reveal === null));
   const { refetch } = query;
   /** The position an answer went out for: a hold, a click, a key and the expiry share it. */
@@ -70,14 +95,46 @@ export function useRun(
   const holding = useRef(false);
   /** The clock reached 0 during a hold; a hold that ends without a commit then sends the timeout. */
   const expiredInHold = useRef(false);
+  /** The `performance.now()` instant after which the server takes no answer to this question. */
+  const cutoff = useRef(Infinity);
+  /** Ends the running back-off wait early. */
+  const wake = useRef<(() => void) | null>(null);
+
   const mutation = useMutation({
-    mutationFn: (body: { position: number; option: number | null }) =>
-      answerQuestion(api, runId, body),
+    // Offline, an answer fails and retries here instead of pausing until the browser is online.
+    networkMode: "always",
+    mutationFn: async (body: { position: number; option: number | null }) => {
+      try {
+        for (let attempt = 0; ; attempt++) {
+          try {
+            return await answerQuestion(api, runId, body);
+          } catch (err) {
+            if (!isNetwork(err) || performance.now() >= cutoff.current) {
+              throw err;
+            }
+          }
+          setRetrying(true);
+          await new Promise<void>((resolve) => {
+            const timer = setTimeout(
+              resolve,
+              backoffMs[Math.min(attempt, backoffMs.length - 1)],
+            );
+            wake.current = () => {
+              clearTimeout(timer);
+              resolve();
+            };
+          });
+          wake.current = null;
+        }
+      } finally {
+        setRetrying(false);
+      }
+    },
     onSuccess: setReveal,
     onError: (_err, { position }) => {
       // The answer did not count, so the question takes another one.
       if (latch.current === position) latch.current = null;
-      // A 409 means another tab answered first; the fresh state shows what happened.
+      // A 409 means the server has an answer already: a lost response or another tab. The fresh state shows it.
       void refetch();
     },
   });
@@ -100,7 +157,31 @@ export function useRun(
   const position = useRef<number | null>(null);
   useLayoutEffect(() => {
     position.current = question?.position ?? null;
+    const data = query.data;
+    if (!data || !question) return;
+    cutoff.current =
+      data.receivedAt +
+      Date.parse(question.deadline) -
+      Date.parse(data.state.serverNow) +
+      graceMs;
   });
+
+  // The first state after mount tells whether this mount resumed a question whose clock ran.
+  const [first, setFirst] = useState<LoadedRun | null>(null);
+  if (first === null && query.data) setFirst(query.data);
+  const served = first?.state.question;
+  let resumed: Resumed | null = null;
+  if (first && served) {
+    const leftMs =
+      Date.parse(served.deadline) - Date.parse(first.state.serverNow);
+    if (leftMs < served.limitMs) {
+      resumed = {
+        position: served.position,
+        secondsLeft: Math.max(0, Math.ceil(leftMs / 1000)),
+      };
+    }
+  }
+
   const busy = reveal !== null || mutation.isPending;
   const { mutate } = mutation;
 
@@ -131,14 +212,23 @@ export function useRun(
     [send],
   );
 
+  const retryNow = useCallback(() => wake.current?.(), []);
+
+  const { error, variables } = mutation;
   return {
     query,
     reveal,
     busy,
-    // An error belongs to the question it answered; a refetch that moves on drops it.
+    sending: mutation.isPending ? (variables?.option ?? null) : null,
+    isRetrying,
+    retryNow,
+    resumed,
+    // An error belongs to the question it answered; a refetch that moves on drops it. A 409
+    // only says the server has an answer, which the refetch shows.
     answerError:
-      mutation.variables?.position === question?.position
-        ? mutation.error
+      variables?.position === question?.position &&
+      !(error instanceof ApiError && error.code === "not_current_question")
+        ? error
         : null,
     answer: send,
     expire,

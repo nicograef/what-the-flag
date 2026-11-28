@@ -51,6 +51,11 @@ export const messages = defineMessages<{
   toastRecord: string;
   toastRecordBody: (n: number) => string;
   toastCreator: (name: string) => string;
+  resumed: (s: number) => string;
+  offline: string;
+  offlineRetry: string;
+  offlineClock: string;
+  sending: string;
   correctAnswer: string;
   yourAnswer: string;
   tooFastEnd: string;
@@ -164,6 +169,15 @@ export const messages = defineMessages<{
     toastRecord: "Neuer Rekord!",
     toastRecordBody: (n) => `Du hast deine ${n} geknackt. Weiter so.`,
     toastCreator: (name) => `Du hast ${name} überholt!`,
+    resumed: (s) =>
+      s === 1
+        ? "Willkommen zurück. Die Uhr lief weiter: noch 1 Sekunde."
+        : `Willkommen zurück. Die Uhr lief weiter: noch ${s} Sekunden.`,
+    offline:
+      "Keine Verbindung. Deine Antwort ist gespeichert, wir senden sie gleich nochmal.",
+    offlineRetry: "Jetzt senden",
+    offlineClock: "Achtung: Die Uhr auf dem Server läuft weiter.",
+    sending: "wird gesendet",
     correctAnswer: "richtige Antwort",
     yourAnswer: "deine Antwort",
     tooFastEnd:
@@ -285,6 +299,14 @@ export const messages = defineMessages<{
     toastRecord: "New record!",
     toastRecordBody: (n) => `You beat your ${n}. Keep going.`,
     toastCreator: (name) => `You passed ${name}!`,
+    resumed: (s) =>
+      s === 1
+        ? "Welcome back. The clock kept running: 1 second left."
+        : `Welcome back. The clock kept running: ${s} seconds left.`,
+    offline: "No connection. Your answer is kept; we'll send it again shortly.",
+    offlineRetry: "Send now",
+    offlineClock: "Note: the clock on the server keeps running.",
+    sending: "sending",
     correctAnswer: "correct answer",
     yourAnswer: "your answer",
     tooFastEnd: "The last answer came within 300 ms, so it counts as wrong.",

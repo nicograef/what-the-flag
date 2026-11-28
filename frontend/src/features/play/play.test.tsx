@@ -48,6 +48,7 @@ async function startPlaying(
 
 it("reveals a correct answer, then shows the next question", async () => {
   const { api, user } = await startPlaying();
+  expect(screen.queryByText(/Willkommen zurück/)).not.toBeInTheDocument();
 
   await answer(user, "Deutschland");
 
@@ -91,22 +92,55 @@ it("keeps the question under a failed refetch and retries it", async () => {
   });
 });
 
-it("drops a not-current-question error once the next question shows", async () => {
+it("shows the next state after a 409 for a lost answer", async () => {
   const { api, ids, user } = await startPlaying();
-  const answersRoute = `/api/runs/${ids.runId}/answers`;
-  // Another tab answers first.
-  await api.fetch(answersRoute, {
-    method: "POST",
-    body: JSON.stringify({ position: 0, option: 1 }),
-  });
-  api.fail(`POST ${answersRoute}`, 409, "not_current_question");
+  // The server takes the answer, but its response never arrives; the retry then finds it answered.
+  api.reject(`POST /api/runs/${ids.runId}/answers`, { delivered: true });
+
+  await answer(user, "Deutschland");
+  await user.click(await screen.findByRole("button", { name: "Jetzt senden" }));
+
+  expect(
+    await screen.findByRole("heading", {
+      name: "Was ist die Hauptstadt dieses Landes?",
+    }),
+  ).toBeInTheDocument();
+  expect(answers(api)).toEqual([
+    { position: 0, option: 1 },
+    { position: 0, option: 1 },
+  ]);
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+});
+
+it("keeps the pick and retries after a network error", async () => {
+  const { api, ids, user } = await startPlaying();
+  api.reject(`POST /api/runs/${ids.runId}/answers`);
 
   await answer(user, "Deutschland");
 
-  await screen.findByRole("heading", {
-    name: "Was ist die Hauptstadt dieses Landes?",
-  });
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Keine Verbindung. Deine Antwort ist gespeichert, wir senden sie gleich nochmal.",
+  );
+  expect(
+    screen.getByRole("button", { name: /^Deutschland\s*, wird gesendet$/ }),
+  ).toHaveAttribute("aria-disabled", "true");
+  expect(screen.getByRole("button", { name: "Frankreich" })).toHaveAttribute(
+    "aria-disabled",
+    "true",
+  );
+  expect(
+    screen.getByText("Achtung: Die Uhr auf dem Server läuft weiter."),
+  ).toBeInTheDocument();
+  expect(screen.queryByText("Leider falsch")).not.toBeInTheDocument();
+
+  await user.click(screen.getByRole("button", { name: "Jetzt senden" }));
+
+  expect(await screen.findByText("Richtig!")).toBeInTheDocument();
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(answers(api)).toEqual([
+    { position: 0, option: 1 },
+    { position: 0, option: 1 },
+  ]);
 });
 
 it("shows the result head, run strip and missed question after a wrong answer", async () => {
@@ -169,11 +203,15 @@ it("answers nothing when the time runs out", async () => {
   ).toBeInTheDocument();
 });
 
-it("resumes with the served question and its running deadline", async () => {
+it("shows the resume banner on a reload mid-question", async () => {
   const setNow = clock(1_000);
   await startPlaying({ remainingMs: 5_000 });
 
   expect(screen.getByText("5 s")).toBeInTheDocument();
+  expect(
+    screen.getByText("Willkommen zurück. Die Uhr lief weiter: noch 5 Sekunden.")
+      .parentElement,
+  ).toHaveAttribute("role", "status");
   expect(
     screen.getByRole("progressbar", { name: "Verbleibende Zeit" }),
   ).toHaveAttribute("aria-valuetext", "5 Sekunden");

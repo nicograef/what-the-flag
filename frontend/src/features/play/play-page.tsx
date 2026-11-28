@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { CircleAlert } from "lucide-react";
+import { CircleAlert, Timer, WifiOff } from "lucide-react";
 import {
   useCallback,
   useLayoutEffect,
@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { useParams } from "react-router";
+import { Banner } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useCoarsePointer } from "@/components/ui/hold-button";
@@ -119,13 +120,24 @@ function Run({ runId }: { runId: string }): ReactNode {
   const [holding, setHolding] = useState(false);
   /** The gap pill's target as the last render saw it; the reveal delay reads it. */
   const targetRef = useRef<GapTarget | null>(null);
-  const { query, reveal, busy, answerError, answer, expire, holdChange } =
-    useRun(runId, (outcome) => {
-      if (!outcome.correct) return missRevealMs;
-      return passedTarget(targetRef.current, outcome.score)
-        ? toastRevealMs
-        : revealMs;
-    });
+  const {
+    query,
+    reveal,
+    busy,
+    sending,
+    isRetrying,
+    retryNow,
+    resumed,
+    answerError,
+    answer,
+    expire,
+    holdChange,
+  } = useRun(runId, (outcome) => {
+    if (!outcome.correct) return missRevealMs;
+    return passedTarget(targetRef.current, outcome.score)
+      ? toastRevealMs
+      : revealMs;
+  });
   // Read once the run names its quiz, under the challenge page's key: a challenge run counts to its creator.
   const quizId = query.data?.state.quizId;
   const quiz = useQuery({
@@ -219,6 +231,8 @@ function Run({ runId }: { runId: string }): ReactNode {
       </div>
     );
     hint = t.resultSoon;
+  } else if (isRetrying) {
+    hint = t.offlineClock;
   } else if (coarse && firstRun && question.position < 3) {
     hint = holding ? t.holding : t.holdHint;
   }
@@ -226,6 +240,17 @@ function Run({ runId }: { runId: string }): ReactNode {
   return (
     <section className="flex min-h-full flex-1 flex-col pb-[max(1.25rem,env(safe-area-inset-bottom))]">
       {failure}
+      {isRetrying && (
+        <div className="mb-3">
+          <Banner
+            tone="danger"
+            icon={<WifiOff aria-hidden="true" />}
+            action={{ label: t.offlineRetry, onClick: retryNow }}
+          >
+            {t.offline}
+          </Banner>
+        </div>
+      )}
       <h1 className="sr-only">{state.name}</h1>
       <div className="flex min-h-12 items-center justify-between gap-3">
         <LevelPips
@@ -251,6 +276,13 @@ function Run({ runId }: { runId: string }): ReactNode {
         paused={busy}
         onExpire={expire}
       />
+      {resumed?.position === question.position && !shown && (
+        <div className="mt-3.5">
+          <Banner tone="warning" icon={<Timer aria-hidden="true" />}>
+            {t.resumed(resumed.secondsLeft)}
+          </Banner>
+        </div>
+      )}
       <QuestionCard
         question={question}
         marks={
@@ -258,6 +290,7 @@ function Run({ runId }: { runId: string }): ReactNode {
             ? { correct: shown.correctOption, chosen: shown.chosenOption }
             : null
         }
+        sending={isRetrying ? sending : null}
         outcome={outcome}
         hint={hint}
         disabled={busy}
