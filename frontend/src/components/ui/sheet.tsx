@@ -3,16 +3,18 @@ import { useEffect, useId, useRef, type ReactNode } from "react";
 
 /**
  * A bottom sheet on a native `<dialog>` opened with `showModal()`, so the page behind is inert.
- * Escape and the close button close it; focus then returns to the element that opened it.
+ * It is open while `opener` is set; Escape and the close button close it, and focus returns to
+ * `opener`. Passed in, because Safari does not focus a button on click.
  */
 export function Sheet({
-  open,
+  opener,
   title,
   closeLabel,
   onClose,
   children,
 }: {
-  open: boolean;
+  /** The control that opened the sheet; null while it is closed. */
+  opener: HTMLElement | null;
   title: string;
   /** The close button's accessible name. */
   closeLabel: string;
@@ -20,22 +22,18 @@ export function Sheet({
   children: ReactNode;
 }): ReactNode {
   const ref = useRef<HTMLDialogElement>(null);
-  const trigger = useRef<HTMLElement | null>(null);
   const titleId = useId();
+  const open = opener !== null;
 
   useEffect(() => {
     const dialog = ref.current;
-    if (!dialog || !open) return;
-    trigger.current =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+    if (!dialog || !opener) return;
     dialog.showModal();
     return () => {
       dialog.close();
-      trigger.current?.focus();
+      opener.focus();
     };
-  }, [open]);
+  }, [opener]);
 
   return (
     <dialog

@@ -266,8 +266,11 @@ export function RunResult({
   const queryClient = useQueryClient();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [guarded, setGuarded] = useState(true);
-  /** The open share sheet's message: the run, or the news for a caught or beaten creator. */
-  const [sharing, setSharing] = useState<"run" | "won" | null>(null);
+  /** The open share sheet: its message (the run, or the news for a caught or beaten creator) and its opener. */
+  const [sharing, setSharing] = useState<{
+    message: "run" | "won";
+    opener: HTMLElement;
+  } | null>(null);
   const { best, score } = result;
   const layout = selectHead(result, creator);
   const record = layout.head === "headFirst" || layout.head === "headRecord";
@@ -378,7 +381,12 @@ export function RunResult({
             variant={variant}
             guarded={guarded}
             className={size}
-            onClick={() => setSharing(kind === "tellCreator" ? "won" : "run")}
+            onClick={(event) =>
+              setSharing({
+                message: kind === "tellCreator" ? "won" : "run",
+                opener: event.currentTarget,
+              })
+            }
           >
             <Share2 aria-hidden="true" />
             {labels[kind]}
@@ -498,12 +506,12 @@ export function RunResult({
         {layout.secondary && action(layout.secondary, false)}
       </div>
       <ShareSheet
-        open={sharing !== null}
+        opener={sharing?.opener ?? null}
         text={buildShareText(locale, {
           score,
           cells,
           url: `${window.location.origin}/q/${run.quizId}`,
-          wonOver: sharing === "won" ? creatorName : undefined,
+          wonOver: sharing?.message === "won" ? creatorName : undefined,
         })}
         onClose={() => setSharing(null)}
       />

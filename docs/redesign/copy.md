@@ -11,7 +11,7 @@ These keys keep their current text. Everything else in these files is replaced b
 | File | Keys |
 | --- | --- |
 | `src/app/messages.ts` | `brand`, `leaderboard`, `switchLocale`, `switchLocaleShort`, `credits`, `notFound`, `backHome` |
-| `src/features/play/messages.ts` | `nameLabel`, `questions` (one sentence per type id), `flag`, `flagOption`, `timeLeft`, `seconds`, `secondsShort`, `correct`, `tooFast`, `correctAnswer`, `yourAnswer`, `loading`, `retry`, `copiedShort`, `errors` |
+| `src/features/play/messages.ts` | `nameLabel`, `questions` (one sentence per type id), `flag`, `flagOption`, `timeLeft`, `seconds`, `secondsShort`, `correct`, `tooFast`, `correctAnswer`, `yourAnswer`, `loading`, `retry`, `errors` |
 | `src/features/challenge/messages.ts` | `loading`, `retry`, `home`, `errors` |
 | `src/features/leaderboard/messages.ts` | `empty`, `loading`, `retry` |
 | `src/lib/i18n/error-messages.ts` | every key |

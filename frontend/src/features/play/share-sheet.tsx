@@ -12,11 +12,12 @@ const copiedMs = 2000;
  * has one, or copies it.
  */
 export function ShareSheet({
-  open,
+  opener,
   text,
   onClose,
 }: {
-  open: boolean;
+  /** The share button that opened the sheet; null while it is closed. */
+  opener: HTMLElement | null;
   /** The whole message, link included. */
   text: string;
   onClose: () => void;
@@ -50,7 +51,7 @@ export function ShareSheet({
 
   return (
     <Sheet
-      open={open}
+      opener={opener}
       title={t.sheetTitle}
       closeLabel={t.close}
       onClose={onClose}

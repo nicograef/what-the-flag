@@ -250,9 +250,14 @@
   [data-square] {
     border: 1px solid CanvasText;
   }
+  [data-pip="done"] {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
   [data-hold-fill],
   [role="tab"][aria-selected="true"] {
     background: Highlight;
+    color: HighlightText;
     forced-color-adjust: none;
   }
 }
