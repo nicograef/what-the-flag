@@ -106,9 +106,10 @@ func checkRun(t *testing.T, s space, seed uint64) {
 		}
 		// group ranks a country as a distractor: the target's continent within the ceiling at levels 1 to 3,
 		// the continent, then the rest, with continents under eight countries counted as the rest.
+		small := regionSize[target.Region] < 8
 		group := func(c *country.Country) int {
 			switch {
-			case c.Region != target.Region || regionSize[target.Region] < 8:
+			case small || c.Region != target.Region:
 				return 2
 			case level <= 3 && c.Fame <= ceiling:
 				return 0
@@ -129,10 +130,11 @@ func checkRun(t *testing.T, s space, seed uint64) {
 			if i == q.Correct {
 				continue
 			}
+			og := group(s.byCode[o])
 			for j := range pool {
 				c := &pool[j]
-				if group(c) < group(s.byCode[o]) && !slices.Contains(q.Options[:], c.Code) && !clashes(c) {
-					fail("option %s is in group %d, though %s of group %d fits", o, group(s.byCode[o]), c.Code, group(c))
+				if cg := group(c); cg < og && !slices.Contains(q.Options[:], c.Code) && !clashes(c) {
+					fail("option %s is in group %d, though %s of group %d fits", o, og, c.Code, cg)
 				}
 			}
 		}

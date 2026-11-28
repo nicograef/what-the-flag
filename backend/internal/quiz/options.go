@@ -226,14 +226,14 @@ func candidates(cat Catalogue, pool []country.Country, c Case, level int) option
 			families[f] = true
 		}
 	}
-	// best holds each value's best candidate group; a true or contested value holds -1.
-	best := make(map[string]int, 2*len(pool))
+	// index maps each value to its entry in order and groups; a true or contested value maps to -1.
+	index := make(map[string]int, 2*len(pool))
 	for _, v := range sets.True {
-		best[v] = -1
+		index[v] = -1
 	}
 	contest := func(v string) {
-		if _, ok := best[v]; !ok {
-			best[v] = -1
+		if _, ok := index[v]; !ok {
+			index[v] = -1
 			sets.Contested = append(sets.Contested, v)
 		}
 	}
@@ -251,22 +251,25 @@ func candidates(cat Catalogue, pool []country.Country, c Case, level int) option
 			}
 		}
 	}
+	// order and groups hold the false values in pool order and the best group of any country holding each.
 	order := make([]string, 0, 2*len(pool))
+	groups := make([]int, 0, 2*len(pool))
 	for i := range pool {
 		g := group(&pool[i])
 		for _, v := range values(&pool[i], answer) {
-			switch prev, ok := best[v]; {
+			switch k, ok := index[v]; {
 			case !ok:
+				index[v] = len(order)
 				order = append(order, v)
-				best[v] = g
-			case g < prev:
-				best[v] = g
+				groups = append(groups, g)
+			case k >= 0 && g < groups[k]:
+				groups[k] = g
 			}
 		}
 	}
 	sets.False = make([][]string, 3)
-	for _, v := range order {
-		sets.False[best[v]] = append(sets.False[best[v]], v)
+	for k, v := range order {
+		sets.False[groups[k]] = append(sets.False[groups[k]], v)
 	}
 	return sets
 }

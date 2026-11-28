@@ -284,10 +284,14 @@ func TestQuestionSpace(t *testing.T) {
 	if !slices.Equal(giveaways, wantGiveaways) {
 		t.Errorf("giveaway targets %q, want %q", giveaways, wantGiveaways)
 	}
+	present := map[string]bool{}
+	for _, c := range cases {
+		present[c.Type.ID()+" "+c.Target] = true
+	}
 	for _, ty := range Types {
 		for i := range cat.pool {
 			code := cat.pool[i].Code
-			has := slices.ContainsFunc(cases, func(c Case) bool { return c.Type == ty && c.Target == code })
+			has := present[ty.ID()+" "+code]
 			skipped := namesCapital(ty) && slices.Contains(wantGiveaways, code)
 			if ty.Prompt != AttrRegionalLanguage && has == skipped {
 				t.Errorf("%s %s: case present %t, giveaway skip %t", ty.ID(), code, has, skipped)
