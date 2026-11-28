@@ -200,7 +200,7 @@ No route negotiates language. There is no authentication. State-changing request
 
 ## Out of Scope
 
-- Accounts, login, sessions, profiles, avatars, friends and duels.
+- Accounts, logins, profiles, avatars, friends and duels. An anonymous player key recognises a returning browser without either.
 - An installable app. Milestones and confetti come with [prd-redesign.md](prd-redesign.md), the daily quiz with [prd-daily-quiz.md](prd-daily-quiz.md).
 - A word filter for names; the owner hides abusive runs.
 - Captchas from third parties, stored IP addresses, per-run flag URLs and client obfuscation.
