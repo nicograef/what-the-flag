@@ -73,6 +73,7 @@ GROUP BY q.type, level
 ORDER BY q.type, level;
 
 -- A distractor's lure share is the share of the answers to questions offering it that picked it; n counts those answers.
+-- n ≥ 10 is the question-engine PRD's review threshold for a lure share.
 \echo 'Distractor lure shares'
 SELECT q.type, q.target, o.option, count(*) AS n,
   round(avg(coalesce(q.options[a.option_index + 1] = o.option, false)::int), 3) AS lure_share
@@ -83,4 +84,5 @@ JOIN quiz_questions q ON q.quiz_id = r.quiz_id AND q.position = a.position
 CROSS JOIN LATERAL unnest(q.options) WITH ORDINALITY AS o(option, i)
 WHERE (a.correct IS NOT NULL OR e.id IS NOT NULL) AND NOT r.hidden AND o.i <> q.correct_index + 1
 GROUP BY q.type, q.target, o.option
+HAVING count(*) >= 10
 ORDER BY lure_share DESC, n DESC, q.type, q.target, o.option;
