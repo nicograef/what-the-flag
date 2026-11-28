@@ -17,6 +17,8 @@ const (
 	// Fame tiers by area rank in the pool, largest first: ranks up to tier1MaxRank are tier 1.
 	tier1MaxRank = 50
 	tier2MaxRank = 120
+	// maxSpokenIn caps the countries a regional language is spoken in, so a question has three countries without it.
+	maxSpokenIn = 5
 )
 
 var (
@@ -28,8 +30,9 @@ var (
 		"Europe":   {De: "Europa", En: "Europe"},
 		"Oceania":  {De: "Ozeanien", En: "Oceania"},
 	}
-	codeRe    = regexp.MustCompile(`^[A-Z]{2}$`)
-	flagKeyRe = regexp.MustCompile(`^[0-9a-f]{10}$`)
+	regionalKinds = []string{"creole", "indigenous", "minority", "regional"}
+	codeRe        = regexp.MustCompile(`^[A-Z]{2}$`)
+	flagKeyRe     = regexp.MustCompile(`^[0-9a-f]{10}$`)
 	// yearRangeRe matches the "(1964–2022)" CLDR appends to the name of a withdrawn code.
 	yearRangeRe = regexp.MustCompile(`\(\d{4}\s*[–—-]\s*\d{4}\)`)
 )
@@ -81,6 +84,7 @@ func build(src sources) (country.Dataset, []string) {
 	currencies := b.codeLists("currencies", b.src.overrides.Currencies, func(c mledozeCountry) []string {
 		return slices.Clone(c.Currencies)
 	})
+	regional := b.regionalLanguages(languages)
 	fame := b.fameTiers()
 
 	countries := make([]country.Country, 0, len(b.pool))
@@ -90,29 +94,36 @@ func build(src sources) (country.Dataset, []string) {
 		}
 		c := capitals[code]
 		countries = append(countries, country.Country{
-			Code:         code,
-			Name:         names[code],
-			Capital:      c.primary,
-			Region:       b.byCode[code].Region,
-			OtherRegions: append([]string{}, otherRegions[code]...),
-			Languages:    languages[code],
-			Currencies:   currencies[code],
-			Fame:         fame[code],
-			FlagKey:      country.FlagKey(code),
-			Lookalikes:   append([]string{}, lookalikes[code]...),
+			Code:              code,
+			Name:              names[code],
+			Capital:           c.primary,
+			Region:            b.byCode[code].Region,
+			OtherRegions:      append([]string{}, otherRegions[code]...),
+			Languages:         languages[code],
+			RegionalLanguages: append([]string{}, regional[code]...),
+			Currencies:        currencies[code],
+			Fame:              fame[code],
+			FlagKey:           country.FlagKey(code),
+			Lookalikes:        append([]string{}, lookalikes[code]...),
 		})
 	}
 	labels := country.Labels{Languages: map[string]country.Names{}, Currencies: map[string]country.CurrencyLabel{}, Regions: map[string]country.Names{}}
+	languageLabel := func(owner, code string) {
+		n := src.languageNames[code]
+		if n.De == "" || n.En == "" {
+			b.p.add("%s: language code %s lacks a German or English CLDR name %+v", owner, code, n)
+		}
+		if yearRangeRe.MatchString(n.De) || yearRangeRe.MatchString(n.En) {
+			b.p.add("%s: language code %s is withdrawn, its CLDR name is %+v", owner, code, n)
+		}
+		labels.Languages[code] = n
+	}
+	for _, code := range slices.Sorted(maps.Keys(src.regional)) {
+		languageLabel(regionalPath, code)
+	}
 	for _, c := range countries {
 		for _, code := range c.Languages {
-			n := src.languageNames[code]
-			if n.De == "" || n.En == "" {
-				b.p.add("%s: language code %s lacks a German or English CLDR name %+v", c.Code, code, n)
-			}
-			if yearRangeRe.MatchString(n.De) || yearRangeRe.MatchString(n.En) {
-				b.p.add("%s: language code %s is withdrawn, its CLDR name is %+v", c.Code, code, n)
-			}
-			labels.Languages[code] = n
+			languageLabel(c.Code, code)
 		}
 		for _, code := range c.Currencies {
 			u, ok := src.currencyUnits[code]
@@ -414,6 +425,50 @@ func (b *builder) codeLists(section string, ov map[string]listOverride, source f
 		lists[code] = list
 	}
 	return lists
+}
+
+// regionalLanguages validates regional-languages.json and returns each pool code's regional languages, sorted.
+// A language counts as spoken in every country of its spokenIn list and every country it is official in.
+func (b *builder) regionalLanguages(official map[string][]string) map[string][]string {
+	out := map[string][]string{}
+	for _, lang := range slices.Sorted(maps.Keys(b.src.regional)) {
+		r, name := b.src.regional[lang], regionalPath+" "+lang
+		if !slices.Contains(regionalKinds, r.Kind) {
+			b.p.add("%s: kind %q is not one of %v", name, r.Kind, regionalKinds)
+		}
+		if strings.TrimSpace(r.Source) == "" {
+			b.p.add("%s: no source", name)
+		}
+		if len(r.SpokenIn) == 0 || len(r.SpokenIn) > maxSpokenIn {
+			b.p.add("%s: spokenIn %v holds %d countries, want 1-%d", name, r.SpokenIn, len(r.SpokenIn), maxSpokenIn)
+		}
+		spoken := map[string]bool{}
+		for i, code := range r.SpokenIn {
+			switch {
+			case !b.inPool(code):
+				b.p.add("%s: spokenIn %s is not a pool code", name, code)
+			case i > 0 && code <= r.SpokenIn[i-1]:
+				b.p.add("%s: spokenIn %v is not distinct and ascending", name, r.SpokenIn)
+			default:
+				spoken[code] = true
+			}
+		}
+		for _, code := range b.pool {
+			if slices.Contains(official[code], lang) {
+				spoken[code] = true
+			}
+		}
+		if len(spoken) > maxSpokenIn {
+			b.p.add("%s: spoken in %v with the countries it is official in, more than %d", name, slices.Sorted(maps.Keys(spoken)), maxSpokenIn)
+		}
+		for code := range spoken {
+			out[code] = append(out[code], lang)
+		}
+	}
+	for _, list := range out {
+		slices.Sort(list)
+	}
+	return out
 }
 
 // fameTiers ranks the pool by area, largest first, and applies the fameTiers overrides.

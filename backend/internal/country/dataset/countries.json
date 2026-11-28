@@ -15,6 +15,9 @@
       "languages": [
         "ca"
       ],
+      "regionalLanguages": [
+        "ca"
+      ],
       "currencies": [
         "EUR"
       ],
@@ -37,6 +40,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "AED"
       ],
@@ -58,6 +62,9 @@
       "otherRegions": [],
       "languages": [
         "fa-AF",
+        "ps"
+      ],
+      "regionalLanguages": [
         "ps"
       ],
       "currencies": [
@@ -82,6 +89,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -104,6 +112,7 @@
       "languages": [
         "sq"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "ALL"
       ],
@@ -128,6 +137,10 @@
       "languages": [
         "hy"
       ],
+      "regionalLanguages": [
+        "arc",
+        "ku"
+      ],
       "currencies": [
         "AMD"
       ],
@@ -149,6 +162,14 @@
       "otherRegions": [],
       "languages": [
         "pt"
+      ],
+      "regionalLanguages": [
+        "hz",
+        "kg",
+        "kj",
+        "kmb",
+        "ln",
+        "umb"
       ],
       "currencies": [
         "AOA"
@@ -172,6 +193,13 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [
+        "arn",
+        "ay",
+        "cy",
+        "gn",
+        "qu"
+      ],
       "currencies": [
         "ARS"
       ],
@@ -194,6 +222,7 @@
       "languages": [
         "de"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -216,6 +245,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "AUD"
       ],
@@ -239,6 +269,9 @@
       ],
       "languages": [
         "az"
+      ],
+      "regionalLanguages": [
+        "av"
       ],
       "currencies": [
         "AZN"
@@ -264,6 +297,7 @@
         "hr",
         "sr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "BAM"
       ],
@@ -286,6 +320,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "BBD"
       ],
@@ -306,6 +341,9 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
+        "bn"
+      ],
+      "regionalLanguages": [
         "bn"
       ],
       "currencies": [
@@ -332,6 +370,11 @@
         "fr",
         "nl"
       ],
+      "regionalLanguages": [
+        "li",
+        "pcd",
+        "wa"
+      ],
       "currencies": [
         "EUR"
       ],
@@ -354,6 +397,7 @@
       "languages": [
         "fr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -375,6 +419,9 @@
       "otherRegions": [],
       "languages": [
         "bg"
+      ],
+      "regionalLanguages": [
+        "gag"
       ],
       "currencies": [
         "EUR"
@@ -398,6 +445,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "BHD"
       ],
@@ -422,6 +470,7 @@
         "fr",
         "rn"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "BIF"
       ],
@@ -443,6 +492,11 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "ee",
+        "fon",
+        "yo"
       ],
       "currencies": [
         "XOF"
@@ -466,6 +520,7 @@
       "languages": [
         "ms"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "BND",
         "SGD"
@@ -492,6 +547,11 @@
         "gn",
         "qu"
       ],
+      "regionalLanguages": [
+        "ay",
+        "gn",
+        "qu"
+      ],
       "currencies": [
         "BOB"
       ],
@@ -514,6 +574,10 @@
       "languages": [
         "pt"
       ],
+      "regionalLanguages": [
+        "gn",
+        "nds"
+      ],
       "currencies": [
         "BRL"
       ],
@@ -535,6 +599,9 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "ht"
       ],
       "currencies": [
         "BSD",
@@ -559,6 +626,9 @@
       "languages": [
         "dz"
       ],
+      "regionalLanguages": [
+        "ne"
+      ],
       "currencies": [
         "BTN",
         "INR"
@@ -581,6 +651,15 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "af",
+        "hz",
+        "loz",
+        "naq",
+        "nd",
+        "tn",
+        "xh"
       ],
       "currencies": [
         "BWP"
@@ -605,6 +684,7 @@
         "be",
         "ru"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "BYN"
       ],
@@ -626,6 +706,9 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "pdc"
       ],
       "currencies": [
         "BZD"
@@ -650,6 +733,14 @@
         "en",
         "fr"
       ],
+      "regionalLanguages": [
+        "cr",
+        "gd",
+        "iu",
+        "lkt",
+        "oj",
+        "pdc"
+      ],
       "currencies": [
         "CAD"
       ],
@@ -671,6 +762,14 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "bem",
+        "kg",
+        "ln",
+        "lua",
+        "rw",
+        "sg"
       ],
       "currencies": [
         "CDF"
@@ -695,6 +794,10 @@
         "fr",
         "sg"
       ],
+      "regionalLanguages": [
+        "ln",
+        "sg"
+      ],
       "currencies": [
         "XAF"
       ],
@@ -716,6 +819,11 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "fan",
+        "kg",
+        "ln"
       ],
       "currencies": [
         "XAF"
@@ -742,6 +850,10 @@
         "it",
         "rm"
       ],
+      "regionalLanguages": [
+        "frp",
+        "rm"
+      ],
       "currencies": [
         "CHF"
       ],
@@ -764,6 +876,9 @@
       "languages": [
         "fr"
       ],
+      "regionalLanguages": [
+        "kpe"
+      ],
       "currencies": [
         "XOF"
       ],
@@ -785,6 +900,10 @@
       "otherRegions": [],
       "languages": [
         "es"
+      ],
+      "regionalLanguages": [
+        "arn",
+        "ay"
       ],
       "currencies": [
         "CLP"
@@ -809,6 +928,12 @@
         "en",
         "fr"
       ],
+      "regionalLanguages": [
+        "ewo",
+        "fan",
+        "ig",
+        "tiv"
+      ],
       "currencies": [
         "XAF"
       ],
@@ -830,6 +955,14 @@
       "otherRegions": [],
       "languages": [
         "zh"
+      ],
+      "regionalLanguages": [
+        "bo",
+        "bua",
+        "hmn",
+        "mn",
+        "ug",
+        "za"
       ],
       "currencies": [
         "CNY"
@@ -853,6 +986,10 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [
+        "guc",
+        "qu"
+      ],
       "currencies": [
         "COP"
       ],
@@ -874,6 +1011,10 @@
       "otherRegions": [],
       "languages": [
         "es"
+      ],
+      "regionalLanguages": [
+        "ht",
+        "jam"
       ],
       "currencies": [
         "CRC"
@@ -897,6 +1038,9 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [
+        "ht"
+      ],
       "currencies": [
         "CUP"
       ],
@@ -918,6 +1062,9 @@
       "otherRegions": [],
       "languages": [
         "pt"
+      ],
+      "regionalLanguages": [
+        "kea"
       ],
       "currencies": [
         "CVE"
@@ -944,6 +1091,7 @@
         "el",
         "tr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -966,6 +1114,9 @@
       "languages": [
         "cs"
       ],
+      "regionalLanguages": [
+        "szl"
+      ],
       "currencies": [
         "CZK"
       ],
@@ -987,6 +1138,12 @@
       "otherRegions": [],
       "languages": [
         "de"
+      ],
+      "regionalLanguages": [
+        "frr",
+        "hsb",
+        "li",
+        "nds"
       ],
       "currencies": [
         "EUR"
@@ -1011,6 +1168,10 @@
         "ar",
         "fr"
       ],
+      "regionalLanguages": [
+        "aa",
+        "so"
+      ],
       "currencies": [
         "DJF"
       ],
@@ -1032,6 +1193,11 @@
       "otherRegions": [],
       "languages": [
         "da"
+      ],
+      "regionalLanguages": [
+        "frr",
+        "kl",
+        "nds"
       ],
       "currencies": [
         "DKK"
@@ -1055,6 +1221,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -1077,6 +1244,9 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [
+        "ht"
+      ],
       "currencies": [
         "DOP"
       ],
@@ -1098,6 +1268,10 @@
       "otherRegions": [],
       "languages": [
         "ar"
+      ],
+      "regionalLanguages": [
+        "kab",
+        "rif"
       ],
       "currencies": [
         "DZD"
@@ -1122,6 +1296,9 @@
         "es",
         "qu"
       ],
+      "regionalLanguages": [
+        "qu"
+      ],
       "currencies": [
         "USD"
       ],
@@ -1143,6 +1320,9 @@
       "otherRegions": [],
       "languages": [
         "et"
+      ],
+      "regionalLanguages": [
+        "vro"
       ],
       "currencies": [
         "EUR"
@@ -1168,6 +1348,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EGP"
       ],
@@ -1192,6 +1373,11 @@
         "en",
         "ti"
       ],
+      "regionalLanguages": [
+        "aa",
+        "ti",
+        "tig"
+      ],
       "currencies": [
         "ERN"
       ],
@@ -1213,6 +1399,14 @@
       "otherRegions": [],
       "languages": [
         "es"
+      ],
+      "regionalLanguages": [
+        "ast",
+        "ca",
+        "eu",
+        "gl",
+        "oc",
+        "rif"
       ],
       "currencies": [
         "EUR"
@@ -1236,6 +1430,13 @@
       "languages": [
         "am"
       ],
+      "regionalLanguages": [
+        "aa",
+        "nus",
+        "om",
+        "so",
+        "ti"
+      ],
       "currencies": [
         "ETB"
       ],
@@ -1258,6 +1459,10 @@
       "languages": [
         "fi",
         "sv"
+      ],
+      "regionalLanguages": [
+        "krl",
+        "se"
       ],
       "currencies": [
         "EUR"
@@ -1283,6 +1488,9 @@
         "fj",
         "hif"
       ],
+      "regionalLanguages": [
+        "gil"
+      ],
       "currencies": [
         "FJD"
       ],
@@ -1305,6 +1513,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -1326,6 +1535,16 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "br",
+        "ca",
+        "co",
+        "eu",
+        "frp",
+        "oc",
+        "pcd",
+        "wa"
       ],
       "currencies": [
         "EUR"
@@ -1349,6 +1568,10 @@
       "languages": [
         "fr"
       ],
+      "regionalLanguages": [
+        "fan",
+        "kg"
+      ],
       "currencies": [
         "XAF"
       ],
@@ -1370,6 +1593,13 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "cy",
+        "ga",
+        "gd",
+        "kw",
+        "sco"
       ],
       "currencies": [
         "GBP"
@@ -1393,6 +1623,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -1417,6 +1648,10 @@
       "languages": [
         "ka"
       ],
+      "regionalLanguages": [
+        "av",
+        "os"
+      ],
       "currencies": [
         "GEL"
       ],
@@ -1438,6 +1673,10 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "ee",
+        "gaa"
       ],
       "currencies": [
         "GHS"
@@ -1461,6 +1700,12 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [
+        "dyo",
+        "kri",
+        "srr",
+        "wo"
+      ],
       "currencies": [
         "GMD"
       ],
@@ -1482,6 +1727,11 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "kpe",
+        "men",
+        "sus"
       ],
       "currencies": [
         "GNF"
@@ -1507,6 +1757,10 @@
         "fr",
         "pt"
       ],
+      "regionalLanguages": [
+        "fan",
+        "ig"
+      ],
       "currencies": [
         "XAF"
       ],
@@ -1529,6 +1783,7 @@
       "languages": [
         "el"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1550,6 +1805,9 @@
       "otherRegions": [],
       "languages": [
         "es"
+      ],
+      "regionalLanguages": [
+        "quc"
       ],
       "currencies": [
         "GTQ"
@@ -1573,6 +1831,10 @@
       "languages": [
         "pt"
       ],
+      "regionalLanguages": [
+        "dyo",
+        "sus"
+      ],
       "currencies": [
         "XOF"
       ],
@@ -1595,6 +1857,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "GYD"
       ],
@@ -1617,6 +1880,7 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "HNL"
       ],
@@ -1639,6 +1903,7 @@
       "languages": [
         "hr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -1660,6 +1925,9 @@
       "otherRegions": [],
       "languages": [
         "fr",
+        "ht"
+      ],
+      "regionalLanguages": [
         "ht"
       ],
       "currencies": [
@@ -1684,6 +1952,7 @@
       "languages": [
         "hu"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "HUF"
       ],
@@ -1707,6 +1976,12 @@
       ],
       "languages": [
         "id"
+      ],
+      "regionalLanguages": [
+        "ban",
+        "jv",
+        "su",
+        "tet"
       ],
       "currencies": [
         "IDR"
@@ -1733,6 +2008,10 @@
         "en",
         "ga"
       ],
+      "regionalLanguages": [
+        "ga",
+        "sco"
+      ],
       "currencies": [
         "EUR"
       ],
@@ -1755,6 +2034,7 @@
       "languages": [
         "he"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "ILS"
       ],
@@ -1777,6 +2057,18 @@
       "languages": [
         "en",
         "hi"
+      ],
+      "regionalLanguages": [
+        "bn",
+        "bo",
+        "ks",
+        "mai",
+        "mr",
+        "ne",
+        "pa",
+        "sd",
+        "ta",
+        "te"
       ],
       "currencies": [
         "INR"
@@ -1801,6 +2093,10 @@
         "ar",
         "ckb"
       ],
+      "regionalLanguages": [
+        "arc",
+        "ku"
+      ],
       "currencies": [
         "IQD"
       ],
@@ -1822,6 +2118,10 @@
       "otherRegions": [],
       "languages": [
         "fa"
+      ],
+      "regionalLanguages": [
+        "arc",
+        "ku"
       ],
       "currencies": [
         "IRR"
@@ -1845,6 +2145,7 @@
       "languages": [
         "is"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "ISK"
       ],
@@ -1866,6 +2167,17 @@
       "otherRegions": [],
       "languages": [
         "it"
+      ],
+      "regionalLanguages": [
+        "ca",
+        "co",
+        "frp",
+        "fur",
+        "lld",
+        "nap",
+        "oc",
+        "sc",
+        "scn"
       ],
       "currencies": [
         "EUR"
@@ -1889,6 +2201,9 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [
+        "jam"
+      ],
       "currencies": [
         "JMD"
       ],
@@ -1911,6 +2226,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "JOD"
       ],
@@ -1933,6 +2249,7 @@
       "languages": [
         "ja"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "JPY"
       ],
@@ -1955,6 +2272,15 @@
       "languages": [
         "en",
         "sw"
+      ],
+      "regionalLanguages": [
+        "kde",
+        "ki",
+        "kln",
+        "luo",
+        "mas",
+        "om",
+        "so"
       ],
       "currencies": [
         "KES"
@@ -1979,6 +2305,9 @@
         "ky",
         "ru"
       ],
+      "regionalLanguages": [
+        "ug"
+      ],
       "currencies": [
         "KGS"
       ],
@@ -2000,6 +2329,10 @@
       "otherRegions": [],
       "languages": [
         "km"
+      ],
+      "regionalLanguages": [
+        "km",
+        "lo"
       ],
       "currencies": [
         "KHR",
@@ -2023,6 +2356,9 @@
       "otherRegions": [],
       "languages": [
         "en",
+        "gil"
+      ],
+      "regionalLanguages": [
         "gil"
       ],
       "currencies": [
@@ -2049,6 +2385,7 @@
         "fr",
         "swb"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "KMF"
       ],
@@ -2071,6 +2408,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -2093,6 +2431,7 @@
       "languages": [
         "ko"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "KPW"
       ],
@@ -2115,6 +2454,7 @@
       "languages": [
         "ko"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "KRW"
       ],
@@ -2137,6 +2477,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "KWD"
       ],
@@ -2162,6 +2503,9 @@
         "kk",
         "ru"
       ],
+      "regionalLanguages": [
+        "ug"
+      ],
       "currencies": [
         "KZT"
       ],
@@ -2182,6 +2526,10 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
+        "lo"
+      ],
+      "regionalLanguages": [
+        "hmn",
         "lo"
       ],
       "currencies": [
@@ -2206,6 +2554,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "LBP"
       ],
@@ -2228,6 +2577,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -2250,6 +2600,7 @@
       "languages": [
         "de"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "CHF"
       ],
@@ -2271,6 +2622,9 @@
       "otherRegions": [],
       "languages": [
         "si",
+        "ta"
+      ],
+      "regionalLanguages": [
         "ta"
       ],
       "currencies": [
@@ -2295,6 +2649,11 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [
+        "kpe",
+        "men",
+        "vai"
+      ],
       "currencies": [
         "LRD"
       ],
@@ -2318,6 +2677,10 @@
         "en",
         "st"
       ],
+      "regionalLanguages": [
+        "st",
+        "xh"
+      ],
       "currencies": [
         "LSL",
         "ZAR"
@@ -2340,6 +2703,9 @@
       "otherRegions": [],
       "languages": [
         "lt"
+      ],
+      "regionalLanguages": [
+        "sgs"
       ],
       "currencies": [
         "EUR"
@@ -2365,6 +2731,7 @@
         "fr",
         "lb"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2386,6 +2753,9 @@
       "otherRegions": [],
       "languages": [
         "lv"
+      ],
+      "regionalLanguages": [
+        "ltg"
       ],
       "currencies": [
         "EUR"
@@ -2409,6 +2779,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "LYD"
       ],
@@ -2432,6 +2803,10 @@
         "ar",
         "zgh"
       ],
+      "regionalLanguages": [
+        "rif",
+        "shi"
+      ],
       "currencies": [
         "MAD"
       ],
@@ -2453,6 +2828,9 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "oc"
       ],
       "currencies": [
         "EUR"
@@ -2477,6 +2855,9 @@
       "otherRegions": [],
       "languages": [
         "ro"
+      ],
+      "regionalLanguages": [
+        "gag"
       ],
       "currencies": [
         "MDL"
@@ -2503,6 +2884,7 @@
         "sq",
         "sr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2526,6 +2908,7 @@
         "fr",
         "mg"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "MGA"
       ],
@@ -2549,6 +2932,7 @@
         "en",
         "mh"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -2572,6 +2956,7 @@
         "mk",
         "sq"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "MKD"
       ],
@@ -2599,6 +2984,7 @@
         "snk",
         "tmh"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -2621,6 +3007,10 @@
       "languages": [
         "my"
       ],
+      "regionalLanguages": [
+        "hmn",
+        "ne"
+      ],
       "currencies": [
         "MMK"
       ],
@@ -2641,6 +3031,10 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
+        "mn"
+      ],
+      "regionalLanguages": [
+        "bua",
         "mn"
       ],
       "currencies": [
@@ -2665,6 +3059,10 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [
+        "srr",
+        "wo"
+      ],
       "currencies": [
         "MRU"
       ],
@@ -2688,6 +3086,7 @@
         "en",
         "mt"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -2712,6 +3111,9 @@
         "fr",
         "mfe"
       ],
+      "regionalLanguages": [
+        "mfe"
+      ],
       "currencies": [
         "MUR"
       ],
@@ -2734,6 +3136,7 @@
       "languages": [
         "dv"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "MVR"
       ],
@@ -2755,6 +3158,12 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "kde",
+        "ny",
+        "tum",
+        "yao"
       ],
       "currencies": [
         "MWK"
@@ -2778,6 +3187,9 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [
+        "zap"
+      ],
       "currencies": [
         "MXN"
       ],
@@ -2799,6 +3211,10 @@
       "otherRegions": [],
       "languages": [
         "ms"
+      ],
+      "regionalLanguages": [
+        "jv",
+        "ta"
       ],
       "currencies": [
         "MYR"
@@ -2822,6 +3238,14 @@
       "languages": [
         "pt"
       ],
+      "regionalLanguages": [
+        "kde",
+        "ny",
+        "sn",
+        "ts",
+        "vmw",
+        "yao"
+      ],
       "currencies": [
         "MZN"
       ],
@@ -2843,6 +3267,14 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "af",
+        "hz",
+        "kj",
+        "loz",
+        "naq",
+        "tn"
       ],
       "currencies": [
         "NAD",
@@ -2867,6 +3299,7 @@
       "languages": [
         "ha"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XOF"
       ],
@@ -2888,6 +3321,13 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "fon",
+        "ig",
+        "pcm",
+        "tiv",
+        "yo"
       ],
       "currencies": [
         "NGN"
@@ -2911,6 +3351,7 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "NIO"
       ],
@@ -2934,6 +3375,11 @@
       "otherRegions": [],
       "languages": [
         "nl"
+      ],
+      "regionalLanguages": [
+        "fy",
+        "li",
+        "nds"
       ],
       "currencies": [
         "EUR"
@@ -2959,6 +3405,9 @@
         "nn",
         "se"
       ],
+      "regionalLanguages": [
+        "se"
+      ],
       "currencies": [
         "NOK"
       ],
@@ -2979,6 +3428,11 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
+        "ne"
+      ],
+      "regionalLanguages": [
+        "bo",
+        "mai",
         "ne"
       ],
       "currencies": [
@@ -3004,6 +3458,7 @@
         "en",
         "na"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "AUD"
       ],
@@ -3025,6 +3480,9 @@
       "otherRegions": [],
       "languages": [
         "en",
+        "mi"
+      ],
+      "regionalLanguages": [
         "mi"
       ],
       "currencies": [
@@ -3049,6 +3507,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "OMR"
       ],
@@ -3070,6 +3529,9 @@
       "otherRegions": [],
       "languages": [
         "es"
+      ],
+      "regionalLanguages": [
+        "jam"
       ],
       "currencies": [
         "PAB",
@@ -3093,6 +3555,10 @@
       "otherRegions": [],
       "languages": [
         "es"
+      ],
+      "regionalLanguages": [
+        "ay",
+        "qu"
       ],
       "currencies": [
         "PEN"
@@ -3118,6 +3584,9 @@
         "ho",
         "tpi"
       ],
+      "regionalLanguages": [
+        "tpi"
+      ],
       "currencies": [
         "PGK"
       ],
@@ -3140,6 +3609,9 @@
       "languages": [
         "en",
         "fil"
+      ],
+      "regionalLanguages": [
+        "ceb"
       ],
       "currencies": [
         "PHP"
@@ -3164,6 +3636,12 @@
         "en",
         "ur"
       ],
+      "regionalLanguages": [
+        "ks",
+        "pa",
+        "ps",
+        "sd"
+      ],
       "currencies": [
         "PKR"
       ],
@@ -3185,6 +3663,10 @@
       "otherRegions": [],
       "languages": [
         "pl"
+      ],
+      "regionalLanguages": [
+        "csb",
+        "szl"
       ],
       "currencies": [
         "PLN"
@@ -3208,6 +3690,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EGP",
         "ILS",
@@ -3232,6 +3715,9 @@
       "languages": [
         "pt"
       ],
+      "regionalLanguages": [
+        "mwl"
+      ],
       "currencies": [
         "EUR"
       ],
@@ -3255,6 +3741,7 @@
         "en",
         "pau"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -3276,6 +3763,9 @@
       "otherRegions": [],
       "languages": [
         "es",
+        "gn"
+      ],
+      "regionalLanguages": [
         "gn"
       ],
       "currencies": [
@@ -3300,6 +3790,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "QAR"
       ],
@@ -3322,6 +3813,7 @@
       "languages": [
         "ro"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "RON"
       ],
@@ -3346,6 +3838,7 @@
       "languages": [
         "sr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "RSD"
       ],
@@ -3369,6 +3862,16 @@
       ],
       "languages": [
         "ru"
+      ],
+      "regionalLanguages": [
+        "av",
+        "ba",
+        "bua",
+        "cv",
+        "gag",
+        "krl",
+        "os",
+        "sah"
       ],
       "currencies": [
         "RUB"
@@ -3395,6 +3898,9 @@
         "rw",
         "sw"
       ],
+      "regionalLanguages": [
+        "rw"
+      ],
       "currencies": [
         "RWF"
       ],
@@ -3417,6 +3923,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "SAR"
       ],
@@ -3438,6 +3945,10 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "gil",
+        "pis"
       ],
       "currencies": [
         "SBD"
@@ -3463,6 +3974,7 @@
         "en",
         "fr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "SCR"
       ],
@@ -3486,6 +3998,10 @@
         "ar",
         "en"
       ],
+      "regionalLanguages": [
+        "din",
+        "tig"
+      ],
       "currencies": [
         "SDG"
       ],
@@ -3507,6 +4023,9 @@
       "otherRegions": [],
       "languages": [
         "sv"
+      ],
+      "regionalLanguages": [
+        "se"
       ],
       "currencies": [
         "SEK"
@@ -3533,6 +4052,9 @@
         "ta",
         "zh"
       ],
+      "regionalLanguages": [
+        "ta"
+      ],
       "currencies": [
         "SGD"
       ],
@@ -3555,6 +4077,7 @@
       "languages": [
         "sl"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -3577,6 +4100,7 @@
       "languages": [
         "sk"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -3598,6 +4122,13 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "kri",
+        "men",
+        "sus",
+        "tem",
+        "vai"
       ],
       "currencies": [
         "SLE"
@@ -3621,6 +4152,7 @@
       "languages": [
         "it"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -3642,6 +4174,11 @@
       "otherRegions": [],
       "languages": [
         "fr"
+      ],
+      "regionalLanguages": [
+        "dyo",
+        "srr",
+        "wo"
       ],
       "currencies": [
         "XOF"
@@ -3666,6 +4203,10 @@
         "ar",
         "so"
       ],
+      "regionalLanguages": [
+        "om",
+        "so"
+      ],
       "currencies": [
         "SOS"
       ],
@@ -3687,6 +4228,10 @@
       "otherRegions": [],
       "languages": [
         "nl"
+      ],
+      "regionalLanguages": [
+        "jv",
+        "srn"
       ],
       "currencies": [
         "SRD"
@@ -3710,6 +4255,10 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [
+        "din",
+        "nus"
+      ],
       "currencies": [
         "SSP"
       ],
@@ -3731,6 +4280,9 @@
       "otherRegions": [],
       "languages": [
         "pt"
+      ],
+      "regionalLanguages": [
+        "fan"
       ],
       "currencies": [
         "STN"
@@ -3754,6 +4306,7 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "USD"
       ],
@@ -3778,6 +4331,10 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [
+        "arc",
+        "ku"
+      ],
       "currencies": [
         "SYP"
       ],
@@ -3800,6 +4357,10 @@
       "languages": [
         "en",
         "ss"
+      ],
+      "regionalLanguages": [
+        "ss",
+        "ts"
       ],
       "currencies": [
         "SZL",
@@ -3825,6 +4386,9 @@
         "ar",
         "fr"
       ],
+      "regionalLanguages": [
+        "sg"
+      ],
       "currencies": [
         "XAF"
       ],
@@ -3849,6 +4413,11 @@
       "languages": [
         "fr"
       ],
+      "regionalLanguages": [
+        "ee",
+        "fon",
+        "yo"
+      ],
       "currencies": [
         "XOF"
       ],
@@ -3871,6 +4440,11 @@
       "languages": [
         "th"
       ],
+      "regionalLanguages": [
+        "hmn",
+        "km",
+        "lo"
+      ],
       "currencies": [
         "THB"
       ],
@@ -3892,6 +4466,9 @@
       "otherRegions": [],
       "languages": [
         "tg"
+      ],
+      "regionalLanguages": [
+        "ug"
       ],
       "currencies": [
         "TJS"
@@ -3916,6 +4493,9 @@
         "pt",
         "tet"
       ],
+      "regionalLanguages": [
+        "tet"
+      ],
       "currencies": [
         "USD"
       ],
@@ -3938,6 +4518,7 @@
       "languages": [
         "tk"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "TMT"
       ],
@@ -3960,6 +4541,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "TND"
       ],
@@ -3983,6 +4565,7 @@
         "en",
         "to"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "TOP"
       ],
@@ -4007,6 +4590,12 @@
       "languages": [
         "tr"
       ],
+      "regionalLanguages": [
+        "arc",
+        "gag",
+        "ku",
+        "zza"
+      ],
       "currencies": [
         "TRY"
       ],
@@ -4029,6 +4618,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "TTD"
       ],
@@ -4052,6 +4642,9 @@
         "en",
         "tvl"
       ],
+      "regionalLanguages": [
+        "gil"
+      ],
       "currencies": [
         "AUD"
       ],
@@ -4074,6 +4667,7 @@
       "languages": [
         "zh"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "TWD"
       ],
@@ -4097,6 +4691,16 @@
         "en",
         "sw"
       ],
+      "regionalLanguages": [
+        "bem",
+        "kde",
+        "luo",
+        "mas",
+        "suk",
+        "tum",
+        "vmw",
+        "yao"
+      ],
       "currencies": [
         "TZS"
       ],
@@ -4118,6 +4722,9 @@
       "otherRegions": [],
       "languages": [
         "uk"
+      ],
+      "regionalLanguages": [
+        "gag"
       ],
       "currencies": [
         "UAH"
@@ -4142,6 +4749,11 @@
         "en",
         "sw"
       ],
+      "regionalLanguages": [
+        "kln",
+        "lg",
+        "rw"
+      ],
       "currencies": [
         "UGX"
       ],
@@ -4163,6 +4775,15 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "chr",
+        "cr",
+        "haw",
+        "lkt",
+        "nv",
+        "oj",
+        "pdc"
       ],
       "currencies": [
         "USD"
@@ -4186,6 +4807,7 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "UYU"
       ],
@@ -4207,6 +4829,9 @@
       "otherRegions": [],
       "languages": [
         "uz"
+      ],
+      "regionalLanguages": [
+        "ug"
       ],
       "currencies": [
         "UZS"
@@ -4231,6 +4856,7 @@
         "it",
         "la"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -4253,6 +4879,7 @@
       "languages": [
         "en"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "XCD"
       ],
@@ -4275,6 +4902,9 @@
       "languages": [
         "es"
       ],
+      "regionalLanguages": [
+        "guc"
+      ],
       "currencies": [
         "VES"
       ],
@@ -4296,6 +4926,10 @@
       "otherRegions": [],
       "languages": [
         "vi"
+      ],
+      "regionalLanguages": [
+        "hmn",
+        "km"
       ],
       "currencies": [
         "VND"
@@ -4321,6 +4955,9 @@
         "en",
         "fr"
       ],
+      "regionalLanguages": [
+        "gil"
+      ],
       "currencies": [
         "VUV"
       ],
@@ -4344,6 +4981,7 @@
         "en",
         "sm"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "WST"
       ],
@@ -4367,6 +5005,7 @@
         "sq",
         "sr"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "EUR"
       ],
@@ -4389,6 +5028,7 @@
       "languages": [
         "ar"
       ],
+      "regionalLanguages": [],
       "currencies": [
         "YER"
       ],
@@ -4421,6 +5061,17 @@
         "xh",
         "zu"
       ],
+      "regionalLanguages": [
+        "af",
+        "naq",
+        "nd",
+        "ss",
+        "st",
+        "tn",
+        "ts",
+        "ve",
+        "xh"
+      ],
       "currencies": [
         "ZAR"
       ],
@@ -4442,6 +5093,12 @@
       "otherRegions": [],
       "languages": [
         "en"
+      ],
+      "regionalLanguages": [
+        "bem",
+        "loz",
+        "ny",
+        "tum"
       ],
       "currencies": [
         "ZMW"
@@ -4473,6 +5130,17 @@
         "ve",
         "xh"
       ],
+      "regionalLanguages": [
+        "nd",
+        "ny",
+        "sn",
+        "st",
+        "tn",
+        "ts",
+        "tum",
+        "ve",
+        "xh"
+      ],
       "currencies": [
         "USD",
         "ZWG"
@@ -4484,6 +5152,10 @@
   ],
   "labels": {
     "languages": {
+      "aa": {
+        "de": "Afar",
+        "en": "Afar"
+      },
       "af": {
         "de": "Afrikaans",
         "en": "Afrikaans"
@@ -4496,6 +5168,22 @@
         "de": "Arabisch",
         "en": "Arabic"
       },
+      "arc": {
+        "de": "Aramäisch",
+        "en": "Aramaic"
+      },
+      "arn": {
+        "de": "Mapudungun",
+        "en": "Mapuche"
+      },
+      "ast": {
+        "de": "Asturisch",
+        "en": "Asturian"
+      },
+      "av": {
+        "de": "Awarisch",
+        "en": "Avaric"
+      },
       "ay": {
         "de": "Aymara",
         "en": "Aymara"
@@ -4504,9 +5192,21 @@
         "de": "Aserbaidschanisch",
         "en": "Azerbaijani"
       },
+      "ba": {
+        "de": "Baschkirisch",
+        "en": "Bashkir"
+      },
+      "ban": {
+        "de": "Balinesisch",
+        "en": "Balinese"
+      },
       "be": {
         "de": "Belarussisch",
         "en": "Belarusian"
+      },
+      "bem": {
+        "de": "Bemba",
+        "en": "Bemba"
       },
       "bg": {
         "de": "Bulgarisch",
@@ -4524,17 +5224,45 @@
         "de": "Bengalisch",
         "en": "Bangla"
       },
+      "bo": {
+        "de": "Tibetisch",
+        "en": "Tibetan"
+      },
+      "br": {
+        "de": "Bretonisch",
+        "en": "Breton"
+      },
       "bs": {
         "de": "Bosnisch",
         "en": "Bosnian"
+      },
+      "bua": {
+        "de": "Burjatisch",
+        "en": "Buriat"
       },
       "ca": {
         "de": "Katalanisch",
         "en": "Catalan"
       },
+      "ceb": {
+        "de": "Cebuano",
+        "en": "Cebuano"
+      },
+      "chr": {
+        "de": "Cherokee",
+        "en": "Cherokee"
+      },
       "ckb": {
         "de": "Zentralkurdisch",
         "en": "Central Kurdish"
+      },
+      "co": {
+        "de": "Korsisch",
+        "en": "Corsican"
+      },
+      "cr": {
+        "de": "Cree",
+        "en": "Cree"
       },
       "crs": {
         "de": "Seychellenkreol",
@@ -4544,6 +5272,18 @@
         "de": "Tschechisch",
         "en": "Czech"
       },
+      "csb": {
+        "de": "Kaschubisch",
+        "en": "Kashubian"
+      },
+      "cv": {
+        "de": "Tschuwaschisch",
+        "en": "Chuvash"
+      },
+      "cy": {
+        "de": "Walisisch",
+        "en": "Welsh"
+      },
       "da": {
         "de": "Dänisch",
         "en": "Danish"
@@ -4552,13 +5292,25 @@
         "de": "Deutsch",
         "en": "German"
       },
+      "din": {
+        "de": "Dinka",
+        "en": "Dinka"
+      },
       "dv": {
         "de": "Dhivehi",
         "en": "Divehi"
       },
+      "dyo": {
+        "de": "Diola",
+        "en": "Jola-Fonyi"
+      },
       "dz": {
         "de": "Dzongkha",
         "en": "Dzongkha"
+      },
+      "ee": {
+        "de": "Ewe",
+        "en": "Ewe"
       },
       "el": {
         "de": "Griechisch",
@@ -4576,6 +5328,14 @@
         "de": "Estnisch",
         "en": "Estonian"
       },
+      "eu": {
+        "de": "Baskisch",
+        "en": "Basque"
+      },
+      "ewo": {
+        "de": "Ewondo",
+        "en": "Ewondo"
+      },
       "fa": {
         "de": "Persisch",
         "en": "Persian"
@@ -4583,6 +5343,10 @@
       "fa-AF": {
         "de": "Dari",
         "en": "Dari"
+      },
+      "fan": {
+        "de": "Pangwe",
+        "en": "Fang"
       },
       "ff": {
         "de": "Ful",
@@ -4600,25 +5364,69 @@
         "de": "Fidschi",
         "en": "Fijian"
       },
+      "fon": {
+        "de": "Fon",
+        "en": "Fon"
+      },
       "fr": {
         "de": "Französisch",
         "en": "French"
+      },
+      "frp": {
+        "de": "Frankoprovenzalisch",
+        "en": "Arpitan"
+      },
+      "frr": {
+        "de": "Nordfriesisch",
+        "en": "Northern Frisian"
+      },
+      "fur": {
+        "de": "Friaulisch",
+        "en": "Friulian"
+      },
+      "fy": {
+        "de": "Westfriesisch",
+        "en": "Western Frisian"
       },
       "ga": {
         "de": "Irisch",
         "en": "Irish"
       },
+      "gaa": {
+        "de": "Ga",
+        "en": "Ga"
+      },
+      "gag": {
+        "de": "Gagausisch",
+        "en": "Gagauz"
+      },
+      "gd": {
+        "de": "Gälisch (Schottland)",
+        "en": "Scottish Gaelic"
+      },
       "gil": {
         "de": "Kiribatisch",
         "en": "Gilbertese"
+      },
+      "gl": {
+        "de": "Galicisch",
+        "en": "Galician"
       },
       "gn": {
         "de": "Guaraní",
         "en": "Guarani"
       },
+      "guc": {
+        "de": "Wayúu",
+        "en": "Wayuu"
+      },
       "ha": {
         "de": "Haussa",
         "en": "Hausa"
+      },
+      "haw": {
+        "de": "Hawaiisch",
+        "en": "Hawaiian"
       },
       "he": {
         "de": "Hebräisch",
@@ -4632,6 +5440,10 @@
         "de": "Fidschi-Hindi",
         "en": "Fiji Hindi"
       },
+      "hmn": {
+        "de": "Miao",
+        "en": "Hmong"
+      },
       "ho": {
         "de": "Hiri-Motu",
         "en": "Hiri Motu"
@@ -4639,6 +5451,10 @@
       "hr": {
         "de": "Kroatisch",
         "en": "Croatian"
+      },
+      "hsb": {
+        "de": "Obersorbisch",
+        "en": "Upper Sorbian"
       },
       "ht": {
         "de": "Haiti-Kreolisch",
@@ -4652,9 +5468,17 @@
         "de": "Armenisch",
         "en": "Armenian"
       },
+      "hz": {
+        "de": "Herero",
+        "en": "Herero"
+      },
       "id": {
         "de": "Indonesisch",
         "en": "Indonesian"
+      },
+      "ig": {
+        "de": "Igbo",
+        "en": "Igbo"
       },
       "is": {
         "de": "Isländisch",
@@ -4664,25 +5488,97 @@
         "de": "Italienisch",
         "en": "Italian"
       },
+      "iu": {
+        "de": "Inuktitut",
+        "en": "Inuktitut"
+      },
       "ja": {
         "de": "Japanisch",
         "en": "Japanese"
+      },
+      "jam": {
+        "de": "Jamaikanisch-Kreolisch",
+        "en": "Jamaican Creole English"
+      },
+      "jv": {
+        "de": "Javanisch",
+        "en": "Javanese"
       },
       "ka": {
         "de": "Georgisch",
         "en": "Georgian"
       },
+      "kab": {
+        "de": "Kabylisch",
+        "en": "Kabyle"
+      },
+      "kde": {
+        "de": "Makonde",
+        "en": "Makonde"
+      },
+      "kea": {
+        "de": "Kabuverdianu",
+        "en": "Kabuverdianu"
+      },
+      "kg": {
+        "de": "Kongolesisch",
+        "en": "Kongo"
+      },
+      "ki": {
+        "de": "Kikuyu",
+        "en": "Kikuyu"
+      },
+      "kj": {
+        "de": "Kwanyama",
+        "en": "Kuanyama"
+      },
       "kk": {
         "de": "Kasachisch",
         "en": "Kazakh"
+      },
+      "kl": {
+        "de": "Grönländisch",
+        "en": "Kalaallisut"
+      },
+      "kln": {
+        "de": "Kalenjin",
+        "en": "Kalenjin"
       },
       "km": {
         "de": "Khmer",
         "en": "Khmer"
       },
+      "kmb": {
+        "de": "Kimbundu",
+        "en": "Kimbundu"
+      },
       "ko": {
         "de": "Koreanisch",
         "en": "Korean"
+      },
+      "kpe": {
+        "de": "Kpelle",
+        "en": "Kpelle"
+      },
+      "kri": {
+        "de": "Krio",
+        "en": "Krio"
+      },
+      "krl": {
+        "de": "Karelisch",
+        "en": "Karelian"
+      },
+      "ks": {
+        "de": "Kaschmiri",
+        "en": "Kashmiri"
+      },
+      "ku": {
+        "de": "Kurdisch",
+        "en": "Kurdish"
+      },
+      "kw": {
+        "de": "Kornisch",
+        "en": "Cornish"
       },
       "ky": {
         "de": "Kirgisisch",
@@ -4696,21 +5592,69 @@
         "de": "Luxemburgisch",
         "en": "Luxembourgish"
       },
+      "lg": {
+        "de": "Ganda",
+        "en": "Ganda"
+      },
+      "li": {
+        "de": "Limburgisch",
+        "en": "Limburgish"
+      },
+      "lkt": {
+        "de": "Lakota",
+        "en": "Lakota"
+      },
+      "lld": {
+        "de": "Ladinisch",
+        "en": "Ladin"
+      },
+      "ln": {
+        "de": "Lingala",
+        "en": "Lingala"
+      },
       "lo": {
         "de": "Laotisch",
         "en": "Lao"
+      },
+      "loz": {
+        "de": "Lozi",
+        "en": "Lozi"
       },
       "lt": {
         "de": "Litauisch",
         "en": "Lithuanian"
       },
+      "ltg": {
+        "de": "Lettgallisch",
+        "en": "Latgalian"
+      },
+      "lua": {
+        "de": "Luba-Lulua",
+        "en": "Luba-Lulua"
+      },
+      "luo": {
+        "de": "Luo",
+        "en": "Luo"
+      },
       "lv": {
         "de": "Lettisch",
         "en": "Latvian"
       },
+      "mai": {
+        "de": "Maithili",
+        "en": "Maithili"
+      },
       "man": {
         "de": "Malinke",
         "en": "Mandingo"
+      },
+      "mas": {
+        "de": "Massai",
+        "en": "Masai"
+      },
+      "men": {
+        "de": "Mende",
+        "en": "Mende"
       },
       "mfe": {
         "de": "Morisyen",
@@ -4736,6 +5680,10 @@
         "de": "Mongolisch",
         "en": "Mongolian"
       },
+      "mr": {
+        "de": "Marathi",
+        "en": "Marathi"
+      },
       "ms": {
         "de": "Malaiisch",
         "en": "Malay"
@@ -4743,6 +5691,10 @@
       "mt": {
         "de": "Maltesisch",
         "en": "Maltese"
+      },
+      "mwl": {
+        "de": "Mirandesisch",
+        "en": "Mirandese"
       },
       "my": {
         "de": "Birmanisch",
@@ -4752,6 +5704,14 @@
         "de": "Nauruisch",
         "en": "Nauru"
       },
+      "nap": {
+        "de": "Neapolitanisch",
+        "en": "Neapolitan"
+      },
+      "naq": {
+        "de": "Nama",
+        "en": "Nama"
+      },
       "nb": {
         "de": "Norwegisch (Bokmål)",
         "en": "Norwegian Bokmål"
@@ -4759,6 +5719,10 @@
       "nd": {
         "de": "Nord-Ndebele",
         "en": "North Ndebele"
+      },
+      "nds": {
+        "de": "Niederdeutsch",
+        "en": "Low German"
       },
       "ne": {
         "de": "Nepalesisch",
@@ -4780,13 +5744,57 @@
         "de": "Nord-Sotho",
         "en": "Northern Sotho"
       },
+      "nus": {
+        "de": "Nuer",
+        "en": "Nuer"
+      },
+      "nv": {
+        "de": "Navajo",
+        "en": "Navajo"
+      },
       "ny": {
         "de": "Nyanja",
         "en": "Nyanja"
       },
+      "oc": {
+        "de": "Okzitanisch",
+        "en": "Occitan"
+      },
+      "oj": {
+        "de": "Ojibwa",
+        "en": "Ojibwa"
+      },
+      "om": {
+        "de": "Oromo",
+        "en": "Oromo"
+      },
+      "os": {
+        "de": "Ossetisch",
+        "en": "Ossetic"
+      },
+      "pa": {
+        "de": "Punjabi",
+        "en": "Punjabi"
+      },
       "pau": {
         "de": "Palau",
         "en": "Palauan"
+      },
+      "pcd": {
+        "de": "Picardisch",
+        "en": "Picard"
+      },
+      "pcm": {
+        "de": "Nigerianisches Pidgin",
+        "en": "Nigerian Pidgin"
+      },
+      "pdc": {
+        "de": "Pennsylvaniadeutsch",
+        "en": "Pennsylvania German"
+      },
+      "pis": {
+        "de": "Pijin",
+        "en": "Pijin"
       },
       "pl": {
         "de": "Polnisch",
@@ -4803,6 +5811,14 @@
       "qu": {
         "de": "Quechua",
         "en": "Quechua"
+      },
+      "quc": {
+        "de": "K’iche’",
+        "en": "Kʼicheʼ"
+      },
+      "rif": {
+        "de": "Tarifit",
+        "en": "Riffian"
       },
       "rm": {
         "de": "Rätoromanisch",
@@ -4824,6 +5840,26 @@
         "de": "Kinyarwanda",
         "en": "Kinyarwanda"
       },
+      "sah": {
+        "de": "Jakutisch",
+        "en": "Yakut"
+      },
+      "sc": {
+        "de": "Sardisch",
+        "en": "Sardinian"
+      },
+      "scn": {
+        "de": "Sizilianisch",
+        "en": "Sicilian"
+      },
+      "sco": {
+        "de": "Schottisch",
+        "en": "Scots"
+      },
+      "sd": {
+        "de": "Sindhi",
+        "en": "Sindhi"
+      },
       "se": {
         "de": "Nordsamisch",
         "en": "Northern Sami"
@@ -4835,6 +5871,14 @@
       "sg": {
         "de": "Sango",
         "en": "Sango"
+      },
+      "sgs": {
+        "de": "Samogitisch",
+        "en": "Samogitian"
+      },
+      "shi": {
+        "de": "Taschelhit",
+        "en": "Tachelhit"
       },
       "si": {
         "de": "Singhalesisch",
@@ -4872,6 +5916,14 @@
         "de": "Serbisch",
         "en": "Serbian"
       },
+      "srn": {
+        "de": "Srananisch",
+        "en": "Sranan Tongo"
+      },
+      "srr": {
+        "de": "Serer",
+        "en": "Serer"
+      },
       "ss": {
         "de": "Swazi",
         "en": "Swati"
@@ -4879,6 +5931,18 @@
       "st": {
         "de": "Süd-Sotho",
         "en": "Southern Sotho"
+      },
+      "su": {
+        "de": "Sundanesisch",
+        "en": "Sundanese"
+      },
+      "suk": {
+        "de": "Sukuma",
+        "en": "Sukuma"
+      },
+      "sus": {
+        "de": "Susu",
+        "en": "Susu"
       },
       "sv": {
         "de": "Schwedisch",
@@ -4892,9 +5956,21 @@
         "de": "Komorisch",
         "en": "Comorian"
       },
+      "szl": {
+        "de": "Schlesisch (Wasserpolnisch)",
+        "en": "Silesian"
+      },
       "ta": {
         "de": "Tamil",
         "en": "Tamil"
+      },
+      "te": {
+        "de": "Telugu",
+        "en": "Telugu"
+      },
+      "tem": {
+        "de": "Temne",
+        "en": "Timne"
       },
       "tet": {
         "de": "Tetum",
@@ -4911,6 +5987,14 @@
       "ti": {
         "de": "Tigrinya",
         "en": "Tigrinya"
+      },
+      "tig": {
+        "de": "Tigre",
+        "en": "Tigre"
+      },
+      "tiv": {
+        "de": "Tiv",
+        "en": "Tiv"
       },
       "tk": {
         "de": "Turkmenisch",
@@ -4940,13 +6024,25 @@
         "de": "Tsonga",
         "en": "Tsonga"
       },
+      "tum": {
+        "de": "Tumbuka",
+        "en": "Tumbuka"
+      },
       "tvl": {
         "de": "Tuvaluisch",
         "en": "Tuvalu"
       },
+      "ug": {
+        "de": "Uigurisch",
+        "en": "Uyghur"
+      },
       "uk": {
         "de": "Ukrainisch",
         "en": "Ukrainian"
+      },
+      "umb": {
+        "de": "Umbundu",
+        "en": "Umbundu"
       },
       "ur": {
         "de": "Urdu",
@@ -4956,6 +6052,10 @@
         "de": "Usbekisch",
         "en": "Uzbek"
       },
+      "vai": {
+        "de": "Vai",
+        "en": "Vai"
+      },
       "ve": {
         "de": "Venda",
         "en": "Venda"
@@ -4964,9 +6064,41 @@
         "de": "Vietnamesisch",
         "en": "Vietnamese"
       },
+      "vmw": {
+        "de": "Makua",
+        "en": "Makhuwa"
+      },
+      "vro": {
+        "de": "Võro",
+        "en": "Võro"
+      },
+      "wa": {
+        "de": "Wallonisch",
+        "en": "Walloon"
+      },
+      "wo": {
+        "de": "Wolof",
+        "en": "Wolof"
+      },
       "xh": {
         "de": "Xhosa",
         "en": "Xhosa"
+      },
+      "yao": {
+        "de": "Yao",
+        "en": "Yao"
+      },
+      "yo": {
+        "de": "Yoruba",
+        "en": "Yoruba"
+      },
+      "za": {
+        "de": "Zhuang",
+        "en": "Zhuang"
+      },
+      "zap": {
+        "de": "Zapotekisch",
+        "en": "Zapotec"
       },
       "zgh": {
         "de": "Tamazight",
@@ -4979,6 +6111,10 @@
       "zu": {
         "de": "Zulu",
         "en": "Zulu"
+      },
+      "zza": {
+        "de": "Zaza",
+        "en": "Zaza"
       }
     },
     "currencies": {

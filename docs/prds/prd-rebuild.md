@@ -84,6 +84,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | Country, language and currency codes, English country names, regions, area | mledoze/countries, pinned commit | ODbL-1.0 |
 | German country names; German and English language names | Unicode CLDR `de` and `en`, pinned release | Unicode-3.0 |
 | German and English currency unit names and currency families | Curated in the repository | ODbL-1.0 |
+| Regional, minority, creole and indigenous languages and the countries they are spoken in | Curated in the repository | ODbL-1.0 |
 | Capital names in German and English | Wikidata SPARQL export of capitals only, checked in | CC0 |
 | Flags as 4:3 SVG | lipis/flag-icons v7.6.0 | MIT |
 
@@ -91,7 +92,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 - A gate step fails when the generated files differ from the importer's output.
 - A curated override file fixes what the sources get wrong: primary capitals, spellings, missing labels.
 - The quiz pool holds 197 countries: the 193 UN members, Vatican City, Palestine, Kosovo and Taiwan.
-- Each entry has a code, both names, a primary capital, a continent, languages, currencies, a flag key and its look-alikes.
+- Each entry has a code, both names, a primary capital, a continent, official languages, regional languages, currencies, a flag key and its look-alikes.
 - Every attribute value carries a German and an English label.
 - The derived dataset is licensed ODbL-1.0; the code stays MIT. A notice file credits every source.
 - The backend loads the dataset into memory at start. The database stores country codes and attribute values only.

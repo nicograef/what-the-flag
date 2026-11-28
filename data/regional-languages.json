@@ -1,0 +1,1251 @@
+{
+  "aa": {
+    "kind": "regional",
+    "spokenIn": [
+      "DJ",
+      "ER",
+      "ET"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Afar_language"
+  },
+  "af": {
+    "kind": "regional",
+    "spokenIn": [
+      "BW",
+      "NA",
+      "ZA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Afrikaans"
+  },
+  "arc": {
+    "kind": "minority",
+    "spokenIn": [
+      "AM",
+      "IQ",
+      "IR",
+      "SY",
+      "TR"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Aramaic"
+  },
+  "arn": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "AR",
+      "CL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Mapuche_language"
+  },
+  "ast": {
+    "kind": "regional",
+    "spokenIn": [
+      "ES"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Asturian_language"
+  },
+  "av": {
+    "kind": "regional",
+    "spokenIn": [
+      "AZ",
+      "GE",
+      "RU"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Avar_language"
+  },
+  "ay": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "AR",
+      "BO",
+      "CL",
+      "PE"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Aymara_language"
+  },
+  "ba": {
+    "kind": "regional",
+    "spokenIn": [
+      "RU"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Bashkir_language"
+  },
+  "ban": {
+    "kind": "regional",
+    "spokenIn": [
+      "ID"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Balinese_language"
+  },
+  "bem": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CD",
+      "TZ",
+      "ZM"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Bemba_language"
+  },
+  "bn": {
+    "kind": "regional",
+    "spokenIn": [
+      "BD",
+      "IN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Bengali_language"
+  },
+  "bo": {
+    "kind": "regional",
+    "spokenIn": [
+      "CN",
+      "IN",
+      "NP"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Standard_Tibetan"
+  },
+  "br": {
+    "kind": "regional",
+    "spokenIn": [
+      "FR"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Breton_language"
+  },
+  "bua": {
+    "kind": "minority",
+    "spokenIn": [
+      "CN",
+      "MN",
+      "RU"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Buryat_language"
+  },
+  "ca": {
+    "kind": "regional",
+    "spokenIn": [
+      "AD",
+      "ES",
+      "FR",
+      "IT"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Catalan_language"
+  },
+  "ceb": {
+    "kind": "regional",
+    "spokenIn": [
+      "PH"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Cebuano_language"
+  },
+  "chr": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "US"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Cherokee_language"
+  },
+  "co": {
+    "kind": "regional",
+    "spokenIn": [
+      "FR",
+      "IT"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Corsican_language"
+  },
+  "cr": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CA",
+      "US"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Cree"
+  },
+  "csb": {
+    "kind": "regional",
+    "spokenIn": [
+      "PL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Kashubian_language"
+  },
+  "cv": {
+    "kind": "regional",
+    "spokenIn": [
+      "RU"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Chuvash_language"
+  },
+  "cy": {
+    "kind": "regional",
+    "spokenIn": [
+      "AR",
+      "GB"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Welsh_language"
+  },
+  "din": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "SD",
+      "SS"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Dinka_language"
+  },
+  "dyo": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GM",
+      "GW",
+      "SN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Jola-Fonyi_language"
+  },
+  "ee": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "BJ",
+      "GH",
+      "TG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Ewe_language"
+  },
+  "eu": {
+    "kind": "regional",
+    "spokenIn": [
+      "ES",
+      "FR"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Basque_language"
+  },
+  "ewo": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CM"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Ewondo_language"
+  },
+  "fan": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CG",
+      "CM",
+      "GA",
+      "GQ",
+      "ST"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Fang_language"
+  },
+  "fon": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "BJ",
+      "NG",
+      "TG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Fon_language"
+  },
+  "frp": {
+    "kind": "regional",
+    "spokenIn": [
+      "CH",
+      "FR",
+      "IT"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Arpitan_language"
+  },
+  "frr": {
+    "kind": "minority",
+    "spokenIn": [
+      "DE",
+      "DK"
+    ],
+    "source": "https://en.wikipedia.org/wiki/North_Frisian_language"
+  },
+  "fur": {
+    "kind": "minority",
+    "spokenIn": [
+      "IT"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Friulian_language"
+  },
+  "fy": {
+    "kind": "regional",
+    "spokenIn": [
+      "NL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/West_Frisian_language"
+  },
+  "ga": {
+    "kind": "minority",
+    "spokenIn": [
+      "GB",
+      "IE"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Irish_language"
+  },
+  "gaa": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GH"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Ga_language"
+  },
+  "gag": {
+    "kind": "regional",
+    "spokenIn": [
+      "BG",
+      "MD",
+      "RU",
+      "TR",
+      "UA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Gagauz_language"
+  },
+  "gd": {
+    "kind": "regional",
+    "spokenIn": [
+      "CA",
+      "GB"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Scottish_Gaelic"
+  },
+  "gil": {
+    "kind": "regional",
+    "spokenIn": [
+      "FJ",
+      "KI",
+      "SB",
+      "TV",
+      "VU"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Gilbertese"
+  },
+  "gl": {
+    "kind": "regional",
+    "spokenIn": [
+      "ES"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Galician_language"
+  },
+  "gn": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "AR",
+      "BO",
+      "BR",
+      "PY"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Guarani_language"
+  },
+  "guc": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CO",
+      "VE"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Wayuu_language"
+  },
+  "haw": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "US"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Hawaiian_language"
+  },
+  "hmn": {
+    "kind": "minority",
+    "spokenIn": [
+      "CN",
+      "LA",
+      "MM",
+      "TH",
+      "VN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Hmong_language"
+  },
+  "hsb": {
+    "kind": "minority",
+    "spokenIn": [
+      "DE"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Upper_Sorbian_language"
+  },
+  "ht": {
+    "kind": "creole",
+    "spokenIn": [
+      "BS",
+      "CR",
+      "CU",
+      "DO",
+      "HT"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Haitian_Creole"
+  },
+  "hz": {
+    "kind": "minority",
+    "spokenIn": [
+      "AO",
+      "BW",
+      "NA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Herero_language"
+  },
+  "ig": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CM",
+      "GQ",
+      "NG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Igbo_language"
+  },
+  "iu": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Inuktitut"
+  },
+  "jam": {
+    "kind": "creole",
+    "spokenIn": [
+      "CR",
+      "JM",
+      "PA"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "jv": {
+    "kind": "regional",
+    "spokenIn": [
+      "ID",
+      "MY",
+      "SR"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "kab": {
+    "kind": "minority",
+    "spokenIn": [
+      "DZ"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "kde": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "KE",
+      "MW",
+      "MZ",
+      "TZ"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Makonde_language"
+  },
+  "kea": {
+    "kind": "creole",
+    "spokenIn": [
+      "CV"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "kg": {
+    "kind": "regional",
+    "spokenIn": [
+      "AO",
+      "CD",
+      "CG",
+      "GA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Kongo_language"
+  },
+  "ki": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "KE"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "kj": {
+    "kind": "minority",
+    "spokenIn": [
+      "AO",
+      "NA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Kwanyama_dialect"
+  },
+  "kl": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "DK"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "kln": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "KE",
+      "UG"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "km": {
+    "kind": "regional",
+    "spokenIn": [
+      "KH",
+      "TH",
+      "VN"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "kmb": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "AO"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Kimbundu_language"
+  },
+  "kpe": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CI",
+      "GN",
+      "LR"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Kpelle_language"
+  },
+  "kri": {
+    "kind": "creole",
+    "spokenIn": [
+      "GM",
+      "SL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Krio_language"
+  },
+  "krl": {
+    "kind": "regional",
+    "spokenIn": [
+      "FI",
+      "RU"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ks": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN",
+      "PK"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ku": {
+    "kind": "minority",
+    "spokenIn": [
+      "AM",
+      "IQ",
+      "IR",
+      "SY",
+      "TR"
+    ],
+    "source": "https://rm.coe.int/armeniaecrml6-en/4880287d2c"
+  },
+  "kw": {
+    "kind": "minority",
+    "spokenIn": [
+      "GB"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "lg": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "UG"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "li": {
+    "kind": "regional",
+    "spokenIn": [
+      "BE",
+      "DE",
+      "NL"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "lkt": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CA",
+      "US"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "lld": {
+    "kind": "minority",
+    "spokenIn": [
+      "IT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ln": {
+    "kind": "regional",
+    "spokenIn": [
+      "AO",
+      "CD",
+      "CF",
+      "CG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Lingala"
+  },
+  "lo": {
+    "kind": "regional",
+    "spokenIn": [
+      "KH",
+      "LA",
+      "TH"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "loz": {
+    "kind": "minority",
+    "spokenIn": [
+      "BW",
+      "NA",
+      "ZM"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Lozi_language"
+  },
+  "ltg": {
+    "kind": "regional",
+    "spokenIn": [
+      "LV"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "lua": {
+    "kind": "regional",
+    "spokenIn": [
+      "CD"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "luo": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "KE",
+      "TZ"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "mai": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN",
+      "NP"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "mas": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "KE",
+      "TZ"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "men": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GN",
+      "LR",
+      "SL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Mende_language"
+  },
+  "mfe": {
+    "kind": "creole",
+    "spokenIn": [
+      "MU"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "mi": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "NZ"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "mn": {
+    "kind": "regional",
+    "spokenIn": [
+      "CN",
+      "MN"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "mr": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "mwl": {
+    "kind": "regional",
+    "spokenIn": [
+      "PT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "nap": {
+    "kind": "regional",
+    "spokenIn": [
+      "IT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "naq": {
+    "kind": "minority",
+    "spokenIn": [
+      "BW",
+      "NA",
+      "ZA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Khoekhoe_language"
+  },
+  "nd": {
+    "kind": "regional",
+    "spokenIn": [
+      "BW",
+      "ZA",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Northern_Ndebele_language"
+  },
+  "nds": {
+    "kind": "regional",
+    "spokenIn": [
+      "BR",
+      "DE",
+      "DK",
+      "NL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Low_German"
+  },
+  "ne": {
+    "kind": "regional",
+    "spokenIn": [
+      "BT",
+      "IN",
+      "MM",
+      "NP"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "nus": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "ET",
+      "SS"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Nuer_language"
+  },
+  "nv": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "US"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ny": {
+    "kind": "regional",
+    "spokenIn": [
+      "MW",
+      "MZ",
+      "ZM",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Chewa_language"
+  },
+  "oc": {
+    "kind": "regional",
+    "spokenIn": [
+      "ES",
+      "FR",
+      "IT",
+      "MC"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "oj": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CA",
+      "US"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "om": {
+    "kind": "regional",
+    "spokenIn": [
+      "ET",
+      "KE",
+      "SO"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Oromo_language"
+  },
+  "os": {
+    "kind": "regional",
+    "spokenIn": [
+      "GE",
+      "RU"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "pa": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN",
+      "PK"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "pcd": {
+    "kind": "regional",
+    "spokenIn": [
+      "BE",
+      "FR"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "pcm": {
+    "kind": "creole",
+    "spokenIn": [
+      "NG"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "pdc": {
+    "kind": "minority",
+    "spokenIn": [
+      "BZ",
+      "CA",
+      "US"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Pennsylvania_Dutch_language"
+  },
+  "pis": {
+    "kind": "creole",
+    "spokenIn": [
+      "SB"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ps": {
+    "kind": "regional",
+    "spokenIn": [
+      "AF",
+      "PK"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "qu": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "AR",
+      "BO",
+      "CO",
+      "EC",
+      "PE"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Quechuan_languages"
+  },
+  "quc": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "rif": {
+    "kind": "minority",
+    "spokenIn": [
+      "DZ",
+      "ES",
+      "MA"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Riffian_language"
+  },
+  "rm": {
+    "kind": "minority",
+    "spokenIn": [
+      "CH"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "rw": {
+    "kind": "regional",
+    "spokenIn": [
+      "CD",
+      "RW",
+      "UG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Kinyarwanda"
+  },
+  "sah": {
+    "kind": "regional",
+    "spokenIn": [
+      "RU"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "sc": {
+    "kind": "minority",
+    "spokenIn": [
+      "IT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "scn": {
+    "kind": "regional",
+    "spokenIn": [
+      "IT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "sco": {
+    "kind": "regional",
+    "spokenIn": [
+      "GB",
+      "IE"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "sd": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN",
+      "PK"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "se": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "FI",
+      "NO",
+      "SE"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "sg": {
+    "kind": "regional",
+    "spokenIn": [
+      "CD",
+      "CF",
+      "TD"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Sango_language"
+  },
+  "sgs": {
+    "kind": "regional",
+    "spokenIn": [
+      "LT"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "shi": {
+    "kind": "minority",
+    "spokenIn": [
+      "MA"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "sn": {
+    "kind": "regional",
+    "spokenIn": [
+      "MZ",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Shona_language"
+  },
+  "so": {
+    "kind": "regional",
+    "spokenIn": [
+      "DJ",
+      "ET",
+      "KE",
+      "SO"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "srn": {
+    "kind": "creole",
+    "spokenIn": [
+      "SR"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "srr": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GM",
+      "MR",
+      "SN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Serer_language"
+  },
+  "ss": {
+    "kind": "regional",
+    "spokenIn": [
+      "SZ",
+      "ZA"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "st": {
+    "kind": "regional",
+    "spokenIn": [
+      "LS",
+      "ZA",
+      "ZW"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "su": {
+    "kind": "regional",
+    "spokenIn": [
+      "ID"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "suk": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "TZ"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "sus": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GN",
+      "GW",
+      "SL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Susu_language"
+  },
+  "szl": {
+    "kind": "regional",
+    "spokenIn": [
+      "CZ",
+      "PL"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ta": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN",
+      "LK",
+      "MY",
+      "SG"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "te": {
+    "kind": "regional",
+    "spokenIn": [
+      "IN"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "tem": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "SL"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "tet": {
+    "kind": "regional",
+    "spokenIn": [
+      "ID",
+      "TL"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ti": {
+    "kind": "regional",
+    "spokenIn": [
+      "ER",
+      "ET"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "tig": {
+    "kind": "minority",
+    "spokenIn": [
+      "ER",
+      "SD"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Tigre_language"
+  },
+  "tiv": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "CM",
+      "NG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Tiv_language"
+  },
+  "tn": {
+    "kind": "regional",
+    "spokenIn": [
+      "BW",
+      "NA",
+      "ZA",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Tswana_language"
+  },
+  "tpi": {
+    "kind": "creole",
+    "spokenIn": [
+      "PG"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "ts": {
+    "kind": "regional",
+    "spokenIn": [
+      "MZ",
+      "SZ",
+      "ZA",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Tsonga_language"
+  },
+  "tum": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "MW",
+      "TZ",
+      "ZM",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Tumbuka_language"
+  },
+  "ug": {
+    "kind": "regional",
+    "spokenIn": [
+      "CN",
+      "KG",
+      "KZ",
+      "TJ",
+      "UZ"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Uyghur_language"
+  },
+  "umb": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "AO"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "vai": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "LR",
+      "SL"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Vai_language"
+  },
+  "ve": {
+    "kind": "regional",
+    "spokenIn": [
+      "ZA",
+      "ZW"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "vmw": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "MZ",
+      "TZ"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Makhuwa_language"
+  },
+  "vro": {
+    "kind": "regional",
+    "spokenIn": [
+      "EE"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "wa": {
+    "kind": "regional",
+    "spokenIn": [
+      "BE",
+      "FR"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "wo": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "GM",
+      "MR",
+      "SN"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Wolof_language"
+  },
+  "xh": {
+    "kind": "regional",
+    "spokenIn": [
+      "BW",
+      "LS",
+      "ZA",
+      "ZW"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Xhosa_language"
+  },
+  "yao": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "MW",
+      "MZ",
+      "TZ"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Yao_language"
+  },
+  "yo": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "BJ",
+      "NG",
+      "TG"
+    ],
+    "source": "https://en.wikipedia.org/wiki/Yoruba_language"
+  },
+  "za": {
+    "kind": "minority",
+    "spokenIn": [
+      "CN"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "zap": {
+    "kind": "indigenous",
+    "spokenIn": [
+      "MX"
+    ],
+    "source": "regional.json note (no URL)"
+  },
+  "zza": {
+    "kind": "minority",
+    "spokenIn": [
+      "TR"
+    ],
+    "source": "regional.json note (no URL)"
+  }
+}

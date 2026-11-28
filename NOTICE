@@ -5,6 +5,7 @@ Code: MIT, full text in LICENSE.
 Data: ODbL-1.0, full text in data/LICENSE. These paths are ODbL-1.0:
   data/overrides.json
   data/currency-units.json
+  data/regional-languages.json
   backend/internal/country/dataset/
 
 The data is built from the sources below. Each vendored LICENSE keeps governing its files.

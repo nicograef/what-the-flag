@@ -28,6 +28,7 @@ const (
 	dataLicensePath   = "data/LICENSE"
 	overridesPath     = "data/overrides.json"
 	currencyUnitsPath = "data/currency-units.json"
+	regionalPath      = "data/regional-languages.json"
 	capitalsHeader    = "iso2,capital,capitalEn,capitalDe"
 	cldrAltKeyMarker  = "-alt-"
 )
@@ -41,11 +42,20 @@ type sources struct {
 	languageAliases map[string]string
 	// currencyUnits is keyed by ISO 4217 code.
 	currencyUnits map[string]country.CurrencyLabel
-	capitals      []capitalRow
-	flags         map[string][]byte
-	overrides     overrides
-	dataLicense   []byte
-	flagLicense   []byte
+	// regional is keyed by CLDR language code.
+	regional    map[string]regionalLanguage
+	capitals    []capitalRow
+	flags       map[string][]byte
+	overrides   overrides
+	dataLicense []byte
+	flagLicense []byte
+}
+
+// regionalLanguage is one entry of regional-languages.json: a regional, minority, creole or indigenous language.
+type regionalLanguage struct {
+	Kind     string   `json:"kind"`
+	SpokenIn []string `json:"spokenIn"`
+	Source   string   `json:"source"`
 }
 
 type mledozeCountry struct {
@@ -163,6 +173,9 @@ func readSources(root *os.Root) (sources, error) {
 		return sources{}, err
 	}
 	if err := readStrict(root, currencyUnitsPath, &src.currencyUnits); err != nil {
+		return sources{}, err
+	}
+	if err := readStrict(root, regionalPath, &src.regional); err != nil {
 		return sources{}, err
 	}
 	if src.dataLicense, err = root.ReadFile(dataLicensePath); err != nil {

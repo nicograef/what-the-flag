@@ -14,20 +14,21 @@ type Names struct {
 
 // Country is one pool entry of dataset/countries.json, its fields in file order.
 type Country struct {
-	Code         string   `json:"code"`
-	Name         Names    `json:"name"`
-	Capital      Names    `json:"capital"`
-	Region       string   `json:"region"`
-	OtherRegions []string `json:"otherRegions"` // regions the country is also counted in, never a wrong option for it
-	Languages    []string `json:"languages"`
-	Currencies   []string `json:"currencies"`
-	Fame         int      `json:"fame"`
-	FlagKey      string   `json:"flagKey"`
-	Lookalikes   []string `json:"lookalikes"`
+	Code              string   `json:"code"`
+	Name              Names    `json:"name"`
+	Capital           Names    `json:"capital"`
+	Region            string   `json:"region"`
+	OtherRegions      []string `json:"otherRegions"`      // regions the country is also counted in, never a wrong option for it
+	Languages         []string `json:"languages"`         // official at national level, or the de facto national language
+	RegionalLanguages []string `json:"regionalLanguages"` // regional, minority, creole or indigenous languages spoken there
+	Currencies        []string `json:"currencies"`
+	Fame              int      `json:"fame"`
+	FlagKey           string   `json:"flagKey"`
+	Lookalikes        []string `json:"lookalikes"`
 }
 
 // Labels names every attribute code the pool uses, per kind: CLDR language codes,
-// ISO 4217 currency codes and regions.
+// official and regional ones alike, ISO 4217 currency codes and regions.
 type Labels struct {
 	Languages  map[string]Names         `json:"languages"`
 	Currencies map[string]CurrencyLabel `json:"currencies"`

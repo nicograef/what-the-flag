@@ -10,9 +10,10 @@ Each source sits unchanged under `sources/`, and its `LICENSE` governs its files
 | Wikidata | <https://query.wikidata.org/sparql> | none; the query `sources/wikidata/capitals.rq` | `sources/wikidata/capitals.csv`, CRLF as served | CC0-1.0 | 2026-11-26 |
 | lipis/flag-icons | <https://github.com/lipis/flag-icons> | `v7.6.0` | `sources/flag-icons/4x3/*.svg` (271 files, upstream `flags/4x3/`), `LICENSE` | MIT | 2026-11-26 |
 
-The project curates two files without an upstream source; NOTICE puts them under ODbL-1.0 with the dataset.
+The project curates three files without an upstream source; NOTICE puts them under ODbL-1.0 with the dataset.
 
 | File | Holds |
 | --- | --- |
 | `overrides.json` | Corrections to the sources, each with its reason |
 | `currency-units.json` | Each pool currency's unit name without the country, in German and English, and its currency family |
+| `regional-languages.json` | Regional, minority, creole and indigenous languages, each with its kind, the pool countries it is spoken in and its source |
