@@ -67,7 +67,6 @@ export function AnswerOption({
   const ready = armed && answerable;
   const { holding, handlers } = useHold({
     ready,
-    once: true,
     onCommit: () => onAnswer(index),
     onHoldChange,
   });

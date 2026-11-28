@@ -19,12 +19,22 @@ const slopPx = 12;
 /** A click this long after a touch release still belongs to that touch. */
 const touchClickMs = 800;
 
-function subscribeMedia(query: string) {
-  return (listener: () => void): (() => void) => {
-    const list = window.matchMedia(query);
-    list.addEventListener("change", listener);
-    return () => list.removeEventListener("change", listener);
-  };
+type Subscribe = (listener: () => void) => () => void;
+
+/** One subscribe function per query, so `useSyncExternalStore` keeps its subscription across renders. */
+const mediaSubscribers = new Map<string, Subscribe>();
+
+function subscribeMedia(query: string): Subscribe {
+  let subscribe = mediaSubscribers.get(query);
+  if (!subscribe) {
+    subscribe = (listener) => {
+      const list = window.matchMedia(query);
+      list.addEventListener("change", listener);
+      return () => list.removeEventListener("change", listener);
+    };
+    mediaSubscribers.set(query, subscribe);
+  }
+  return subscribe;
 }
 
 /** Whether a media query matches, kept current. */
@@ -40,13 +50,12 @@ export function useCoarsePointer(): boolean {
   return useMedia("(pointer: coarse)");
 }
 
-type Phase = "ready" | "holding" | "committed";
+type Phase = "ready" | "holding";
 
 interface HoldOptions {
   /** False while arming, guarded or answered: every activation is ignored. */
   ready: boolean;
-  /** Commits at most once; otherwise it is ready again after each commit. */
-  once?: boolean;
+  /** Called on every commit; the caller decides whether a second one counts. */
   onCommit: () => void;
   /** Called when a hold starts and when it ends, committed or not. */
   onHoldChange?: (holding: boolean) => void;
@@ -70,12 +79,7 @@ interface Hold {
  * and within 12 px of the element. A click no touch preceded, so mouse, Enter, Space and
  * assistive tech, commits at once.
  */
-export function useHold({
-  ready,
-  once = false,
-  onCommit,
-  onHoldChange,
-}: HoldOptions): Hold {
+export function useHold({ ready, onCommit, onHoldChange }: HoldOptions): Hold {
   const [holding, setHolding] = useState(false);
   const phase = useRef<Phase>("ready");
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -83,23 +87,24 @@ export function useHold({
     undefined,
   );
   const touched = useRef(false);
-  const latest = useRef({ ready, once, onCommit, onHoldChange });
+  const latest = useRef({ ready, onCommit, onHoldChange });
   useLayoutEffect(() => {
-    latest.current = { ready, once, onCommit, onHoldChange };
+    latest.current = { ready, onCommit, onHoldChange };
   });
 
   useEffect(
     () => () => {
       clearTimeout(timer.current);
       clearTimeout(touchClick.current);
+      // A hold cut off by unmounting ends too, so the caller's hold state does not stick.
+      if (phase.current === "holding") latest.current.onHoldChange?.(false);
     },
     [],
   );
 
   function commit(): void {
-    if (phase.current === "committed" || !latest.current.ready) return;
-    phase.current = latest.current.once ? "committed" : "ready";
-    if (typeof navigator.vibrate === "function") navigator.vibrate(12);
+    if (!latest.current.ready) return;
+    phase.current = "ready";
     latest.current.onCommit();
   }
 
@@ -125,6 +130,10 @@ export function useHold({
     latest.current.onHoldChange?.(true);
     timer.current = setTimeout(() => {
       if (phase.current !== "holding") return;
+      // Haptics confirm a hold only; a click or key needs no confirmation.
+      if (latest.current.ready && typeof navigator.vibrate === "function") {
+        navigator.vibrate(12);
+      }
       commit();
       setHolding(false);
       latest.current.onHoldChange?.(false);
