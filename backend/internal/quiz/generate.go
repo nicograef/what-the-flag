@@ -71,11 +71,14 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 		{Types, 3},
 	}
 	targets := make([]*country.Country, 0, len(unused))
-	for i, pass := range passes {
+	var tried []QuestionType
+	triedCeiling := 0
+	for _, pass := range passes {
 		// A pass equal to the one before has nothing left to try.
-		if i > 0 && pass.ceiling == passes[i-1].ceiling && slices.Equal(pass.types, passes[i-1].types) {
+		if pass.ceiling == triedCeiling && slices.Equal(pass.types, tried) {
 			continue
 		}
+		tried, triedCeiling = pass.types, pass.ceiling
 		types := slices.Clone(pass.types)
 		rnd.Shuffle(len(types), func(i, j int) { types[i], types[j] = types[j], types[i] })
 		for _, t := range types {
