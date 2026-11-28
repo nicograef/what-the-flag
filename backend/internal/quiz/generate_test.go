@@ -54,7 +54,8 @@ func TestLevel(t *testing.T) {
 var levelTiers = [...][2]int{{1, 1}, {1, 2}, {1, 3}, {2, 4}, {3, 5}, {4, 6}, {4, 7}, {6, 8}, {7, 9}, {7, 10}}
 
 // checkRun generates one run's questions from position 0 until the pool is exhausted and checks each
-// against the question rules, its level's type window and fame ceiling, and the order of the candidate groups.
+// against the question rules, its level's type window and fame ceiling, the variety rules and the order of
+// the candidate groups.
 func checkRun(t *testing.T, s space, seed uint64) {
 	t.Helper()
 	pool := s.cat.pool
@@ -64,6 +65,7 @@ func checkRun(t *testing.T, s space, seed uint64) {
 	}
 	rnd := newRand(seed)
 	used := map[string]bool{}
+	var stored []Question
 	for position := 0; ; position++ {
 		level := min(10, 1+position/5)
 		ceiling := 3
@@ -73,7 +75,7 @@ func checkRun(t *testing.T, s space, seed uint64) {
 			ceiling = 2
 		}
 		famousLeft := slices.ContainsFunc(pool, func(c country.Country) bool { return !used[c.Code] && c.Fame <= ceiling })
-		q, err := Generate(s.cat, position, used, rnd)
+		q, err := Generate(s.cat, stored, rnd)
 		if position == len(pool) {
 			if !errors.Is(err, errQuizExhausted) {
 				t.Fatalf("seed %d position %d: err %v, want errQuizExhausted", seed, position, err)
@@ -91,10 +93,23 @@ func checkRun(t *testing.T, s space, seed uint64) {
 		if used[q.Target] {
 			fail("target repeats")
 		}
-		if tiers := levelTiers[level-1]; len(pool)-len(used) > 20 && (q.Type.Tier < tiers[0] || q.Type.Tier > tiers[1]) {
-			fail("tier %d outside the level %d window %v", q.Type.Tier, level, tiers)
+		if len(pool)-len(used) > 20 {
+			if tiers := levelTiers[level-1]; q.Type.Tier < tiers[0] || q.Type.Tier > tiers[1] {
+				fail("tier %d outside the level %d window %v", q.Type.Tier, level, tiers)
+			}
+			if position > 0 && q.Type == stored[position-1].Type {
+				fail("type %s twice in a row", q.Type.ID())
+			}
+			if a := q.Type.Answer; a == AttrLanguage || a == AttrCurrency {
+				for _, p := range stored[max(0, position-7):] {
+					if p.Type.Answer == a && p.Options[p.Correct] == q.Options[q.Correct] {
+						fail("%s is the correct answer twice within 8 positions", q.Options[q.Correct])
+					}
+				}
+			}
 		}
 		used[q.Target] = true
+		stored = append(stored, q)
 		if famousLeft && target.Fame > ceiling {
 			fail("fame %d above the ceiling %d", target.Fame, ceiling)
 		}
@@ -176,7 +191,17 @@ func fivePool(regions ...string) fakeCatalogue {
 
 // fiveCountries pins exhaustion, the fallbacks and errPoolTooSmall on a literal pool.
 func fiveCountries(t *testing.T) {
-	others := map[string]bool{"BB": true, "CC": true, "DD": true, "EE": true}
+	// asked stores a question per code, of a type no five-pool country has, so no variety rule touches the draw.
+	asked := func(codes ...string) []Question {
+		stored := make([]Question, len(codes))
+		for i, code := range codes {
+			stored[i] = Question{Type: typeOf(t, "regional_language_name"), Target: code}
+		}
+		return stored
+	}
+	others := asked("BB", "CC", "DD", "EE")
+	repeated := asked("BB", "CC", "DD", "EE")
+	repeated[3].Type = typeOf(t, "name_region")
 	obscure := fivePool("R1", "R2", "R3", "R4", "R5")
 	obscure[0].Fame = 3
 	three := fivePool("R1", "R2", "R3", "R4", "R5")[:3]
@@ -185,23 +210,25 @@ func fiveCountries(t *testing.T) {
 	tests := []struct {
 		name    string
 		cat     fakeCatalogue
-		used    map[string]bool
+		stored  []Question
 		want    func(Question) bool
 		wantErr error
 	}{
-		{"every country used", fivePool("R1", "R2", "R3", "R4", "R5"), map[string]bool{"AA": true, "BB": true, "CC": true, "DD": true, "EE": true}, nil, errQuizExhausted},
+		{"every country used", fivePool("R1", "R2", "R3", "R4", "R5"), asked("AA", "BB", "CC", "DD", "EE"), nil, errQuizExhausted},
 		{"look-alike flags fall back to name_region", fivePool("R1", "R2", "R3", "R4", "R5"), others,
+			func(q Question) bool { return q.Type.ID() == "name_region" }, nil},
+		{"no other type fits, so the type repeats", fivePool("R1", "R2", "R3", "R4", "R5"), repeated,
 			func(q Question) bool { return q.Type.ID() == "name_region" }, nil},
 		{"no target within the fame ceiling retries without it", obscure, others,
 			func(q Question) bool { return q.Target == "AA" && q.Type.ID() == "name_region" }, nil},
 		{"no window type fits, so any type does", fivePool("R1", "R2", "R1", "R2", "R1"), others,
 			func(q Question) bool { return q.Type.Tier > 1 }, nil},
-		{"no type has three distractors", three, map[string]bool{"BB": true, "CC": true}, nil, errPoolTooSmall},
+		{"no type has three distractors", three, asked("BB", "CC"), nil, errPoolTooSmall},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for seed := range uint64(20) {
-				q, err := Generate(tt.cat, 0, tt.used, newRand(seed))
+				q, err := Generate(tt.cat, tt.stored, newRand(seed))
 				if !errors.Is(err, tt.wantErr) || (err == nil && !tt.want(q)) {
 					t.Fatalf("seed %d: Generate = %+v, %v; want err %v", seed, q, err, tt.wantErr)
 				}

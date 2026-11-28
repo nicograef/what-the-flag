@@ -82,18 +82,23 @@ func giveaway(c *country.Country) bool {
 // The correct option is the target when the true set holds it, else a uniform draw from the true set.
 // The level orders the candidate groups.
 func Draw(cat Catalogue, c Case, level int, rnd Rand) (Question, bool) {
-	return draw(cat, cat.Pool(), c, level, rnd)
+	return draw(cat, cat.Pool(), c, level, nil, rnd)
 }
 
 // draw is Draw over a pool the caller already holds, since Catalogue.Pool clones it.
-func draw(cat Catalogue, pool []country.Country, c Case, level int, rnd Rand) (Question, bool) {
+// A drawn correct option avoids the codes in avoid; a true set inside avoid draws no question.
+func draw(cat Catalogue, pool []country.Country, c Case, level int, avoid map[string]bool, rnd Rand) (Question, bool) {
 	sets := candidates(cat, pool, c, level)
-	if len(sets.True) == 0 {
-		return Question{}, false
-	}
 	correct := c.Target
 	if !slices.Contains(sets.True, correct) {
-		correct = sets.True[rnd.IntN(len(sets.True))]
+		fresh := sets.True
+		if len(avoid) > 0 {
+			fresh = slices.DeleteFunc(slices.Clone(fresh), func(v string) bool { return avoid[v] })
+		}
+		if len(fresh) == 0 {
+			return Question{}, false
+		}
+		correct = fresh[rnd.IntN(len(fresh))]
 	}
 
 	answer := c.Type.Answer

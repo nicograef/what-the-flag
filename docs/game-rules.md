@@ -37,6 +37,7 @@ A run climbs one level every five questions; the server sends the level with eve
 
 - A level asks the tiers from two below its number up to its number, extended one tier down while that window holds fewer than four types.
 - The type is drawn at random from the window, then a target among the unused countries within the level's fame ceiling. When none fits, the ceiling goes, then the window.
+- No question type comes twice in a row. No language or currency is the correct answer twice within eight consecutive questions. Both rules yield only when no other type or target fits.
 - Each country has a fame tier: the 50 most-viewed on German Wikipedia over 12 months are tier 1, ranks 51 to 120 tier 2, the rest tier 3. A curated list adjusts some.
 - No country is the target twice in one quiz.
 - Wrong options are drawn group by group. At levels 1 to 3 the groups are the target's continent within the fame ceiling, the rest of the continent, then the rest of the pool. From level 4 they are the target's subregion, such as Western Europe or the Caribbean, the rest of the continent, then the rest of the pool.

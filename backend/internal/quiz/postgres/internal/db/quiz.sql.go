@@ -216,6 +216,49 @@ func (q *Queries) InsertQuestion(ctx context.Context, arg InsertQuestionParams) 
 	return err
 }
 
+const listQuestions = `-- name: ListQuestions :many
+SELECT position, type, target, prompt, options, correct_index
+FROM quiz_questions
+WHERE quiz_id = $1
+ORDER BY position
+`
+
+type ListQuestionsRow struct {
+	Position     int16
+	Type         string
+	Target       string
+	Prompt       *string
+	Options      []string
+	CorrectIndex int16
+}
+
+func (q *Queries) ListQuestions(ctx context.Context, quizID uuid.UUID) ([]ListQuestionsRow, error) {
+	rows, err := q.db.Query(ctx, listQuestions, quizID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListQuestionsRow{}
+	for rows.Next() {
+		var i ListQuestionsRow
+		if err := rows.Scan(
+			&i.Position,
+			&i.Type,
+			&i.Target,
+			&i.Prompt,
+			&i.Options,
+			&i.CorrectIndex,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listRunAnswers = `-- name: ListRunAnswers :many
 SELECT position, served_at, answered_at, option_index, correct
 FROM run_answers
@@ -250,30 +293,6 @@ func (q *Queries) ListRunAnswers(ctx context.Context, runID uuid.UUID) ([]ListRu
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listTargets = `-- name: ListTargets :many
-SELECT target FROM quiz_questions WHERE quiz_id = $1
-`
-
-func (q *Queries) ListTargets(ctx context.Context, quizID uuid.UUID) ([]string, error) {
-	rows, err := q.db.Query(ctx, listTargets, quizID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []string{}
-	for rows.Next() {
-		var target string
-		if err := rows.Scan(&target); err != nil {
-			return nil, err
-		}
-		items = append(items, target)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

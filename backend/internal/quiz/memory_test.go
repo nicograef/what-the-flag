@@ -70,12 +70,15 @@ func (u *memoryUnit) AddQuestion(position int, q Question) error {
 	return nil
 }
 
-func (u *memoryUnit) Targets() (map[string]bool, error) {
-	used := map[string]bool{}
-	for _, q := range u.m.questions[u.run.QuizID] {
-		used[q.Target] = true
+func (u *memoryUnit) Questions() ([]Question, error) {
+	var stored []Question
+	for p := 0; ; p++ {
+		q, ok := u.m.questions[u.run.QuizID][p]
+		if !ok {
+			return stored, nil
+		}
+		stored = append(stored, q)
 	}
-	return used, nil
 }
 
 func (u *memoryUnit) SaveRun(r *Run) error {

@@ -46,12 +46,21 @@ func window(level int) []QuestionType {
 	}
 }
 
-// Generate draws the question at position of a quiz whose stored targets are used.
+// varietyWindow is the span of positions, the drawn one included, in which no language or currency is the correct answer twice.
+const varietyWindow = 8
+
+// Generate draws the question at position len(stored) of a quiz whose questions by position are stored.
 // It shuffles the level's window and takes the first type with an unused target within the fame ceiling,
 // then that target and one of its cases, each uniformly. When nothing fits it retries without the ceiling,
-// then with every type. It returns errQuizExhausted when every pool country was a target.
-func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Question, error) {
+// then with every type. Each pass first keeps the variety rules: no type twice in a row, and no language or
+// currency the correct answer twice within varietyWindow positions. It returns errQuizExhausted when every
+// pool country was a target.
+func Generate(cat Catalogue, stored []Question, rnd Rand) (Question, error) {
 	pool := cat.Pool()
+	used := make(map[string]bool, len(stored))
+	for _, q := range stored {
+		used[q.Target] = true
+	}
 	unused := make([]*country.Country, 0, len(pool))
 	for i := range pool {
 		if !used[pool[i].Code] {
@@ -60,6 +69,17 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 	}
 	if len(unused) == 0 {
 		return Question{}, errQuizExhausted
+	}
+	position := len(stored)
+	var last QuestionType
+	if position > 0 {
+		last = stored[position-1].Type
+	}
+	recent := map[string]bool{}
+	for _, q := range stored[max(0, position-varietyWindow+1):] {
+		if q.Type.Answer == AttrLanguage || q.Type.Answer == AttrCurrency {
+			recent[q.Options[q.Correct]] = true
+		}
 	}
 	level := Level(position)
 	passes := []struct {
@@ -79,26 +99,41 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 			continue
 		}
 		tried, triedCeiling = pass.types, pass.ceiling
-		types := slices.Clone(pass.types)
-		rnd.Shuffle(len(types), func(i, j int) { types[i], types[j] = types[j], types[i] })
-		for _, t := range types {
-			targets = targets[:0]
-			for _, c := range unused {
-				if c.Fame <= pass.ceiling && eligible(t, c) {
-					targets = append(targets, c)
-				}
+		for _, varied := range []bool{true, false} {
+			avoid := recent
+			if !varied {
+				avoid = nil
 			}
-			// A target whose case draws no question leaves the list, and another is picked.
-			for len(targets) > 0 {
-				i := rnd.IntN(len(targets))
-				cases := targetCases(t, targets[i])
-				if q, ok := draw(cat, pool, cases[rnd.IntN(len(cases))], level, rnd); ok {
-					return q, nil
+			types := slices.Clone(pass.types)
+			rnd.Shuffle(len(types), func(i, j int) { types[i], types[j] = types[j], types[i] })
+			for _, t := range types {
+				if varied && t == last {
+					continue
 				}
-				targets[i] = targets[len(targets)-1]
-				targets = targets[:len(targets)-1]
+				targets = targets[:0]
+				for _, c := range unused {
+					if c.Fame <= pass.ceiling && eligible(t, c) && !stale(t, c, avoid) {
+						targets = append(targets, c)
+					}
+				}
+				// A target whose case draws no question leaves the list, and another is picked.
+				for len(targets) > 0 {
+					i := rnd.IntN(len(targets))
+					cases := targetCases(t, targets[i])
+					if q, ok := draw(cat, pool, cases[rnd.IntN(len(cases))], level, avoid, rnd); ok {
+						return q, nil
+					}
+					targets[i] = targets[len(targets)-1]
+					targets = targets[:len(targets)-1]
+				}
 			}
 		}
 	}
 	return Question{}, errPoolTooSmall
+}
+
+// stale reports whether every value c has for t's answer is in avoid, the recent correct answers.
+func stale(t QuestionType, c *country.Country, avoid map[string]bool) bool {
+	vs := values(c, t.Answer)
+	return len(avoid) > 0 && len(vs) > 0 && !slices.ContainsFunc(vs, func(v string) bool { return !avoid[v] })
 }

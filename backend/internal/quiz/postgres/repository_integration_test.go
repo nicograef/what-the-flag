@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/rand/v2"
+	"slices"
 	"sync"
 	"testing"
 	"time"
@@ -138,6 +139,39 @@ func TestEveryTypeFitsTheSchema(t *testing.T) {
 			if !ok || stored != q {
 				return fmt.Errorf("type %s stored as %+v, %t", ty.ID(), stored, ok)
 			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestQuestionsByPosition(t *testing.T) {
+	ctx := context.Background()
+	repo := NewRepository(postgres.TestTx(t))
+	run := newRun(t, repo, nil)
+	question := func(target string) quiz.Question {
+		return quiz.Question{Type: quiz.Types[0], Target: target, Options: [4]string{target, "FR", "IT", "ES"}}
+	}
+	want := []quiz.Question{question("DE"), question("AT"), question("CH")}
+	err := repo.InRun(ctx, run.ID, func(u quiz.UnitOfWork) error {
+		// Position 4 follows a gap, so it is not one of the questions by position.
+		for _, p := range []int{2, 0, 4, 1} {
+			q := question("PL")
+			if p < len(want) {
+				q = want[p]
+			}
+			if err := u.AddQuestion(p, q); err != nil {
+				return err
+			}
+		}
+		got, err := u.Questions()
+		if err != nil {
+			return err
+		}
+		if !slices.Equal(got, want) {
+			return fmt.Errorf("questions %+v, want %+v", got, want)
 		}
 		return nil
 	})

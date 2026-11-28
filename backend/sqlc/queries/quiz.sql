@@ -44,8 +44,11 @@ INSERT INTO quiz_questions (quiz_id, position, type, target, prompt, options, co
 VALUES (@quiz_id, @position, @type, @target, @prompt, @options, @correct_index)
 ON CONFLICT (quiz_id, position) DO NOTHING;
 
--- name: ListTargets :many
-SELECT target FROM quiz_questions WHERE quiz_id = @quiz_id;
+-- name: ListQuestions :many
+SELECT position, type, target, prompt, options, correct_index
+FROM quiz_questions
+WHERE quiz_id = @quiz_id
+ORDER BY position;
 
 -- Leaderboards rank players by their best ended, visible run: highest score, then earliest end, then id.
 -- A run without an end counts as ended once its open answer is older than @late_after, at served_at + @late_after;

@@ -155,7 +155,7 @@ func (u *unit) Question(position int) (quiz.Question, bool, error) {
 	if err != nil {
 		return quiz.Question{}, false, err
 	}
-	q, err := toQuestion(row)
+	q, err := toQuestion(row.Type, row.Target, row.Prompt, row.Options, row.CorrectIndex)
 	return q, err == nil, err
 }
 
@@ -181,16 +181,23 @@ func (u *unit) AddQuestion(position int, q quiz.Question) error {
 	return nil
 }
 
-func (u *unit) Targets() (map[string]bool, error) {
-	targets, err := u.q.ListTargets(u.ctx, uuid.UUID(u.run.QuizID))
+func (u *unit) Questions() ([]quiz.Question, error) {
+	rows, err := u.q.ListQuestions(u.ctx, uuid.UUID(u.run.QuizID))
 	if err != nil {
 		return nil, err
 	}
-	used := make(map[string]bool, len(targets))
-	for _, t := range targets {
-		used[t] = true
+	stored := make([]quiz.Question, 0, len(rows))
+	for _, row := range rows {
+		if int(row.Position) != len(stored) {
+			break
+		}
+		q, err := toQuestion(row.Type, row.Target, row.Prompt, row.Options, row.CorrectIndex)
+		if err != nil {
+			return nil, fmt.Errorf("question %d: %w", row.Position, err)
+		}
+		stored = append(stored, q)
 	}
-	return used, nil
+	return stored, nil
 }
 
 // SaveRun writes the run row and every answer that differs from its stored state, in position order,
@@ -246,24 +253,24 @@ func samePtr[T comparable](a, b *T) bool {
 	return (a == nil) == (b == nil) && (a == nil || *a == *b)
 }
 
-func toQuestion(row db.GetQuestionRow) (quiz.Question, error) {
-	q := quiz.Question{Target: row.Target, Correct: int(row.CorrectIndex)}
-	if row.Prompt != nil {
-		q.Prompt = *row.Prompt
+func toQuestion(typ, target string, prompt *string, options []string, correct int16) (quiz.Question, error) {
+	q := quiz.Question{Target: target, Correct: int(correct)}
+	if prompt != nil {
+		q.Prompt = *prompt
 	}
 	found := false
 	for _, t := range quiz.Types {
-		if t.ID() == row.Type {
+		if t.ID() == typ {
 			q.Type, found = t, true
 			break
 		}
 	}
 	if !found {
-		return quiz.Question{}, fmt.Errorf("unknown question type %q", row.Type)
+		return quiz.Question{}, fmt.Errorf("unknown question type %q", typ)
 	}
-	if len(row.Options) != len(q.Options) {
-		return quiz.Question{}, fmt.Errorf("question has %d options", len(row.Options))
+	if len(options) != len(q.Options) {
+		return quiz.Question{}, fmt.Errorf("question has %d options", len(options))
 	}
-	copy(q.Options[:], row.Options)
+	copy(q.Options[:], options)
 	return q, nil
 }

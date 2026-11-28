@@ -222,11 +222,14 @@ func (s *Service) serveNext(uow UnitOfWork, r *Run, now time.Time) error {
 		return fmt.Errorf("read question: %w", err)
 	}
 	if !ok {
-		used, err := uow.Targets()
+		stored, err := uow.Questions()
 		if err != nil {
-			return fmt.Errorf("read targets: %w", err)
+			return fmt.Errorf("read questions: %w", err)
 		}
-		q, err := Generate(s.cat, position, used, s.rnd)
+		if len(stored) != position {
+			return fmt.Errorf("quiz stores %d questions before position %d", len(stored), position)
+		}
+		q, err := Generate(s.cat, stored, s.rnd)
 		if errors.Is(err, errQuizExhausted) {
 			r.Complete(now)
 			return nil

@@ -50,8 +50,8 @@ type UnitOfWork interface {
 	Question(position int) (Question, bool, error)
 	// AddQuestion stores q unless another run stored that position first.
 	AddQuestion(position int, q Question) error
-	// Targets returns the targets of the quiz's stored questions.
-	Targets() (map[string]bool, error)
+	// Questions returns the quiz's stored questions by position, from 0 up to the first position without one.
+	Questions() ([]Question, error)
 	SaveRun(r *Run) error
 }
 
