@@ -7,7 +7,7 @@
 | Quiz pool | The 197 countries that questions are drawn from; the generated dataset holds exactly these. | sovereign list |
 | Attribute | One kind of fact about a country with labels in both languages, e.g. capital or currency. | property, field |
 | Continent | One of Africa, Americas, Asia, Europe, Oceania; a country can count in more than one. Code and wire call it region: `AttrRegion`, `Country.Region`/`OtherRegions`, the type ids `name_region`, `flag_region`, `capital_region`. | region (outside code) |
-| Subregion | A part of a continent from the mledoze source, such as Western Europe or the Caribbean; from level 4 wrong options come from the target's subregion first. Code: `Country.Subregion`. | region (outside code) |
+| Subregion | A part of a continent from the mledoze source, such as Western Europe or the Caribbean; from level 4 wrong options come from the target's subregion first. Code: `Country.Subregion`. | area, zone |
 | Official language | A language official at national level in a country, or its de facto national language where none is official; language questions ask for one. Code and wire call it language: `Country.Languages`, `name_language`. | national language |
 | Regional language | A curated regional, minority, indigenous or creole language established in a country where it is not official; the regional-language question asks for a country of its spoken-in list. Code and wire: `Country.RegionalLanguages`, `regional_language_name`. | dialect, minority language |
 | Spoken-in list | A regional language's countries where it is established and not official; the possible correct answers of its question. Code: `spokenIn` in `data/regional-languages.json`. | heartland |
