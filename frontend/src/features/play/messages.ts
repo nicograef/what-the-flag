@@ -83,9 +83,14 @@ export const messages = defineMessages<{
   shareCompleted: string;
   tellCreator: (name: string) => string;
   ownGameWorld: string;
-  shareText: (score: number) => string;
+  sheetTitle: string;
+  sheetBody: string;
+  previewCaption: string;
+  shareNative: string;
+  copy: string;
   copied: string;
-  copiedShort: string;
+  close: string;
+  shareText: (n: number, strip: string, url: string) => string;
   errors: Record<
     "invalid_name" | "run_not_found" | "not_current_question",
     string
@@ -191,12 +196,19 @@ export const messages = defineMessages<{
     shareCompleted: "Das muss jeder wissen",
     tellCreator: (name) => `${name} Bescheid geben`,
     ownGameWorld: "Eigenes Spiel für die Weltrangliste",
-    shareText: (score) =>
-      score === 1
-        ? "Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr?"
-        : `Ich habe bei What The Flag ${score} Fragen in Folge richtig beantwortet. Schaffst du mehr?`,
-    copied: "Link kopiert.",
-    copiedShort: "Kopiert!",
+    sheetTitle: "Fordere jemanden heraus",
+    sheetBody:
+      "Wer den Link öffnet, spielt genau deine Fragen. Nichts wird verraten.",
+    previewCaption: "So sieht es im Chat aus",
+    shareNative: "Teilen …",
+    copy: "Text und Link kopieren",
+    copied: "Kopiert!",
+    close: "Schließen",
+    shareText: (n, strip, url) =>
+      `What The Flag: ${n} in Folge
+${strip}
+Gleiche Fragen. Schaffst du mehr?
+${url}`,
     errors: {
       invalid_name:
         "Erlaubt sind 1 bis 20 Zeichen mit mindestens einem Buchstaben oder einer Ziffer: Buchstaben, Ziffern, Leerzeichen, _, - und Punkt.",
@@ -304,12 +316,19 @@ export const messages = defineMessages<{
     shareCompleted: "Everyone needs to see this",
     tellCreator: (name) => `Tell ${name}`,
     ownGameWorld: "Own game for the world leaderboard",
-    shareText: (score) =>
-      score === 1
-        ? "I got 1 question right on What The Flag. Can you beat it?"
-        : `I got ${score} questions right in a row on What The Flag. Can you beat it?`,
-    copied: "Link copied.",
-    copiedShort: "Copied!",
+    sheetTitle: "Challenge someone",
+    sheetBody:
+      "Whoever opens the link plays exactly your questions. Nothing is spoiled.",
+    previewCaption: "This is how it looks in the chat",
+    shareNative: "Share …",
+    copy: "Copy text and link",
+    copied: "Copied!",
+    close: "Close",
+    shareText: (n, strip, url) =>
+      `What The Flag: ${n} in a row
+${strip}
+Same questions. Can you beat it?
+${url}`,
     errors: {
       invalid_name:
         "Use 1 to 20 characters with at least one letter or digit: letters, digits, spaces, _, - and full stops.",

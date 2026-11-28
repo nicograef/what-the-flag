@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Check, Crown, Globe, RotateCcw, X } from "lucide-react";
+import { Check, Crown, Globe, RotateCcw, Share2, X } from "lucide-react";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router";
 import { cn } from "cn";
@@ -20,7 +20,8 @@ import {
   type ResultCreator,
 } from "@/features/play/result-head";
 import { RunStrip } from "@/features/play/run-strip";
-import { ShareButton } from "@/features/play/share-button";
+import { ShareSheet } from "@/features/play/share-sheet";
+import { buildShareText } from "@/features/play/share-text";
 import { runCells } from "@/features/play/strip";
 import { useApiClient } from "@/lib/api";
 import { useLocale } from "@/lib/i18n/locale";
@@ -212,6 +213,7 @@ export function RunResult({
   const queryClient = useQueryClient();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [guarded, setGuarded] = useState(true);
+  const [sharing, setSharing] = useState(false);
   const { best, score } = result;
   const layout = selectHead(result, creator);
   const record = layout.head === "headFirst" || layout.head === "headRecord";
@@ -318,14 +320,15 @@ export function RunResult({
           tellCreator: t.tellCreator(creatorName),
         };
         return (
-          <ShareButton
-            quizId={run.quizId}
-            score={score}
-            label={labels[kind]}
+          <Button
             variant={variant}
             guarded={guarded}
             className={size}
-          />
+            onClick={() => setSharing(true)}
+          >
+            <Share2 aria-hidden="true" />
+            {labels[kind]}
+          </Button>
         );
       }
     }
@@ -431,6 +434,15 @@ export function RunResult({
         {action(layout.primary, true)}
         {layout.secondary && action(layout.secondary, false)}
       </div>
+      <ShareSheet
+        open={sharing}
+        text={buildShareText(locale, {
+          score,
+          cells,
+          url: `${window.location.origin}/q/${run.quizId}`,
+        })}
+        onClose={() => setSharing(false)}
+      />
     </section>
   );
 }

@@ -256,7 +256,19 @@ it("plays again under the same name on a fresh quiz", async () => {
   );
 });
 
-it("shares the challenge link through the share sheet", async () => {
+/** Plays one correct answer and one miss, then opens the share sheet from the result. */
+async function shareAfterOne(
+  user: ReturnType<typeof renderRoute>["user"],
+): Promise<void> {
+  await answer(user, "Deutschland");
+  await answer(user, "Kyoto");
+  await press(user, "Wer schafft mehr als 1?");
+}
+
+const sharedText = (quizId: string): string =>
+  `What The Flag: 1 in Folge\n🟩🟥\nGleiche Fragen. Schaffst du mehr?\n${window.location.origin}/q/${quizId}`;
+
+it("shares the run through the system share sheet", async () => {
   const share = vi.fn<(data: ShareData) => Promise<void>>();
   share.mockResolvedValue(undefined);
   Object.defineProperty(navigator, "share", {
@@ -265,32 +277,49 @@ it("shares the challenge link through the share sheet", async () => {
   });
   try {
     const { ids, user } = await startPlaying();
-    await answer(user, "Deutschland");
-    await answer(user, "Kyoto");
+    await shareAfterOne(user);
 
-    await press(user, "Wer schafft mehr als 1?");
+    await user.click(screen.getByRole("button", { name: "Teilen …" }));
 
-    expect(share).toHaveBeenCalledWith({
-      text: "Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr?",
-      url: `${window.location.origin}/q/${ids.quizId}`,
-    });
+    expect(share).toHaveBeenCalledWith({ text: sharedText(ids.quizId) });
   } finally {
     Reflect.deleteProperty(navigator, "share");
   }
 });
 
-it("copies the challenge link without a share sheet", async () => {
+it("copies text and link without a system share sheet", async () => {
   const { ids, user } = await startPlaying();
   const write = vi.spyOn(navigator.clipboard, "writeText");
-  await answer(user, "Deutschland");
-  await answer(user, "Kyoto");
+  await shareAfterOne(user);
 
-  await press(user, "Wer schafft mehr als 1?");
-
-  expect(write).toHaveBeenCalledWith(
-    `Ich habe bei What The Flag 1 Frage richtig beantwortet. Schaffst du mehr? ${window.location.origin}/q/${ids.quizId}`,
+  const sheet = screen.getByRole("dialog", { name: "Fordere jemanden heraus" });
+  expect(sheet).toHaveTextContent(
+    "Wer den Link öffnet, spielt genau deine Fragen. Nichts wird verraten.",
   );
-  expect(await screen.findByText("Link kopiert.")).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Teilen …" }),
+  ).not.toBeInTheDocument();
+  await user.click(
+    screen.getByRole("button", { name: "Text und Link kopieren" }),
+  );
+
+  expect(write).toHaveBeenCalledWith(sharedText(ids.quizId));
+  expect(await screen.findByText("Kopiert!")).toBeInTheDocument();
+});
+
+it("closes the share sheet on Escape and returns focus to its trigger", async () => {
+  const { user } = await startPlaying();
+  await shareAfterOne(user);
+  const sheet = screen.getByRole("dialog", { name: "Fordere jemanden heraus" });
+  expect(sheet).toHaveAttribute("open");
+  expect(screen.getByRole("button", { name: "Schließen" })).toHaveFocus();
+
+  await user.keyboard("{Escape}");
+
+  expect(sheet).not.toHaveAttribute("open");
+  expect(
+    screen.getByRole("button", { name: "Wer schafft mehr als 1?" }),
+  ).toHaveFocus();
 });
 
 it("counts the gap pill to the record from /api/me", async () => {

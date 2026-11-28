@@ -83,6 +83,7 @@
   --animate-hold-fill-up: hold-fill-up 400ms linear forwards;
   --animate-toast: toast 1s ease-out forwards;
   --animate-confetti: confetti 1.6s ease-in forwards;
+  --animate-rise: rise 300ms ease-out;
 
   @keyframes enter {
     from {
@@ -125,6 +126,12 @@
   @keyframes confetti {
     to {
       transform: translateY(110vh) rotate(540deg);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
     }
   }
   @keyframes fade-in {
@@ -228,6 +235,8 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-pop,
   .animate-shake,
+  .animate-rise,
+  .animate-toast,
   [data-motion] {
     animation: none;
   }
