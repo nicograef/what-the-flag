@@ -228,13 +228,8 @@ func TestLeaderboard(t *testing.T) {
 		if got := b.global(l, &me); len(got) != 1 || got[0].Own {
 			t.Fatalf("global = %+v, want the creator without own", got)
 		}
-		for _, tt := range []struct {
-			own  quiz.PlayerID
-			want bool
-		}{{me, false}, {author, true}} {
-			if v, err := l.Creator(ctx, q, b.now, &tt.own); err != nil || v == nil || v.Own != tt.want {
-				t.Fatalf("creator view = %+v, %v; want own %t", v, err, tt.want)
-			}
+		if got := b.global(l, &author); len(got) != 1 || !got[0].Own {
+			t.Fatalf("global for the author = %+v, want the creator as own", got)
 		}
 	})
 }
