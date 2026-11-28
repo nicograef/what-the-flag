@@ -13,5 +13,6 @@
   "flag_currency",
   "flag_language",
   "capital_currency",
-  "capital_language"
+  "capital_language",
+  "regional_language_name"
 ]

@@ -22,6 +22,7 @@ type QuizQuestion struct {
 	Target       string
 	Options      []string
 	CorrectIndex int16
+	Prompt       *string
 }
 
 type Run struct {

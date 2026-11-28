@@ -41,10 +41,13 @@
       ],
       "position": 2,
       "prompt": {
-        "flagKey": "0123456789",
-        "kind": "flag"
+        "kind": "text",
+        "text": {
+          "de": "Obersorbisch",
+          "en": "Upper Sorbian"
+        }
       },
-      "type": "flag_name"
+      "type": "regional_language_name"
     },
     "quizRank": 1,
     "score": 2

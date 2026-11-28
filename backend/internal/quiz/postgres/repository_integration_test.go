@@ -104,7 +104,7 @@ func TestAddQuestionRace(t *testing.T) {
 	}
 }
 
-// TestEveryTypeFitsTheSchema pins quiz.Types against the quiz_questions type CHECK.
+// TestEveryTypeFitsTheSchema pins quiz.Types against the quiz_questions type and prompt CHECKs.
 func TestEveryTypeFitsTheSchema(t *testing.T) {
 	ctx := context.Background()
 	repo := NewRepository(postgres.TestTx(t))
@@ -112,6 +112,9 @@ func TestEveryTypeFitsTheSchema(t *testing.T) {
 	err := repo.InRun(ctx, run.ID, func(u quiz.UnitOfWork) error {
 		for position, ty := range quiz.Types {
 			q := quiz.Question{Type: ty, Target: "DE", Options: [4]string{"DE", "FR", "IT", "ES"}}
+			if ty.Prompt == quiz.AttrRegionalLanguage {
+				q.Prompt = "hsb"
+			}
 			if err := u.AddQuestion(position, q); err != nil {
 				return fmt.Errorf("type %s: %w", ty.ID(), err)
 			}
@@ -119,7 +122,7 @@ func TestEveryTypeFitsTheSchema(t *testing.T) {
 			if err != nil {
 				return fmt.Errorf("type %s: %w", ty.ID(), err)
 			}
-			if !ok || stored.Type != ty {
+			if !ok || stored != q {
 				return fmt.Errorf("type %s stored as %+v, %t", ty.ID(), stored, ok)
 			}
 		}

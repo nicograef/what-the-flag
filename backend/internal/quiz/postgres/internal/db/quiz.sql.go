@@ -82,7 +82,7 @@ func (q *Queries) CreatorRun(ctx context.Context, arg CreatorRunParams) (Creator
 }
 
 const getQuestion = `-- name: GetQuestion :one
-SELECT type, target, options, correct_index
+SELECT type, target, prompt, options, correct_index
 FROM quiz_questions
 WHERE quiz_id = $1 AND position = $2
 `
@@ -95,6 +95,7 @@ type GetQuestionParams struct {
 type GetQuestionRow struct {
 	Type         string
 	Target       string
+	Prompt       *string
 	Options      []string
 	CorrectIndex int16
 }
@@ -105,6 +106,7 @@ func (q *Queries) GetQuestion(ctx context.Context, arg GetQuestionParams) (GetQu
 	err := row.Scan(
 		&i.Type,
 		&i.Target,
+		&i.Prompt,
 		&i.Options,
 		&i.CorrectIndex,
 	)
@@ -166,8 +168,8 @@ func (q *Queries) GlobalTop(ctx context.Context, arg GlobalTopParams) ([]GlobalT
 }
 
 const insertQuestion = `-- name: InsertQuestion :exec
-INSERT INTO quiz_questions (quiz_id, position, type, target, options, correct_index)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO quiz_questions (quiz_id, position, type, target, prompt, options, correct_index)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 ON CONFLICT (quiz_id, position) DO NOTHING
 `
 
@@ -176,6 +178,7 @@ type InsertQuestionParams struct {
 	Position     int16
 	Type         string
 	Target       string
+	Prompt       *string
 	Options      []string
 	CorrectIndex int16
 }
@@ -186,6 +189,7 @@ func (q *Queries) InsertQuestion(ctx context.Context, arg InsertQuestionParams) 
 		arg.Position,
 		arg.Type,
 		arg.Target,
+		arg.Prompt,
 		arg.Options,
 		arg.CorrectIndex,
 	)

@@ -13,8 +13,8 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 | --- | --- |
 | 1 | flag → name, name → flag, name → continent |
 | 2 | name → capital, capital → name, flag → continent, name → currency |
-| 3 | flag → capital, capital → flag, name → language, capital → continent |
-| 4 | flag → currency, flag → language, capital → currency, capital → language |
+| 3 | flag → capital, capital → flag, name → official language, capital → continent |
+| 4 | flag → currency, flag → official language, capital → currency, capital → official language, regional language → name |
 
 - Questions 1 to 5 use tier 1 only. Each further block of five allows the next tier, up to tier 4 from question 16.
 - Within the allowed tiers, the type is drawn at random.
@@ -27,7 +27,9 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 - No two options of a question show the same text.
 - Continents are Africa, Americas, Asia, Europe and Oceania.
 - A country that spans or is also counted in a second continent, such as Russia, Turkey or Cyprus, has a main one, the correct option. Its other continent is never offered.
-- A country's languages are those official at national level, or its de facto national language where none is official. Regional and minority languages do not count.
+- A country's official languages are those official at national level, or its de facto national language where none is official. A language question asks for one; its wrong options are official languages of other countries.
+- A regional language is a regional, minority, creole or indigenous language of a curated list. It counts as spoken in its listed countries and every country it is official in, at most five.
+- A regional-language question shows a regional language spoken in the target; a target without one gets another type. No wrong option is a country where it is spoken.
 - A currency option shows the unit name without the country, such as Peso or Dollar.
 - No two options of a currency question share a currency family, such as Rupee and Rupiah.
 

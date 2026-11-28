@@ -106,6 +106,13 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 		if famousLeft && target.Fame > wantFame {
 			fail("fame %d above %d", target.Fame, wantFame)
 		}
+		// spoken reports whether a regional-language question's prompt is spoken in c; such a c is never a distractor.
+		spoken := func(c *country.Country) bool {
+			return q.Type.Prompt == AttrRegionalLanguage && slices.Contains(c.RegionalLanguages, q.Prompt)
+		}
+		if (q.Type.Prompt == AttrRegionalLanguage) != (q.Prompt != "") || (q.Prompt != "" && !spoken(target)) {
+			fail("prompt %q is not a regional language of the target, or is set for another type", q.Prompt)
+		}
 		own := []string{q.Target}
 		// blocked holds values the target lacks that a player could still defend; no option may carry one.
 		var blocked []string
@@ -136,6 +143,9 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 			if i != q.Correct && slices.Contains(blocked, o) {
 				fail("option %d %q is another region of the target or belongs to its look-alike", i, o)
 			}
+			if i != q.Correct && q.Type.Answer.identifiesCountry() && spoken(byCode[o]) {
+				fail("option %d %q is a country where %s is spoken", i, o, q.Prompt)
+			}
 			l := text(q.Type, o)
 			if l.De == "" || l.En == "" || des[l.De] || ens[l.En] {
 				fail("option %d text %+v is empty or repeats", i, l)
@@ -156,10 +166,11 @@ func checkRun(t *testing.T, cat sharedPool, seed uint64) map[string]bool {
 				}
 			}
 		}
-		// A distractor country may leave a region of eight or more only when every other country there clashes with an option.
+		// A distractor country may leave a region of eight or more only when every other country there
+		// clashes with an option or speaks the prompted regional language.
 		if q.Type.Answer.identifiesCountry() && regionSize[target.Region] >= 8 {
 			clashes := func(c *country.Country) bool {
-				return slices.ContainsFunc(q.Options[:], func(o string) bool {
+				return spoken(c) || slices.ContainsFunc(q.Options[:], func(o string) bool {
 					l, ol := answerText(c, q.Type.Answer), text(q.Type, o)
 					return l.De == ol.De || l.En == ol.En || (flagCountries && slices.Contains(byCode[o].Lookalikes, c.Code))
 				})

@@ -55,21 +55,33 @@ func Generate(cat Catalogue, position int, used map[string]bool, rnd Rand) (Ques
 	}
 	rnd.Shuffle(len(types), func(i, j int) { types[i], types[j] = types[j], types[i] })
 	for _, t := range types {
+		var prompt string
 		var options []string
-		if t.Answer.identifiesCountry() {
-			options = countryOptions(pool, target, t, rnd)
-		} else {
+		switch {
+		case t.Prompt == AttrRegionalLanguage:
+			if len(target.RegionalLanguages) == 0 {
+				continue
+			}
+			prompt = target.RegionalLanguages[rnd.IntN(len(target.RegionalLanguages))]
+			spoken := func(c *country.Country) bool { return slices.Contains(c.RegionalLanguages, prompt) }
+			options = countryOptions(pool, target, t, spoken, rnd)
+		case t.Answer.identifiesCountry():
+			options = countryOptions(pool, target, t, nil, rnd)
+		default:
 			options = valueOptions(cat, pool, target, t, rnd)
 		}
 		if options != nil {
-			return shuffled(t, target.Code, options, rnd), nil
+			q := shuffled(t, target.Code, options, rnd)
+			q.Prompt = prompt
+			return q, nil
 		}
 	}
 	return Question{}, errPoolTooSmall
 }
 
 // countryOptions returns the target's code and three distractor codes, or nil when fewer than three qualify.
-func countryOptions(pool []country.Country, target *country.Country, t QuestionType, rnd Rand) []string {
+// A country for which excluded reports true is no distractor; excluded may be nil.
+func countryOptions(pool []country.Country, target *country.Country, t QuestionType, excluded func(*country.Country) bool, rnd Rand) []string {
 	region := make([]*country.Country, 0, len(pool))
 	rest := make([]*country.Country, 0, len(pool))
 	for i := range pool {
@@ -93,7 +105,7 @@ func countryOptions(pool []country.Country, target *country.Country, t QuestionT
 	picked := make([]*country.Country, 1, 4)
 	picked[0] = target
 	for _, c := range slices.Concat(region, rest) {
-		if clashes(c, picked, t.Answer, flag) {
+		if (excluded != nil && excluded(c)) || clashes(c, picked, t.Answer, flag) {
 			continue
 		}
 		picked = append(picked, c)

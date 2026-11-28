@@ -14,6 +14,8 @@ const (
 	AttrRegion   Attr = "region"
 	AttrLanguage Attr = "language"
 	AttrCurrency Attr = "currency"
+	// AttrRegionalLanguage prompts with one of the target's regional languages, stored as Question.Prompt.
+	AttrRegionalLanguage Attr = "regional_language"
 )
 
 // identifiesCountry reports whether an answer of this attribute is a country, not an attribute code.
@@ -49,13 +51,16 @@ var Types = []QuestionType{
 	{AttrFlag, AttrLanguage, 4},
 	{AttrCapital, AttrCurrency, 4},
 	{AttrCapital, AttrLanguage, 4},
+	{AttrRegionalLanguage, AttrName, 4},
 }
 
 // Question asks about Target, an alpha-2 code. Options are alpha-2 codes for a
 // country-valued answer and attribute codes otherwise; Options[Correct] is the true one.
+// Prompt is the language code a regional-language prompt shows, empty for every other prompt.
 type Question struct {
 	Type    QuestionType
 	Target  string
+	Prompt  string
 	Options [4]string
 	Correct int
 }
@@ -70,7 +75,7 @@ func answerText(c *country.Country, a Attr) country.Names {
 		return c.Capital
 	case AttrFlag:
 		return country.Names{De: c.FlagKey, En: c.FlagKey}
-	case AttrRegion, AttrLanguage, AttrCurrency:
+	case AttrRegion, AttrLanguage, AttrCurrency, AttrRegionalLanguage:
 	}
 	return country.Names{}
 }
@@ -84,6 +89,8 @@ func values(c *country.Country, a Attr) []string {
 		return c.Languages
 	case AttrCurrency:
 		return c.Currencies
+	case AttrRegionalLanguage:
+		return c.RegionalLanguages
 	case AttrName, AttrFlag, AttrCapital:
 	}
 	return nil
@@ -94,7 +101,7 @@ func labelKind(a Attr) country.LabelKind {
 	switch a {
 	case AttrRegion:
 		return country.LabelRegion
-	case AttrLanguage:
+	case AttrLanguage, AttrRegionalLanguage:
 		return country.LabelLanguage
 	case AttrCurrency:
 		return country.LabelCurrency

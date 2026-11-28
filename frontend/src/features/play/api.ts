@@ -17,6 +17,7 @@ export const questionTypes = [
   "flag_language",
   "capital_currency",
   "capital_language",
+  "regional_language_name",
 ] as const;
 
 export type QuestionType = (typeof questionTypes)[number];

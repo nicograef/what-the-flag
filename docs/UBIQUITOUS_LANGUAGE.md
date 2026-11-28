@@ -7,6 +7,8 @@
 | Quiz pool | The 197 countries that questions are drawn from; the generated dataset holds exactly these. | sovereign list |
 | Attribute | One kind of fact about a country with labels in both languages, e.g. capital or currency. | property, field |
 | Continent | One of Africa, Americas, Asia, Europe, Oceania; a country can count in more than one. Code and wire call it region: `AttrRegion`, `Country.Region`/`OtherRegions`, the type ids `name_region`, `flag_region`, `capital_region`. | region (outside code) |
+| Official language | A language official at national level in a country, or its de facto national language where none is official; language questions ask for one. Code and wire call it language: `Country.Languages`, `name_language`. | national language |
+| Regional language | A regional, minority, creole or indigenous language of the curated list, spoken in one to five countries; the regional-language question asks for one of them. Code and wire: `Country.RegionalLanguages`, `regional_language_name`. | dialect, minority language |
 | Currency family | Currency units a player could mistake for one another, such as Rupee and Rupiah, or every Dollar; no two options of a currency question share one. | currency group |
 | Primary capital | The one capital a question about a country uses. | main city |
 | Flag key | The opaque file name of a flag, which hides the country code. | flag id, flag code |

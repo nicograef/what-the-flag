@@ -160,11 +160,16 @@ func (u *unit) Question(position int) (quiz.Question, bool, error) {
 // AddQuestion inserts q unless the position is taken. A concurrent insert of the same
 // position blocks until the other transaction ends, so a later read sees the winner.
 func (u *unit) AddQuestion(position int, q quiz.Question) error {
+	var prompt *string
+	if q.Prompt != "" {
+		prompt = new(q.Prompt)
+	}
 	err := u.q.InsertQuestion(u.ctx, db.InsertQuestionParams{
 		QuizID:       uuid.UUID(u.run.QuizID),
 		Position:     int16(position),
 		Type:         q.Type.ID(),
 		Target:       q.Target,
+		Prompt:       prompt,
 		Options:      q.Options[:],
 		CorrectIndex: int16(q.Correct),
 	})
@@ -241,6 +246,9 @@ func samePtr[T comparable](a, b *T) bool {
 
 func toQuestion(row db.GetQuestionRow) (quiz.Question, error) {
 	q := quiz.Question{Target: row.Target, Correct: int(row.CorrectIndex)}
+	if row.Prompt != nil {
+		q.Prompt = *row.Prompt
+	}
 	found := false
 	for _, t := range quiz.Types {
 		if t.ID() == row.Type {

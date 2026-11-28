@@ -144,7 +144,13 @@ func (p *presenter) question(q quiz.Question) (item, [4]item, error) {
 	if !ok {
 		return item{}, options, fmt.Errorf("unknown target %q", q.Target)
 	}
-	prompt, err := countryItem(target, q.Type.Prompt)
+	var prompt item
+	var err error
+	if q.Type.Prompt == quiz.AttrRegionalLanguage {
+		prompt, err = p.label(country.LabelLanguage, q.Prompt)
+	} else {
+		prompt, err = countryItem(target, q.Type.Prompt)
+	}
 	if err != nil {
 		return item{}, options, err
 	}
@@ -171,7 +177,14 @@ func (p *presenter) option(a quiz.Attr, code string) (item, error) {
 		kind = country.LabelLanguage
 	case quiz.AttrCurrency:
 		kind = country.LabelCurrency
+	case quiz.AttrRegionalLanguage:
+		return item{}, fmt.Errorf("attribute %q is no answer", a)
 	}
+	return p.label(kind, code)
+}
+
+// label presents an attribute code by its label.
+func (p *presenter) label(kind country.LabelKind, code string) (item, error) {
 	names, ok := p.cat.Label(kind, code)
 	if !ok {
 		return item{}, fmt.Errorf("no %s label for %q", kind, code)
@@ -188,7 +201,7 @@ func countryItem(c *country.Country, a quiz.Attr) (item, error) {
 		return textItem(c.Name), nil
 	case quiz.AttrCapital:
 		return textItem(c.Capital), nil
-	case quiz.AttrRegion, quiz.AttrLanguage, quiz.AttrCurrency:
+	case quiz.AttrRegion, quiz.AttrLanguage, quiz.AttrCurrency, quiz.AttrRegionalLanguage:
 	}
 	return item{}, fmt.Errorf("attribute %q does not identify a country", a)
 }

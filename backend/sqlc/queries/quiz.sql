@@ -29,13 +29,13 @@ ON CONFLICT (run_id, position) DO UPDATE
 SET answered_at = excluded.answered_at, option_index = excluded.option_index, correct = excluded.correct;
 
 -- name: GetQuestion :one
-SELECT type, target, options, correct_index
+SELECT type, target, prompt, options, correct_index
 FROM quiz_questions
 WHERE quiz_id = @quiz_id AND position = @position;
 
 -- name: InsertQuestion :exec
-INSERT INTO quiz_questions (quiz_id, position, type, target, options, correct_index)
-VALUES (@quiz_id, @position, @type, @target, @options, @correct_index)
+INSERT INTO quiz_questions (quiz_id, position, type, target, prompt, options, correct_index)
+VALUES (@quiz_id, @position, @type, @target, @prompt, @options, @correct_index)
 ON CONFLICT (quiz_id, position) DO NOTHING;
 
 -- name: ListTargets :many

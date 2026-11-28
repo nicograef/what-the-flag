@@ -81,13 +81,15 @@ export const messages = defineMessages<{
       name_currency: "Welche Währung gilt in diesem Land?",
       flag_capital: "Was ist die Hauptstadt des Landes mit dieser Flagge?",
       capital_flag: "Welche Flagge hat das Land mit dieser Hauptstadt?",
-      name_language: "Welche Sprache spricht man in diesem Land?",
+      name_language: "Welche Sprache ist in diesem Land Amtssprache?",
       capital_region: "Auf welchem Kontinent liegt diese Hauptstadt?",
       flag_currency: "Welche Währung gilt im Land mit dieser Flagge?",
-      flag_language: "Welche Sprache spricht man im Land mit dieser Flagge?",
+      flag_language:
+        "Welche Sprache ist im Land mit dieser Flagge Amtssprache?",
       capital_currency: "Welche Währung gilt im Land mit dieser Hauptstadt?",
       capital_language:
-        "Welche Sprache spricht man im Land mit dieser Hauptstadt?",
+        "Welche Sprache ist im Land mit dieser Hauptstadt Amtssprache?",
+      regional_language_name: "In welchem Land wird diese Sprache gesprochen?",
     },
     flag: "Flagge",
     flagOption: (n) => `Flagge ${n}`,
@@ -165,14 +167,16 @@ export const messages = defineMessages<{
       name_currency: "Which currency is used in this country?",
       flag_capital: "What is the capital of the country with this flag?",
       capital_flag: "Which flag does the country with this capital have?",
-      name_language: "Which language is spoken in this country?",
+      name_language: "Which language is official in this country?",
       capital_region: "On which continent is this capital?",
       flag_currency: "Which currency is used in the country with this flag?",
-      flag_language: "Which language is spoken in the country with this flag?",
+      flag_language:
+        "Which language is official in the country with this flag?",
       capital_currency:
         "Which currency is used in the country with this capital?",
       capital_language:
-        "Which language is spoken in the country with this capital?",
+        "Which language is official in the country with this capital?",
+      regional_language_name: "In which country is this language spoken?",
     },
     flag: "Flag",
     flagOption: (n) => `Flag ${n}`,

@@ -192,14 +192,15 @@ func correctOption(t *testing.T, runID string, position int) int {
 	return correct
 }
 
-// pinQuestion replaces the stored question of runID's quiz at position with a fixed flag_name question
-// whose correct option is 0, so a golden file holds the same question on every test run.
-func pinQuestion(t *testing.T, runID string, position int) {
+// pinQuestion replaces the stored question of runID's quiz at position with a fixed question about DE
+// of type typ, whose correct option is 0, so a golden file holds the same question on every test run.
+// prompt is the stored prompt, empty for a type without one.
+func pinQuestion(t *testing.T, runID string, position int, typ, prompt string) {
 	t.Helper()
 	tag, err := postgres.TestPool(t).Exec(context.Background(), `
 		UPDATE quiz_questions q
-		SET type = 'flag_name', target = 'DE', options = '{DE,FR,IT,ES}', correct_index = 0
-		FROM runs r WHERE r.id = $1 AND q.quiz_id = r.quiz_id AND q.position = $2`, runID, position)
+		SET type = $3, target = 'DE', prompt = NULLIF($4, ''), options = '{DE,FR,IT,ES}', correct_index = 0
+		FROM runs r WHERE r.id = $1 AND q.quiz_id = r.quiz_id AND q.position = $2`, runID, position, typ, prompt)
 	if err != nil || tag.RowsAffected() != 1 {
 		t.Fatalf("pin question %d of %s: %v, %d rows", position, runID, err, tag.RowsAffected())
 	}
@@ -243,7 +244,7 @@ func TestRun(t *testing.T) {
 	if again := readState(t, c, s.RunID); again.Question == nil || *again.Question != *st.Question {
 		t.Fatalf("second read = %+v, want the served question %+v", again.Question, st.Question)
 	}
-	pinQuestion(t, s.RunID, 0)
+	pinQuestion(t, s.RunID, 0, "flag_name", "")
 	decodeGolden[runState](t, "run-playing", c.get("/api/runs/"+s.RunID), http.StatusOK, nil)
 
 	for position := range 2 {
@@ -256,7 +257,7 @@ func TestRun(t *testing.T) {
 		}
 	}
 
-	pinQuestion(t, s.RunID, 2)
+	pinQuestion(t, s.RunID, 2, "regional_language_name", "hsb")
 	right, wrong := 0, 1
 	want := outcome{Position: 2, ChosenOption: &wrong, CorrectOption: right, Finished: true, Score: 2}
 	got := decodeGolden[outcome](t, "outcome-wrong",
@@ -293,7 +294,7 @@ func TestTimeout(t *testing.T) {
 	t.Run("null answer", func(t *testing.T) {
 		s := startRun(t, c, map[string]any{"name": "silent"})
 		readState(t, c, s.RunID)
-		pinQuestion(t, s.RunID, 0)
+		pinQuestion(t, s.RunID, 0, "flag_name", "")
 		got := decodeGolden[outcome](t, "outcome-timeout",
 			c.post("/api/runs/"+s.RunID+"/answers", answerBody{0, nil}), http.StatusOK, nil)
 		if want := (outcome{TimedOut: true, Finished: true}); !sameOutcome(got, want) {
