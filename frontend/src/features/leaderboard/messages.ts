@@ -1,36 +1,44 @@
+import { genitive } from "@/lib/i18n/locale";
 import { defineMessages } from "@/lib/i18n/messages";
 
 export const messages = defineMessages<{
   title: string;
-  intro: string;
-  rank: string;
-  name: string;
-  score: string;
+  tabWorld: string;
+  tabLastQuiz: string;
+  subWorld: string;
+  subLastQuiz: (name: string) => string;
+  subOwnQuiz: string;
+  rank: (n: number) => string;
   youSuffix: string;
+  pinnedYou: string;
   empty: string;
   loading: string;
   retry: string;
 }>({
   de: {
     title: "Rangliste",
-    intro:
-      "Die 100 besten Runden. Wer über einen geteilten Link spielt, landet in der Rangliste dieses Quiz.",
-    rank: "Platz",
-    name: "Name",
-    score: "Punkte",
+    tabWorld: "Weltweit",
+    tabLastQuiz: "Letztes Quiz",
+    subWorld: "Bestes eigenes Spiel je Spieler, aller Zeiten",
+    subLastQuiz: (name) => `${genitive(name)} Quiz`,
+    subOwnQuiz: "Dein Quiz",
+    rank: (n) => `Platz ${n}`,
     youSuffix: "(du)",
+    pinnedYou: "Du",
     empty: "Noch niemand auf der Liste. Spiel eine Runde und steh ganz oben.",
     loading: "Wird geladen …",
     retry: "Erneut versuchen",
   },
   en: {
     title: "Leaderboard",
-    intro:
-      "The 100 best runs. Runs from a shared link count on that quiz's leaderboard.",
-    rank: "Rank",
-    name: "Name",
-    score: "Score",
+    tabWorld: "World",
+    tabLastQuiz: "Latest quiz",
+    subWorld: "Each player's best own game, all time",
+    subLastQuiz: (name) => `${name}'s quiz`,
+    subOwnQuiz: "Your quiz",
+    rank: (n) => `Rank ${n}`,
     youSuffix: "(you)",
+    pinnedYou: "You",
     empty:
       "Nobody is on the leaderboard yet. Start a quiz and take the top spot.",
     loading: "Loading …",
