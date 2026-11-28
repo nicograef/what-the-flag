@@ -507,7 +507,8 @@ func TestPlayerKey(t *testing.T) {
 		t.Fatalf("parse url: %v", err)
 	}
 	for _, bad := range []string{"nope", strings.Repeat("A", 43)} {
-		c.http.Jar.SetCookies(api, []*http.Cookie{{Name: "wtf_player", Value: bad, Path: "/api"}})
+		c.http.Jar.SetCookies(api, []*http.Cookie{{Name: "wtf_player", Value: bad, Path: "/api",
+			HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode}})
 		resp = c.post("/api/runs", map[string]any{"name": "keyed"})
 		if fresh := playerCookie(t, resp); fresh.Value == bad || fresh.Value == key.Value {
 			t.Fatalf("start with key %q set %q, want a fresh key", bad, fresh.Value)
