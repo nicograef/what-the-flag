@@ -38,6 +38,7 @@ type item struct {
 
 type question struct {
 	Position int       `json:"position"`
+	Level    int       `json:"level"`
 	Type     string    `json:"type"`
 	Prompt   item      `json:"prompt"`
 	Options  [4]item   `json:"options"`
@@ -56,6 +57,7 @@ type missed struct {
 
 type result struct {
 	Score      int     `json:"score"`
+	Level      int     `json:"level"`
 	EndReason  string  `json:"endReason"`
 	Last       *missed `json:"last"`
 	QuizRank   int     `json:"quizRank"`
