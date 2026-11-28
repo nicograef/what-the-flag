@@ -104,14 +104,14 @@ func checkRun(t *testing.T, s space, seed uint64) {
 		if !q.Type.Answer.identifiesCountry() {
 			continue
 		}
-		// group ranks a country as a distractor: the target's continent within the ceiling at levels 1 to 3,
-		// the continent, then the rest, with continents under eight countries counted as the rest.
+		// group ranks a country as a distractor: the target's continent within the ceiling at levels 1 to 3 or its
+		// subregion from level 4, the continent, then the rest, with continents under eight countries counted as the rest.
 		small := regionSize[target.Region] < 8
 		group := func(c *country.Country) int {
 			switch {
 			case small || c.Region != target.Region:
 				return 2
-			case level <= 3 && c.Fame <= ceiling:
+			case level <= 3 && c.Fame <= ceiling, level > 3 && c.Subregion == target.Subregion:
 				return 0
 			}
 			return 1

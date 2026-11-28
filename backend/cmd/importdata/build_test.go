@@ -47,6 +47,9 @@ func TestImporterRejects(t *testing.T) {
 			i := slices.IndexFunc(ds.Countries, func(c country.Country) bool { return c.Code == "ID" })
 			ds.Countries[i].Lookalikes = nil
 		}, "MC: lookalike ID does not list it back"},
+		{"no subregion", src, func(ds *country.Dataset) {
+			ds.Countries[0].Subregion = ""
+		}, "AD: no subregion"},
 		{"source is no URL", regional("ca", func(r *regionalLanguage) {
 			r.Source = "a note"
 		}), nil, `source "a note" is not an https URL`},

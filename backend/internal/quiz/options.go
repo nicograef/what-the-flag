@@ -160,8 +160,9 @@ func shuffled(t QuestionType, target string, options []string, rnd Rand) Questio
 
 // candidates returns c's true, contested and false sets. The false set holds three candidate groups, each in
 // pool order: at levels 1 to 3 the target's continent within the level's fame ceiling, the rest of the continent,
-// then the rest of the pool; from level 4 an empty group, the continent, then the rest. A continent of fewer than
-// minRegion countries falls into the rest. A value candidate belongs to the best group of any country holding it.
+// then the rest of the pool; from level 4 the target's subregion, the rest of the continent, then the rest.
+// A continent of fewer than minRegion countries falls into the rest. A value candidate belongs to the best group
+// of any country holding it.
 func candidates(cat Catalogue, pool []country.Country, c Case, level int) optionSets {
 	target := countryOf(pool, c.Target)
 	if target == nil {
@@ -172,7 +173,7 @@ func candidates(cat Catalogue, pool []country.Country, c Case, level int) option
 		switch {
 		case !continent || o.Region != target.Region:
 			return 2
-		case level <= 3 && o.Fame <= fameCeiling(level):
+		case level <= 3 && o.Fame <= fameCeiling(level), level > 3 && o.Subregion == target.Subregion:
 			return 0
 		}
 		return 1

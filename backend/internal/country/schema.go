@@ -18,6 +18,7 @@ type Country struct {
 	Name              Names    `json:"name"`
 	Capital           Names    `json:"capital"`
 	Region            string   `json:"region"`
+	Subregion         string   `json:"subregion"`         // mledoze's subregion within Region, such as Western Europe
 	OtherRegions      []string `json:"otherRegions"`      // regions the country is also counted in, never a wrong option for it
 	Languages         []string `json:"languages"`         // official at national level, or the de facto national language
 	RegionalLanguages []string `json:"regionalLanguages"` // regional, minority, creole or indigenous languages established here and not official

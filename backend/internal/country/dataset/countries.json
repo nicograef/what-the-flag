@@ -11,6 +11,7 @@
         "en": "Andorra la Vella"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "ca"
@@ -35,6 +36,7 @@
         "en": "Abu Dhabi"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -61,6 +63,7 @@
         "en": "Kabul"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "fa-AF",
@@ -88,6 +91,7 @@
         "en": "St. John's"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -112,6 +116,7 @@
         "en": "Tirana"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "sq"
@@ -136,6 +141,7 @@
         "en": "Yerevan"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [
         "Europe"
       ],
@@ -164,6 +170,7 @@
         "en": "Luanda"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -195,6 +202,7 @@
         "en": "Buenos Aires"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -226,6 +234,7 @@
         "en": "Vienna"
       },
       "region": "Europe",
+      "subregion": "Central Europe",
       "otherRegions": [],
       "languages": [
         "de"
@@ -250,6 +259,7 @@
         "en": "Canberra"
       },
       "region": "Oceania",
+      "subregion": "Australia and New Zealand",
       "otherRegions": [],
       "languages": [
         "en"
@@ -274,6 +284,7 @@
         "en": "Baku"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [
         "Europe"
       ],
@@ -304,6 +315,7 @@
         "en": "Sarajevo"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "bs",
@@ -330,6 +342,7 @@
         "en": "Bridgetown"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -354,6 +367,7 @@
         "en": "Dhaka"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "bn"
@@ -378,6 +392,7 @@
         "en": "Brussels"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "de",
@@ -408,6 +423,7 @@
         "en": "Ouagadougou"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "dyu",
@@ -438,6 +454,7 @@
         "en": "Sofia"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "bg"
@@ -464,6 +481,7 @@
         "en": "Manama"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -488,6 +506,7 @@
         "en": "Gitega"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -516,6 +535,7 @@
         "en": "Porto-Novo"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -545,6 +565,7 @@
         "en": "Bandar Seri Begawan"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "ms"
@@ -570,6 +591,7 @@
         "en": "Sucre"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "ay",
@@ -597,6 +619,7 @@
         "en": "Brasília"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -623,6 +646,7 @@
         "en": "Nassau"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -650,6 +674,7 @@
         "en": "Thimphu"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "dz"
@@ -677,6 +702,7 @@
         "en": "Gaborone"
       },
       "region": "Africa",
+      "subregion": "Southern Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -709,6 +735,7 @@
         "en": "Minsk"
       },
       "region": "Europe",
+      "subregion": "Eastern Europe",
       "otherRegions": [],
       "languages": [
         "be",
@@ -734,6 +761,7 @@
         "en": "Belmopan"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "en"
@@ -760,6 +788,7 @@
         "en": "Ottawa"
       },
       "region": "Americas",
+      "subregion": "North America",
       "otherRegions": [],
       "languages": [
         "en",
@@ -798,6 +827,7 @@
         "en": "Kinshasa"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -830,6 +860,7 @@
         "en": "Bangui"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "fr",
@@ -859,6 +890,7 @@
         "en": "Brazzaville"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -887,6 +919,7 @@
         "en": "Bern"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "de",
@@ -916,6 +949,7 @@
         "en": "Yamoussoukro"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -942,6 +976,7 @@
         "en": "Santiago"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -970,6 +1005,7 @@
         "en": "Yaoundé"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -1002,6 +1038,7 @@
         "en": "Beijing"
       },
       "region": "Asia",
+      "subregion": "Eastern Asia",
       "otherRegions": [],
       "languages": [
         "zh"
@@ -1033,6 +1070,7 @@
         "en": "Bogotá"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -1060,6 +1098,7 @@
         "en": "San José"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -1084,6 +1123,7 @@
         "en": "Havana"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "es"
@@ -1110,6 +1150,7 @@
         "en": "Praia"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -1136,6 +1177,7 @@
         "en": "Nicosia"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [
         "Asia"
       ],
@@ -1163,6 +1205,7 @@
         "en": "Prague"
       },
       "region": "Europe",
+      "subregion": "Central Europe",
       "otherRegions": [],
       "languages": [
         "cs"
@@ -1189,6 +1232,7 @@
         "en": "Berlin"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "de"
@@ -1220,6 +1264,7 @@
         "en": "Djibouti"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -1248,6 +1293,7 @@
         "en": "Copenhagen"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "da"
@@ -1276,6 +1322,7 @@
         "en": "Roseau"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1300,6 +1347,7 @@
         "en": "Santo Domingo"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "es"
@@ -1326,6 +1374,7 @@
         "en": "Algiers"
       },
       "region": "Africa",
+      "subregion": "Northern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -1355,6 +1404,7 @@
         "en": "Quito"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es",
@@ -1380,6 +1430,7 @@
         "en": "Tallinn"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "et"
@@ -1406,6 +1457,7 @@
         "en": "Cairo"
       },
       "region": "Africa",
+      "subregion": "Northern Africa",
       "otherRegions": [
         "Asia"
       ],
@@ -1432,6 +1484,7 @@
         "en": "Asmara"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -1461,6 +1514,7 @@
         "en": "Madrid"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "es"
@@ -1492,6 +1546,7 @@
         "en": "Addis Ababa"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "am"
@@ -1522,6 +1577,7 @@
         "en": "Helsinki"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "fi",
@@ -1550,6 +1606,7 @@
         "en": "Suva"
       },
       "region": "Oceania",
+      "subregion": "Melanesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -1578,6 +1635,7 @@
         "en": "Palikir"
       },
       "region": "Oceania",
+      "subregion": "Micronesia",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1602,6 +1660,7 @@
         "en": "Paris"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -1635,6 +1694,7 @@
         "en": "Libreville"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -1662,6 +1722,7 @@
         "en": "London"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1698,6 +1759,7 @@
         "en": "St. George's"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1722,6 +1784,7 @@
         "en": "Tbilisi"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [
         "Europe"
       ],
@@ -1753,6 +1816,7 @@
         "en": "Accra"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1783,6 +1847,7 @@
         "en": "Banjul"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1815,6 +1880,7 @@
         "en": "Conakry"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -1845,6 +1911,7 @@
         "en": "Malabo"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "es",
@@ -1874,6 +1941,7 @@
         "en": "Athens"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "el"
@@ -1898,6 +1966,7 @@
         "en": "Guatemala City"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -1924,6 +1993,7 @@
         "en": "Bissau"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -1952,6 +2022,7 @@
         "en": "Georgetown"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "en"
@@ -1976,6 +2047,7 @@
         "en": "Tegucigalpa"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -2000,6 +2072,7 @@
         "en": "Zagreb"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "hr"
@@ -2024,6 +2097,7 @@
         "en": "Port-au-Prince"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "fr",
@@ -2049,6 +2123,7 @@
         "en": "Budapest"
       },
       "region": "Europe",
+      "subregion": "Central Europe",
       "otherRegions": [],
       "languages": [
         "hu"
@@ -2073,6 +2148,7 @@
         "en": "Jakarta"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [
         "Oceania"
       ],
@@ -2106,6 +2182,7 @@
         "en": "Dublin"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "en",
@@ -2133,6 +2210,7 @@
         "en": "Jerusalem"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "he"
@@ -2160,6 +2238,7 @@
         "en": "New Delhi"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -2197,6 +2276,7 @@
         "en": "Baghdad"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -2224,6 +2304,7 @@
         "en": "Tehran"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "fa"
@@ -2252,6 +2333,7 @@
         "en": "Reykjavík"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "is"
@@ -2276,6 +2358,7 @@
         "en": "Rome"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "it"
@@ -2313,6 +2396,7 @@
         "en": "Kingston"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -2337,6 +2421,7 @@
         "en": "Amman"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -2361,6 +2446,7 @@
         "en": "Tokyo"
       },
       "region": "Asia",
+      "subregion": "Eastern Asia",
       "otherRegions": [],
       "languages": [
         "ja"
@@ -2385,6 +2471,7 @@
         "en": "Nairobi"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -2420,6 +2507,7 @@
         "en": "Bishkek"
       },
       "region": "Asia",
+      "subregion": "Central Asia",
       "otherRegions": [],
       "languages": [
         "ky",
@@ -2447,6 +2535,7 @@
         "en": "Phnom Penh"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "km"
@@ -2474,6 +2563,7 @@
         "en": "Bairiki"
       },
       "region": "Oceania",
+      "subregion": "Micronesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -2499,6 +2589,7 @@
         "en": "Moroni"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -2525,6 +2616,7 @@
         "en": "Basseterre"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -2549,6 +2641,7 @@
         "en": "Pyongyang"
       },
       "region": "Asia",
+      "subregion": "Eastern Asia",
       "otherRegions": [],
       "languages": [
         "ko"
@@ -2573,6 +2666,7 @@
         "en": "Seoul"
       },
       "region": "Asia",
+      "subregion": "Eastern Asia",
       "otherRegions": [],
       "languages": [
         "ko"
@@ -2597,6 +2691,7 @@
         "en": "Kuwait City"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -2621,6 +2716,7 @@
         "en": "Astana"
       },
       "region": "Asia",
+      "subregion": "Central Asia",
       "otherRegions": [
         "Europe"
       ],
@@ -2650,6 +2746,7 @@
         "en": "Vientiane"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "lo"
@@ -2676,6 +2773,7 @@
         "en": "Beirut"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -2702,6 +2800,7 @@
         "en": "Castries"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -2726,6 +2825,7 @@
         "en": "Vaduz"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "de"
@@ -2750,6 +2850,7 @@
         "en": "Colombo"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "si",
@@ -2777,6 +2878,7 @@
         "en": "Monrovia"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -2807,6 +2909,7 @@
         "en": "Maseru"
       },
       "region": "Africa",
+      "subregion": "Southern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -2835,6 +2938,7 @@
         "en": "Vilnius"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "lt"
@@ -2861,6 +2965,7 @@
         "en": "Luxembourg"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "de",
@@ -2887,6 +2992,7 @@
         "en": "Riga"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "lv"
@@ -2913,6 +3019,7 @@
         "en": "Tripoli"
       },
       "region": "Africa",
+      "subregion": "Northern Africa",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -2939,6 +3046,7 @@
         "en": "Rabat"
       },
       "region": "Africa",
+      "subregion": "Northern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -2967,6 +3075,7 @@
         "en": "Monaco"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -2995,6 +3104,7 @@
         "en": "Chișinău"
       },
       "region": "Europe",
+      "subregion": "Eastern Europe",
       "otherRegions": [],
       "languages": [
         "ro"
@@ -3021,6 +3131,7 @@
         "en": "Podgorica"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "bs",
@@ -3048,6 +3159,7 @@
         "en": "Antananarivo"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "fr",
@@ -3073,6 +3185,7 @@
         "en": "Majuro"
       },
       "region": "Oceania",
+      "subregion": "Micronesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3098,6 +3211,7 @@
         "en": "Skopje"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "mk",
@@ -3123,6 +3237,7 @@
         "en": "Bamako"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "bm",
@@ -3154,6 +3269,7 @@
         "en": "Naypyidaw"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "my"
@@ -3181,6 +3297,7 @@
         "en": "Ulaanbaatar"
       },
       "region": "Asia",
+      "subregion": "Eastern Asia",
       "otherRegions": [],
       "languages": [
         "mn"
@@ -3209,6 +3326,7 @@
         "en": "Nouakchott"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -3238,6 +3356,7 @@
         "en": "Valletta"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3263,6 +3382,7 @@
         "en": "Port Louis"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3292,6 +3412,7 @@
         "en": "Malé"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "dv"
@@ -3316,6 +3437,7 @@
         "en": "Lilongwe"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -3345,6 +3467,7 @@
         "en": "Mexico City"
       },
       "region": "Americas",
+      "subregion": "North America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -3371,6 +3494,7 @@
         "en": "Kuala Lumpur"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "ms"
@@ -3400,6 +3524,7 @@
         "en": "Maputo"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -3433,6 +3558,7 @@
         "en": "Windhoek"
       },
       "region": "Africa",
+      "subregion": "Southern Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -3465,6 +3591,7 @@
         "en": "Niamey"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "ha"
@@ -3494,6 +3621,7 @@
         "en": "Abuja"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -3525,6 +3653,7 @@
         "en": "Managua"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -3551,6 +3680,7 @@
         "en": "Amsterdam"
       },
       "region": "Europe",
+      "subregion": "Western Europe",
       "otherRegions": [],
       "languages": [
         "nl"
@@ -3581,6 +3711,7 @@
         "en": "Oslo"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "nb",
@@ -3607,6 +3738,7 @@
         "en": "Kathmandu"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "ne"
@@ -3636,6 +3768,7 @@
         "en": "Yaren"
       },
       "region": "Oceania",
+      "subregion": "Micronesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3661,6 +3794,7 @@
         "en": "Wellington"
       },
       "region": "Oceania",
+      "subregion": "Australia and New Zealand",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3686,6 +3820,7 @@
         "en": "Muscat"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -3710,6 +3845,7 @@
         "en": "Panama City"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -3735,6 +3871,7 @@
         "en": "Lima"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -3762,6 +3899,7 @@
         "en": "Port Moresby"
       },
       "region": "Oceania",
+      "subregion": "Melanesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3788,6 +3926,7 @@
         "en": "Manila"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3815,6 +3954,7 @@
         "en": "Islamabad"
       },
       "region": "Asia",
+      "subregion": "Southern Asia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3845,6 +3985,7 @@
         "en": "Warsaw"
       },
       "region": "Europe",
+      "subregion": "Central Europe",
       "otherRegions": [],
       "languages": [
         "pl"
@@ -3872,6 +4013,7 @@
         "en": "Ramallah"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -3898,6 +4040,7 @@
         "en": "Lisbon"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -3926,6 +4069,7 @@
         "en": "Ngerulmud"
       },
       "region": "Oceania",
+      "subregion": "Micronesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -3951,6 +4095,7 @@
         "en": "Asunción"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es",
@@ -3976,6 +4121,7 @@
         "en": "Doha"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -4000,6 +4146,7 @@
         "en": "Bucharest"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "ro"
@@ -4026,6 +4173,7 @@
         "en": "Belgrade"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "sr"
@@ -4050,6 +4198,7 @@
         "en": "Moscow"
       },
       "region": "Europe",
+      "subregion": "Eastern Europe",
       "otherRegions": [
         "Asia"
       ],
@@ -4087,6 +4236,7 @@
         "en": "Kigali"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -4114,6 +4264,7 @@
         "en": "Riyadh"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -4138,6 +4289,7 @@
         "en": "Honiara"
       },
       "region": "Oceania",
+      "subregion": "Melanesia",
       "otherRegions": [],
       "languages": [
         "en"
@@ -4165,6 +4317,7 @@
         "en": "Victoria"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "crs",
@@ -4191,6 +4344,7 @@
         "en": "Khartoum"
       },
       "region": "Africa",
+      "subregion": "Northern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -4221,6 +4375,7 @@
         "en": "Stockholm"
       },
       "region": "Europe",
+      "subregion": "Northern Europe",
       "otherRegions": [],
       "languages": [
         "sv"
@@ -4249,6 +4404,7 @@
         "en": "Singapore"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -4280,6 +4436,7 @@
         "en": "Ljubljana"
       },
       "region": "Europe",
+      "subregion": "Central Europe",
       "otherRegions": [],
       "languages": [
         "sl"
@@ -4304,6 +4461,7 @@
         "en": "Bratislava"
       },
       "region": "Europe",
+      "subregion": "Central Europe",
       "otherRegions": [],
       "languages": [
         "sk"
@@ -4328,6 +4486,7 @@
         "en": "Freetown"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -4359,6 +4518,7 @@
         "en": "San Marino"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "it"
@@ -4383,6 +4543,7 @@
         "en": "Dakar"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -4414,6 +4575,7 @@
         "en": "Mogadishu"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -4443,6 +4605,7 @@
         "en": "Paramaribo"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "nl"
@@ -4470,6 +4633,7 @@
         "en": "Juba"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -4497,6 +4661,7 @@
         "en": "São Tomé"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "pt"
@@ -4523,6 +4688,7 @@
         "en": "San Salvador"
       },
       "region": "Americas",
+      "subregion": "Central America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -4550,6 +4716,7 @@
         "en": "Damascus"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -4576,6 +4743,7 @@
         "en": "Mbabane"
       },
       "region": "Africa",
+      "subregion": "Southern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -4604,6 +4772,7 @@
         "en": "N'Djamena"
       },
       "region": "Africa",
+      "subregion": "Middle Africa",
       "otherRegions": [],
       "languages": [
         "ar",
@@ -4636,6 +4805,7 @@
         "en": "Lomé"
       },
       "region": "Africa",
+      "subregion": "Western Africa",
       "otherRegions": [],
       "languages": [
         "fr"
@@ -4664,6 +4834,7 @@
         "en": "Bangkok"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "th"
@@ -4692,6 +4863,7 @@
         "en": "Dushanbe"
       },
       "region": "Asia",
+      "subregion": "Central Asia",
       "otherRegions": [],
       "languages": [
         "tg"
@@ -4718,6 +4890,7 @@
         "en": "Dili"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "pt",
@@ -4743,6 +4916,7 @@
         "en": "Ashgabat"
       },
       "region": "Asia",
+      "subregion": "Central Asia",
       "otherRegions": [],
       "languages": [
         "tk"
@@ -4769,6 +4943,7 @@
         "en": "Tunis"
       },
       "region": "Africa",
+      "subregion": "Northern Africa",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -4793,6 +4968,7 @@
         "en": "Nukuʻalofa"
       },
       "region": "Oceania",
+      "subregion": "Polynesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -4818,6 +4994,7 @@
         "en": "Ankara"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [
         "Europe"
       ],
@@ -4848,6 +5025,7 @@
         "en": "Port of Spain"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -4872,6 +5050,7 @@
         "en": "Funafuti"
       },
       "region": "Oceania",
+      "subregion": "Polynesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -4899,6 +5078,7 @@
         "en": "Taipei"
       },
       "region": "Asia",
+      "subregion": "Eastern Asia",
       "otherRegions": [],
       "languages": [
         "zh"
@@ -4923,6 +5103,7 @@
         "en": "Dodoma"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -4957,6 +5138,7 @@
         "en": "Kyiv"
       },
       "region": "Europe",
+      "subregion": "Eastern Europe",
       "otherRegions": [],
       "languages": [
         "uk"
@@ -4983,6 +5165,7 @@
         "en": "Kampala"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",
@@ -5012,6 +5195,7 @@
         "en": "Washington, D.C."
       },
       "region": "Americas",
+      "subregion": "North America",
       "otherRegions": [],
       "languages": [
         "en"
@@ -5045,6 +5229,7 @@
         "en": "Montevideo"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -5069,6 +5254,7 @@
         "en": "Tashkent"
       },
       "region": "Asia",
+      "subregion": "Central Asia",
       "otherRegions": [],
       "languages": [
         "uz"
@@ -5095,6 +5281,7 @@
         "en": "Vatican City"
       },
       "region": "Europe",
+      "subregion": "Southern Europe",
       "otherRegions": [],
       "languages": [
         "it",
@@ -5120,6 +5307,7 @@
         "en": "Kingstown"
       },
       "region": "Americas",
+      "subregion": "Caribbean",
       "otherRegions": [],
       "languages": [
         "en"
@@ -5144,6 +5332,7 @@
         "en": "Caracas"
       },
       "region": "Americas",
+      "subregion": "South America",
       "otherRegions": [],
       "languages": [
         "es"
@@ -5170,6 +5359,7 @@
         "en": "Hanoi"
       },
       "region": "Asia",
+      "subregion": "South-Eastern Asia",
       "otherRegions": [],
       "languages": [
         "vi"
@@ -5197,6 +5387,7 @@
         "en": "Port Vila"
       },
       "region": "Oceania",
+      "subregion": "Melanesia",
       "otherRegions": [],
       "languages": [
         "bi",
@@ -5225,6 +5416,7 @@
         "en": "Apia"
       },
       "region": "Oceania",
+      "subregion": "Polynesia",
       "otherRegions": [],
       "languages": [
         "en",
@@ -5250,6 +5442,7 @@
         "en": "Pristina"
       },
       "region": "Europe",
+      "subregion": "Southeast Europe",
       "otherRegions": [],
       "languages": [
         "sq",
@@ -5275,6 +5468,7 @@
         "en": "Sanaa"
       },
       "region": "Asia",
+      "subregion": "Western Asia",
       "otherRegions": [],
       "languages": [
         "ar"
@@ -5299,6 +5493,7 @@
         "en": "Pretoria"
       },
       "region": "Africa",
+      "subregion": "Southern Africa",
       "otherRegions": [],
       "languages": [
         "af",
@@ -5338,6 +5533,7 @@
         "en": "Lusaka"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en"
@@ -5367,6 +5563,7 @@
         "en": "Harare"
       },
       "region": "Africa",
+      "subregion": "Eastern Africa",
       "otherRegions": [],
       "languages": [
         "en",

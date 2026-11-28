@@ -97,6 +97,7 @@ func build(src sources) (country.Dataset, []string) {
 			Name:              names[code],
 			Capital:           c.primary,
 			Region:            b.byCode[code].Region,
+			Subregion:         b.byCode[code].Subregion,
 			OtherRegions:      append([]string{}, otherRegions[code]...),
 			Languages:         languages[code],
 			RegionalLanguages: append([]string{}, regional[code]...),
@@ -700,6 +701,9 @@ func validate(ds country.Dataset, p *problems) {
 		}
 		if _, ok := ds.Labels.Regions[c.Region]; !ok {
 			p.add("%s: region %q is not one of %v", c.Code, c.Region, slices.Sorted(maps.Keys(regionLabels)))
+		}
+		if c.Subregion == "" {
+			p.add("%s: no subregion", c.Code)
 		}
 		if c.Fame < 1 || c.Fame > 3 {
 			p.add("%s: fame %d is not 1-3", c.Code, c.Fame)

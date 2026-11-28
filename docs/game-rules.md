@@ -27,19 +27,19 @@ A run climbs one level every five questions; the server sends the level with eve
 | 1 | 1–5 | 1 | 1 | famous countries of the continent |
 | 2 | 6–10 | 1–2 | 1 | famous countries of the continent |
 | 3 | 11–15 | 1–3 | 2 | famous countries of the continent |
-| 4 | 16–20 | 2–4 | 2 | the continent |
-| 5 | 21–25 | 3–5 | 2 | the continent |
-| 6 | 26–30 | 4–6 | 3 | the continent |
-| 7 | 31–35 | 4–7 | 3 | the continent |
-| 8 | 36–40 | 6–8 | 3 | the continent |
-| 9 | 41–45 | 7–9 | 3 | the continent |
-| 10 | 46+ | 7–10 | 3 | the continent |
+| 4 | 16–20 | 2–4 | 2 | the subregion |
+| 5 | 21–25 | 3–5 | 2 | the subregion |
+| 6 | 26–30 | 4–6 | 3 | the subregion |
+| 7 | 31–35 | 4–7 | 3 | the subregion |
+| 8 | 36–40 | 6–8 | 3 | the subregion |
+| 9 | 41–45 | 7–9 | 3 | the subregion |
+| 10 | 46+ | 7–10 | 3 | the subregion |
 
 - A level asks the tiers from two below its number up to its number, extended one tier down while that window holds fewer than four types.
 - The type is drawn at random from the window, then a target among the unused countries within the level's fame ceiling. When none fits, the ceiling goes, then the window.
 - Each country has a fame tier: the 50 most-viewed on German Wikipedia over 12 months are tier 1, ranks 51 to 120 tier 2, the rest tier 3. A curated list adjusts some.
 - No country is the target twice in one quiz.
-- Wrong options are drawn group by group. At levels 1 to 3 the groups are the target's continent within the fame ceiling, the rest of the continent, then the rest of the pool. From level 4 they are the continent, then the rest of the pool.
+- Wrong options are drawn group by group. At levels 1 to 3 the groups are the target's continent within the fame ceiling, the rest of the continent, then the rest of the pool. From level 4 they are the target's subregion, such as Western Europe or the Caribbean, the rest of the continent, then the rest of the pool.
 - A continent of fewer than eight countries counts as the rest of the pool. A continent, language or currency option belongs to the best group of any country holding it.
 - No wrong option is one a player could defend as correct, such as a second continent of the target or a language it holds with any status.
 - A name → capital or capital → name question skips a target whose name and capital share a word in German or English, such as Guatemala and Guatemala-Stadt.

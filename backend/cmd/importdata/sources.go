@@ -76,6 +76,7 @@ type mledozeCountry struct {
 	} `json:"name"`
 	UNMember   bool   `json:"unMember"`
 	Region     string `json:"region"`
+	Subregion  string `json:"subregion"`
 	Languages  keySet `json:"languages"`
 	Currencies keySet `json:"currencies"`
 }
