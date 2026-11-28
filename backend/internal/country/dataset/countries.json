@@ -58,8 +58,7 @@
       "otherRegions": [],
       "languages": [
         "fa-AF",
-        "ps",
-        "tk"
+        "ps"
       ],
       "currencies": [
         "AFN"
@@ -171,8 +170,7 @@
       "region": "Americas",
       "otherRegions": [],
       "languages": [
-        "es",
-        "gn"
+        "es"
       ],
       "currencies": [
         "ARS"
@@ -240,8 +238,7 @@
         "Europe"
       ],
       "languages": [
-        "az",
-        "ru"
+        "az"
       ],
       "currencies": [
         "AZN"
@@ -421,6 +418,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
+        "en",
         "fr",
         "rn"
       ],
@@ -582,8 +580,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "en",
-        "tn"
+        "en"
       ],
       "currencies": [
         "BWP"
@@ -628,8 +625,7 @@
       "region": "Americas",
       "otherRegions": [],
       "languages": [
-        "en",
-        "es"
+        "en"
       ],
       "currencies": [
         "BZD"
@@ -674,11 +670,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "fr",
-        "kg",
-        "ln",
-        "lua",
-        "sw"
+        "fr"
       ],
       "currencies": [
         "CDF"
@@ -723,9 +715,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "fr",
-        "kg",
-        "ln"
+        "fr"
       ],
       "currencies": [
         "XAF"
@@ -974,8 +964,7 @@
       "region": "Europe",
       "otherRegions": [],
       "languages": [
-        "cs",
-        "sk"
+        "cs"
       ],
       "currencies": [
         "CZK"
@@ -1130,7 +1119,8 @@
       "region": "Americas",
       "otherRegions": [],
       "languages": [
-        "es"
+        "es",
+        "qu"
       ],
       "currencies": [
         "USD"
@@ -1763,7 +1753,6 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
-        "ar",
         "he"
       ],
       "currencies": [
@@ -1787,8 +1776,7 @@
       "otherRegions": [],
       "languages": [
         "en",
-        "hi",
-        "ta"
+        "hi"
       ],
       "currencies": [
         "INR"
@@ -1811,7 +1799,6 @@
       "otherRegions": [],
       "languages": [
         "ar",
-        "arc",
         "ckb"
       ],
       "currencies": [
@@ -1900,8 +1887,7 @@
       "region": "Americas",
       "otherRegions": [],
       "languages": [
-        "en",
-        "jam"
+        "en"
       ],
       "currencies": [
         "JMD"
@@ -2218,8 +2204,7 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
-        "ar",
-        "fr"
+        "ar"
       ],
       "currencies": [
         "LBP"
@@ -2513,6 +2498,9 @@
       "region": "Europe",
       "otherRegions": [],
       "languages": [
+        "bs",
+        "hr",
+        "sq",
         "sr"
       ],
       "currencies": [
@@ -2581,7 +2569,8 @@
       "region": "Europe",
       "otherRegions": [],
       "languages": [
-        "mk"
+        "mk",
+        "sq"
       ],
       "currencies": [
         "MKD"
@@ -2603,7 +2592,12 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "fr"
+        "bm",
+        "ff",
+        "man",
+        "ses",
+        "snk",
+        "tmh"
       ],
       "currencies": [
         "XOF"
@@ -2760,8 +2754,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "en",
-        "ny"
+        "en"
       ],
       "currencies": [
         "MWK"
@@ -2805,7 +2798,6 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
-        "en",
         "ms"
       ],
       "currencies": [
@@ -2850,14 +2842,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "af",
-        "de",
-        "en",
-        "hz",
-        "loz",
-        "naq",
-        "ng",
-        "tn"
+        "en"
       ],
       "currencies": [
         "NAD",
@@ -2880,7 +2865,7 @@
       "region": "Africa",
       "otherRegions": [],
       "languages": [
-        "fr"
+        "ha"
       ],
       "currencies": [
         "XOF"
@@ -3107,9 +3092,7 @@
       "region": "Americas",
       "otherRegions": [],
       "languages": [
-        "ay",
-        "es",
-        "qu"
+        "es"
       ],
       "currencies": [
         "PEN"
@@ -3409,7 +3392,8 @@
       "languages": [
         "en",
         "fr",
-        "rw"
+        "rw",
+        "sw"
       ],
       "currencies": [
         "RWF"
@@ -3907,7 +3891,6 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
-        "ru",
         "tg"
       ],
       "currencies": [
@@ -3953,7 +3936,6 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
-        "ru",
         "tk"
       ],
       "currencies": [
@@ -4224,7 +4206,6 @@
       "region": "Asia",
       "otherRegions": [],
       "languages": [
-        "ru",
         "uz"
       ],
       "currencies": [
@@ -4515,10 +4496,6 @@
         "de": "Arabisch",
         "en": "Arabic"
       },
-      "arc": {
-        "de": "Aramäisch",
-        "en": "Aramaic"
-      },
       "ay": {
         "de": "Aymara",
         "en": "Aymara"
@@ -4538,6 +4515,10 @@
       "bi": {
         "de": "Bislama",
         "en": "Bislama"
+      },
+      "bm": {
+        "de": "Bambara",
+        "en": "Bambara"
       },
       "bn": {
         "de": "Bengalisch",
@@ -4603,6 +4584,10 @@
         "de": "Dari",
         "en": "Dari"
       },
+      "ff": {
+        "de": "Ful",
+        "en": "Fula"
+      },
       "fi": {
         "de": "Finnisch",
         "en": "Finnish"
@@ -4630,6 +4615,10 @@
       "gn": {
         "de": "Guaraní",
         "en": "Guarani"
+      },
+      "ha": {
+        "de": "Haussa",
+        "en": "Hausa"
       },
       "he": {
         "de": "Hebräisch",
@@ -4663,10 +4652,6 @@
         "de": "Armenisch",
         "en": "Armenian"
       },
-      "hz": {
-        "de": "Herero",
-        "en": "Herero"
-      },
       "id": {
         "de": "Indonesisch",
         "en": "Indonesian"
@@ -4683,17 +4668,9 @@
         "de": "Japanisch",
         "en": "Japanese"
       },
-      "jam": {
-        "de": "Jamaikanisch-Kreolisch",
-        "en": "Jamaican Creole English"
-      },
       "ka": {
         "de": "Georgisch",
         "en": "Georgian"
-      },
-      "kg": {
-        "de": "Kongolesisch",
-        "en": "Kongo"
       },
       "kk": {
         "de": "Kasachisch",
@@ -4719,29 +4696,21 @@
         "de": "Luxemburgisch",
         "en": "Luxembourgish"
       },
-      "ln": {
-        "de": "Lingala",
-        "en": "Lingala"
-      },
       "lo": {
         "de": "Laotisch",
         "en": "Lao"
-      },
-      "loz": {
-        "de": "Lozi",
-        "en": "Lozi"
       },
       "lt": {
         "de": "Litauisch",
         "en": "Lithuanian"
       },
-      "lua": {
-        "de": "Luba-Lulua",
-        "en": "Luba-Lulua"
-      },
       "lv": {
         "de": "Lettisch",
         "en": "Latvian"
+      },
+      "man": {
+        "de": "Malinke",
+        "en": "Mandingo"
       },
       "mfe": {
         "de": "Morisyen",
@@ -4783,10 +4752,6 @@
         "de": "Nauruisch",
         "en": "Nauru"
       },
-      "naq": {
-        "de": "Nama",
-        "en": "Nama"
-      },
       "nb": {
         "de": "Norwegisch (Bokmål)",
         "en": "Norwegian Bokmål"
@@ -4798,10 +4763,6 @@
       "ne": {
         "de": "Nepalesisch",
         "en": "Nepali"
-      },
-      "ng": {
-        "de": "Ndonga",
-        "en": "Ndonga"
       },
       "nl": {
         "de": "Niederländisch",
@@ -4867,6 +4828,10 @@
         "de": "Nordsamisch",
         "en": "Northern Sami"
       },
+      "ses": {
+        "de": "Koyra Senni",
+        "en": "Koyraboro Senni"
+      },
       "sg": {
         "de": "Sango",
         "en": "Sango"
@@ -4890,6 +4855,10 @@
       "sn": {
         "de": "Shona",
         "en": "Shona"
+      },
+      "snk": {
+        "de": "Soninke",
+        "en": "Soninke"
       },
       "so": {
         "de": "Somali",
@@ -4946,6 +4915,10 @@
       "tk": {
         "de": "Turkmenisch",
         "en": "Turkmen"
+      },
+      "tmh": {
+        "de": "Tamaseq",
+        "en": "Tamashek"
       },
       "tn": {
         "de": "Tswana",

@@ -27,6 +27,7 @@ It pairs a prompt attribute with an answer attribute. Each question type has a d
 - No two options of a question show the same text.
 - Continents are Africa, Americas, Asia, Europe and Oceania.
 - A country that spans or is also counted in a second continent, such as Russia, Turkey or Cyprus, has a main one, the correct option. Its other continent is never offered.
+- A country's languages are those official at national level, or its de facto national language where none is official. Regional and minority languages do not count.
 
 ## Runs
 
