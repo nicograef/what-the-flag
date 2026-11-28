@@ -1,5 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
+import { unknownPlayer } from "@/features/play/fake-run";
 import { FakeApi } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
 
@@ -60,9 +61,11 @@ it("hints at an empty list", async () => {
 });
 
 it("is reached through the navbar link", async () => {
-  const api = new FakeApi().respond("GET /api/leaderboard", {
-    top: [{ rank: 1, name: "Ada", score: 12 }],
-  });
+  const api = new FakeApi()
+    .respond("GET /api/me", unknownPlayer)
+    .respond("GET /api/leaderboard", {
+      top: [{ rank: 1, name: "Ada", score: 12 }],
+    });
   const { user } = renderRoute("/", { api });
 
   await user.click(screen.getByRole("link", { name: "Rangliste" }));
@@ -71,5 +74,8 @@ it("is reached through the navbar link", async () => {
     await screen.findByRole("heading", { name: "Rangliste" }),
   ).toBeInTheDocument();
   expect(await rows()).toHaveLength(1);
-  expect(api.calls.map((c) => c.route)).toEqual(["GET /api/leaderboard"]);
+  expect(api.calls.map((c) => c.route)).toEqual([
+    "GET /api/me",
+    "GET /api/leaderboard",
+  ]);
 });

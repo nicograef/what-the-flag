@@ -123,8 +123,12 @@ it("shows the missed question and both ranks after a wrong answer", async () => 
   expect(
     screen.getByText("Die letzte Antwort war falsch."),
   ).toBeInTheDocument();
-  expect(screen.getByText("Platz 3 in diesem Quiz")).toBeInTheDocument();
-  expect(screen.getByText("Platz 12 weltweit")).toBeInTheDocument();
+  expect(
+    screen.getByText("Dein bester Platz in diesem Quiz: 3"),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText("Dein bester Platz weltweit: 12"),
+  ).toBeInTheDocument();
   expect(
     screen.getByRole("link", { name: "Rangliste dieses Quiz" }),
   ).toHaveAttribute("href", `/q/${ids.quizId}`);
@@ -185,8 +189,10 @@ it("resumes with the served question and its running deadline", async () => {
   expect(await screen.findByText("3 s")).toBeInTheDocument();
 });
 
-it("stores and announces a new personal best", async () => {
-  const { user } = await startPlaying();
+it("announces a new record from the server", async () => {
+  const { user } = await startPlaying({
+    best: { score: 1, isNew: true, previous: 0 },
+  });
 
   await user.click(screen.getByRole("button", { name: "Deutschland" }));
   await screen.findByRole(
@@ -200,9 +206,6 @@ it("stores and announces a new personal best", async () => {
     await screen.findByText("Neue Bestleistung!", {}, slow),
   ).toBeInTheDocument();
   expect(screen.getByText("Deine Bestleistung: 1")).toBeInTheDocument();
-  expect(JSON.parse(localStorage.getItem("wtf.best") ?? "null")).toMatchObject({
-    score: 1,
-  });
 });
 
 it("plays again under the same name on a fresh quiz", async () => {

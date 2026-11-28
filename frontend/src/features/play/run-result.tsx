@@ -1,18 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronRight, Sparkles, X } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router";
 import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   isTooFast,
+  meKey,
   startRun,
   type RunResultData,
   type RunState,
 } from "@/features/play/api";
 import { messages, playError } from "@/features/play/messages";
-import { recordScore } from "@/features/play/personal-best";
 import { ItemView } from "@/features/play/question-card";
 import { ShareButton } from "@/features/play/share-button";
 import { useApiClient } from "@/lib/api";
@@ -126,7 +126,8 @@ export function RunResult({
   const { locale } = useLocale();
   const api = useApiClient();
   const navigate = useNavigate();
-  const [best] = useState(() => recordScore(run.id, result.score));
+  const queryClient = useQueryClient();
+  const { best } = result;
   const headingRef = useRef<HTMLHeadingElement>(null);
   const tooFast =
     result.endReason === "wrong" &&
@@ -135,6 +136,10 @@ export function RunResult({
   const again = useMutation({
     mutationFn: () => startRun(api, { name: run.name }),
     onSuccess: async ({ runId }) => {
+      void queryClient.invalidateQueries({
+        queryKey: meKey,
+        refetchType: "none",
+      });
       await navigate(`/play/${runId}`);
     },
   });
@@ -143,6 +148,13 @@ export function RunResult({
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    void queryClient.invalidateQueries({
+      queryKey: meKey,
+      refetchType: "none",
+    });
+  }, [queryClient]);
 
   return (
     <section className="flex flex-1 flex-col gap-4 motion-safe:animate-enter">
@@ -198,8 +210,8 @@ export function RunResult({
           />
         )}
         <StatTile
-          label={t.best(best.best)}
-          value={best.best}
+          label={t.best(best.score)}
+          value={best.score}
           caption={t.statBest}
           highlight={best.isNew}
         />

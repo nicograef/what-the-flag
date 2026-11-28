@@ -1,10 +1,18 @@
 import { screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { fakeRun, sampleQuestions } from "@/features/play/fake-run";
+import {
+  fakeRun,
+  sampleQuestions,
+  unknownPlayer,
+} from "@/features/play/fake-run";
 import { FakeApi, type Json } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
 
 const quizId = "00000000-0000-4000-8000-0000000000aa";
+
+function server(): FakeApi {
+  return new FakeApi().respond("GET /api/me", unknownPlayer);
+}
 
 function challenge(creator: Json, top: Json[] = []): Json {
   return { id: quizId, creator, top };
@@ -22,7 +30,7 @@ it.each([
     form: false,
   },
 ])("shows the creator: $text", async ({ creator, text, form }) => {
-  const api = new FakeApi().respond(
+  const api = server().respond(
     `GET /api/quizzes/${quizId}`,
     challenge(creator),
   );
@@ -34,7 +42,7 @@ it.each([
 });
 
 it("highlights the requester's own row in the quiz ranking", async () => {
-  const api = new FakeApi().respond(
+  const api = server().respond(
     `GET /api/quizzes/${quizId}`,
     challenge({ name: "Ada", score: 3, ended: true, own: false }, [
       { rank: 1, name: "Ada", score: 3 },
@@ -62,7 +70,7 @@ it("highlights the requester's own row in the quiz ranking", async () => {
 });
 
 it("starts a run on this quiz from the name form", async () => {
-  const api = new FakeApi().respond(
+  const api = server().respond(
     `GET /api/quizzes/${quizId}`,
     challenge({ name: "Ada", score: 3, ended: true, own: false }),
   );
@@ -82,7 +90,7 @@ it("starts a run on this quiz from the name form", async () => {
 });
 
 it("shows quiz_in_progress when the start is refused", async () => {
-  const api = new FakeApi()
+  const api = server()
     .respond(
       `GET /api/quizzes/${quizId}`,
       challenge({ name: "Ada", score: 3, ended: true, own: false }),
@@ -99,7 +107,7 @@ it("shows quiz_in_progress when the start is refused", async () => {
 });
 
 it("shows quiz_not_found for an unknown quiz", async () => {
-  const api = new FakeApi().fail(
+  const api = server().fail(
     `GET /api/quizzes/${quizId}`,
     404,
     "quiz_not_found",

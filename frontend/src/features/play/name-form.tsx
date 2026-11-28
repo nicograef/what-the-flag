@@ -1,18 +1,17 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { startRun } from "@/features/play/api";
+import { meKey, meQuery, startRun } from "@/features/play/api";
 import { messages, playError } from "@/features/play/messages";
 import { ApiError, useApiClient } from "@/lib/api";
 import { useLocale, type Locale } from "@/lib/i18n/locale";
 import { useMessages } from "@/lib/i18n/messages";
-import { readItem, writeItem } from "@/lib/storage";
-
-const nameKey = "wtf.name";
-
-/** Starts a run: on a fresh quiz, or with `quizId` on that quiz. `errorText` words a failed start. */
+/**
+ * Starts a run: on a fresh quiz, or with `quizId` on that quiz. `errorText` words a failed start.
+ * The field shows the player's last name until it is edited; a failed `/api/me` leaves it empty.
+ */
 export function NameForm({
   quizId,
   errorText = playError,
@@ -24,15 +23,21 @@ export function NameForm({
   const { locale } = useLocale();
   const api = useApiClient();
   const navigate = useNavigate();
-  const [name, setName] = useState(() => readItem(nameKey) ?? "");
+  const queryClient = useQueryClient();
+  const me = useQuery(meQuery(api));
+  const [typed, setTyped] = useState<string | null>(null);
+  const name = typed ?? me.data?.lastName ?? "";
   const inputId = useId();
   const hintId = useId();
   const errorId = useId();
   const start = useMutation({
     mutationFn: (body: { name: string; quizId?: string }) =>
       startRun(api, body),
-    onSuccess: async ({ runId }, { name: started }) => {
-      writeItem(nameKey, started);
+    onSuccess: async ({ runId }) => {
+      void queryClient.invalidateQueries({
+        queryKey: meKey,
+        refetchType: "none",
+      });
       await navigate(`/play/${runId}`);
     },
   });
@@ -55,7 +60,7 @@ export function NameForm({
         name="name"
         autoComplete="nickname"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setTyped(e.target.value)}
         aria-invalid={fieldError}
         aria-describedby={fieldError ? `${errorId} ${hintId}` : hintId}
         maxLength={20}

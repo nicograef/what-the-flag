@@ -1,22 +1,38 @@
 import { screen } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { fakeRun, sampleQuestions } from "@/features/play/fake-run";
+import {
+  fakeRun,
+  sampleQuestions,
+  unknownPlayer,
+} from "@/features/play/fake-run";
 import { FakeApi } from "@/test/fake-api";
 import { renderRoute } from "@/test/render";
 
-it("prefills the stored name", () => {
-  localStorage.setItem("wtf.name", "Ada");
+function server(): FakeApi {
+  return new FakeApi().respond("GET /api/me", unknownPlayer);
+}
 
-  renderRoute("/", { api: new FakeApi() });
+it("prefills the name from the server", async () => {
+  const api = new FakeApi().respond("GET /api/me", {
+    lastName: "Ada",
+    best: 4,
+    worldRank: 7,
+    worldBest: 4,
+    lastQuizId: "00000000-0000-4000-8000-0000000000aa",
+  });
 
-  expect(screen.getByLabelText("Dein Name")).toHaveValue("Ada");
+  renderRoute("/", { api });
+
+  expect(await screen.findByDisplayValue("Ada")).toBe(
+    screen.getByLabelText("Dein Name"),
+  );
   expect(
     screen.getByText("Dein Name erscheint öffentlich in den Ranglisten."),
   ).toBeInTheDocument();
 });
 
 it("starts a run and plays it", async () => {
-  const api = new FakeApi();
+  const api = server();
   fakeRun(api, sampleQuestions);
   const { user } = renderRoute("/", { api });
 
@@ -29,11 +45,26 @@ it("starts a run and plays it", async () => {
     }),
   ).toBeInTheDocument();
   expect(api.calls.map((c) => c.route)).toEqual([
+    "GET /api/me",
     "POST /api/runs",
     "GET /api/runs/00000000-0000-4000-8000-000000000002",
   ]);
-  expect(api.calls[0]?.body).toEqual({ name: "Bea" });
-  expect(localStorage.getItem("wtf.name")).toBe("Bea");
+  expect(api.calls[1]?.body).toEqual({ name: "Bea" });
+});
+
+it("starts a run while /api/me fails", async () => {
+  const api = new FakeApi().fail("GET /api/me", 503, "database_unavailable");
+  fakeRun(api, sampleQuestions);
+  const { user } = renderRoute("/", { api });
+
+  await user.type(screen.getByLabelText("Dein Name"), "Bea");
+  await user.click(screen.getByRole("button", { name: "Los geht's" }));
+
+  expect(
+    await screen.findByRole("heading", {
+      name: "Welches Land hat diese Flagge?",
+    }),
+  ).toBeInTheDocument();
 });
 
 it.each([
@@ -52,7 +83,7 @@ it.each([
     invalid: "false",
   },
 ])("shows $code", async ({ code, status, field, text, invalid }) => {
-  const api = new FakeApi().fail("POST /api/runs", status, code, field);
+  const api = server().fail("POST /api/runs", status, code, field);
   const { user } = renderRoute("/", { api });
   const input = screen.getByLabelText("Dein Name");
 
@@ -73,7 +104,7 @@ it("shows the not-found page on an unknown path", async () => {
 });
 
 it("links the footer to the NOTICE file", () => {
-  renderRoute("/", { api: new FakeApi() });
+  renderRoute("/", { api: server() });
 
   expect(screen.getByRole("link", { name: /Länderdaten/ })).toHaveAttribute(
     "href",

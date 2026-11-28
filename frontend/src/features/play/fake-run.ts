@@ -14,6 +14,8 @@ interface FakeRunOptions {
   remainingMs?: number;
   quizRank?: number;
   globalRank?: number | null;
+  /** The result's `best`; by default the run's own score, not new, without a previous best. */
+  best?: { score: number; isNew: boolean; previous: number | null };
   /** Every answer arrives within the minimum answer time, so even the correct option is wrong. */
   tooFast?: boolean;
 }
@@ -27,6 +29,15 @@ interface RunRecord {
     chosen: number | null;
   } | null;
 }
+
+/** The `GET /api/me` body for a visitor the server does not know. */
+export const unknownPlayer: Json = {
+  lastName: null,
+  best: null,
+  worldRank: null,
+  worldBest: null,
+  lastQuizId: null,
+};
 
 const fakeQuizId = "00000000-0000-4000-8000-0000000000aa";
 const serverNow = "2026-01-01T12:00:00.000000Z";
@@ -97,6 +108,11 @@ export function fakeRun(
               },
         quizRank,
         globalRank,
+        best: options.best ?? {
+          score: run.score,
+          isNew: false,
+          previous: null,
+        },
       },
     };
   }
