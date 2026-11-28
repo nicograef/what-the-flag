@@ -77,15 +77,15 @@ None. Wikimedia, Wikidata, CLDR and auswaertiges-amt.de fetches are free.
 | anonymous-player 1 | player | landed | 8a927aa; migration 000006 |
 | anonymous-player 2 | player | landed | 8a927aa; migration 000006 |
 | anonymous-player 3 | player | landed | 8a927aa; migration 000006 |
-| quiz-domain-now 1 | domain-data | running | |
-| quiz-domain-now 2 | domain-data | running | |
-| quiz-domain-now 3 | domain-data | running | |
-| quiz-domain-now 4 | domain-data | running | |
-| quiz-domain-now 5 | domain-data | waiting | player lands |
-| quiz-domain-now 6 | domain-engine | waiting | player and domain-data land |
-| quiz-domain-now 7 | domain-engine | waiting | player and domain-data land |
-| quiz-domain-now 8 | domain-engine | waiting | player and domain-data land |
-| redesign 1–9 | redesign | waiting | player lands |
+| quiz-domain-now 1 | domain-data | landed | 625cba4 |
+| quiz-domain-now 2 | domain-data | landed | 625cba4 |
+| quiz-domain-now 3 | domain-data | landed | 625cba4 |
+| quiz-domain-now 4 | domain-data | landed | 625cba4 |
+| quiz-domain-now 5 | domain-data | landed | 625cba4 |
+| quiz-domain-now 6 | domain-engine | waiting | lead dispatches |
+| quiz-domain-now 7 | domain-engine | waiting | lead dispatches |
+| quiz-domain-now 8 | domain-engine | waiting | lead dispatches |
+| redesign 1–9 | redesign | running | |
 | redesign 10–12 | redesign | waiting | domain-engine lands |
 | question-kinds 1 | kinds | waiting | domain-engine and redesign land |
 | question-kinds 2 | kinds | waiting | domain-engine and redesign land |

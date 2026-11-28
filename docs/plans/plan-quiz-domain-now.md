@@ -118,10 +118,10 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### Acceptance criteria
 
-- [ ] `cd backend && go test ./internal/quiz/ -run '^TestQuestionSpace$' -count=1 -v | grep -q -- '--- PASS: TestQuestionSpace'`
-- [ ] `test "$(make -s data-review | grep -oE '^## [a-z_]+' | sort -u | wc -l)" -eq "$(grep -c '{Attr' backend/internal/quiz/question.go)"`
-- [ ] `make help | grep -A40 -i developer | grep -q data-review`
-- [ ] `make check` passes.
+- [x] `cd backend && go test ./internal/quiz/ -run '^TestQuestionSpace$' -count=1 -v | grep -q -- '--- PASS: TestQuestionSpace'`
+- [x] `test "$(make -s data-review | grep -oE '^## [a-z_]+' | sort -u | wc -l)" -eq "$(grep -c '{Attr' backend/internal/quiz/question.go)"`
+- [x] `make help | grep -A40 -i developer | grep -q data-review`
+- [x] `make check` passes.
 
 ## Phase 2: Honest language relation (K2)
 
@@ -159,10 +159,10 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### Acceptance criteria
 
-- [ ] `cd backend && go test ./cmd/importdata/ -run '^TestImporterRejects$' -count=1 -v | grep -q -- '--- PASS: TestImporterRejects'`
-- [ ] `jq -e '[.[] | select((.source | startswith("https://")) | not)] | length == 0' data/regional-languages.json`
-- [ ] `jq -e '.qu.spokenIn | index("CL")' data/regional-languages.json && jq -e '.cy.blockedIn | index("AR")' data/regional-languages.json`
-- [ ] `make check` passes.
+- [x] `cd backend && go test ./cmd/importdata/ -run '^TestImporterRejects$' -count=1 -v | grep -q -- '--- PASS: TestImporterRejects'`
+- [x] `jq -e '[.[] | select((.source | startswith("https://")) | not)] | length == 0' data/regional-languages.json`
+- [x] `jq -e '.qu.spokenIn | index("CL")' data/regional-languages.json && jq -e '.cy.blockedIn | index("AR")' data/regional-languages.json`
+- [x] `make check` passes.
 
 ## Phase 3: Fame from German Wikipedia pageviews (K3)
 
@@ -188,9 +188,9 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### Acceptance criteria
 
-- [ ] `jq -e '[.countries[]|select(.fame==1)|.code] as $f | (["DE","FR","US","IT","ES"]|all(. as $c|$f|index($c))) and (["TD","MR","NE"]|all(. as $c|($f|index($c))==null))' backend/internal/country/dataset/countries.json`
-- [ ] `grep -qi pageview data/SOURCES.md && grep -qi pageview NOTICE && grep -qi pageview frontend/src/app/messages.ts`
-- [ ] `make check` passes.
+- [x] `jq -e '[.countries[]|select(.fame==1)|.code] as $f | (["DE","FR","US","IT","ES"]|all(. as $c|$f|index($c))) and (["TD","MR","NE"]|all(. as $c|($f|index($c))==null))' backend/internal/country/dataset/countries.json`
+- [x] `grep -qi pageview data/SOURCES.md && grep -qi pageview NOTICE && grep -qi pageview frontend/src/app/messages.ts`
+- [x] `make check` passes.
 
 ## Phase 4: German names from the Auswärtiges Amt list (K9)
 
@@ -209,9 +209,9 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### Acceptance criteria
 
-- [ ] `jq -e '[(.countryNames,.capitalLabels)[] | select(.reason|test("auswaertiges-amt.de"))] | length > 0' data/overrides.json`
-- [ ] `cd backend && go test ./internal/quiz/ -run '^TestQuestionSpace$' -count=1 -v | grep -q -- '--- PASS: TestQuestionSpace'`
-- [ ] `make check` passes.
+- [x] `jq -e '[(.countryNames,.capitalLabels)[] | select(.reason|test("auswaertiges-amt.de"))] | length > 0' data/overrides.json`
+- [x] `cd backend && go test ./internal/quiz/ -run '^TestQuestionSpace$' -count=1 -v | grep -q -- '--- PASS: TestQuestionSpace'`
+- [x] `make check` passes.
 
 ## Phase 5: Level ladder, familiar options and the giveaway rule (E1)
 
@@ -262,12 +262,12 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### Acceptance criteria
 
-- [ ] `cd backend && go test ./internal/quiz/... -count=1` passes.
-- [ ] `set -o pipefail; ! make -s data-review | grep -qE '^## (name_capital|capital_name) SG '`
-- [ ] `grep -qE '^\| 10 \| 46' docs/game-rules.md`
-- [ ] `jq -e '.question.level == 1' backend/internal/contract/testdata/run-playing.json && jq -e '.result.level == 1' backend/internal/contract/testdata/run-finished.json`
-- [ ] `cd frontend && pnpm exec vitest run src/test/api-contract.test.ts`
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `cd backend && go test ./internal/quiz/... -count=1` passes.
+- [x] `set -o pipefail; ! make -s data-review | grep -qE '^## (name_capital|capital_name) SG '`
+- [x] `grep -qE '^\| 10 \| 46' docs/game-rules.md`
+- [x] `jq -e '.question.level == 1' backend/internal/contract/testdata/run-playing.json && jq -e '.result.level == 1' backend/internal/contract/testdata/run-finished.json`
+- [x] `cd frontend && pnpm exec vitest run src/test/api-contract.test.ts`
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 6: Subregion groups and variety (K4, E2)
 
