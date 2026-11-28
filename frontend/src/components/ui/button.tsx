@@ -18,7 +18,6 @@ const buttonVariants = cva(
       size: {
         default: "h-11 gap-2 px-4 text-sm",
         lg: "h-12 gap-2 px-5 text-base",
-        icon: "size-11",
       },
     },
     defaultVariants: {
@@ -51,4 +50,4 @@ function Button({
   );
 }
 
-export { Button, buttonVariants };
+export { Button };

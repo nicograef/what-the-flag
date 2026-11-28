@@ -73,7 +73,7 @@ Stored questions keep a shared quiz identical forever and show which questions p
 | Database | PostgreSQL 19. The handbook runs every backend on Postgres, so SQLite is out |
 | Frontend | Vite, React, TypeScript 7, Tailwind, shadcn/ui, TanStack Query, React Router, Zod |
 | Edge | Caddy image with the SPA baked in; `/api/*` proxied to the backend on port 8080 |
-| Look | Clean and minimal: shadcn defaults, one accent colour, short transitions |
+| Look | Clean and minimal: slate neutrals, one blue accent, success, warning and error colours, short transitions; dark mode follows the system |
 | Languages | German and English UI. Repository files are English |
 | Toolchain | Latest stable Go and the Active LTS Node at scaffold time, pinned as the handbook says |
 

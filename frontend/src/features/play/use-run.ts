@@ -21,7 +21,7 @@ interface LoadedRun {
 
 const revealMs = 800;
 /** A miss holds its marks longer, so the player sees the right answer before the result. */
-export const missRevealMs = 1500;
+const missRevealMs = 1500;
 
 function runQueryOptions(api: ApiClient, runId: string, enabled: boolean) {
   return queryOptions({
