@@ -28,6 +28,7 @@
 | Option | One of the four selectable answers of a question. | choice, answer |
 | Target | The country a question asks about. | solution |
 | Distractor | A wrong option. | decoy |
+| Lure share | The share of answers that picked a distractor among the answers to questions offering it, per question type and target; `make stats` lists it. | pick rate, trap rate |
 | Question space | Every question the generator can produce from the catalogue: each type, target and prompt, one case each. | question pool |
 | True set | The options of a case that answer it correctly: the target, its values, or every country a prompted regional language is spoken in. | correct set |
 | Contested set | The options of a case a player could defend though they are not true, such as another continent of the target or a look-alike's value. | grey zone |

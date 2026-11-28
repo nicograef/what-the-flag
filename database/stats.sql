@@ -56,3 +56,31 @@ JOIN quiz_questions q ON q.quiz_id = r.quiz_id AND q.position = a.position
 WHERE (a.correct IS NOT NULL OR e.id IS NOT NULL) AND NOT r.hidden
 GROUP BY q.type
 ORDER BY miss_share DESC, q.type;
+
+-- The level is quiz.Level of the 0-based position. A timeout is a null answer or the late open answer of an ended run.
+\echo 'Miss share by type and level'
+SELECT q.type, least(10, 1 + a.position / 5) AS level, count(*) AS answers,
+  round(avg((a.correct IS NOT TRUE)::int), 3) AS miss_share,
+  round(avg((a.correct IS NULL OR (NOT a.correct AND a.option_index IS NULL))::int), 3) AS timeout_share,
+  round((percentile_cont(0.5) WITHIN GROUP (ORDER BY extract(epoch FROM a.answered_at - a.served_at))
+    FILTER (WHERE a.correct))::numeric, 3) AS median_correct_seconds
+FROM run_answers a
+JOIN runs r ON r.id = a.run_id
+LEFT JOIN ended e ON e.id = a.run_id
+JOIN quiz_questions q ON q.quiz_id = r.quiz_id AND q.position = a.position
+WHERE (a.correct IS NOT NULL OR e.id IS NOT NULL) AND NOT r.hidden
+GROUP BY q.type, level
+ORDER BY q.type, level;
+
+-- A distractor's lure share is the share of the answers to questions offering it that picked it; n counts those answers.
+\echo 'Distractor lure shares'
+SELECT q.type, q.target, o.option, count(*) AS n,
+  round(avg(coalesce(q.options[a.option_index + 1] = o.option, false)::int), 3) AS lure_share
+FROM run_answers a
+JOIN runs r ON r.id = a.run_id
+LEFT JOIN ended e ON e.id = a.run_id
+JOIN quiz_questions q ON q.quiz_id = r.quiz_id AND q.position = a.position
+CROSS JOIN LATERAL unnest(q.options) WITH ORDINALITY AS o(option, i)
+WHERE (a.correct IS NOT NULL OR e.id IS NOT NULL) AND NOT r.hidden AND o.i <> q.correct_index + 1
+GROUP BY q.type, q.target, o.option
+ORDER BY lure_share DESC, n DESC, q.type, q.target, o.option;
