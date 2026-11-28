@@ -64,7 +64,7 @@ Critique of the landed language work:
 | A diaspora country can be the correct answer | Welsh `spokenIn` is [AR, GB] | Move AR to `blockedIn` (K2) |
 | Facts cannot be audited | 65 of 155 entries cite `regional.json note (no URL)`; the importer accepts any non-blank source | Require an https URL and backfill (K2) |
 | Dead field | `kind` is validated but never emitted | Delete it (K2) |
-| The value prompt is a one-off patch | A presenter branch, a `prompt` column tied to one type id, extra switch cases | Generalise when a second value-prompt type lands ([engine](prd-question-engine.md) E6) |
+| The value prompt is a one-off patch | A presenter branch, a `prompt` column tied to one type id, extra switch cases | Generalise when `calling_code_name`, the second value-prompt type, lands ([engine](prd-question-engine.md) E10) |
 
 ### Data inventory
 
@@ -75,11 +75,12 @@ Vendored but unused. Counts are facts over the pool.
 | Subregion: 24 values, 2 to 17 countries each | mledoze | Plausible distractors from the same subregion | Now (K4), as a grouping key |
 | Language status and population share per territory | CLDR `supplemental/territoryInfo.json`, already in the fetch's sparse checkout but not copied | Checkable completeness and official status | Now (K2), warn-only |
 | Validated secondary capitals | Wikidata, dropped after validation | Seats such as La Paz, kept out of capital traps | Next (K6) |
+| Calling codes: 183 distinct, 181 with one holder; +1 shared by 13 NANP members, +7 by RU and KZ (fact, explorer script) | mledoze `idd` | Calling-code questions and referents | Next (K10) |
+| Land borders: 158 countries have some, 111 have at least 3 (fact); LK→IN is the only asymmetric entry | mledoze `borders` | Neighbour and NOT-neighbour questions, two-hop distractors | Next (K11), with a blocked-pair overlay |
 | Area | mledoze | "Which is largest?" | Later (K7), an S step of its own. Today it feeds only the fame rank; after K3 nothing reads it |
-| Land borders: 158 countries have some | mledoze | Neighbour question | Later (K8). Needs rules for overseas parts (France–Brazil) and disputed borders |
-| Landlocked: 45 countries | mledoze | "Which has no sea access?" | Later (K8). Needs a Caspian rule |
+| Landlocked: 45 countries | mledoze | "Welches Land ist ein Binnenstaat?" | Later (K8). Needs a Caspian rule |
 | Organisation flags (EU, UN, ASEAN …) | flag-icons | Membership questions | Later (K8) |
-| `tld`, `idd`, `cioc`, official names, `latlng`, demonyms (no German) | mledoze | Niche or leaking | Rejected |
+| `tld`, `cioc`, official names, `latlng`, demonyms (no German) | mledoze | Niche or leaking | Rejected |
 
 Missing data, to curate or fetch:
 
@@ -98,7 +99,7 @@ Missing data, to curate or fetch:
 
 | Source | Licence | Status |
 | --- | --- | --- |
-| mledoze/countries | ODbL-1.0 | Vendored; read the subregion too |
+| mledoze/countries | ODbL-1.0 | Vendored; also read `subregion`, `idd` and `borders` |
 | Unicode CLDR `cldr-core`, `cldr-localenames-full` | Unicode-3.0 | Vendored; also copy `territoryInfo.json` |
 | Wikidata SPARQL | CC0-1.0 | Capitals vendored; dewiki sitelinks in K3; batches later |
 | lipis/flag-icons | MIT | Vendored |
@@ -114,7 +115,7 @@ There are three contexts, and each rule lives in exactly one of them.
 | Context | Code | Owns | Never holds |
 | --- | --- | --- | --- |
 | Knowledge | `data/`, `cmd/importdata`, `internal/country` | Facts, labels, curated judgements, source interpretation | Question rules |
-| Question engine | `internal/quiz` `question.go`, `generate.go` | Types, tiers, candidates, defensible sets, option rules | Timing, storage |
+| Question engine | `internal/quiz` `question.go`, `options.go`, `generate.go` | Types, tiers, levels, true and contested sets, candidates, option rules | Timing, storage |
 | Game | `internal/quiz` run, service, leaderboards | Runs, clock, quizzes, scores | Facts, option rules |
 
 Adapters (Postgres, HTTP presenter, frontend) only map. Each known duplication gets a decision:
@@ -123,13 +124,17 @@ Adapters (Postgres, HTTP presenter, frontend) only map. Each known duplication g
 | --- | --- |
 | Type ids in the SQL CHECK and the zod enum | Keep. The repo rule asks for a CHECK, and both ship in one release (D05) |
 | One question sentence per type in `messages.ts` | Keep, because UI strings live there. The review dump prints the type id beside each question, so the curator checks each sentence once |
-| Attribute-to-label mapping in `present.go` | Keep until the second value-prompt type lands (engine E6) |
+| Attribute-to-label mapping in `present.go` | Keep until the second value-prompt type lands (engine E10) |
 | `quiz.Catalogue` returns `[]country.Country` | Keep. It has one implementation, so a view layer would be ceremony |
 
 Refactor triggers, so the model grows only when a consumer exists:
 
-- A prompt reference (country or value) plus one attribute table: when a second value-prompt type is scheduled.
-- A relation model with a status on every multi-valued fact: when a third relation needs statuses, such as borders or memberships.
+- No generic relation model. A relation with a status keeps a true list and a blocked list:
+  - `languages`/`blockedLanguages` (with `regionalLanguages`);
+  - `callingCode`/`blockedCallingCodes`;
+  - `borders`/`blockedBorders`.
+
+  The engine's true and contested sets are the one reader of statuses. Revisit when a relation needs a status beyond true, regional and blocked.
 - A separate `internal/question` package: when `quiz` grows several times beyond its 915 non-test lines.
 
 ### Protections
@@ -139,14 +144,12 @@ Refactor triggers, so the model grows only when a consumer exists:
 | Vendored sources, pinned where the source has revisions | Upstream drift and vandalism between fetches | `scripts/fetch-data-sources.sh` |
 | Strict decoding and CSV header checks; a reason on every override; no-op overrides rejected | Typos, changed upstream shapes, stale overrides | Importer |
 | https source on every curated fact entry | Unauditable facts | Importer (K2) |
-| Invariants: unique names and capitals, symmetric look-alikes, disjoint language lists, de and en labels, no label naming a country | Corrupt or ambiguous artefact | Importer `validate` |
+| Invariants: unique names and capitals, symmetric look-alikes, disjoint language lists, de and en labels, no label naming a country; borders symmetric and disjoint from blocked borders; +1 the only calling code with several holders; a blocked calling code never the country's own | Corrupt or ambiguous artefact | Importer `validate` |
 | Artefact equals importer output | Hand edits, bad merges | `make check` (`data-check`) |
 | Committed artefact diff | Unintended fact changes | `git diff` of `countries.json` |
-| Question-space check over every (type, target, prompt, correct value) | Unfair, unplayable or unlabelled questions | `make check` (K1) |
+| Question-space check over every (type, target, prompt) | Unfair, unplayable or unlabelled questions | `make check` (K1) |
 | Review dump | Odd questions no rule describes | `make data-review`, on demand (K1) |
 | depguard on the domain cores | HTTP or SQL inside rules | `backend/.golangci.yml` |
-
-The core does not validate again at `Load`. `data-check` already rejects any artefact the importer did not build.
 
 ### Schema
 
@@ -166,6 +169,10 @@ Country after this PRD:
 | regionalLanguages | 0..n | Regional, minority, indigenous or creole languages established here and not official here | Official ones removed (K2) |
 | blockedLanguages | 0..n | Languages with a lesser status or a community here; never asked, never a wrong option | Widened by `blockedIn` (K2) |
 | currencies | 1..n | ISO 4217 | — |
+| callingCode | 0..1 | ITU country code such as "+49"; empty for an excluded country | New (K10) |
+| blockedCallingCodes | 0..n | Codes an excluded country uses in practice; never a referent, and the country is never an option for them | New (K10) |
+| borders | 0..n | Pool countries sharing an undisputed land border; sorted, symmetric | New (K11) |
+| blockedBorders | 0..n | Pool countries whose land border with this one a player could argue either way; symmetric, disjoint from `borders` | New (K11) |
 | fame | 1 | 1..3 from the dewiki pageview rank | New source (K3) |
 | flagKey, lookalikes | 1, 0..n | — | — |
 
@@ -183,7 +190,7 @@ Curated files:
 
 | File | Holds | Each entry needs |
 | --- | --- | --- |
-| `overrides.json` | Corrections to sources and editorial judgements | `reason`, citing a statute or source where it states a fact |
+| `overrides.json` | Corrections to sources and editorial judgements, including the `callingCodes` and `borders` sections | `reason`, citing a statute or source where it states a fact |
 | `currency-units.json` | Unit labels and families | Non-empty de, en and family |
 | `regional-languages.json` | Per language: `spokenIn`, the new `blockedIn`, `source`; no `kind` | An https `source` |
 | `capital-traps.json` (K6) | Per country: one or two trap cities `{de, en}` | `source`, `reason` |
@@ -193,7 +200,7 @@ Rules for `regional-languages.json` (K2):
 
 - `spokenIn` lists countries where the language is established and not official. Listing an official country is an error, because the dataset already knows it.
 - `blockedIn` lists countries with a diaspora or a small community.
-- Neither list has a cap. The cap's stated reason was three wrong countries without the language. That holds for any list size, because the generator falls back to the whole pool. K1's check fails any case with fewer than three.
+- Neither list has a cap. K1's check fails any case with fewer than three wrong countries.
 - An entry needs at least one `spokenIn` country. The 7 entries that name only official countries (mfe, mi, rm, ss, st, tpi, ve) are deleted.
 - So all 148 remaining entries are prompt-eligible (fact: 148 of today's 155 name a non-official country).
 - Completeness rule: every pool country with an established community appears in `spokenIn` or `blockedIn`, or has the language as official.
@@ -202,13 +209,56 @@ Rules for `regional-languages.json` (K2):
 
 The generator follows the disjoint lists (K2):
 
-- A country counts as spoken-in for a prompt when the language is in its `languages`, `regionalLanguages` or `blockedLanguages`. This replaces the `RegionalLanguages`-only predicate at `generate.go:68`. Otherwise Andorra becomes a wrong option for Catalan, Bolivia and Ecuador for Quechua, and Argentina for Welsh.
-- Prompts come from `regionalLanguages` alone (`generate.go:63`). The official-language filter goes, because the lists are disjoint.
-- `values` for the regional attribute (`question.go:92`) serves no answer type and keeps `regionalLanguages`.
+- A country counts as spoken-in for a prompt when the language is in its `languages`, `regionalLanguages` or `blockedLanguages`. This replaces today's `RegionalLanguages`-only predicate. Otherwise Andorra becomes a wrong option for Catalan, Bolivia and Ecuador for Quechua, and Argentina for Welsh.
+- Prompts come from `regionalLanguages` alone. The official-language filter goes, because the lists are disjoint.
+- `values()` for the regional attribute serves no answer type and keeps `regionalLanguages`.
+
+Calling codes (K10):
+
+- The importer reads mledoze `idd`:
+  - root "+1" gives "+1"; root "+7" gives "+7";
+  - exactly one suffix gives root plus suffix;
+  - anything else fails the import unless an override covers it.
+- NANP area codes, such as +1-876, are never shown.
+- `overrides.callingCodes` excludes four countries. Each entry has a reason and an https source. Excluding is always fair, so these need no web research.
+
+| Country | Code | Blocked | Reason |
+| --- | --- | --- | --- |
+| VA | — | +39 | Dialled through Italy's +39 06 698; +379 is assigned but unused |
+| XK | — | +381, +377, +386 | +383 since 2017; the Serbian landline code and the Monaco and Slovenia mobile codes were in use before |
+| PS | — | +972 | Israeli networks also serve the territories (inference; the curator confirms the source) |
+| KZ | — | +7 | Shares +7 with Russia; a move to +997 is announced (guess) |
+
+- A country without a code is contested in every calling-code question. +7 then has one holder, but RU still cannot be a calling-code referent, because KZ blocks +7.
+
+Borders (K11):
+
+- The importer maps mledoze `borders` from cca3 to alpha-2 and drops non-pool partners: GF, GI, EH, HK, MO.
+- It fails on any asymmetry that no `remove` entry fixes.
+- `overrides.borders` holds two lists:
+  - `remove`: mledoze errors. The only one is LK-IN, a shoal chain with no land border.
+  - `blocked`: pairs a player could argue either way. A blocked pair leaves `borders`.
+
+  Each entry has a reason and an https source. An entry that changes nothing fails.
+- Every mledoze border of XK or PS becomes blocked by an importer rule that cites the recognition rule. No pair-by-pair entries.
+
+Blocked pairs, a draft for the curator:
+
+| Kind | Pairs |
+| --- | --- |
+| Overseas or exclave territory | FR-BR, FR-SR (French Guiana); FR-NL (Saint Martin); GB-ES (Gibraltar); GB-CY (sovereign base areas); ES-MA (Ceuta, Melilla); US-CU (Guantánamo) |
+| Recently settled or occupied land | DK-CA (Hans Island, 2022); MA-MR (Western Sahara) |
+| Fixed links | GB-FR, DK-SE, MY-SG, BH-SA |
+| Caspian shore only | AZ-KZ, AZ-TM, IR-KZ, IR-RU, RU-TM |
+| Narrow straits | RU-US, RU-JP |
+| Claims and recognition | IN-AF (Gilgit-Baltistan claim); AL-RS (through Kosovo) |
+
+- Surprising but undisputed borders stay true: AZ-TR, RU-PL, RU-LT, BW-ZM, CN-AF, AO-CG.
+- Explorer count for its slightly different draft: 155 subjects keep one or more unblocked borders, and 109 keep three or more.
 
 ### Ingestion pipeline
 
-The pipeline ends at the embedded artefact, not at Postgres. Postgres stores what play produces: quizzes, questions, runs and answers. That becomes decision D13.
+The pipeline ends at the embedded artefact, not at Postgres. Postgres stores what play produces: quizzes, questions, runs and answers (D13).
 
 | # | Stage | Does | Fails when |
 | --- | --- | --- | --- |
@@ -238,7 +288,9 @@ Until K5, a data edit that removes a code also resets the staging database.
 - Labels follow CLDR unless they name a country (already enforced), or are pejorative or archaic.
 - A spoken-in list is complete for established communities. CLDR is evidence, not truth.
 - A look-alike pair is two flags a player cannot tell apart at card size, including under red–green colour blindness.
-- No attribute's truth may depend on recognition, such as UN membership or borders involving XK, PS or TW.
+- No attribute's truth may depend on recognition, such as UN membership.
+- A land border counts when both states agree it exists. A border a player could argue either way is blocked, never asked in either direction. Disputed alignments of an agreed border (CN-IN, IN-PK, VE-GY) stay true.
+- A calling code is the ITU country code. A country whose code a player could argue is excluded from calling-code questions.
 - No religion, ethnicity, heads of state or fast-changing figures.
 
 ### Decisions taken
@@ -246,7 +298,7 @@ Until K5, a data edit that removes a code also resets the staging database.
 | Decision | Alternatives weighed | Why this one |
 | --- | --- | --- |
 | Embedded artefact; no catalogue tables in Postgres (D13) | Catalogue tables seeded each deploy; a read-only snapshot table for SQL joins | Tables add a seed path, migrations per data edit and a second source of truth. Either way is reversible |
-| Typed structs; language status as three disjoint lists | A fact graph with relation and status vocabularies; a relations array; a six-value status enum per pair | The graph is an M-cost rewrite for relations that are all deferred. The lists cost S and change no consumer. The trigger above revisits it |
+| Typed structs; each relation a true list plus a blocked list; language status as three disjoint lists | A fact graph with relation and status vocabularies; a relations array; a six-value status enum per pair; a relation model with a status per fact | The graph is an M-cost rewrite. Each relation's contested rule differs. The lists cost S, change no consumer, and the engine reads them in one place. The refactor trigger revisits it |
 | The importer is the anti-corruption layer; no validation at `Load` | `country.Validate` at import and at `Load` | `data-check` already rejects any artefact the importer did not build |
 | CLDR `territoryInfo` as a warn-only oracle | Derive statuses from CLDR; a failing lint with exception maps | CLDR shares include diaspora and immigrant languages. A failing lint would grow a third curated file |
 | Fame from the 12-month dewiki pageview rank alone | de plus en sum; a blend with area and population; fame per attribute; a calibrated difficulty model | The audience reads German, and one quiz serves both locales, so one fame. Blends add weights without ground truth. Beta volume cannot fit a model |
@@ -255,22 +307,26 @@ Until K5, a data edit that removes a code also resets the staging database.
 | An https URL on curated fact entries; no dates | URL plus a checked date and a staleness report on every entry | In-scope facts rarely change, so dates are bookkeeping |
 | Stored questions keep codes and reset with breaking data edits during the beta; at the public launch, after one final reset, each stored question also stores its displayed texts (K5) | Snapshot texts now; the importer refuses to drop referenced codes | Data still changes weekly, so a snapshot now costs a migration per change. Refusing drops blocks every cleanup. Changes prd-rebuild's "The database stores country codes and attribute values only" at K5 and extends D09 |
 | German country and capital names follow the Auswärtiges Amt list of state names where it has an entry, else CLDR, through the existing override sections (K9) | CLDR as is; Duden | Official, consistent and neutral. Duden is no list of state names |
+| Calling codes in scope from mledoze `idd`, with four excluded countries and their blocked codes | Keep `idd` rejected; VA on +39; include KZ after research | Owner request. The "leaking" argument fits TLDs, not calling codes. Excluding is always fair |
+| Borders from mledoze with a blocked-pair overlay in `overrides.json` | A separate `contested-borders.json`; dropping disputed pairs at import; Wikidata P47 | A dropped pair would become "false", and NOT-neighbour would make it the correct answer. One file keeps the curation in one place. P47 mixes maritime and historical borders |
 
 ### Roadmap
 
-Each phase ships alone. K1 goes first because it guards the rest. K2 depends on K1, because it changes what the generator reads. K3 and K4 are independent.
+Each phase ships alone. K1 goes first because it guards the rest. K2 depends on K1, because it changes what the generator reads. K3, K4 and K9 are independent.
 
 | Phase | Horizon | Ships | Depends on | Cost |
 | --- | --- | --- | --- | --- |
-| K1 Question-space check | Now | One deterministic candidate and defensible-set function shared by `Generate`, the check and the dump. The check runs in `make check`. `make data-review` prints one fixed-seed question per (type, target, prompt) as Markdown to stdout | — | M |
-| K2 Honest language relation | Now | Disjoint lists, `blockedIn`, the build cap deleted, `kind` deleted, four label fixes, the 7 official-only entries deleted. The generator reads spoken-in from all three lists and prompts from `regionalLanguages`. `territoryInfo` is vendored and its diff printed. Gaps found are fixed, Quechua in Chile first. The 65 sources are backfilled: a `sonnet` agent drafts, the owner spot-checks 10% | K1 | M |
-| K3 Fame from pageviews | Now | A new Wikidata query `data/sources/wikidata/articles.rq` fetches each country's dewiki sitelink by QID. The fetch script reads monthly `agent=user` views of that title over the last 12 full months into a CSV; the end month is its pin. The rank replaces area with the same cut-offs. The importer then rejects redundant `fameTiers` overrides, and lowering overrides become possible | — | S |
+| K1 Question-space check | Now | One deterministic function returning each case's true, contested and false sets, shared by `Generate`, the check and the dump. The check runs in `make check`. `make data-review` prints one fixed-seed question per (type, target, prompt) as Markdown to stdout | — | M |
+| K2 Honest language relation | Now | Disjoint lists, `blockedIn`, the build cap deleted, `kind` deleted, four label fixes, the 7 official-only entries deleted. The generator reads spoken-in from all three lists and prompts from `regionalLanguages`. `territoryInfo` is vendored and its diff printed. Gaps found are fixed, Quechua in Chile first. The 65 sources are backfilled: a `nico:web-researcher` agent drafts, the owner spot-checks 10% | K1 | M |
+| K3 Fame from pageviews | Now | A new Wikidata query `data/sources/wikidata/articles.rq` fetches each country's dewiki sitelink, joined on ISO alpha-2 through `wdt:P297` like `capitals.rq`. The fetch script reads monthly `agent=user` views of that title over the last 12 full months into a CSV; the end month is its pin. The rank replaces area with the same cut-offs. The importer then rejects redundant `fameTiers` overrides, and lowering overrides become possible | — | S |
 | K4 Subregion | Now | `subregion` on Country, read from mledoze | — | S |
 | K5 Stable stored questions | Before the public launch | One final reset, then each stored question also stores its displayed texts | — | S–M |
 | K6 Trap and former-name data | Next | `capital-traps.json`, `former-names.json` and their importer checks, shipped with engine E5 and E6 | K1 | S each |
 | K7 Area | Later | `area` on Country, read from mledoze, for engine E8 | — | S |
-| K8 More attributes | Later | Borders, landlocked, memberships, each with its question type, once the beta shows a need for variety | — | M each |
+| K8 More attributes | Later | Landlocked and memberships, each with its question type, once the beta shows a need for variety | — | M each |
 | K9 German names | Now | A curation pass of German country and capital names against the Auswärtiges Amt list; differences land as `countryNames` and `capitalLabels` overrides with the list as source | — | S |
+| K10 Calling codes | Next | `callingCode`, `blockedCallingCodes`, the `callingCodes` overrides, the invariants; shipped with engine E10 | K1 | S |
+| K11 Borders | Next | `borders`, `blockedBorders`, the `borders` overrides, the XK/PS rule, the symmetry invariant; shipped with engine E12 | K1 | M |
 
 K3's join and its failure modes:
 
@@ -281,21 +337,27 @@ K3's join and its failure modes:
 ## Testing Decisions
 
 - The question-space check is a Go test in `internal/quiz` over the real embedded catalogue.
-  It enumerates every type × target × prompt × correct value: about 10,000 cases in milliseconds.
-- It takes each case's options from the shared candidate function. It asserts against the raw catalogue lists, never through that function:
-  - at least three candidates remain, or a named rule makes the case ineligible;
-  - no wrong language or currency is in the target's `languages`, `regionalLanguages`, `blockedLanguages` or `currencies`, nor shares a family with one;
-  - no wrong country holds the prompt language in any of its three lists;
-  - no wrong continent is the target's `region` or in its `otherRegions`;
-  - under a flag prompt, no wrong option is a value of a look-alike, and no two options are look-alikes;
-  - no two options share a family or a de or en text;
-  - every option code has de and en labels.
+  - It enumerates every type × target × prompt, a few thousand cases in milliseconds (inference).
+  - It tests each case's true, contested and false sets against the raw catalogue lists, never through the shared function:
+    - every true code holds the relation;
+    - at least three candidates remain, or a named rule makes the case ineligible;
+    - no wrong language or currency is in the target's `languages`, `regionalLanguages`, `blockedLanguages` or `currencies`, nor shares a family with one;
+    - no wrong country holds the prompt language in any of its three lists;
+    - no wrong continent is the target's `region` or in its `otherRegions`;
+    - under a flag prompt, no wrong option is a value of a look-alike, and no two options are look-alikes;
+    - no two options share a family or a de or en text;
+    - every option code has de and en labels;
+    - no false country is in the target's `borders` or `blockedBorders`;
+    - no false country holds or blocks the prompt calling code.
 - Thin pools, fewer than six candidates, go to `t.Log` as a report.
 - It replaces "every type occurs in 200 seeds" as the feasibility guard. `checkRun` keeps the sampling properties.
-- An importer table test loads the real sources once. Its three rows each mutate one fact:
+- An importer table test loads the real sources once. Its six rows each mutate one fact:
   - a `spokenIn` country where the language is official;
   - an asymmetric look-alike;
-  - a non-URL source.
+  - a non-URL source;
+  - an asymmetric border;
+  - a blocked pair that is also a border after the overlay;
+  - a second shared calling code besides +1.
 - The CLDR diff and the review dump are reports, not tests.
 
 ## Out of Scope
@@ -304,7 +366,7 @@ K3's join and its failure modes:
 - Fame per attribute and a calibrated difficulty model.
 - A flag rasteriser and flag feature tags.
 - New entity kinds: World Heritage sites, peaks, rivers, cities as entities.
-- Demonyms, IOC codes, calling codes, TLDs, official names, religion, heads of state.
+- Demonyms, IOC codes, TLDs, official names, religion, heads of state, maritime borders.
 - Checked dates and a freshness report.
 - Applying play statistics to data automatically. The curator copies an accepted finding into a curated file.
 
@@ -317,23 +379,25 @@ Scope changes against [prd-rebuild.md](prd-rebuild.md):
 | Pageviews as the fame source | In scope under "Tuning after the beta"; adds a row to the Data table |
 | CLDR `territoryInfo` | In scope; adds a source file under the existing CLDR row |
 | Subregion | Pulls "position" from Further Notes forward, as an internal grouping key only |
-| K5 option (a) | Changes the Implementation Decisions line "The database stores country codes and attribute values only" |
+| K5 stored texts | Changes the Implementation Decisions line "The database stores country codes and attribute values only" |
 | Capital traps, former names | New curated sets; extend the Data table |
 | Area | Stays in Further Notes until K7 |
-| Borders, landlocked, memberships | Stay in Further Notes until K8 |
+| Calling codes | A new attribute (K10); extends the Data table |
+| Borders | Pulled from Further Notes into Next (K11) by owner decision |
+| Landlocked, memberships | Stay in Further Notes until K8 |
 
 Doc changes this PRD owes:
 
 | Doc | Change | Phase |
 | --- | --- | --- |
-| `docs/README.md` | A row for this PRD | With the PRD |
-| `docs/decisions.md` | D13 | With the PRD |
 | `docs/game-rules.md` | The capital rule, once the curator has confirmed each choice against its source | K6 |
 | `docs/game-rules.md` | "The 50 largest by area are tier 1 …" becomes "the 50 most-viewed on German Wikipedia over 12 months are tier 1, ranks 51 to 120 tier 2" | K3 |
 | `docs/game-rules.md` | The language bullets restate: each (country, language) pair has one status, official, regional or blocked; diaspora countries are blocked; a regional-language question's wrong options hold the language in no status; "at most five" goes | K2 |
 | `data/SOURCES.md` | The `regional-languages.json` row drops "each with its kind" and names `spokenIn`, `blockedIn` and the source; the CLDR row gains `territoryInfo.json` | K2 |
 | `data/SOURCES.md`, `NOTICE`, footer credit | The Wikimedia pageviews source and the sitelink query | K3 |
 | `data/SOURCES.md`, the curated-file list in `NOTICE`, the `AGENTS.md` layout | `capital-traps.json` and `former-names.json` | K6 |
+| `data/SOURCES.md` | The mledoze row names `idd`; the overrides row names the `callingCodes` section | K10 |
+| `data/SOURCES.md` | The mledoze row names `borders`; the overrides row names the `borders` section | K11 |
 | `docs/UBIQUITOUS_LANGUAGE.md` | The glossary changes below | With each term's phase |
 
 Glossary changes for `docs/UBIQUITOUS_LANGUAGE.md`:
@@ -344,6 +408,11 @@ Glossary changes for `docs/UBIQUITOUS_LANGUAGE.md`:
 | Blocked language (changed) | A language with a lesser status or a community in a country; never asked about it and never a wrong option for it. | excluded language |
 | Spoken-in list | A regional language's countries where it is established and not official; the possible correct answers of its question. | heartland |
 | Subregion | The mledoze subregion of a country, used only to group distractors. | area, zone |
-| Question space | Every question the generator can produce from the catalogue: each type, target, prompt and correct value. | question pool |
+| Question space | Every question the generator can produce from the catalogue: each type, target and prompt. | question pool |
 | Review dump | A Markdown listing of one fixed-seed question per case of the question space, for editorial review. | sample report |
 | Fame tier (changed) | How well known a country is, from its German Wikipedia pageview rank and adjusted by a curated list. | popularity |
+| Calling code | A country's ITU country code, such as +49; German copy says "Landesvorwahl". | phone code, Vorwahl |
+| Blocked calling code | A code an excluded country uses in practice; it never refers to a country. | alias code |
+| Neighbour | A pool country sharing an undisputed land border with another. | adjacent country |
+| Blocked border | A land border a player could argue either way; never asked in either direction. | disputed border |
+| Two-hop neighbour | A neighbour of a country's neighbour that is not its own neighbour; the first distractor group of neighbour questions. | ring 2 |

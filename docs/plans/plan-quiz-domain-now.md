@@ -10,6 +10,7 @@ Ship the approved "now" phases of both PRDs:
 - fame from German Wikipedia pageviews;
 - German names from the Auswärtiges Amt list;
 - familiar and same-subregion distractors;
+- a ten-level difficulty ladder;
 - giveaway and variety rules;
 - a fact card after a miss;
 - two quality queries.
@@ -21,13 +22,18 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 - **Catalogue.** It stays the embedded artefact `backend/internal/country/dataset/countries.json`, built by `backend/cmd/importdata` (D13).
 - **Option rules.** They live in `backend/internal/quiz/options.go`:
   - `Cases(cat Catalogue) []Case` enumerates the question space.
-  - `Draw(cat Catalogue, c Case, rnd Rand) (Question, bool)` builds one question for a case.
-  - The internal `candidates()` returns a case's defensible set and its ordered candidate groups.
+  - `Draw(cat Catalogue, c Case, level int, rnd Rand) (Question, bool)` builds one question for a case at a level.
+  - The internal `candidates()` returns the case's true set, contested set and false set, the false set in ordered candidate groups. The defensible set is true ∪ contested.
   - `Generate` picks a case and calls `Draw`. `TestQuestionSpace` and the review dump call `Cases` and `Draw`.
-- **Case.** `Case{Type, Target, Prompt, Correct}` in phase 1; phase 5 adds `Band`. Bands are 0-based positions:
-  - band 1: positions 0–7, fame gate 1;
-  - band 2: positions 8–15, fame gate 2;
-  - late: position 16 and later, all tiers, subregion groups.
+- **Case.** `Case{Type, Target, Prompt}`.
+  - `Draw` takes the correct option from the true set: the target when the true set holds it, else a uniform draw.
+  - The level only orders the false groups; `Draw` ignores it until phase 5.
+  - NOT is not built. The three sets let it land later without changing `Case` or the check.
+- **Levels.** From phase 5:
+  - `level = min(10, 1 + position/5)` over the 0-based position.
+  - Level L asks type tiers L−2 to L, extended one tier down until the window holds four types.
+  - Fame ceiling: 1 at levels 1–2, 2 at levels 3–5, 3 from level 6.
+  - Familiar groups at levels 1–3, subregion groups from level 4.
 - **Language lists.** A country's `languages`, `regionalLanguages` and `blockedLanguages` are disjoint from phase 2 on. `data/regional-languages.json` entries become `{ "spokenIn": [...], "blockedIn": [...], "source": "https://..." }`, with no `kind` and no cap.
 - **Country fields.** `Country` gains `Subregion string` in phase 6, together with its only reader. `Fame` keeps tiers 1..3 and gets a new source in phase 3.
 - **German names.** The Auswärtiges Amt list decides a German country or capital name only where it uses a different name word than CLDR, such as Kyjiw vs Kiew. Inverted sort forms and state designators ("Korea, Republik") never replace a CLDR common name ("Südkorea").
@@ -35,7 +41,7 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 - **Fact card.** The finished-run payload gains `fact` in phase 7:
   - the target's name, flag, capital, continent, official languages and currency units;
   - `chosenCountry` (`{de,en}`, null on a timeout or a value answer);
-  - `spokenIn` (`[{de,en}]`, only for `regional_language_name`).
+  - `spokenIn` (`[{de,en}]`, only for `regional_language_name`): the countries where the language is official or regional.
 
 ## Inventory
 
@@ -55,20 +61,17 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ## Open questions / Risks
 
-- **Database.** Phases 6–8 need `make db` running and `make db-migrate` applied.
+- **Database.** Phases 6–8 need `make db` running and `make POSTGRES_DB="$POSTGRES_DB" db-migrate` applied to the lane's database. Inside make, `.env` beats the environment, so every make command line passes `POSTGRES_DB`.
 - **Network.** Phases 2, 3 and 4 need the network for git, SPARQL, the Wikimedia pageviews REST API and the Auswärtiges Amt site. If a fetch fails, the phase stops and reports. The vendored results are committed, so the gate stays offline.
-- **Pageview licence (phase 3).** The PRD infers CC0. A `nico:web-researcher` agent verifies it first. If the data isn't CC0 or compatible, the phase stops and reports.
 - **Real defects in today's data.** Phase 1's check may find some. Each one gets its own fix commit inside phase 1.
 - **Owner spot-check (phase 2).** The PRD's "owner spot-checks 10 %" of the backfilled sources is a post-run review item. The lead lists the sample in the report; it does not count as verified.
-- **Stored questions.** No phase drops a country, language, currency or region code. The 7 deleted regional entries are official languages elsewhere, so their labels stay. Before deploying, the lead runs a read-only probe: every distinct stored target, prompt and option code must have a label in the new `countries.json`. Staging is reset only if the probe fails, per the owner's beta decision.
+- **Stored questions.** No phase drops a country, language, currency or region code. The 7 deleted regional entries are official languages elsewhere, so their labels stay. v0.4.0 also ships migration `000006` of `plan-anonymous-player.md`, which empties all play data, so no stored code needs a check.
+- **Shifted boundaries.** Levels move them by one or two questions:
+  - fame 2 opens at question 11, not 9;
+  - fame 3 opens at question 26, not 17;
+  - subregion groups start at question 16, not 17.
 
-## Pending before the run
-
-1. The question-kinds design must land. It covers calling codes, NOT as a polarity axis, chained referring prompts and the owner's 10-level ladder (`level = min(10, 1 + position/5)`, level 10 hardest only). Its level table replaces the fame bands of phases 5 and 6 and may change `Case`.
-2. Amend both PRDs with that design, and this plan with its plan impact.
-3. Write the second plan, for the new question kinds and the "next" phases, then run a fresh-context `opus` critic on it.
-4. Run `/simplify` over both PRDs and both plans, then commit them.
-5. Execute this plan with `nico:implement-plan`.
+  The phase 5 and 6 sampling checks use level boundaries.
 
 ## Phase 1: Question-space check and review dump (K1)
 
@@ -82,15 +85,18 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### What to build
 
-- **Move the rules.** Today's option rules move into `backend/internal/quiz/options.go`: `Cases`, `Draw` and the internal `candidates()`, as in the decisions. `Generate` calls `Draw`, and behaviour stays unchanged.
+- **Move the rules.** Today's option rules move into `backend/internal/quiz/options.go`: `Cases`, `Draw` and the internal `candidates()`, as in the decisions. `Generate` calls `Draw` at level 1, and behaviour stays unchanged.
 - **`TestQuestionSpace`.** Add it in `backend/internal/quiz/questionspace_test.go`. It enumerates `Cases(cat)` over the real catalogue through `sharedPool` and checks each case two ways.
-  - Every member of every candidate group is tested against the defensible set, computed from the raw catalogue lists, not from `candidates()`:
-    - the target's official, regional and blocked languages, and their families;
-    - the target's currencies and their families;
-    - `region` and `otherRegions`;
-    - every country holding the prompt language in any of its three lists;
-    - under a flag prompt, every value of a look-alike.
-  - One fixed-seed `Draw` per case is tested for the pairwise rules:
+  - The three sets are tested against the raw catalogue lists, not through `candidates()`:
+    - every true code holds the asked relation;
+    - true ∪ contested equals the defensible set, computed from:
+      - the target's official, regional and blocked languages, and their families;
+      - the target's currencies and their families;
+      - `region` and `otherRegions`;
+      - every country holding the prompt language in any of its three lists;
+      - under a flag prompt, every value of a look-alike;
+    - no member of any false group lies in that defensible set.
+  - One fixed-seed `Draw` per case at level 1 is tested for the pairwise rules:
     - at least three wrong options;
     - no two options share a de or en text or a family;
     - no flag question shows two look-alikes;
@@ -101,9 +107,9 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 - **Remove the redundant check.** Delete `TestGenerate`'s "every type occurs" check, because the question space covers it.
 - **The review dump.** Add `backend/cmd/datareview/main.go` and `make data-review`, listed in `CLASS_developer`.
   - It writes to an `io.Writer`, not through `fmt.Println`, which forbidigo rejects.
-  - It prints one fixed-seed question per case under a heading `## <typeId> <target> [<prompt>] <correct>`, with the de and en texts and the correct option marked.
+  - It prints one fixed-seed question per case under a heading `## <typeId> <target> [<prompt>]`, with the de and en texts and the correct option marked.
 - **Process check, not a criterion.** Temporarily remove one exclusion in `candidates()`, confirm `TestQuestionSpace` fails, revert, and quote the failure in the commit body.
-- **Glossary.** Add "Question space" and "Review dump".
+- **Glossary.** Add "Question space", "Review dump", "Defensible set", "True set" and "Contested set".
 
 ### Acceptance criteria
 
@@ -122,7 +128,7 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 - `backend/cmd/importdata/build.go — regionalLanguages(), blockedLanguages(), languageLabels(), validate()`; `sources.go — regionalLanguage`.
 - `backend/internal/quiz/options.go — candidates()` — the spoken-in predicate and the regional prompt.
 - `backend/internal/quiz/questionspace_test.go — TestQuestionSpace`.
-- `scripts/fetch-data-sources.sh` — the CLDR sparse checkout gains `supplemental/territoryInfo.json`.
+- `scripts/fetch-data-sources.sh` — the CLDR step also copies `supplemental/territoryInfo.json`, already in its sparse checkout.
 
 ### What to build
 
@@ -165,7 +171,7 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### What to build
 
-- **Licence first.** If the pageview data isn't CC0 or compatible, stop and report.
+- **Licence first.** The PRD infers CC0; a `nico:web-researcher` agent verifies it. If the data isn't CC0 or compatible, stop and report.
 - **New fetch source.** Add `wikimedia` to `ALL_SOURCES`. It must not re-fetch the capitals.
   - `data/sources/wikidata/articles.rq` joins on ISO alpha-2 through `wdt:P297` and writes `data/sources/wikidata/articles.csv` (`iso2,article`) with each pool country's dewiki title.
   - The fetch then sums monthly `agent=user` views over the 12 full months ending at `PAGEVIEWS_END`, its pin. It writes `data/sources/wikimedia/pageviews.csv` (`article,views`).
@@ -202,35 +208,57 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 - [ ] `cd backend && go test ./internal/quiz/ -run '^TestQuestionSpace$' -count=1 -v | grep -q -- '--- PASS: TestQuestionSpace'`
 - [ ] `make check` passes.
 
-## Phase 5: Familiar options and the giveaway rule (E1)
+## Phase 5: Level ladder, familiar options and the giveaway rule (E1)
 
 **Depends on**: 4
 
 ### Context
 
-- `backend/internal/quiz/options.go — Case, Cases(), Draw(), candidates()`; `generate.go — maxFame()`.
+- `backend/internal/quiz/question.go — Types`; `options.go — Case, Cases(), Draw(), candidates()`; `generate.go — Generate(), maxTier(), maxFame()`.
 - `backend/internal/quiz/questionspace_test.go`; `generate_test.go — checkRun()`.
 
 ### What to build
 
-- **Bands.** `Case` gains `Band` (band 1 or band 2 here), and `Cases` enumerates both.
-- **Candidate groups** for positions below 16:
-  1. same continent within the band's fame gate;
+- **Levels.** `level(position)` as in the decisions.
+  - `Types` takes tiers 1–9:
+    - 1: flag→name, name→flag, name→continent;
+    - 2: name→capital, capital→name, flag→continent;
+    - 3: name→currency, capital→continent;
+    - 4: flag→capital, capital→flag, name→official language;
+    - 6: flag→currency;
+    - 7: capital→currency;
+    - 8: flag→official language, capital→official language;
+    - 9: regional language→name.
+  - `maxTier` and `maxFame` go.
+- **Type-first selection:**
+  - build the window with the four-type extension;
+  - shuffle the types, then take the first type with an unused target within the level's fame ceiling;
+  - pick the target, then its case;
+  - if nothing fits, retry without the ceiling, then with any type.
+- **Candidate groups** at levels 1–3:
+  1. same continent within the level's fame ceiling;
   2. same continent;
   3. the rest of the pool.
 
   A value candidate belongs to the best group of any country holding it.
+- **Question space.** `TestQuestionSpace` draws each case at the level equal to its type's tier.
 - **Giveaway rule.** name → capital and capital → name skip a target whose name and capital share a word in de or en, split at spaces and hyphens. `TestQuestionSpace` pins the target list computed from the dataset.
-- **Sampling check.** `checkRun` asserts that below position 16, country distractors come from the target's continent within the fame gate whenever that group holds three.
-- **Docs.** Update `docs/game-rules.md`: the candidate-group row, the defensible-set sentence and the giveaway rule. Add the terms "Defensible set", "Candidate group", "Fame gate" and "Giveaway".
+- **Sampling check.** `checkRun` asserts:
+  - while more than 20 targets remain unused, each type lies in its level's window, extension included;
+  - each target lies within the fame ceiling while such targets remain;
+  - at levels 1–3, country distractors come from the target's continent within the fame ceiling whenever that group holds three.
+- **Docs.**
+  - `docs/game-rules.md`: the tier table and the two position lines become the level table and the type tier table; add the familiar-group row, the defensible-set sentence and the giveaway rule.
+  - Glossary: add "Level", "Type window", "Fame ceiling", "Candidate group" and "Giveaway"; change "Difficulty tier".
 
 ### Acceptance criteria
 
-- [ ] `cd backend && go test ./internal/quiz/ -count=1 -v | grep -q -- '--- PASS: TestQuestionSpace'`
+- [ ] `cd backend && go test ./internal/quiz/... -count=1` passes.
 - [ ] `set -o pipefail; ! make -s data-review | grep -qE '^## (name_capital|capital_name) SG '`
+- [ ] `grep -qE '^\| 10 \| 46' docs/game-rules.md`
 - [ ] `make check` passes.
 
-## Phase 6: Subregion, late ramp and variety (K4, E2)
+## Phase 6: Subregion groups and variety (K4, E2)
 
 **Depends on**: 5
 
@@ -242,19 +270,19 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 ### What to build
 
 - **Subregion.** `Country.Subregion` is read from mledoze; the importer fails when a pool country has none.
-- **Late band.** From position 16 the groups are same subregion, same continent, then the rest of the pool. `Cases` enumerates the late band too.
+- **Subregion groups.** From level 4 (position 15), the groups are same subregion, same continent, then the rest of the pool.
 - **Stored questions.** `Generate` takes the stored questions. `UnitOfWork.Questions()` replaces `Targets()` in the port, the postgres adapter (a new query; `ListTargets` goes) and the memory double.
 - **Variety rules (soft).** No type twice in a row. No language or currency is the correct answer twice within 8 positions.
   - `checkRun` asserts them strictly while more than 20 unused targets remain.
   - A `fivePool` test pins the fallback: a rule yields when no other type fits.
 - **Integration test.** A repository test stores questions out of order and reads them back by position.
-- **Docs.** Update `docs/game-rules.md` (the late-band row and the variety rules) and add the term "Subregion".
+- **Docs.** Update `docs/game-rules.md` (the subregion-group row and the variety rules) and add the term "Subregion".
 
 ### Acceptance criteria
 
 - [ ] `jq -e '[.countries[] | select((.subregion // "") == "")] | length == 0' backend/internal/country/dataset/countries.json`
 - [ ] `cd backend && go test ./internal/quiz/... -count=1` passes.
-- [ ] `GOFLAGS=-count=1 make be-integration` passes.
+- [ ] `GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration` passes.
 - [ ] `make check` passes.
 
 ## Phase 7: Fact card (E3)
@@ -278,7 +306,7 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 ### Acceptance criteria
 
 - [ ] `jq -e '.result.fact.capital.de == "Berlin"' backend/internal/contract/testdata/run-finished.json`
-- [ ] `GOFLAGS=-count=1 make be-integration` passes.
+- [ ] `GOFLAGS=-count=1 make POSTGRES_DB="$POSTGRES_DB" be-integration` passes.
 - [ ] `cd frontend && pnpm exec vitest run src/features/play/play.test.tsx src/test/api-contract.test.ts` passes. A play test finds the target's capital on the fact card through `FakeApi`.
 - [ ] `make check` passes.
 
@@ -292,11 +320,11 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### What to build
 
-- **Miss rates.** `\echo 'Miss share by type and position band'`, then per (type, band 1–5, 6–15, 16–30, 31+): answers, miss share, and the median response time of correct answers.
+- **Miss rates.** `\echo 'Miss share by type and level'`, then per (type, level, computed from the stored 0-based position as `least(10, 1 + position / 5)`): answers, miss share, timeout share, and the median response time of correct answers.
 - **Lures.** `\echo 'Distractor lure shares'`, then per (type, target, option): each distractor's pick share, with n.
 - **Glossary.** Add the term "Lure share".
 
 ### Acceptance criteria
 
-- [ ] `test "$(make -s stats | grep -c -e 'Miss share by type and position band' -e 'Distractor lure shares')" -eq 2`
+- [ ] `test "$(make -s POSTGRES_DB="$POSTGRES_DB" stats | grep -c -e 'Miss share by type and level' -e 'Distractor lure shares')" -eq 2`
 - [ ] `make check` passes.
