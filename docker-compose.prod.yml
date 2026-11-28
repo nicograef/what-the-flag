@@ -48,7 +48,7 @@ services:
   # `up --wait` starts it, the backend waits for its exit 0, and a non-zero exit fails the deploy.
   # Run by hand: make prod-migrate ARGS="version"; a `run` argument replaces only `command`.
   migrate:
-    image: ghcr.io/nicograef/what-the-flag-migrate:v0.1.1 # same tag as backend; database/Dockerfile
+    image: ghcr.io/nicograef/what-the-flag-migrate:v0.2.0 # same tag as backend; database/Dockerfile
     restart: "no"
     logging: *default-logging
     # Host `postgres` takes port 5432. The password must be URL-safe (.env.example).
@@ -69,7 +69,7 @@ services:
   # The release tag is the deploy version: bump it in git, never float on `latest`.
   # scripts/prod-init.sh reads it here and refuses a downgrade.
   backend:
-    image: ghcr.io/nicograef/what-the-flag-backend:v0.1.1
+    image: ghcr.io/nicograef/what-the-flag-backend:v0.2.0
     restart: unless-stopped
     logging: *default-logging
     environment:
@@ -100,7 +100,7 @@ services:
   # The edge image bakes in reverse-proxy/Caddyfile and the SPA build (reverse-proxy/Dockerfile).
   # Its HEALTHCHECK accepts any 2xx or 3xx on port 80; the HTTPS redirect is a 308.
   reverse-proxy:
-    image: ghcr.io/nicograef/what-the-flag-edge:v0.1.1 # same tag as backend
+    image: ghcr.io/nicograef/what-the-flag-edge:v0.2.0 # same tag as backend
     restart: unless-stopped
     logging: *default-logging
     ports:
