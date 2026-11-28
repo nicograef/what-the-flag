@@ -67,7 +67,9 @@
         "ps"
       ],
       "regionalLanguages": [],
-      "blockedLanguages": [],
+      "blockedLanguages": [
+        "ug"
+      ],
       "currencies": [
         "AFN"
       ],
@@ -4064,7 +4066,9 @@
         "os",
         "sah"
       ],
-      "blockedLanguages": [],
+      "blockedLanguages": [
+        "mn"
+      ],
       "currencies": [
         "RUB"
       ],
@@ -5313,7 +5317,9 @@
         "naq",
         "nd"
       ],
-      "blockedLanguages": [],
+      "blockedLanguages": [
+        "sw"
+      ],
       "currencies": [
         "ZAR"
       ],

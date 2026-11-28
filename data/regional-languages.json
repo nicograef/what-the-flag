@@ -616,6 +616,9 @@
     "spokenIn": [
       "CN"
     ],
+    "blockedIn": [
+      "RU"
+    ],
     "source": "https://en.wikipedia.org/wiki/Mongolian_language"
   },
   "mr": {
@@ -921,7 +924,8 @@
     "blockedIn": [
       "BI",
       "MZ",
-      "SO"
+      "SO",
+      "ZA"
     ],
     "source": "https://en.wikipedia.org/wiki/Swahili_language"
   },
@@ -1028,6 +1032,7 @@
       "UZ"
     ],
     "blockedIn": [
+      "AF",
       "MN"
     ],
     "source": "https://en.wikipedia.org/wiki/Uyghur_language"
