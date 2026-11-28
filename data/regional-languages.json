@@ -200,6 +200,7 @@
   },
   "ff": {
     "spokenIn": [
+      "BJ",
       "CM",
       "GM",
       "GN",
@@ -211,8 +212,10 @@
       "SN"
     ],
     "blockedIn": [
+      "CF",
       "GH",
-      "LR"
+      "LR",
+      "TD"
     ],
     "source": "https://en.wikipedia.org/wiki/Fula_language"
   },
@@ -987,6 +990,9 @@
       "BF",
       "DZ",
       "NE"
+    ],
+    "blockedIn": [
+      "LY"
     ],
     "source": "https://en.wikipedia.org/wiki/Tuareg_languages"
   },

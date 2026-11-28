@@ -520,6 +520,7 @@
       ],
       "regionalLanguages": [
         "ee",
+        "ff",
         "fon",
         "yo"
       ],
@@ -835,7 +836,9 @@
       "regionalLanguages": [
         "ln"
       ],
-      "blockedLanguages": [],
+      "blockedLanguages": [
+        "ff"
+      ],
       "currencies": [
         "XAF"
       ],
@@ -2913,7 +2916,9 @@
         "ar"
       ],
       "regionalLanguages": [],
-      "blockedLanguages": [],
+      "blockedLanguages": [
+        "tmh"
+      ],
       "currencies": [
         "LYD"
       ],
@@ -4604,7 +4609,9 @@
         "ha",
         "sg"
       ],
-      "blockedLanguages": [],
+      "blockedLanguages": [
+        "ff"
+      ],
       "currencies": [
         "XAF"
       ],
