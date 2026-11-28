@@ -4,6 +4,7 @@ package postgres
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"math/rand/v2"
 	"sync"
@@ -15,14 +16,26 @@ import (
 	"github.com/nicograef/what-the-flag/internal/country"
 	"github.com/nicograef/what-the-flag/internal/postgres"
 	"github.com/nicograef/what-the-flag/internal/quiz"
+	"github.com/nicograef/what-the-flag/internal/quiz/postgres/internal/db"
 )
 
-// newRun stores a run on quiz, or on a fresh quiz when quiz is nil.
+// newPlayer stores a player under a random key hash.
+func newPlayer(t *testing.T, d db.DBTX) quiz.PlayerID {
+	t.Helper()
+	hash := sha256.Sum256([]byte(uuid.NewString()))
+	id, err := NewPlayers(d).Create(context.Background(), hash[:])
+	if err != nil {
+		t.Fatalf("create player: %v", err)
+	}
+	return id
+}
+
+// newRun stores a run of a fresh player on quiz, or on a fresh quiz when quiz is nil.
 func newRun(t *testing.T, repo *Repository, q *quiz.QuizID) quiz.Run {
 	t.Helper()
 	ctx := context.Background()
 	now := time.Now().Truncate(time.Microsecond)
-	r := quiz.Run{ID: quiz.RunID(uuid.New()), Name: "repo test", StartedAt: now}
+	r := quiz.Run{ID: quiz.RunID(uuid.New()), Player: newPlayer(t, repo.db), Name: "repo test", StartedAt: now}
 	if q == nil {
 		r.Creator = true
 		id, err := repo.CreateQuizWithRun(ctx, r)
@@ -44,7 +57,7 @@ func TestCreateQuizWithRunIsAtomic(t *testing.T) {
 	tx := postgres.TestTx(t)
 	now := time.Now().Truncate(time.Microsecond)
 	// An empty name breaks the runs CHECK, so the run insert fails after the quiz insert.
-	run := quiz.Run{ID: quiz.RunID(uuid.New()), Creator: true, StartedAt: now}
+	run := quiz.Run{ID: quiz.RunID(uuid.New()), Player: newPlayer(t, tx), Creator: true, StartedAt: now}
 	if _, err := NewRepository(tx).CreateQuizWithRun(ctx, run); err == nil {
 		t.Fatal("CreateQuizWithRun with an empty name succeeded")
 	}
@@ -143,7 +156,8 @@ func TestInRunConcurrent(t *testing.T) {
 	}
 	// A *rand.Rand is not safe for concurrent use; the run's row lock serializes every draw.
 	svc := quiz.NewService(repo, nil, cat, clock{}, rand.New(rand.NewPCG(1, 1))) //nolint:gosec // G404: a seeded test source.
-	run, _, err := svc.Start(ctx, "concurrent", nil)
+	player := newPlayer(t, pool)
+	run, _, err := svc.Start(ctx, func(context.Context) (quiz.PlayerID, error) { return player, nil }, "concurrent", nil)
 	if err != nil {
 		t.Fatalf("start: %v", err)
 	}

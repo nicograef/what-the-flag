@@ -14,6 +14,9 @@ type QuizID uuid.UUID
 // RunID is a run's private id, its only credential.
 type RunID uuid.UUID
 
+// PlayerID is the id of the anonymous player a run belongs to.
+type PlayerID uuid.UUID
+
 // Catalogue is the country pool and its labels; *country.Catalogue meets it.
 type Catalogue interface {
 	Pool() []country.Country

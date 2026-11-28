@@ -15,6 +15,19 @@ type fixedClock struct{ now time.Time }
 
 func (c *fixedClock) Now() time.Time { return c.now }
 
+// as returns a PlayerFunc that always returns p.
+func as(p PlayerID) PlayerFunc {
+	return func(context.Context) (PlayerID, error) { return p, nil }
+}
+
+// noPlayer is a PlayerFunc for a start that must fail before it asks for a player.
+func noPlayer(t *testing.T) PlayerFunc {
+	return func(context.Context) (PlayerID, error) {
+		t.Error("a rejected start asked for a player")
+		return PlayerID{}, nil
+	}
+}
+
 func TestService(t *testing.T) {
 	cat, err := country.Load()
 	if err != nil {
@@ -22,6 +35,8 @@ func TestService(t *testing.T) {
 	}
 	ctx := context.Background()
 	t0 := time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC)
+	nicoID := PlayerID(uuid.New())
+	nico, ana := as(nicoID), as(PlayerID(uuid.New()))
 	setup := func() (*Service, *memory, *fixedClock) {
 		mem, clock := newMemory(), &fixedClock{now: t0}
 		return NewService(mem, mem, cat, clock, newRand(1)), mem, clock
@@ -46,11 +61,11 @@ func TestService(t *testing.T) {
 
 	t.Run("Start without a quiz creates one with a creator run", func(t *testing.T) {
 		s, mem, _ := setup()
-		runID, quizID, err := s.Start(ctx, "  Nico  ", nil)
+		runID, quizID, err := s.Start(ctx, nico, "  Nico  ", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
-		want := Run{ID: runID, QuizID: quizID, Name: "Nico", Creator: true, StartedAt: t0}
+		want := Run{ID: runID, QuizID: quizID, Player: nicoID, Name: "Nico", Creator: true, StartedAt: t0}
 		if _, ok := mem.quizzes[quizID]; !ok || !reflect.DeepEqual(*mem.runs[runID], want) {
 			t.Errorf("quiz stored %t, run %+v; want %+v", ok, mem.runs[runID], want)
 		}
@@ -58,12 +73,12 @@ func TestService(t *testing.T) {
 
 	t.Run("Start on a quiz creates a non-creator run", func(t *testing.T) {
 		s, mem, _ := setup()
-		creator, quizID, err := s.Start(ctx, "Nico", nil)
+		creator, quizID, err := s.Start(ctx, nico, "Nico", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
 		endRun(t, s, mem, creator)
-		runID, got, err := s.Start(ctx, "Ana", &quizID)
+		runID, got, err := s.Start(ctx, ana, "Ana", &quizID)
 		if err != nil || got != quizID || mem.runs[runID].Creator || len(mem.quizzes) != 1 {
 			t.Errorf("Start = %v, %v; creator %t, %d quizzes", got, err, mem.runs[runID].Creator, len(mem.quizzes))
 		}
@@ -71,20 +86,20 @@ func TestService(t *testing.T) {
 
 	t.Run("Start on a quiz waits for the creator run to end", func(t *testing.T) {
 		s, mem, clock := setup()
-		creator, quizID, err := s.Start(ctx, "Nico", nil)
+		creator, quizID, err := s.Start(ctx, nico, "Nico", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
 		state(t, s, creator)
 		for _, at := range []time.Duration{0, Limit + Grace} {
 			clock.now = t0.Add(at)
-			if _, _, err := s.Start(ctx, "Ana", &quizID); !errors.Is(err, ErrQuizInProgress) || len(mem.runs) != 1 {
+			if _, _, err := s.Start(ctx, noPlayer(t), "Ana", &quizID); !errors.Is(err, ErrQuizInProgress) || len(mem.runs) != 1 {
 				t.Fatalf("Start at +%v = %v with %d runs, want ErrQuizInProgress and only the creator", at, err, len(mem.runs))
 			}
 		}
 		// Past Limit plus Grace the open answer is late, so the creator run has ended.
 		clock.now = t0.Add(Limit + Grace + time.Microsecond)
-		if _, _, err := s.Start(ctx, "Ana", &quizID); err != nil {
+		if _, _, err := s.Start(ctx, ana, "Ana", &quizID); err != nil {
 			t.Errorf("Start after the creator's deadline = %v, want a run", err)
 		}
 	})
@@ -92,14 +107,14 @@ func TestService(t *testing.T) {
 	t.Run("Start on an unknown quiz", func(t *testing.T) {
 		s, mem, _ := setup()
 		unknown := QuizID(uuid.New())
-		if _, _, err := s.Start(ctx, "Nico", &unknown); !errors.Is(err, ErrQuizNotFound) || len(mem.runs) != 0 {
+		if _, _, err := s.Start(ctx, noPlayer(t), "Nico", &unknown); !errors.Is(err, ErrQuizNotFound) || len(mem.runs) != 0 {
 			t.Errorf("Start = %v with %d runs, want ErrQuizNotFound and none", err, len(mem.runs))
 		}
 	})
 
 	t.Run("State serves, keeps and advances the question", func(t *testing.T) {
 		s, mem, clock := setup()
-		runID, quizID, err := s.Start(ctx, "Nico", nil)
+		runID, quizID, err := s.Start(ctx, nico, "Nico", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
@@ -125,7 +140,7 @@ func TestService(t *testing.T) {
 
 	t.Run("a second run on the quiz gets the stored questions", func(t *testing.T) {
 		s, mem, clock := setup()
-		first, quizID, err := s.Start(ctx, "Nico", nil)
+		first, quizID, err := s.Start(ctx, nico, "Nico", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
@@ -137,7 +152,7 @@ func TestService(t *testing.T) {
 			}
 		}
 		endRun(t, s, mem, first)
-		second, _, err := s.Start(ctx, "Ana", &quizID)
+		second, _, err := s.Start(ctx, ana, "Ana", &quizID)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}
@@ -159,7 +174,7 @@ func TestService(t *testing.T) {
 	t.Run("a run that used every country completes", func(t *testing.T) {
 		mem, clock := newMemory(), &fixedClock{now: t0}
 		s := NewService(mem, mem, fivePool("R1", "R2", "R3", "R4", "R5"), clock, newRand(1))
-		runID, _, err := s.Start(ctx, "Nico", nil)
+		runID, _, err := s.Start(ctx, nico, "Nico", nil)
 		if err != nil {
 			t.Fatalf("Start: %v", err)
 		}

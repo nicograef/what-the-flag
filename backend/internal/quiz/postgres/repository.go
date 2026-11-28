@@ -58,6 +58,7 @@ func createRun(ctx context.Context, q *db.Queries, run quiz.Run) error {
 	return q.CreateRun(ctx, db.CreateRunParams{
 		ID:        uuid.UUID(run.ID),
 		QuizID:    uuid.UUID(run.QuizID),
+		PlayerID:  uuid.UUID(run.Player),
 		Name:      run.Name,
 		Creator:   run.Creator,
 		StartedAt: run.StartedAt,
@@ -115,6 +116,7 @@ func loadRun(ctx context.Context, q *db.Queries, id quiz.RunID) (*quiz.Run, erro
 	run := &quiz.Run{
 		ID:         quiz.RunID(row.ID),
 		QuizID:     quiz.QuizID(row.QuizID),
+		Player:     quiz.PlayerID(row.PlayerID),
 		Name:       row.Name,
 		Creator:    row.Creator,
 		Score:      int(row.Score),

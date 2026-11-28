@@ -31,8 +31,10 @@ func newBoard(t *testing.T) *board {
 	return &board{t: t, tx: postgres.TestTx(t), now: time.Now().Truncate(time.Microsecond)}
 }
 
-// spec is a stored run. A zero end leaves it unfinished; open, when set, is the age of its open answer.
+// spec is a stored run. A zero player stores it for a fresh player. A zero end leaves it unfinished;
+// open, when set, is the age of its open answer.
 type spec struct {
+	player  quiz.PlayerID
 	name    string
 	score   int
 	creator bool
@@ -60,10 +62,13 @@ func (b *board) run(q quiz.QuizID, s spec) quiz.RunID {
 	if s.end > 0 {
 		finished, reason = new(b.now.Add(-s.end)), new("wrong")
 	}
+	if s.player == (quiz.PlayerID{}) {
+		s.player = newPlayer(b.t, b.tx)
+	}
 	_, err := b.tx.Exec(ctx, `
-		INSERT INTO runs (id, quiz_id, name, creator, started_at, score, finished_at, end_reason, hidden)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-		id, uuid.UUID(q), s.name, s.creator, b.now.Add(-time.Hour), s.score, finished, reason, s.hidden)
+		INSERT INTO runs (id, quiz_id, player_id, name, creator, started_at, score, finished_at, end_reason, hidden)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+		id, uuid.UUID(q), uuid.UUID(s.player), s.name, s.creator, b.now.Add(-time.Hour), s.score, finished, reason, s.hidden)
 	if err != nil {
 		b.t.Fatalf("insert run %s: %v", s.name, err)
 	}

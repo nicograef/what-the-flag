@@ -15,9 +15,10 @@ import (
 
 // Handler serves the quiz routes.
 type Handler struct {
-	svc    *quiz.Service
-	pr     *presenter
-	limits Limits
+	svc     *quiz.Service
+	players Players
+	pr      *presenter
+	limits  Limits
 }
 
 // Limits rate-limit run starts and leaderboard reads. Each kind has a bucket per client key and per network
@@ -43,9 +44,9 @@ func NewLimits(now func() time.Time) Limits {
 	}
 }
 
-// NewHandler returns a Handler over svc; cat supplies the flag keys and labels of the responses.
-func NewHandler(svc *quiz.Service, cat quiz.Catalogue, limits Limits) *Handler {
-	return &Handler{svc: svc, pr: newPresenter(cat), limits: limits}
+// NewHandler returns a Handler over svc and players; cat supplies the flag keys and labels of the responses.
+func NewHandler(svc *quiz.Service, players Players, cat quiz.Catalogue, limits Limits) *Handler {
+	return &Handler{svc: svc, players: players, pr: newPresenter(cat), limits: limits}
 }
 
 // Register adds the quiz routes to mux.
@@ -118,7 +119,7 @@ func (h *Handler) start(w http.ResponseWriter, r *http.Request) {
 		}
 		quizID = new(quiz.QuizID(id))
 	}
-	runID, qid, err := h.svc.Start(r.Context(), req.Name, quizID)
+	runID, qid, err := h.svc.Start(r.Context(), h.startPlayer(w, r), req.Name, quizID)
 	if err != nil {
 		httpx.MapError(w, r, err, errorTable)
 		return

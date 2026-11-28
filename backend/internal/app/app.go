@@ -35,7 +35,7 @@ func New(d Deps) http.Handler {
 
 	mux := http.NewServeMux()
 	health.NewHandler(d.Pool).Register(mux)
-	httpapi.NewHandler(svc, cat, httpapi.NewLimits(time.Now)).Register(mux)
+	httpapi.NewHandler(svc, quizpg.NewPlayers(d.Pool), cat, httpapi.NewLimits(time.Now)).Register(mux)
 	mux.HandleFunc("/api/", httpx.NotFound)
 	return httpx.Chain(mux,
 		httpx.RequestID(d.Log),

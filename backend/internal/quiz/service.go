@@ -70,37 +70,46 @@ func (s *Service) now() time.Time {
 	return s.clock.Now().Truncate(time.Microsecond)
 }
 
-// Start creates a run named name. Without a quiz it creates a fresh quiz with this run as its creator;
-// on a quiz it waits for the creator run to end.
-func (s *Service) Start(ctx context.Context, name string, quiz *QuizID) (RunID, QuizID, error) {
+// PlayerFunc returns the player a new run belongs to.
+type PlayerFunc func(context.Context) (PlayerID, error)
+
+// Start creates a run named name for the player that player returns, which Start calls only once the request
+// is valid. Without a quiz it creates a fresh quiz with this run as its creator; on a quiz it waits for the
+// creator run to end.
+func (s *Service) Start(ctx context.Context, player PlayerFunc, name string, quiz *QuizID) (RunID, QuizID, error) {
 	name, err := NormalizeName(name)
 	if err != nil {
 		return RunID{}, QuizID{}, err
+	}
+	now := s.now()
+	if quiz != nil {
+		// A challenge run would generate and reveal positions the creator has not reached yet.
+		// A hidden creator run ranks nowhere, so its quiz stays playable.
+		creator, err := s.boards.Creator(ctx, *quiz, now)
+		if errors.Is(err, ErrQuizNotFound) {
+			return RunID{}, QuizID{}, err
+		}
+		if err != nil {
+			return RunID{}, QuizID{}, fmt.Errorf("find creator run: %w", err)
+		}
+		if creator != nil && !creator.Ended {
+			return RunID{}, QuizID{}, ErrQuizInProgress
+		}
 	}
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return RunID{}, QuizID{}, fmt.Errorf("run id: %w", err)
 	}
-	now := s.now()
 	r := Run{ID: RunID(id), Name: name, StartedAt: now}
+	if r.Player, err = player(ctx); err != nil {
+		return RunID{}, QuizID{}, fmt.Errorf("player: %w", err)
+	}
 	if quiz == nil {
 		r.Creator = true
 		if r.QuizID, err = s.repo.CreateQuizWithRun(ctx, r); err != nil {
 			return RunID{}, QuizID{}, fmt.Errorf("create quiz: %w", err)
 		}
 		return r.ID, r.QuizID, nil
-	}
-	// A challenge run would generate and reveal positions the creator has not reached yet.
-	// A hidden creator run ranks nowhere, so its quiz stays playable.
-	creator, err := s.boards.Creator(ctx, *quiz, now)
-	if errors.Is(err, ErrQuizNotFound) {
-		return RunID{}, QuizID{}, err
-	}
-	if err != nil {
-		return RunID{}, QuizID{}, fmt.Errorf("find creator run: %w", err)
-	}
-	if creator != nil && !creator.Ended {
-		return RunID{}, QuizID{}, ErrQuizInProgress
 	}
 	r.QuizID = *quiz
 	if err := s.repo.CreateRun(ctx, r); err != nil {

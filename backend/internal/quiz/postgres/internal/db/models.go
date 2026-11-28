@@ -10,6 +10,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type Player struct {
+	ID        uuid.UUID
+	KeyHash   []byte
+	CreatedAt time.Time
+}
+
 type Quiz struct {
 	ID        uuid.UUID
 	CreatedAt time.Time
@@ -35,6 +41,7 @@ type Run struct {
 	FinishedAt *time.Time
 	EndReason  *string
 	Hidden     bool
+	PlayerID   uuid.UUID
 }
 
 type RunAnswer struct {

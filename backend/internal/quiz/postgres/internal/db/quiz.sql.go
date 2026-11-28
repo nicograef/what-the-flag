@@ -13,6 +13,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const createPlayer = `-- name: CreatePlayer :one
+INSERT INTO players (key_hash, created_at) VALUES ($1, now()) RETURNING id
+`
+
+func (q *Queries) CreatePlayer(ctx context.Context, keyHash []byte) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, createPlayer, keyHash)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const createQuiz = `-- name: CreateQuiz :one
 INSERT INTO quizzes (created_at) VALUES ($1) RETURNING id
 `
@@ -25,13 +36,14 @@ func (q *Queries) CreateQuiz(ctx context.Context, createdAt time.Time) (uuid.UUI
 }
 
 const createRun = `-- name: CreateRun :exec
-INSERT INTO runs (id, quiz_id, name, creator, started_at)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO runs (id, quiz_id, player_id, name, creator, started_at)
+VALUES ($1, $2, $3, $4, $5, $6)
 `
 
 type CreateRunParams struct {
 	ID        uuid.UUID
 	QuizID    uuid.UUID
+	PlayerID  uuid.UUID
 	Name      string
 	Creator   bool
 	StartedAt time.Time
@@ -41,6 +53,7 @@ func (q *Queries) CreateRun(ctx context.Context, arg CreateRunParams) error {
 	_, err := q.db.Exec(ctx, createRun,
 		arg.ID,
 		arg.QuizID,
+		arg.PlayerID,
 		arg.Name,
 		arg.Creator,
 		arg.StartedAt,
@@ -262,7 +275,7 @@ func (q *Queries) ListTargets(ctx context.Context, quizID uuid.UUID) ([]string, 
 }
 
 const lockRun = `-- name: LockRun :one
-SELECT id, quiz_id, name, creator, started_at, score, finished_at, end_reason
+SELECT id, quiz_id, player_id, name, creator, started_at, score, finished_at, end_reason
 FROM runs
 WHERE id = $1
 FOR UPDATE
@@ -271,6 +284,7 @@ FOR UPDATE
 type LockRunRow struct {
 	ID         uuid.UUID
 	QuizID     uuid.UUID
+	PlayerID   uuid.UUID
 	Name       string
 	Creator    bool
 	StartedAt  time.Time
@@ -285,6 +299,7 @@ func (q *Queries) LockRun(ctx context.Context, id uuid.UUID) (LockRunRow, error)
 	err := row.Scan(
 		&i.ID,
 		&i.QuizID,
+		&i.PlayerID,
 		&i.Name,
 		&i.Creator,
 		&i.StartedAt,
@@ -293,6 +308,17 @@ func (q *Queries) LockRun(ctx context.Context, id uuid.UUID) (LockRunRow, error)
 		&i.EndReason,
 	)
 	return i, err
+}
+
+const playerByKeyHash = `-- name: PlayerByKeyHash :one
+SELECT id FROM players WHERE key_hash = $1
+`
+
+func (q *Queries) PlayerByKeyHash(ctx context.Context, keyHash []byte) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, playerByKeyHash, keyHash)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const quizTop = `-- name: QuizTop :many

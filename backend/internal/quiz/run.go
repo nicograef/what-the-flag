@@ -22,6 +22,7 @@ const (
 type Run struct {
 	ID         RunID
 	QuizID     QuizID
+	Player     PlayerID
 	Name       string
 	Creator    bool
 	Score      int

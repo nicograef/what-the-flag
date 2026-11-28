@@ -1,12 +1,18 @@
+-- name: CreatePlayer :one
+INSERT INTO players (key_hash, created_at) VALUES (@key_hash, now()) RETURNING id;
+
+-- name: PlayerByKeyHash :one
+SELECT id FROM players WHERE key_hash = @key_hash;
+
 -- name: CreateQuiz :one
 INSERT INTO quizzes (created_at) VALUES (@created_at) RETURNING id;
 
 -- name: CreateRun :exec
-INSERT INTO runs (id, quiz_id, name, creator, started_at)
-VALUES (@id, @quiz_id, @name, @creator, @started_at);
+INSERT INTO runs (id, quiz_id, player_id, name, creator, started_at)
+VALUES (@id, @quiz_id, @player_id, @name, @creator, @started_at);
 
 -- name: LockRun :one
-SELECT id, quiz_id, name, creator, started_at, score, finished_at, end_reason
+SELECT id, quiz_id, player_id, name, creator, started_at, score, finished_at, end_reason
 FROM runs
 WHERE id = @id
 FOR UPDATE;
