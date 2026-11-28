@@ -82,9 +82,9 @@ None. Wikimedia, Wikidata, CLDR and auswaertiges-amt.de fetches are free.
 | quiz-domain-now 3 | domain-data | landed | 625cba4 |
 | quiz-domain-now 4 | domain-data | landed | 625cba4 |
 | quiz-domain-now 5 | domain-data | landed | 625cba4 |
-| quiz-domain-now 6 | domain-engine | waiting | lead dispatches |
-| quiz-domain-now 7 | domain-engine | waiting | lead dispatches |
-| quiz-domain-now 8 | domain-engine | waiting | lead dispatches |
+| quiz-domain-now 6 | domain-engine | landed | efbed6d |
+| quiz-domain-now 7 | domain-engine | landed | efbed6d |
+| quiz-domain-now 8 | domain-engine | landed | efbed6d |
 | redesign 1–9 | redesign | landed | 37a5313 |
 | redesign 10–12 | redesign | waiting | domain-engine lands |
 | question-kinds 1 | kinds | waiting | domain-engine and redesign land |

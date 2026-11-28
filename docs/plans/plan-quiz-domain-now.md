@@ -291,9 +291,9 @@ After phase 8, the lead releases v0.4.0 and deploys it from `/opt/what-the-flag`
 
 ### Acceptance criteria
 
-- [ ] `jq -e '[.countries[] | select((.subregion // "") == "")] | length == 0' backend/internal/country/dataset/countries.json`
-- [ ] `cd backend && go test ./internal/quiz/... -count=1` passes.
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `jq -e '[.countries[] | select((.subregion // "") == "")] | length == 0' backend/internal/country/dataset/countries.json`
+- [x] `cd backend && go test ./internal/quiz/... -count=1` passes.
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 7: Learning-card payload (E3)
 
@@ -319,11 +319,11 @@ This phase is backend only, apart from the result schema. Its frontend part, the
 
 ### Acceptance criteria
 
-- [ ] `jq -e '.result.fact | .capital.de == "Berlin" and .chosenCountry.de == "Frankreich" and ([.spokenIn[].de] | index("Deutschland") != null)' backend/internal/contract/testdata/run-finished.json`
-- [ ] `jq -e '.result.fact | has("chosenCountry") and .chosenCountry == null' backend/internal/contract/testdata/run-timeout.json`
-- [ ] `cd backend && go test ./internal/quiz/ -run '^TestChosenCountry$' -count=1 -v | grep -q -- '--- PASS: TestChosenCountry'`
-- [ ] `cd frontend && pnpm exec vitest run src/test/api-contract.test.ts`
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `jq -e '.result.fact | .capital.de == "Berlin" and .chosenCountry.de == "Frankreich" and ([.spokenIn[].de] | index("Deutschland") != null)' backend/internal/contract/testdata/run-finished.json`
+- [x] `jq -e '.result.fact | has("chosenCountry") and .chosenCountry == null' backend/internal/contract/testdata/run-timeout.json`
+- [x] `cd backend && go test ./internal/quiz/ -run '^TestChosenCountry$' -count=1 -v | grep -q -- '--- PASS: TestChosenCountry'`
+- [x] `cd frontend && pnpm exec vitest run src/test/api-contract.test.ts`
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
 
 ## Phase 8: Quality measures (E4)
 
@@ -341,5 +341,5 @@ This phase is backend only, apart from the result schema. Its frontend part, the
 
 ### Acceptance criteria
 
-- [ ] `test "$(make -s POSTGRES_DB="$POSTGRES_DB" stats | grep -c -e 'Miss share by type and level' -e 'Distractor lure shares')" -eq 2`
-- [ ] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
+- [x] `test "$(make -s POSTGRES_DB="$POSTGRES_DB" stats | grep -c -e 'Miss share by type and level' -e 'Distractor lure shares')" -eq 2`
+- [x] Final gate: `make check && make POSTGRES_DB="$POSTGRES_DB" be-integration TEST_ARGS=-count=1`
