@@ -22,6 +22,11 @@
 | Option | One of the four selectable answers of a question. | choice, answer |
 | Target | The country a question asks about. | solution |
 | Distractor | A wrong option. | decoy |
+| Question space | Every question the generator can produce from the catalogue: each type, target and prompt, one case each. | question pool |
+| True set | The options of a case that answer it correctly: the target, its values, or every country a prompted regional language is spoken in. | correct set |
+| Contested set | The options of a case a player could defend though they are not true, such as another continent of the target or a look-alike's value. | grey zone |
+| Defensible set | The true set and the contested set together; no wrong option lies in it. | fair set |
+| Review dump | A Markdown listing of one fixed-seed question per case of the question space, for editorial review: `make data-review`. | sample report |
 | Quiz | A stored sequence of questions with a public id; every run on it gets the same questions. | game, set, challenge |
 | Run | One visitor's pass through a quiz, until the first wrong or late answer; its id is private. | game, round, session, attempt |
 | Creator | The run that created its quiz; only creators count on the global leaderboard. | owner, host |
