@@ -28,7 +28,8 @@ func main() {
 	}
 }
 
-// dump writes a heading `## <typeId> <target> [<prompt>]` per case, then its prompt and options with the correct one ticked.
+// dump writes a heading `## <typeId> <target> [<prompt>]` per case, then the prompt and options of its question
+// at the level equal to its type's tier, with the correct one ticked.
 func dump(out io.Writer, cat *country.Catalogue) error {
 	pool := cat.Pool()
 	byCode := make(map[string]*country.Country, len(pool))
@@ -42,7 +43,7 @@ func dump(out io.Writer, cat *country.Catalogue) error {
 			heading += " [" + c.Prompt + "]"
 		}
 		_, _ = fmt.Fprintf(w, "%s\n\n", heading)
-		q, ok := quiz.Draw(cat, c, 1, rand.New(rand.NewPCG(seed, seed))) //nolint:gosec // G404: a fixed seed, no secret depends on it.
+		q, ok := quiz.Draw(cat, c, c.Type.Tier, rand.New(rand.NewPCG(seed, seed))) //nolint:gosec // G404: a fixed seed, no secret depends on it.
 		if !ok {
 			_, _ = fmt.Fprint(w, "No question: fewer than three wrong options fit.\n\n")
 			continue
