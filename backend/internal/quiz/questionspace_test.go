@@ -21,9 +21,11 @@ func realCatalogue(t *testing.T) sharedPool {
 }
 
 // space checks cases and questions against the raw catalogue lists, independently of candidates().
+// Nothing writes to it after newSpace, so parallel runs share it.
 type space struct {
 	cat    sharedPool
 	byCode map[string]*country.Country
+	def    map[Case]map[string]bool
 }
 
 func newSpace(cat sharedPool) space {
@@ -31,7 +33,11 @@ func newSpace(cat sharedPool) space {
 	for i := range cat.pool {
 		byCode[cat.pool[i].Code] = &cat.pool[i]
 	}
-	return space{cat: cat, byCode: byCode}
+	s := space{cat: cat, byCode: byCode, def: map[Case]map[string]bool{}}
+	for _, c := range Cases(cat) {
+		s.def[c] = s.defensibleOf(c)
+	}
+	return s
 }
 
 // holds reports whether option is a true answer of c.
@@ -48,6 +54,13 @@ func (s space) holds(c Case, option string) bool {
 
 // defensible returns every option a player could defend as the answer of c.
 func (s space) defensible(c Case) map[string]bool {
+	if d, ok := s.def[c]; ok {
+		return d
+	}
+	return s.defensibleOf(c)
+}
+
+func (s space) defensibleOf(c Case) map[string]bool {
 	target := s.byCode[c.Target]
 	a := c.Type.Answer
 	out := map[string]bool{}
@@ -60,12 +73,13 @@ func (s space) defensible(c Case) map[string]bool {
 	if a.identifiesCountry() {
 		add(target.Code)
 		if c.Type.Prompt == AttrRegionalLanguage {
+			family := s.cat.Family(country.LabelLanguage, c.Prompt)
+			holds := func(l string) bool {
+				return l == c.Prompt || (family != "" && s.cat.Family(country.LabelLanguage, l) == family)
+			}
 			for _, o := range s.cat.pool {
-				family := s.cat.Family(country.LabelLanguage, c.Prompt)
-				for _, l := range slices.Concat(o.Languages, o.RegionalLanguages, o.BlockedLanguages) {
-					if l == c.Prompt || (family != "" && s.cat.Family(country.LabelLanguage, l) == family) {
-						add(o.Code)
-					}
+				if slices.ContainsFunc(o.Languages, holds) || slices.ContainsFunc(o.RegionalLanguages, holds) || slices.ContainsFunc(o.BlockedLanguages, holds) {
+					add(o.Code)
 				}
 			}
 		}
@@ -102,9 +116,15 @@ func (s space) defensible(c Case) map[string]bool {
 		if len(families) == 0 {
 			break
 		}
-		for _, v := range slices.Concat([]string{o.Region}, o.OtherRegions, o.Languages, o.RegionalLanguages, o.BlockedLanguages, o.Currencies) {
-			if families[s.cat.Family(kind, v)] {
-				add(v)
+		lists := [][]string{o.Currencies}
+		if a == AttrLanguage {
+			lists = [][]string{o.Languages, o.RegionalLanguages, o.BlockedLanguages}
+		}
+		for _, list := range lists {
+			for _, v := range list {
+				if families[s.cat.Family(kind, v)] {
+					add(v)
+				}
 			}
 		}
 	}

@@ -188,22 +188,29 @@ func candidates(cat Catalogue, pool []country.Country, c Case) optionSets {
 			families[f] = true
 		}
 	}
-	contested := slices.Clone(direct)
-	if len(families) > 0 {
-		for _, v := range universe(pool, answer) {
-			if families[cat.Family(kind, v)] {
-				contested = append(contested, v)
-			}
-		}
+	seen := make(map[string]bool, 2*len(pool))
+	for _, v := range sets.True {
+		seen[v] = true
 	}
-	for _, v := range contested {
-		if !slices.Contains(sets.True, v) && !slices.Contains(sets.Contested, v) {
+	contest := func(v string) {
+		if !seen[v] {
+			seen[v] = true
 			sets.Contested = append(sets.Contested, v)
 		}
 	}
-	seen := map[string]bool{}
-	for _, v := range slices.Concat(sets.True, sets.Contested) {
-		seen[v] = true
+	for _, v := range direct {
+		contest(v)
+	}
+	if len(families) > 0 {
+		for i := range pool {
+			for _, list := range valueLists(&pool[i], answer) {
+				for _, v := range list {
+					if families[cat.Family(kind, v)] {
+						contest(v)
+					}
+				}
+			}
+		}
 	}
 	collect := func(inRegion bool) []string {
 		var vs []string
@@ -234,30 +241,18 @@ func holdsLanguage(cat Catalogue, c *country.Country, lang string) bool {
 // flagType reports whether a type shows a flag as its prompt or its options.
 func flagType(t QuestionType) bool { return t.Prompt == AttrFlag || t.Answer == AttrFlag }
 
-// universe returns every code of an answer attribute's kind that some pool country holds in any list, in pool order.
-func universe(pool []country.Country, a Attr) []string {
-	var out []string
-	seen := map[string]bool{}
-	for i := range pool {
-		c := &pool[i]
-		var vs []string
-		switch a {
-		case AttrRegion:
-			vs = slices.Concat([]string{c.Region}, c.OtherRegions)
-		case AttrLanguage:
-			vs = slices.Concat(c.Languages, c.RegionalLanguages, c.BlockedLanguages)
-		case AttrCurrency:
-			vs = c.Currencies
-		case AttrName, AttrFlag, AttrCapital, AttrRegionalLanguage:
-		}
-		for _, v := range vs {
-			if !seen[v] {
-				seen[v] = true
-				out = append(out, v)
-			}
-		}
+// valueLists returns c's lists that hold codes of an answer attribute's kind, whatever their status.
+func valueLists(c *country.Country, a Attr) [][]string {
+	switch a {
+	case AttrRegion:
+		return [][]string{{c.Region}, c.OtherRegions}
+	case AttrLanguage:
+		return [][]string{c.Languages, c.RegionalLanguages, c.BlockedLanguages}
+	case AttrCurrency:
+		return [][]string{c.Currencies}
+	case AttrName, AttrFlag, AttrCapital, AttrRegionalLanguage:
 	}
-	return out
+	return nil
 }
 
 // optionText is what an option displays: a country's answer text or an attribute label.
